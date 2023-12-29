@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "订单详情",
+  "usingComponents": {
+    "goods-list": "/components/groupGoodsList/index",
+    "home": "/components/home/index"
+  }
+}

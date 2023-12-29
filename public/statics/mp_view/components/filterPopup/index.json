@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "tui-drawer": "/components/thorui/tui-drawer",
+    "tui-collapse": "/components/thorui/tui-collapse",
+    "tui-list-cell": "/components/thorui/tui-list-cell"
+  }
+}

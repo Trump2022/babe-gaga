@@ -1,0 +1,10 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-badge": "/uni_modules/uni-badge/components/uni-badge/uni-badge",
+    "filter-popup": "/components/filterPopup/index",
+    "waterfalls-flow": "/components/maramlee-waterfalls-flow/maramlee-waterfalls-flow",
+    "kefu": "/components/kefu/index",
+    "address-window": "/components/addressWindow/index"
+  }
+}
