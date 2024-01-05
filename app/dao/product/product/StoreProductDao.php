@@ -246,7 +246,7 @@ class StoreProductDao extends BaseDao
             }
         })->when(!$page && $limit, function ($query) use ($limit) {
             $query->limit($limit);
-        })->field($field);
+        })->field($field)->select();
         $sql = $sql->getLastSql();
         var_dump($sql);exit;
     }
