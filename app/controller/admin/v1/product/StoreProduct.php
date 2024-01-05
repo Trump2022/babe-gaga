@@ -167,7 +167,6 @@ class StoreProduct extends AuthController
     public function index(StoreProductCategoryServices $storeProductCategoryServices)
     {
         $where = $this->request->getMore([
-            ['is_class', 0],
             ['store_name', ''],
             ['cate_id', ''],
 			['supplier_id', 0],
@@ -177,7 +176,7 @@ class StoreProduct extends AuthController
 			['store_label_id', ''],
 			['brand_id', '']
         ]);
-        
+        $where['is_class'] = 0;
 		if ($where['supplier_id']) {
 			$where['relation_id'] = $where['supplier_id'];
 			$where['type'] = 2;
