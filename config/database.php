@@ -10,7 +10,7 @@
 // +----------------------------------------------------------------------
 
 use think\facade\Env;
-var_dump(124556);die;
+
 return [
     // 默认使用的数据库连接配置
     'default'         => Env::get('database.driver', 'mysql'),
