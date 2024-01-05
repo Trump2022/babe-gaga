@@ -1571,7 +1571,7 @@ Route::group('adminapi', function () {
     Route::group('classes', function () {
         
         //课程列表
-        Route::get('classes', 'v1.product.StoreProduct/index?is_class=1')->option(['real_name' => '课程列表']);
+        Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         
 
     })->middleware([
