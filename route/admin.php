@@ -1564,6 +1564,22 @@ Route::group('adminapi', function () {
         \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
         \app\http\middleware\admin\AdminLogMiddleware::class
     ]);
+
+    /**
+     * 课程路由
+     */
+    Route::group('classes', function () {
+        
+        //课程列表
+        Route::get('classes/1', 'v1.product.StoreProduct/index')->option(['real_name' => '课程列表']);
+        
+
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
     /**
      * 用户模块 相关路由
      */
