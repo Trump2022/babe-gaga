@@ -303,18 +303,18 @@ class StoreProductCategoryServices extends BaseServices
 				return $this->dao->getALlByIndex($where, 'id,cate_name,pid,pic', $limit);
 			});
 		} else {
-			/*return $this->dao->cacheTag()->remember('CATEGORY_All', function () use ($where) {
-				$list =  $this->dao->getCategory($where);
-			});*/
-            $list =  $this->dao->getCategory($where);
+			return $this->dao->cacheTag()->remember('CATEGORY_All', function () use ($where) {
+                return $this->dao->getCategory($where);
+			});
+            //$list =  $this->dao->getCategory($where);
             /** @var StoreProductServices $storeProductServices */
-            $storeProductServices = app()->make(StoreProductServices::class);
-            foreach ($list as $key => $item) {
+            //$storeProductServices = app()->make(StoreProductServices::class);
+            /*foreach ($list as $key => $item) {
                 $category_id = $item['id'];
                 //查询商品
 
             }
-            return $list;
+            return $list;*/
 		}
 	}
 
