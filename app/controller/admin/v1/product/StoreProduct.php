@@ -164,7 +164,7 @@ class StoreProduct extends AuthController
      * 显示资源列表
      * @return mixed
      */
-    public function index(StoreProductCategoryServices $storeProductCategoryServices)
+    public function index(StoreProductCategoryServices $storeProductCategoryServices, $is_class = 0)
     {
         $where = $this->request->getMore([
             ['store_name', ''],
@@ -176,6 +176,7 @@ class StoreProduct extends AuthController
 			['store_label_id', ''],
 			['brand_id', '']
         ]);
+        $where['is_class'] = $is_class;
 		if ($where['supplier_id']) {
 			$where['relation_id'] = $where['supplier_id'];
 			$where['type'] = 2;
