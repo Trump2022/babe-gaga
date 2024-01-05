@@ -293,7 +293,7 @@ class StoreProductCategoryServices extends BaseServices
 	 */
 	public function getCategory(array $where = [])
 	{
-        if($where['is_goods']){
+        if(!empty($where['is_goods'])){
             $is_goods = $where['is_goods'];
             unset($where['is_goods']);
         }

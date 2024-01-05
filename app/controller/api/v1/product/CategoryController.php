@@ -34,7 +34,7 @@ class CategoryController
     {
         $where = $request->getMore([
             ['pid', 0],
-            ['is_goods', 0],
+            //['is_goods', 0],
         ]);
         $category = $this->services->getCategory($where);
         return app('json')->success($category);
