@@ -1416,7 +1416,6 @@ class StoreProductServices extends BaseServices
         [$page, $limit] = $this->getPageValue();
         $field = ['id,relation_id,type,pid,delivery_type,product_type,store_name,cate_id,image,IFNULL(sales, 0) + IFNULL(ficti, 0) as sales,price,stock,activity,ot_price,spec_type,recommend_image,unit_name,is_vip,vip_price,is_presale_product,is_vip_product,system_form_id,is_presale_product,presale_start_time,presale_end_time,is_limit,limit_num,video_open,video_link'];
         $list = $this->dao->getSearchList($where, $page, $limit, $field, '', ['couponId']);
-        var_dump($list);exit;
         if ($list) {
             /** @var MemberCardServices $memberCardService */
             $memberCardService = app()->make(MemberCardServices::class);

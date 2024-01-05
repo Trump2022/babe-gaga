@@ -200,7 +200,7 @@ class StoreProductDao extends BaseDao
     public function getSearchList(array $where, int $page = 0, int $limit = 0, array $field = ['*'], string $order = '', array $with = ['couponId', 'descriptions'])
     {
         if (isset($where['star'])) $with[] = 'star';
-        return $this->search($where)->with($with)->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
+        $sql =  $this->search($where)->with($with)->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
             $query->page($page, $limit);
         })->when(isset($where['ids']) && $where['ids'], function ($query) use ($where) {
             if ((isset($where['priceOrder']) && $where['priceOrder'] != '') || (isset($where['salesOrder']) && $where['salesOrder'] != '')) {
@@ -246,7 +246,9 @@ class StoreProductDao extends BaseDao
             }
         })->when(!$page && $limit, function ($query) use ($limit) {
             $query->limit($limit);
-        })->field($field)->select()->toArray();
+        })->field($field);
+        $sql = $sql->getLastSql();
+        var_dump($sql);exit;
     }
 
     /**商品列表
