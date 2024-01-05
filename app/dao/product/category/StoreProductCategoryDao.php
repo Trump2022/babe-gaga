@@ -84,15 +84,20 @@ class StoreProductCategoryDao extends BaseDao
     }
 
     /**
-     * 前端分类页面分离列表
+     * 前端分类页面分页列表
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getCategory()
+    public function getCategory($where)
     {
-        return $this->getModel()->with('children')->where('is_show', 1)->where('pid', 0)->order('sort desc,id desc')->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])->select()->toArray();
+        return $this->getModel()->with('children')->where('is_show', 1)->where('pid', 0)
+            ->when($where, function ($query) use ($where) {
+                $query->where($where);
+            })->order('sort desc,id desc')
+            ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
+            ->select()->toArray();
     }
 
     /**
