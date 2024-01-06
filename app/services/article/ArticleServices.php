@@ -11,7 +11,7 @@
 
 namespace app\services\article;
 
-use app\dao\article\ActivityDao;
+use app\dao\article\ArticleDao;
 use app\services\BaseServices;
 use app\services\wechat\WechatNewsCategoryServices;
 use crmeb\exceptions\AdminException;
@@ -20,15 +20,15 @@ use crmeb\exceptions\AdminException;
  * 文章
  * Class ArticleServices
  * @package app\services\article
- * @mixin ActivityDao
+ * @mixin ArticleDao
  */
 class ArticleServices extends BaseServices
 {
     /**
      * ArticleServices constructor.
-     * @param ActivityDao $dao
+     * @param ArticleDao $dao
      */
-    public function __construct(ActivityDao $dao)
+    public function __construct(ArticleDao $dao)
     {
         $this->dao = $dao;
     }
@@ -60,8 +60,8 @@ class ArticleServices extends BaseServices
      */
     public function save(array $data)
     {
-        /** @var ActivityContentServices $articleContentService */
-        $articleContentService = app()->make(ActivityContentServices::class);
+        /** @var ArticleContentServices $articleContentService */
+        $articleContentService = app()->make(ArticleContentServices::class);
         $content['content'] = $data['content'];
         $id = $data['id'];
         unset($data['content'], $data['id']);
@@ -104,8 +104,8 @@ class ArticleServices extends BaseServices
      */
     public function del(int $id)
     {
-        /** @var ActivityContentServices $articleContentService */
-        $articleContentService = app()->make(ActivityContentServices::class);
+        /** @var ArticleContentServices $articleContentService */
+        $articleContentService = app()->make(ArticleContentServices::class);
         $this->transaction(function () use ($id, $articleContentService) {
             $res = $this->dao->delete($id);
             $res = $res && $articleContentService->del($id);
