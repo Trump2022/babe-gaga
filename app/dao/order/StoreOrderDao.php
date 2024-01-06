@@ -464,9 +464,9 @@ class StoreOrderDao extends BaseDao
      * @param string $field
      * @return int
      */
-    public function storeOrderCount(int $val = 0, int $type = -1, string $field = 'store_id')
+    public function storeOrderCount(int $val = 0, int $type = -1, string $field = 'store_id', int $is_class = 0)
     {
-        $where = ['pid' => 0, 'status' => 1];
+        $where = ['pid' => 0, 'status' => 1, 'is_class' => $is_class];
         if ($type != -1) $where['type'] = $type;
         return $this->search($where)->when($field && $val > 0, function ($query) use ($field, $val) {
             $query->where($field, $val);

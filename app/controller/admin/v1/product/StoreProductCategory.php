@@ -52,6 +52,7 @@ class StoreProductCategory extends AuthController
             ['cate_name', ''],
             ['id', 0],
         ]);
+        $where['is_class'] = 0;
 		$where['type'] = 0;
 		$where['pid'] = (int)$where['pid'];
         $data = $this->service->getList($where);
@@ -121,6 +122,7 @@ class StoreProductCategory extends AuthController
             return $this->fail('请输入分类名称');
         }
 		$data['type'] = 0;
+        $data['is_class'] = 0;
 		$data['relation_id'] = 0;
         $this->service->createData($data);
         return $this->success('添加分类成功!');
