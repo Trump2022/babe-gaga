@@ -73,7 +73,7 @@ class StoreClasses extends AuthController
      */
     public function getCacheData(CacheServices $services)
     {
-        return $this->success(['info' => $services->getDbCache($this->adminId . '_product_data', [])]);
+        return $this->success(['info' => $services->getDbCache($this->adminId . '_classes_data', [])]);
     }
 
     /**
@@ -462,7 +462,7 @@ class StoreClasses extends AuthController
      */
     public function get_rule()
     {
-        return $this->success($this->service->getRule());
+        return $this->success($this->service->getRule(0, 0, 1));
     }
 
     /**
@@ -607,7 +607,7 @@ class StoreClasses extends AuthController
 			$plat_type = (int)$productInfo['type'];
 			$relation_id = (int)$productInfo['relation_id'];
 		}
-		$info = $this->service->getAttr($data, $id, $type, $plat_type, $relation_id);
+		$info = $this->service->getAttr($data, $id, $type, $plat_type, $relation_id, 1);
         return $this->success(compact('info'));
     }
 
