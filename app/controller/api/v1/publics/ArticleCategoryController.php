@@ -40,7 +40,7 @@ class ArticleCategoryController
             ['id', 0]
         ]);
         if(!empty($where['id'])){
-            return $this->services->getArticleCategory($where);
+            $cateInfo = $this->services->getArticleCategory($where);
         }else{
             $cateInfo = CacheService::get('ARTICLE_CATEGORY', function () {
                 $cateInfo = $this->services->getArticleCategory();
