@@ -101,7 +101,9 @@ class StoreProductRuleServices extends BaseServices
     public function getInfo(int $id)
     {
         $info = $this->dao->get($id);
-        $info['spec'] = json_decode($info['rule_value'], true);
+        if ($info) {
+            $info['spec'] = json_decode($info['rule_value'], true);
+        }
         return compact('info');
     }
 

@@ -1642,9 +1642,9 @@ Route::group('adminapi', function () {
         Route::get('classes/rule', 'v1.product.StoreClassesRule/index')->option(['real_name' => '课程规格列表']);
         //新建或编辑课程规格
         Route::post('classes/rule/:id', 'v1.product.StoreClassesRule/save')->option(['real_name' => '新建或编辑课程规格']);
-        //商品规则详情
+        //课程规格详情
         Route::get('classes/rule/:id', 'v1.product.StoreClassesRule/read')->option(['real_name' => '课程规格详情']);
-        //删除商品规则
+        //删除课程规格
         Route::delete('classes/rule/delete/:id', 'v1.product.StoreClassesRule/delete')->option(['real_name' => '删除课程规格']);
         
 
