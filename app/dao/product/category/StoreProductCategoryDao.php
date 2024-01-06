@@ -92,12 +92,22 @@ class StoreProductCategoryDao extends BaseDao
      */
     public function getCategory($where)
     {
-        return $this->getModel()->with('children')->where('is_show', 1)->where('pid', 0)
-            ->when($where, function ($query) use ($where) {
-                $query->where($where);
-            })->order('sort desc,id desc')
-            ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
-            ->select()->toArray();
+        $pid = $where['pid'] ?? 0;
+        $id = $where['id'] ?? 0;
+        if($id){
+            return $this->getModel()->with('children')->where('is_show', 1)
+                ->where('id', $id)
+                ->order('sort desc,id desc')
+                ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
+                ->select()->toArray();
+        } else {
+            return $this->getModel()->with('children')->where('is_show', 1)
+                ->where('pid', $pid)
+                ->order('sort desc,id desc')
+                ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
+                ->select()->toArray();
+        }
+
     }
 
     /**
@@ -222,6 +232,7 @@ class StoreProductCategoryDao extends BaseDao
     public function getALlByIndex(array $where, string $field = 'id,cate_name,pid,pic', $limit = 0)
     {
         $pid = $where['pid'] ?? -1;
+        $id = $where['id'] ?? -1;
         return $this->getModel()->where('is_show', 1)->field($field)
             ->when(in_array($pid, [0, -1]), function ($query) use ($pid) {
                 switch ($pid) {
@@ -234,7 +245,11 @@ class StoreProductCategoryDao extends BaseDao
                 }
             })->when((int)$pid > 0, function ($query) use ($pid) {
                 $query->where('pid', $pid);
-            })->when(isset($where['name']) && $where['name'], function ($query) use ($where) {
+            })
+            ->when((int)$id > 0, function ($query) use ($id) {
+                $query->where('id', $id);
+            })
+            ->when(isset($where['name']) && $where['name'], function ($query) use ($where) {
                 $query->whereLike('id|cate_name', '%' . $where['name'] . '%');
             })->when($limit > 0, function ($query) use ($limit) {
                 $query->limit($limit);

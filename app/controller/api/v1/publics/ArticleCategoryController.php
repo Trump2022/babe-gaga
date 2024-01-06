@@ -12,6 +12,7 @@ namespace app\controller\api\v1\publics;
 
 use app\services\article\ArticleCategoryServices;
 use crmeb\services\CacheService;
+use think\Request;
 
 /**
  * 文章分类类
@@ -33,13 +34,20 @@ class ArticleCategoryController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function lst()
+    public function lst(Request $request)
     {
-        $cateInfo = CacheService::get('ARTICLE_CATEGORY', function () {
-            $cateInfo = $this->services->getArticleCategory();
-            array_unshift($cateInfo, ['id' => 0, 'title' => '热门']);
-            return $cateInfo;
-        });
+        $where = $request->getMore([
+            ['id', 0]
+        ]);
+        if(!empty($where['id'])){
+            $cateInfo = $this->services->getArticleCategory($where);
+        }else{
+            $cateInfo = CacheService::get('ARTICLE_CATEGORY', function () {
+                $cateInfo = $this->services->getArticleCategory();
+                array_unshift($cateInfo, ['id' => 0, 'title' => '热门']);
+                return $cateInfo;
+            });
+        }
         return app('json')->successful($cateInfo);
     }
 }

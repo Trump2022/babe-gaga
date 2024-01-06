@@ -1572,7 +1572,8 @@ Route::group('adminapi', function () {
         
         //课程列表
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
-        
+        //课程列表头部数据
+        Route::get('classes/type_header', 'v1.product.StoreClasses/type_header')->option(['real_name' => '课程列表头部数据']);
 
     })->middleware([
         \app\http\middleware\admin\AdminAuthTokenMiddleware::class,

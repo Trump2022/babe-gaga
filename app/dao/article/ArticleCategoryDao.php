@@ -50,9 +50,13 @@ class ArticleCategoryDao extends BaseDao
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getArticleCategory()
+    public function getArticleCategory($where = [])
     {
+        $id = $where['id'] ?? 0;
         return $this->search(['hidden'=>0,'is_del'=>0,'status'=>1])
+            ->when((int)$id > 0, function ($query) use ($id) {
+                $query->where('id', $id);
+            })
             ->order('sort DESC')
             ->field('id,title')
             ->select()->toArray();
