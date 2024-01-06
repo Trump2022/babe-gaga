@@ -149,7 +149,7 @@ class StoreProductCategoryServices extends BaseServices
     public function createForm(int $type = 0, int $is_class = 0)
     {
         $controller = $is_class ? 'classes' : 'product';
-        return create_form('添加分类', $this->form([], $type), Url::buildUrl('/'.$controller.'/category'), 'POST');
+        return create_form('添加分类', $this->form([], $type, $is_class), Url::buildUrl('/'.$controller.'/category'), 'POST');
     }
 
     /**
@@ -167,25 +167,27 @@ class StoreProductCategoryServices extends BaseServices
     {
         $info = $this->dao->get($id);
         $controller = $is_class ? 'classes' : 'product';
-        return create_form('编辑分类', $this->form($info, $type), $this->url('/'.$controller.'/category/' . $id), 'PUT');
+        return create_form('编辑分类', $this->form($info, $type, $is_class), $this->url('/'.$controller.'/category/' . $id), 'PUT');
     }
 
     /**
      * 生成表单参数
      * @param array $info
+     * @param int $type
+     * @param int $is_class
      * @return array
      * @throws \FormBuilder\Exception\FormBuilderException
      */
-    public function form($info = [], int $type = 0)
+    public function form($info = [], int $type = 0, int $is_class = 0)
     {
         if (isset($info['pid'])) {
             if ($info['pid']) {
-                $f[] = Form::select('pid', '父级', (int)($info['pid'] ?? ''))->setOptions($this->menus())->filterable(1);
+                $f[] = Form::select('pid', '父级', (int)($info['pid'] ?? ''))->setOptions($this->menus($is_class))->filterable(1);
             } else {
-                $f[] = Form::select('pid', '父级', (int)($info['pid'] ?? ''))->setOptions($this->menus())->filterable(1)->disabled(true);
+                $f[] = Form::select('pid', '父级', (int)($info['pid'] ?? ''))->setOptions($this->menus($is_class))->filterable(1)->disabled(true);
             }
         } else {
-            $f[] = Form::select('pid', '父级', (int)($info['pid'] ?? ''))->setOptions($this->menus())->filterable(1);
+            $f[] = Form::select('pid', '父级', (int)($info['pid'] ?? ''))->setOptions($this->menus($is_class))->filterable(1);
         }
         $url = $type ? config('admin.store_prefix') . '/widget.images/index' : config('admin.admin_prefix') . '/widget.images/index';
 
@@ -201,9 +203,9 @@ class StoreProductCategoryServices extends BaseServices
      * 获取一级分类组合数据
      * @return array[]
      */
-    public function menus()
+    public function menus($is_class = 0)
     {
-        $list = $this->dao->getMenus(['pid' => 0]);
+        $list = $this->dao->getMenus(['pid' => 0, 'is_class' => $is_class]);
         $menus = [['value' => 0, 'label' => '顶级菜单']];
         foreach ($list as $menu) {
             $menus[] = ['value' => $menu['id'], 'label' => $menu['cate_name']];
@@ -292,7 +294,7 @@ class StoreProductCategoryServices extends BaseServices
     {
         return $this->dao->getCateArray($cateIds);
     }
-    
+
     /**
      * 前台分类列表
      * @return bool|mixed|null
