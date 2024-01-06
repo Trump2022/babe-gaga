@@ -133,4 +133,17 @@ class StoreProductCategory extends BaseModel
     {
         if ($value !== '') $query->where('relation_id', $value);
     }
+
+    /**
+     * 是否是课程
+     * @author VICTOR
+     * @email 569233738@qq.com
+     * @date 2024/1/5
+     * @param $query
+     * @param $value
+     */
+    public function searchIsClassAttr($query, $value)
+    {
+        if ('' !== $value) $query->where('is_class', $value);
+    }
 }

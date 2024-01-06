@@ -54,10 +54,11 @@ class StoreProduct extends AuthController
 			['store_label_id', ''],
 			['brand_id', '']
         ]);
+        $where['is_class'] = 0;
 		$cateId = $where['cate_id'];
 		if ($cateId) {
 			$cateId = is_string($cateId) ? [$cateId] : $cateId;
-			$cateId = array_merge($cateId, $storeProductCategoryServices->getColumn(['pid' => $cateId], 'id'));
+			$cateId = array_merge($cateId, $storeProductCategoryServices->getColumn(['pid' => $cateId, 'is_class' => 0], 'id'));
 			$cateId = array_unique(array_diff($cateId, [0]));
 		}
 		$where['cate_id'] = $cateId;
