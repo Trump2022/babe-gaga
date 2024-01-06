@@ -229,7 +229,7 @@ class Common extends AuthController
                 'url' => '/order/list?status=1'
             ];
         }
-        $inventory = $storeServices->count(['is_police' => 1, 'status' => 5, 'pid' => 0, 'store_stock' => 0]);
+        $inventory = $storeServices->count(['is_police' => 1, 'status' => 5, 'pid' => 0, 'store_stock' => 0, 'is_class' => 0]);
         if ($inventory) {
             $value[] = [
                 'title' => '您有' . $inventory . '个商品库存预警',
@@ -237,6 +237,15 @@ class Common extends AuthController
                 'url' => '/product/product_list?type=5',
             ];
         }
+        $inventory1 = $storeServices->count(['is_police' => 1, 'status' => 5, 'pid' => 0, 'store_stock' => 0, 'is_class' => 1]);
+        if ($inventory1) {
+            $value[] = [
+                'title' => '您有' . $inventory1 . '个课程库存预警',
+                'type' => 'information',
+                'url' => '/classes/classes_list?type=5',
+            ];
+        }
+
         if ($commentNum) {
             $value[] = [
                 'title' => '您有' . $commentNum . '条评论待回复',

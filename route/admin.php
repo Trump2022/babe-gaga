@@ -1570,6 +1570,23 @@ Route::group('adminapi', function () {
      */
     Route::group('classes', function () {
         
+        //课程分类树形列表
+        Route::get('category/tree/:type', 'v1.product.StoreClassesCategory/tree_list')->option(['real_name' => '课程分类树形列表']);
+        //课程分类列表
+        Route::get('category', 'v1.product.StoreClassesCategory/index')->option(['real_name' => '课程分类列表']);
+        //课程分类新增表单
+        Route::get('category/create', 'v1.product.StoreClassesCategory/create')->option(['real_name' => '课程分类新增表单']);
+        //课程分类新增
+        Route::post('category', 'v1.product.StoreClassesCategory/save')->option(['real_name' => '课程分类新增']);
+        //课程分类编辑表单
+        Route::get('category/:id', 'v1.product.StoreClassesCategory/edit')->option(['real_name' => '课程分类编辑表单']);
+        //课程分类编辑
+        Route::put('category/:id', 'v1.product.StoreClassesCategory/update')->option(['real_name' => '商品分类编辑']);
+        //删除课程分类
+        Route::delete('category/:id', 'v1.product.StoreClassesCategory/delete')->option(['real_name' => '删除课程分类']);
+        //课程分类修改状态
+        Route::put('category/set_show/:id/:is_show', 'v1.product.StoreClassesCategory/set_show')->option(['real_name' => '课程分类修改状态']);
+        
         //课程列表
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         //课程列表头部数据
