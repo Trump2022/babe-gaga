@@ -39,7 +39,6 @@ class ArticleCategoryController
         $where = $request->getMore([
             ['id', 0]
         ]);
-        var_dump($where);exit;
         if(!empty($where['id'])){
             return $this->services->getArticleCategory($where);
         }else{
