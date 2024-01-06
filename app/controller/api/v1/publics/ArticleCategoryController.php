@@ -37,8 +37,9 @@ class ArticleCategoryController
     public function lst(Request $request)
     {
         $where = $request->getMore([
-            ['id', 0],
+            ['id', 0]
         ]);
+        var_dump($where);exit;
         if(!empty($where['id'])){
             return $this->services->getArticleCategory($where);
         }else{
