@@ -478,6 +478,43 @@ Route::group('adminapi', function () {
         \app\http\middleware\admin\AdminLogMiddleware::class
     ]);
     /**
+     * 定制活动管理 相关路由
+     */
+    Route::group('activity', function () {
+        //关联商品
+        Route::put('activity/relation/:id', 'v1.activity.Activity/relation')->name('Relation')->option(['real_name' => '文章关联商品']);
+        //取消关联
+        Route::put('activity/unrelation/:id', 'v1.activity.Activity/unrelation')->name('UnRelation')->option(['real_name' => '取消文章关联商品']);
+        //修改状态
+        Route::put('category/set_status/:id/:status', 'v1.activity.ActivityCategory/set_status')->name('CategoryStatus')->option(['real_name' => '修改文章分类状态']);
+        //分类列表
+        Route::get('category_list', 'v1.activity.ActivityCategory/categoryList')->name('categoryList')->option(['real_name' => '选择文章分类列表']);
+        //活动分类资源路由
+        Route::resource('category', 'v1.activity.ActivityCategory')->name('ActivityCategoryResource')->option(['real_name' => [
+            'index' => '获取活动分类列表',
+            'read' => '获取活动分类详情',
+            'create' => '获取创建活动分类表单',
+            'save' => '保存活动分类',
+            'edit' => '获取修改活动分类表单',
+            'update' => '修改活动分类',
+            'delete' => '删除活动分类'
+        ]]);
+        //定制活动资源路由
+        Route::resource('activity', 'v1.activity.Activity')->name('ActivityResource')->option(['real_name' => [
+            'index' => '获取活动列表',
+            'read' => '获取活动详情',
+            'create' => '获取创建活动表单',
+            'save' => '保存活动',
+            'edit' => '获取修改活动表单',
+            'update' => '修改活动',
+            'delete' => '删除活动'
+        ]]);
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+    /**
      * 首页Diy 相关路由
      */
     Route::group('diy', function () {

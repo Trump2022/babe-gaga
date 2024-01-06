@@ -11,22 +11,22 @@
 
 namespace app\services\article;
 
-use app\dao\article\ArticleContentDao;
+use app\dao\article\ActivityContentDao;
 use app\services\BaseServices;
 
 /**
  * 文章内容
  * Class ArticleContentServices
  * @package app\services\article
- * @mixin ArticleContentDao
+ * @mixin ActivityContentDao
  */
 class ArticleContentServices extends BaseServices
 {
     /**
      * ArticleContentServices constructor.
-     * @param ArticleContentDao $dao
+     * @param ActivityContentDao $dao
      */
-    public function __construct(ArticleContentDao $dao)
+    public function __construct(ActivityContentDao $dao)
     {
         $this->dao = $dao;
     }

@@ -11,7 +11,7 @@
 
 namespace app\services\article;
 
-use app\dao\article\ArticleCategoryDao;
+use app\dao\article\ActivityCategoryDao;
 use app\services\BaseServices;
 use app\services\wechat\WechatNewsCategoryServices;
 use crmeb\exceptions\AdminException;
@@ -22,15 +22,15 @@ use think\facade\Route as Url;
  * 文章分类
  * Class ArticleCategoryServices
  * @package app\services\article
- * @mixin ArticleCategoryDao
+ * @mixin ActivityCategoryDao
  */
 class ArticleCategoryServices extends BaseServices
 {
     /**
      * ArticleCategoryServices constructor.
-     * @param ArticleCategoryDao $dao
+     * @param ActivityCategoryDao $dao
      */
-    public function __construct(ArticleCategoryDao $dao)
+    public function __construct(ActivityCategoryDao $dao)
     {
         $this->dao = $dao;
     }
