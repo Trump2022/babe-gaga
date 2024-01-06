@@ -1572,6 +1572,8 @@ Route::group('adminapi', function () {
         
         //课程分类树形列表
         Route::get('category/tree/:type', 'v1.product.StoreClassesCategory/tree_list')->option(['real_name' => '课程分类树形列表']);
+        //课程分类cascader行列表
+        Route::get('category/cascader_list/[:type]', 'v1.product.StoreClassesCategory/cascader_list')->option(['real_name' => '课程分类cascader行列表']);
         //课程分类列表
         Route::get('category', 'v1.product.StoreClassesCategory/index')->option(['real_name' => '课程分类列表']);
         //课程分类新增表单
@@ -1586,7 +1588,7 @@ Route::group('adminapi', function () {
         Route::delete('category/:id', 'v1.product.StoreClassesCategory/delete')->option(['real_name' => '删除课程分类']);
         //课程分类修改状态
         Route::put('category/set_show/:id/:is_show', 'v1.product.StoreClassesCategory/set_show')->option(['real_name' => '课程分类修改状态']);
-        
+
         //课程列表
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         //课程列表头部数据

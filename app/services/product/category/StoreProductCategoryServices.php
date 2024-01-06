@@ -108,14 +108,15 @@ class StoreProductCategoryServices extends BaseServices
     * @param int $type
     * @param int $relation_id
     * @param bool $isPid
+    * @param bool $is_class
     * @return mixed
     * @throws \think\db\exception\DataNotFoundException
     * @throws \think\db\exception\DbException
     * @throws \think\db\exception\ModelNotFoundException
      */
-    public function cascaderList(int $type = 0, int $relation_id = 0, bool $isPid = false)
+    public function cascaderList(int $type = 0, int $relation_id = 0, bool $isPid = false, int $is_class = 0)
     {
-        $where = ['is_show' => 1, 'type' => $type, 'relation_id' => $relation_id];
+        $where = ['is_show' => 1, 'is_class' => $is_class, 'type' => $type, 'relation_id' => $relation_id];
         if ($isPid) $where['pid'] = 0;
         $data = get_tree_children($this->dao->getTierList($where, ['id as value', 'cate_name as label', 'pid']), 'children', 'value');
         return $data;

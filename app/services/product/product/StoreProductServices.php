@@ -205,7 +205,7 @@ class StoreProductServices extends BaseServices
             }
         }
 
-        return compact('list', 'count', 'where');
+        return compact('list', 'count');
     }
 
     /**

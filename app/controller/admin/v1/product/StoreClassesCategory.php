@@ -79,7 +79,7 @@ class StoreClassesCategory extends AuthController
      */
     public function cascader_list($type = 1)
     {
-        return $this->success($this->service->cascaderList(0, 0, !$type));
+        return $this->success($this->service->cascaderList(0, 0, !$type, 1));
     }
 
     /**
