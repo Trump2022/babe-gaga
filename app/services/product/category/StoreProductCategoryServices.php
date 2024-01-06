@@ -293,28 +293,16 @@ class StoreProductCategoryServices extends BaseServices
 	 */
 	public function getCategory(array $where = [])
 	{
-        if(!empty($where['is_goods'])){
-            $is_goods = $where['is_goods'];
-            unset($where['is_goods']);
-        }
 		[$page, $limit] = $this->getPageValue();
 		if ($limit) {
 			return $this->dao->cacheTag()->remember(md5(json_encode($where + ['limit' => $limit])), function () use ($where, $limit) {
 				return $this->dao->getALlByIndex($where, 'id,cate_name,pid,pic', $limit);
 			});
 		} else {
-			return $this->dao->cacheTag()->remember('CATEGORY_All', function () use ($where) {
+            return $this->dao->getCategory($where);
+			/*return $this->dao->cacheTag()->remember('CATEGORY_All', function () use ($where) {
                 return $this->dao->getCategory($where);
-			});
-            //$list =  $this->dao->getCategory($where);
-            /** @var StoreProductServices $storeProductServices */
-            //$storeProductServices = app()->make(StoreProductServices::class);
-            /*foreach ($list as $key => $item) {
-                $category_id = $item['id'];
-                //查询商品
-
-            }
-            return $list;*/
+			});*/
 		}
 	}
 
