@@ -262,7 +262,7 @@ class DiyServices extends BaseServices
      */
     public function getDiyInfo(int $id, $type = 1)
     {
-        return $this->dao->cacheTag()->remember('diy_info_' . $id. $type, function () use ($id, $type) {
+        //return $this->dao->cacheTag()->remember('diy_info_' . $id. $type, function () use ($id, $type) {
             $field = ['title', 'value', 'is_show', 'is_bg_color', 'color_picker', 'bg_pic', 'bg_tab_val', 'is_bg_pic', 'order_status'];
             $where = ['status' => 1, 'is_diy' => 1];
             $where['type'] = $type;
@@ -308,7 +308,7 @@ class DiyServices extends BaseServices
             } else {
                 return [];
             }
-        });
+        //});
     }
 
     /**
