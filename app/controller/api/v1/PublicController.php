@@ -502,9 +502,13 @@ class PublicController extends BaseController
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getDiy(DiyServices $services, $id = 0)
+    public function getDiy(DiyServices $services, $id = 0, Request $request)
     {
-        return app('json')->successful($services->getDiyInfo((int)$id));
+        $data = $request->getMore([
+            ['type', 1],
+        ]);
+        $type = $data['type'];
+        return app('json')->successful($services->getDiyInfo((int)$id, $type));
     }
 
 	/**
@@ -526,9 +530,13 @@ class PublicController extends BaseController
      * @param string $template_name
      * @return mixed
      */
-    public function getNavigation(DiyServices $services, string $template_name = '')
+    public function getNavigation(DiyServices $services, string $template_name = '', Request $request)
     {
-        return app('json')->success($services->getNavigation($template_name));
+        $data = $request->getMore([
+            ['type', 1],
+        ]);
+        $type = $data['type'];
+        return app('json')->success($services->getNavigation($template_name, $type));
     }
 
     /**
