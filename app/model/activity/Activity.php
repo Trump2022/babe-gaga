@@ -17,8 +17,8 @@ use think\Model;
 
 /**
  *  定制活动Model
- * Class Article
- * @package app\model\article
+ * Class Activity
+ * @package app\model\activity
  */
 class Activity extends BaseModel
 {
@@ -52,7 +52,7 @@ class Activity extends BaseModel
      */
     public function content()
     {
-        return $this->hasOne(ArticleContent::class, 'nid', 'id')->bind(['content']);
+        return $this->hasOne(ActivityContent::class, 'nid', 'id')->bind(['content']);
     }
 
     /**
@@ -61,7 +61,7 @@ class Activity extends BaseModel
      */
     public function cateName()
     {
-        return $this->hasOne(ArticleCategory::class, 'id', 'cid')->bind(['catename'=>'title']);
+        return $this->hasOne(ActivityCategory::class, 'id', 'cid')->bind(['catename'=>'title']);
     }
 
     /**
