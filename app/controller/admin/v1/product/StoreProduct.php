@@ -146,6 +146,7 @@ class StoreProduct extends AuthController
 			['applicable_type', 1],//适用门店类型
 			['applicable_store_id', []],//适用门店IDS
         ]);
+        $data['is_class'] = 0;
         $services->setDbCache($this->adminId . '_product_data', $data, 68400);
         return $this->success();
     }
@@ -549,6 +550,7 @@ class StoreProduct extends AuthController
 			['applicable_type', 1],//适用门店类型
 			['applicable_store_id', []],//适用门店IDS
         ]);
+        $data['is_class'] = 0;
 		if ($data['applicable_type'] == 1) {
 			$data['applicable_store_id'] = [];
 		} elseif ($data['applicable_type'] == 2) {
@@ -630,6 +632,7 @@ class StoreProduct extends AuthController
             ['store_label_id', ''],
 			['is_supplier', -1],//供应商商品0:不是1:是
         ]);
+        $where['is_class'] = 0;
         $where['is_show'] = 1;
         $where['is_del'] = 0;
 		$where['is_verify'] = 1;

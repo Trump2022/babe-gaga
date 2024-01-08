@@ -84,7 +84,7 @@ class StoreClasses extends AuthController
     public function saveCacheData(CacheServices $services)
     {
         $data = $this->request->postMore([
-            ['product_type', 0],//商品类型
+            ['product_type', 0],//课程类型
             ['supplier_id', 0],//供应商ID
             ['cate_id', []],
             ['store_name', ''],
@@ -128,25 +128,26 @@ class StoreClasses extends AuthController
             ['bar_code', ''],
             ['code', ''],
             ['is_support_refund', 1],//是否支持退款
-            ['is_presale_product', 0],//预售商品开关
+            ['is_presale_product', 0],//预售课程开关
             ['presale_time', []],//预售时间
             ['presale_day', 0],//预售发货日
-            ['is_vip_product', 0],//是否付费会员商品
+            ['is_vip_product', 0],//是否付费会员课程
             ['auto_on_time', 0],//自动上架时间
             ['auto_off_time', 0],//自动下架时间
             ['custom_form', []],//自定义表单
 			['system_form_id', 0],//系统表单ID
-            ['store_label_id', []],//商品标签
-            ['ensure_id', []],//商品保障服务区
-            ['specs', []],//商品参数
-            ['specs_id', 0],//商品参数ID
+            ['store_label_id', []],//课程标签
+            ['ensure_id', []],//课程保障服务区
+            ['specs', []],//课程参数
+            ['specs_id', 0],//课程参数ID
 			['is_limit', 0],//是否限购
 			['limit_type', 0],//限购类型
 			['limit_num', 0],//限购数量
 			['applicable_type', 1],//适用门店类型
 			['applicable_store_id', []],//适用门店IDS
         ]);
-        $services->setDbCache($this->adminId . '_product_data', $data, 68400);
+        $data['is_class'] = 1;
+        $services->setDbCache($this->adminId . '_classes_data', $data, 68400);
         return $this->success();
     }
 
@@ -157,7 +158,7 @@ class StoreClasses extends AuthController
      */
     public function deleteCacheData(CacheServices $services)
     {
-        $services->delectDbCache($this->adminId . '_product_data');
+        $services->delectDbCache($this->adminId . '_classes_data');
         return $this->success();
     }
 
@@ -200,7 +201,7 @@ class StoreClasses extends AuthController
     }
 
 	/**
- 	*  审核商品表单
+ 	*  审核课程表单
 	* @param $id
 	* @return mixed
 	*/
@@ -226,7 +227,7 @@ class StoreClasses extends AuthController
 	}
 
 	/**
-     * 审核商品
+     * 审核课程
      * @param string $is_show
      * @param string $id
      * @return mixed
@@ -260,7 +261,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 设置批量商品上架
+     * 设置批量课程上架
      * @return mixed
      */
     public function product_show()
@@ -271,7 +272,7 @@ class StoreClasses extends AuthController
             ['where', []],
         ], true);
         if ($all == 0) {//单页不走队列
-            if (empty($ids)) return $this->fail('请选择需要上架的商品');
+            if (empty($ids)) return $this->fail('请选择需要上架的课程');
             $this->service->setShow($ids, 1);
             return $this->success('上架成功');
         } else {//全部
@@ -280,18 +281,18 @@ class StoreClasses extends AuthController
 				$where['status'] = $where['type'];
 				unset($where['type']);
 			}
-			$type = 4;//商品上架
+			$type = 4;//课程上架
 			/** @var QueueServices $queueService */
 			$queueService = app()->make(QueueServices::class);
 			$queueService->setQueueData($where, 'id', $ids, $type);
 			//加入队列
 			BatchHandleJob::dispatch(['up', $type]);
-			return $this->success('后台程序已执商品上架任务!');
+			return $this->success('后台程序已执课程上架任务!');
 		}
     }
 
     /**
-     * 设置批量商品下架
+     * 设置批量课程下架
      * @return mixed
      */
     public function product_unshow()
@@ -302,7 +303,7 @@ class StoreClasses extends AuthController
             ['where', []],
         ], true);
         if ($all == 0) {//单页不走队列
-            if (empty($ids)) return $this->fail('请选择需要下架的商品');
+            if (empty($ids)) return $this->fail('请选择需要下架的课程');
             $this->service->setShow($ids, 0);
             return $this->success('下架成功');
         } else {//全部
@@ -311,18 +312,18 @@ class StoreClasses extends AuthController
 				$where['status'] = $where['type'];
 				unset($where['type']);
 			}
-			$type = 4;//商品下架
+			$type = 4;//课程下架
 			/** @var QueueServices $queueService */
 			$queueService = app()->make(QueueServices::class);
 			$queueService->setQueueData($where, 'id', $ids, $type);
 			//加入队列
 			BatchHandleJob::dispatch(['down', $type]);
-			return $this->success('后台程序已执商品下架任务!');
+			return $this->success('后台程序已执课程下架任务!');
 		}
     }
 
     /**
-     * 批量设置商品配送方式
+     * 批量设置课程配送方式
      * @return mixed
      */
     public function setProductDeliveryType()
@@ -336,12 +337,12 @@ class StoreClasses extends AuthController
             return $this->fail('请选择配送方式');
         }
         if ($all == 0 && empty($ids)) {
-            return $this->fail('请选择需要设置的商品');
+            return $this->fail('请选择需要设置的课程');
         }
         if (count($ids) == 1) {
             $product = $this->service->get($ids[0]);
             if ($product && in_array($product['product_type'], [1, 2, 3])) {
-                return $this->fail('虚拟、卡密商品不需要设置配送方式');
+                return $this->fail('虚拟、卡密课程不需要设置配送方式');
             }
         }
 		if ($all == 1) {
@@ -359,7 +360,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 批量设置商品标签
+     * 批量设置课程标签
      * @return mixed
      */
     public function setProductlabel()
@@ -370,10 +371,10 @@ class StoreClasses extends AuthController
             ['store_label_id', []],
         ], true);
         if (!$store_label_id) {
-            return $this->fail('请选择商品标签');
+            return $this->fail('请选择课程标签');
         }
         if ($all == 0 && empty($ids)) {
-            return $this->fail('请选择需要设置的商品');
+            return $this->fail('请选择需要设置的课程');
         }
 		if ($all == 1) {
 			$update_where = ['is_show' => 1, 'is_del' => 0];
@@ -390,7 +391,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 批量设置商品保障服务
+     * 批量设置课程保障服务
      * @return mixed
      */
     public function setProductEnsure()
@@ -401,10 +402,10 @@ class StoreClasses extends AuthController
             ['store_label_id', []],
         ], true);
         if (!$ensure_id) {
-            return $this->fail('请选择商品保障服务');
+            return $this->fail('请选择课程保障服务');
         }
         if ($all == 0 && empty($ids)) {
-            return $this->fail('请选择需要设置的商品');
+            return $this->fail('请选择需要设置的课程');
         }
 		if ($all == 1) {
 			$update_where = ['is_show' => 1, 'is_del' => 0];
@@ -422,7 +423,7 @@ class StoreClasses extends AuthController
 
 
     /**
-     * 批量设置商品参数
+     * 批量设置课程参数
      * @return mixed
      */
     public function setProductSpecs()
@@ -434,13 +435,13 @@ class StoreClasses extends AuthController
             ['specs', []],
         ], true);
         if (!$specs_id) {
-            return $this->fail('请选择商品参数模版');
+            return $this->fail('请选择课程参数模版');
         }
         if (!$specs) {
-            return $this->fail('请添加商品参数');
+            return $this->fail('请添加课程参数');
         }
         if ($all == 0 && empty($ids)) {
-            return $this->fail('请选择需要设置的商品');
+            return $this->fail('请选择需要设置的课程');
         }
 		if ($all == 1) {
 			$update_where = ['is_show' => 1, 'is_del' => 0];
@@ -466,7 +467,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 获取商品详细信息
+     * 获取课程详细信息
      * @param int $id
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -486,7 +487,7 @@ class StoreClasses extends AuthController
     public function save(StoreProductAttrServices $attrServices, $id)
     {
         $data = $this->request->postMore([
-            ['product_type', 0],//商品类型
+            ['product_type', 0],//课程类型
             ['supplier_id', 0],//供应商ID
             ['cate_id', []],
             ['store_name', ''],
@@ -514,7 +515,7 @@ class StoreClasses extends AuthController
             ['video_link', ''],
             ['items', []],
             ['attrs', []],
-            ['recommend', []],//商品推荐
+            ['recommend', []],//课程推荐
             ['activity', []],
             ['coupon_ids', []],
             ['label_id', []],
@@ -531,24 +532,25 @@ class StoreClasses extends AuthController
             ['bar_code', ''],
             ['code', ''],
             ['is_support_refund', 1],//是否支持退款
-            ['is_presale_product', 0],//预售商品开关
+            ['is_presale_product', 0],//预售课程开关
             ['presale_time', []],//预售时间
             ['presale_day', 0],//预售发货日
-            ['is_vip_product', 0],//是否付费会员商品
+            ['is_vip_product', 0],//是否付费会员课程
             ['auto_on_time', 0],//自动上架时间
             ['auto_off_time', 0],//自动下架时间
             ['custom_form', []],//自定义表单
 			['system_form_id', 0],//系统表单ID
-            ['store_label_id', []],//商品标签
-            ['ensure_id', []],//商品保障服务区
-            ['specs', []],//商品参数
-            ['specs_id', 0],//商品参数ID
+            ['store_label_id', []],//课程标签
+            ['ensure_id', []],//课程保障服务区
+            ['specs', []],//课程参数
+            ['specs_id', 0],//课程参数ID
             ['is_limit', 0],//是否限购
             ['limit_type', 0],//限购类型
             ['limit_num', 0],//限购数量
 			['applicable_type', 1],//适用门店类型
 			['applicable_store_id', []],//适用门店IDS
         ]);
+        $data['is_class'] = 1;
 		if ($data['applicable_type'] == 1) {
 			$data['applicable_store_id'] = [];
 		} elseif ($data['applicable_type'] == 2) {
@@ -561,7 +563,7 @@ class StoreClasses extends AuthController
 		$this->service->cacheTag()->clear();
 		$attrServices->cacheTag()->clear();
 
-        return $this->success($id ? '保存商品信息成功' : '添加商品成功!');
+        return $this->success($id ? '保存课程信息成功' : '添加课程成功!');
     }
 
     /**
@@ -572,7 +574,7 @@ class StoreClasses extends AuthController
      */
     public function delete(StoreProductAttrServices $attrServices, $id)
     {
-        //删除商品检测是否有参与活动
+        //删除课程检测是否有参与活动
         $this->service->checkActivity($id);
         $res = $this->service->del($id);
         event('product.delete', [$id]);
@@ -599,10 +601,10 @@ class StoreClasses extends AuthController
         if ($id > 0 && $type == 1) $this->service->checkActivity($id);
 		$plat_type = 0;
 		$relation_id = 0;
-		if ((int)$id) {//编辑 需要查看商品来源
+		if ((int)$id) {//编辑 需要查看课程来源
 			$productInfo = $this->service->get((int)$id, ['id', 'type', 'relation_id']);
 			if (!$productInfo) {
-				return $this->fail('商品不存在');
+				return $this->fail('课程不存在');
 			}
 			$plat_type = (int)$productInfo['type'];
 			$relation_id = (int)$productInfo['relation_id'];
@@ -612,7 +614,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 获取选择的商品列表
+     * 获取选择的课程列表
      * @return mixed
      */
     public function search_list()
@@ -628,8 +630,9 @@ class StoreClasses extends AuthController
             ['is_vip_product', ''],
             ['is_presale_product', ''],
             ['store_label_id', ''],
-			['is_supplier', -1],//供应商商品0:不是1:是
+			['is_supplier', -1],//供应商课程0:不是1:是
         ]);
+        $where['is_class'] = 1;
         $where['is_show'] = 1;
         $where['is_del'] = 0;
 		$where['is_verify'] = 1;
@@ -654,7 +657,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 获取某个商品规格
+     * 获取某个课程规格
      * @return mixed
      */
     public function get_attrs()
@@ -711,7 +714,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 检测商品是否开活动
+     * 检测课程是否开活动
      * @param $id
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -724,7 +727,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 获取商品所有规格数据
+     * 获取课程所有规格数据
      * @param StoreProductAttrValueServices $services
      * @param $id
      * @return mixed
@@ -732,13 +735,13 @@ class StoreClasses extends AuthController
     public function getAttrs(StoreProductAttrValueServices $services, $id)
     {
         if (!$id) {
-            return $this->fail('缺少商品ID');
+            return $this->fail('缺少课程ID');
         }
         return $this->success($services->getProductAttrValue(['product_id' => $id, 'type' => 0]));
     }
 
     /**
-     * 快速修改商品规格库存
+     * 快速修改课程规格库存
      * @param StoreProductAttrValueServices $services
      * @param $id
      * @return mixed
@@ -746,7 +749,7 @@ class StoreClasses extends AuthController
     public function saveProductAttrsStock(StoreProductAttrValueServices $services, $id)
     {
         if (!$id) {
-            return $this->fail('缺少商品ID');
+            return $this->fail('缺少课程ID');
         }
         [$attrs] = $this->request->getMore([
             ['attrs', []]
@@ -781,7 +784,7 @@ class StoreClasses extends AuthController
     }
 
     /**
-     * 导入erp商品
+     * 导入erp课程
      * @return mixed
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
@@ -810,7 +813,7 @@ class StoreClasses extends AuthController
     }
 
 	/**
-	 * 商品批量操作
+	 * 课程批量操作
 	 * @param StoreProductBatchProcessServices $batchProcessServices
 	 * @return mixed
 	 */
@@ -823,7 +826,7 @@ class StoreClasses extends AuthController
 			['where', ""],
 			['data', []]
 		], true);
-		if (!$ids && $all == 0) return $this->fail('请选择批处理商品');
+		if (!$ids && $all == 0) return $this->fail('请选择批处理课程');
 		if (!$data) {
 			return $this->fail('请选择批处理数据');
 		}
