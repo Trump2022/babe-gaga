@@ -981,13 +981,13 @@ class StoreProductServices extends BaseServices
             }
 
             if ($is_class) {
-                if (!isset($item['bar_code']) {
+                if (!isset($item['bar_code'])) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】使用次数');
                 }
                 if (!preg_match("/^\d{1,}$/", $item['bar_code']) || $item['bar_code'] <= 0) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】大于0的正确格式使用次数');
                 }
-                if (!isset($item['code']) {
+                if (!isset($item['code'])) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】使用时效天数');
                 }
                 if (!preg_match("/^\d{1,}$/", $item['code']) || $item['code'] <= 0) {
