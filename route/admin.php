@@ -1626,12 +1626,16 @@ Route::group('adminapi', function () {
         //课程分类修改状态
         Route::put('category/set_show/:id/:is_show', 'v1.product.StoreClassesCategory/set_show')->option(['real_name' => '课程分类修改状态']);
 
+        //获取所有课程列表
+        Route::get('classes/list', 'v1.product.StoreClasses/search_list')->option(['real_name' => '获取所有课程列表']);
         //课程列表
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         //课程列表头部数据
         Route::get('classes/type_header', 'v1.product.StoreClasses/type_header')->option(['real_name' => '课程列表头部数据']);
         //获取退出未保存的数据
         Route::get('cache', 'v1.product.StoreClasses/getCacheData')->option(['real_name' => '获取退出未保存的数据']);
+        //删除退出未保存的数据
+        Route::delete('cache', 'v1.product.StoreClasses/deleteCacheData')->option(['real_name' => '删除退出未保存的数据']);
 
         //生成商品规格列表
         Route::post('generate_attr/:id/:type', 'v1.product.StoreClasses/is_format_attr')->option(['real_name' => '生成课程规格列表']);
