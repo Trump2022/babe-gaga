@@ -1396,9 +1396,9 @@ HTML;
      * @param string $field
      * @return int
      */
-    public function storeOrderCount(int $store_id = 0, int $type = -1, string $field = 'store_id')
+    public function storeOrderCount(int $store_id = 0, int $type = -1, string $field = 'store_id', int $is_class = 0)
     {
-        return $this->dao->storeOrderCount($store_id, $type, $field);
+        return $this->dao->storeOrderCount($store_id, $type, $field, $is_class);
     }
 
     /**

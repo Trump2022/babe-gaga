@@ -254,16 +254,19 @@ class DiyServices extends BaseServices
     /**
      * 获取diy详细数据
      * @param int $id
+     * @param int $type
      * @return array|object
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getDiyInfo(int $id)
+    public function getDiyInfo(int $id, $type = 1)
     {
-        return $this->dao->cacheTag()->remember('diy_info_' . $id, function () use ($id) {
+        //return $this->dao->cacheTag()->remember('diy_info_' . $id. $type, function () use ($id, $type) {
             $field = ['title', 'value', 'is_show', 'is_bg_color', 'color_picker', 'bg_pic', 'bg_tab_val', 'is_bg_pic', 'order_status'];
-            $diyInfo = $this->dao->get($id ?: ['status' => 1, 'type' => 1, 'is_diy' => 1], $field);
+            $where = ['status' => 1, 'is_diy' => 1];
+            $where['type'] = $type;
+            $diyInfo = $this->dao->get($id ?: $where, $field);
             if (!$diyInfo) {
                 $diyInfo = $this->dao->get(['template_name' => 'default'], $field);
             }
@@ -305,7 +308,7 @@ class DiyServices extends BaseServices
             } else {
                 return [];
             }
-        });
+        //});
     }
 
     /**
@@ -313,10 +316,13 @@ class DiyServices extends BaseServices
      * @param string $template_name
      * @return array|mixed
      */
-    public function getNavigation(string $template_name)
+    public function getNavigation(string $template_name, $type = 1)
     {
-		return $this->dao->cacheTag()->remember('navigation_' . $template_name, function () use ($template_name) {
-            $value = $this->dao->value($template_name ? ['template_name' => $template_name] : ['status' => 1, 'type' => 1], 'value');
+        $where = $template_name ? ['template_name' => $template_name] : ['status' => 1];
+        $where['type'] = $type;
+
+		return $this->dao->cacheTag()->remember('navigation_' . json_encode($where), function () use ($where) {
+            $value = $this->dao->value($where, 'value');
             if (!$value) {
                 $value = $this->dao->value(['template_name' => 'default'], 'value');
             }

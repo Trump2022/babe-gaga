@@ -334,16 +334,17 @@ class StoreProductServices extends BaseServices
 	 * 获取规格模板
 	 * @param int $type
 	 * @param int $relation_id
+     * @param int $is_class
 	 * @return mixed
 	 * @throws \think\db\exception\DataNotFoundException
 	 * @throws \think\db\exception\DbException
 	 * @throws \think\db\exception\ModelNotFoundException
 	 */
-    public function getRule(int $type = 0, int $relation_id = 0)
+    public function getRule(int $type = 0, int $relation_id = 0, int $is_class = 0)
     {
         /** @var StoreProductRuleServices $storeProductRuleServices */
         $storeProductRuleServices = app()->make(StoreProductRuleServices::class);
-        $list = $storeProductRuleServices->getList(['type' => $type, 'relation_id' => $relation_id])['list'] ?? [];
+        $list = $storeProductRuleServices->getList(['type' => $type, 'is_class' => $is_class, 'relation_id' => $relation_id])['list'] ?? [];
         foreach ($list as &$item) {
             $item['rule_value'] = json_decode($item['rule_value'], true);
         }
@@ -564,12 +565,13 @@ class StoreProductServices extends BaseServices
 	 * @param int $type
 	 * @param int $plat_type
 	 * @param int $relation_id
+     * @param int $is_class
 	 * @return array
 	 * @throws \think\db\exception\DataNotFoundException
 	 * @throws \think\db\exception\DbException
 	 * @throws \think\db\exception\ModelNotFoundException
 	 */
-    public function getAttr(array $data, int $id, int $type, int $plat_type = 0, int $relation_id = 0)
+    public function getAttr(array $data, int $id, int $type, int $plat_type = 0, int $relation_id = 0, int $is_class = 0)
     {
 
         /** @var StoreProductAttrValueServices $storeProductAttrValueServices */
@@ -620,6 +622,11 @@ class StoreProductServices extends BaseServices
                             $sukValue[$suk]['coupon_id'] = 0;
                             break;
                         case 3://虚拟商品
+                            if ($is_class) {
+                                $sukValue[$suk]['write_valid'] = 1;//核销时效类型
+                                $sukValue[$suk]['days'] = 0;//购买后：N天有效
+                                $sukValue[$suk]['section_time'] = [];//[核销开始时间,核销结束时间]
+                            }
                             break;
                         case 4://次卡商品
                             $sukValue[$suk]['write_times'] = 1;//核销次数
@@ -650,6 +657,11 @@ class StoreProductServices extends BaseServices
                         $sukValue[$suk]['coupon_id'] = 0;
                         break;
                     case 3://虚拟商品
+                        if ($is_class) {
+                            $sukValue[$suk]['write_valid'] = 1;//核销时效类型
+                            $sukValue[$suk]['days'] = 0;//购买后：N天有效
+                            $sukValue[$suk]['section_time'] = [];//[核销开始时间,核销结束时间]
+                        }
                         break;
                     case 4://次卡商品
                         $sukValue[$suk]['write_times'] = 1;//核销次数
@@ -696,6 +708,13 @@ class StoreProductServices extends BaseServices
                     case 2://优惠券
                         break;
                     case 3://虚拟商品
+                        if ($is_class) {
+                            $valueNew[$count]['write_valid'] = intval($sukValue[$suk]['write_valid'] ?? 1);//核销时效类型
+                            $valueNew[$count]['days'] = intval($sukValue[$suk]['write_days'] ?? $sukValue[$suk]['days'] ?? 0);//购买后：N天有效
+                            $start = $sukValue[$suk]['write_start'] ?? '';
+                            $end = $sukValue[$suk]['write_end'] ?? '';
+                            $valueNew[$count]['section_time'] = [$start ? date('Y-m-d', $start) : '', $end ? date('Y-m-d', $end) : ''];//[核销开始时间,核销结束时间]
+                        }
                         break;
                     case 4://次卡商品
                         $valueNew[$count]['write_times'] = intval($sukValue[$suk]['write_times'] ?? 1);//核销次数
@@ -720,8 +739,14 @@ class StoreProductServices extends BaseServices
         $header[] = ['title' => '原价', 'slot' => 'ot_price', 'align' => 'center', 'minWidth' => 140];
 //        $header[] = ['title' => '会员价', 'slot' => 'vip_price', 'align' => 'center', 'minWidth' => 140];
         $header[] = ['title' => '库存', 'slot' => 'stock', 'align' => 'center', 'minWidth' => 140];
-        $header[] = ['title' => '商品条形码', 'slot' => 'bar_code', 'align' => 'center', 'minWidth' => 140];
-        $header[] = ['title' => '商品编码', 'slot' => 'code', 'align' => 'center', 'minWidth' => 140];
+        if ($is_class) {
+            $header[] = ['title' => '使用次数(次)', 'slot' => 'bar_code', 'align' => 'center', 'minWidth' => 140];
+            $header[] = ['title' => '使用时效(天)', 'slot' => 'code', 'align' => 'center', 'minWidth' => 140];
+        } else {
+            $header[] = ['title' => '商品条形码', 'slot' => 'bar_code', 'align' => 'center', 'minWidth' => 140];
+            $header[] = ['title' => '商品编码', 'slot' => 'code', 'align' => 'center', 'minWidth' => 140];
+        }
+        
         switch ($product_type) {
             case 0:
                 $header[] = ['title' => '重量(KG)', 'slot' => 'weight', 'align' => 'center', 'minWidth' => 140];

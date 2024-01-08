@@ -2,3 +2,6 @@ ALTER TABLE `gaga_store_product` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEF
 
 ALTER TABLE `gaga_store_product_category` ADD `is_class` INT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `pid`;
 
+ALTER TABLE `gaga_store_order` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `pid`;
+
+ALTER TABLE `gaga_store_product_rule` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `type`

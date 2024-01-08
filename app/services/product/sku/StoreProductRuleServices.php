@@ -78,7 +78,7 @@ class StoreProductRuleServices extends BaseServices
 		$data['relation_id'] = $relation_id;
         $data['rule_value'] = json_encode($data['spec']);
         unset($data['spec']);
-		$rule = $this->dao->getOne(['rule_name' => $data['rule_name'], 'type' => $type, 'relation_id' => $relation_id]);
+		$rule = $this->dao->getOne(['rule_name' => $data['rule_name'], 'type' => $type, 'is_class' => $data['is_class'], 'relation_id' => $relation_id]);
         if ($id) {
 			if ($rule && $rule['id'] != $id) {
 				throw new AdminException('分类名称已存在');
@@ -101,7 +101,9 @@ class StoreProductRuleServices extends BaseServices
     public function getInfo(int $id)
     {
         $info = $this->dao->get($id);
-        $info['spec'] = json_decode($info['rule_value'], true);
+        if ($info) {
+            $info['spec'] = json_decode($info['rule_value'], true);
+        }
         return compact('info');
     }
 

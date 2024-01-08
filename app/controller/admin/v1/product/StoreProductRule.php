@@ -43,6 +43,7 @@ class StoreProductRule extends AuthController
             ['rule_name', '']
         ]);
 		$where['type'] = 0;
+        $where['is_class'] = 0;
 		$where['relation_id'] = 0;
         $list = $this->services->getList($where);
         return $this->success($list);
@@ -59,6 +60,7 @@ class StoreProductRule extends AuthController
             ['rule_name', ''],
             ['spec', []]
         ]);
+        $data['is_class'] = 0;
 		if (!$data['rule_name']) {
 			return $this->fail('请输入分类名称');
 		}

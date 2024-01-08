@@ -478,6 +478,43 @@ Route::group('adminapi', function () {
         \app\http\middleware\admin\AdminLogMiddleware::class
     ]);
     /**
+     * 定制活动管理 相关路由
+     */
+    Route::group('activity', function () {
+        //关联商品
+        Route::put('activity/relation/:id', 'v1.activity.Activity/relation')->name('Relation')->option(['real_name' => '文章关联商品']);
+        //取消关联
+        Route::put('activity/unrelation/:id', 'v1.activity.Activity/unrelation')->name('UnRelation')->option(['real_name' => '取消文章关联商品']);
+        //修改状态
+        Route::put('category/set_status/:id/:status', 'v1.activity.ActivityCategory/set_status')->name('CategoryStatus')->option(['real_name' => '修改文章分类状态']);
+        //分类列表
+        Route::get('category_list', 'v1.activity.ActivityCategory/categoryList')->name('categoryList')->option(['real_name' => '选择文章分类列表']);
+        //活动分类资源路由
+        Route::resource('category', 'v1.activity.ActivityCategory')->name('ActivityCategoryResource')->option(['real_name' => [
+            'index' => '获取活动分类列表',
+            'read' => '获取活动分类详情',
+            'create' => '获取创建活动分类表单',
+            'save' => '保存活动分类',
+            'edit' => '获取修改活动分类表单',
+            'update' => '修改活动分类',
+            'delete' => '删除活动分类'
+        ]]);
+        //定制活动资源路由
+        Route::resource('activity', 'v1.activity.Activity')->name('ActivityResource')->option(['real_name' => [
+            'index' => '获取活动列表',
+            'read' => '获取活动详情',
+            'create' => '获取创建活动表单',
+            'save' => '保存活动',
+            'edit' => '获取修改活动表单',
+            'update' => '修改活动',
+            'delete' => '删除活动'
+        ]]);
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+    /**
      * 首页Diy 相关路由
      */
     Route::group('diy', function () {
@@ -1570,10 +1607,46 @@ Route::group('adminapi', function () {
      */
     Route::group('classes', function () {
         
+        //课程分类树形列表
+        Route::get('category/tree/:type', 'v1.product.StoreClassesCategory/tree_list')->option(['real_name' => '课程分类树形列表']);
+        //课程分类cascader行列表
+        Route::get('category/cascader_list/[:type]', 'v1.product.StoreClassesCategory/cascader_list')->option(['real_name' => '课程分类cascader行列表']);
+        //课程分类列表
+        Route::get('category', 'v1.product.StoreClassesCategory/index')->option(['real_name' => '课程分类列表']);
+        //课程分类新增表单
+        Route::get('category/create', 'v1.product.StoreClassesCategory/create')->option(['real_name' => '课程分类新增表单']);
+        //课程分类新增
+        Route::post('category', 'v1.product.StoreClassesCategory/save')->option(['real_name' => '课程分类新增']);
+        //课程分类编辑表单
+        Route::get('category/:id', 'v1.product.StoreClassesCategory/edit')->option(['real_name' => '课程分类编辑表单']);
+        //课程分类编辑
+        Route::put('category/:id', 'v1.product.StoreClassesCategory/update')->option(['real_name' => '商品分类编辑']);
+        //删除课程分类
+        Route::delete('category/:id', 'v1.product.StoreClassesCategory/delete')->option(['real_name' => '删除课程分类']);
+        //课程分类修改状态
+        Route::put('category/set_show/:id/:is_show', 'v1.product.StoreClassesCategory/set_show')->option(['real_name' => '课程分类修改状态']);
+
         //课程列表
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         //课程列表头部数据
         Route::get('classes/type_header', 'v1.product.StoreClasses/type_header')->option(['real_name' => '课程列表头部数据']);
+        //获取退出未保存的数据
+        Route::get('cache', 'v1.product.StoreClasses/getCacheData')->option(['real_name' => '获取退出未保存的数据']);
+
+        //生成商品规格列表
+        Route::post('generate_attr/:id/:type', 'v1.product.StoreClasses/is_format_attr')->option(['real_name' => '生成课程规格列表']);
+
+        //获取课程规格属性模板
+        Route::get('classes/get_rule', 'v1.product.StoreClasses/get_rule')->option(['real_name' => '获取商品规则属性模板']);
+        //课程规格列表
+        Route::get('classes/rule', 'v1.product.StoreClassesRule/index')->option(['real_name' => '课程规格列表']);
+        //新建或编辑课程规格
+        Route::post('classes/rule/:id', 'v1.product.StoreClassesRule/save')->option(['real_name' => '新建或编辑课程规格']);
+        //课程规格详情
+        Route::get('classes/rule/:id', 'v1.product.StoreClassesRule/read')->option(['real_name' => '课程规格详情']);
+        //删除课程规格
+        Route::delete('classes/rule/delete/:id', 'v1.product.StoreClassesRule/delete')->option(['real_name' => '删除课程规格']);
+        
 
     })->middleware([
         \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
