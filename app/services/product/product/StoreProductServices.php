@@ -425,7 +425,7 @@ class StoreProductServices extends BaseServices
         }
 
         if ($productInfo['is_class']) {
-            $productInfo['section_time'] = [($productInfo['write_start'] ?? '') ? date('Y-m-d', $productInfo['write_start'] ?? '') : '', ($productInfo['write_end'] ?? '') ? date('Y-m-d', $productInfo['write_end'] ?? '') : ''],//[激活开始时间,激活结束时间]
+            $productInfo['section_time'] = [($productInfo['write_start'] ?? '') ? date('Y-m-d', $productInfo['write_start'] ?? '') : '', ($productInfo['write_end'] ?? '') ? date('Y-m-d', $productInfo['write_end'] ?? '') : ''];//[激活开始时间,激活结束时间]
         }
 
         //无属性添加默认属性
