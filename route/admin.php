@@ -1630,6 +1630,23 @@ Route::group('adminapi', function () {
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         //课程列表头部数据
         Route::get('classes/type_header', 'v1.product.StoreClasses/type_header')->option(['real_name' => '课程列表头部数据']);
+        //获取退出未保存的数据
+        Route::get('cache', 'v1.product.StoreClasses/getCacheData')->option(['real_name' => '获取退出未保存的数据']);
+
+        //生成商品规格列表
+        Route::post('generate_attr/:id/:type', 'v1.product.StoreClasses/is_format_attr')->option(['real_name' => '生成课程规格列表']);
+
+        //获取课程规格属性模板
+        Route::get('classes/get_rule', 'v1.product.StoreClasses/get_rule')->option(['real_name' => '获取商品规则属性模板']);
+        //课程规格列表
+        Route::get('classes/rule', 'v1.product.StoreClassesRule/index')->option(['real_name' => '课程规格列表']);
+        //新建或编辑课程规格
+        Route::post('classes/rule/:id', 'v1.product.StoreClassesRule/save')->option(['real_name' => '新建或编辑课程规格']);
+        //课程规格详情
+        Route::get('classes/rule/:id', 'v1.product.StoreClassesRule/read')->option(['real_name' => '课程规格详情']);
+        //删除课程规格
+        Route::delete('classes/rule/delete/:id', 'v1.product.StoreClassesRule/delete')->option(['real_name' => '删除课程规格']);
+        
 
     })->middleware([
         \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
