@@ -14,6 +14,9 @@ namespace app\dao;
 use crmeb\basic\BaseAuth;
 use crmeb\basic\BaseModel;
 use crmeb\traits\dao\CacheDaoTrait;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\Model;
 
 /**
@@ -99,7 +102,7 @@ abstract class BaseDao
      * 获取主键
      * @return mixed
      */
-    protected function getPk()
+    public function getPk()
     {
         return $this->getModel()->getPk();
     }
@@ -110,9 +113,9 @@ abstract class BaseDao
      * @param array|null $field
      * @param array|null $with
      * @return array|Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function get($id, ?array $field = [], ?array $with = [])
     {
@@ -124,6 +127,38 @@ abstract class BaseDao
         return $this->getModel()::where($where)->when(count($with), function ($query) use ($with) {
             $query->with($with);
         })->field($field ?? ['*'])->find();
+    }
+
+    public function getSearch(array $where)
+    {
+        foreach ($where as $key => $item) {
+            if ($item !== '') {
+                $keyArray[] = $key;
+                $whereArr[$key] = $item;
+            }
+        }
+        if(empty($keyArray)){
+            return ($this->getModel())::getDB();
+        }else{
+            return ($this->getModel())::withSearch($keyArray, $whereArr);
+        }
+    }
+
+    public function fieldExists($field, $value, ?int $except = null): bool
+    {
+        $query = ($this->getModel())::getDB()->where($field, $value);
+        if (!is_null($except)) $query->where($this->getPk(), '<>', $except);
+        return $query->count() > 0;
+    }
+
+    public function getWhereCount(array $where)
+    {
+        return ($this->getModel()::getDB())->where($where)->count();
+    }
+
+    public function create(array $data)
+    {
+        return ($this->getModel())::create($data);
     }
 
     /**
@@ -145,9 +180,9 @@ abstract class BaseDao
      * @param string|null $field
      * @param array $with
      * @return array|Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getOne(array $where, ?string $field = '*', array $with = [])
     {
@@ -324,9 +359,9 @@ abstract class BaseDao
      * @param string|null $keyField
      * @param int $acc
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function bcInc($key, string $incField, string $inc, string $keyField = null, int $acc = 2)
     {
@@ -359,9 +394,9 @@ abstract class BaseDao
      * @param int $acc
      * @param bool $dec_return_false 减法 不够减是否返回false ｜｜ 减为0
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function bc($key, string $incField, string $inc, string $keyField = null, int $type = 1, int $acc = 2, bool $dec_return_false = true)
     {

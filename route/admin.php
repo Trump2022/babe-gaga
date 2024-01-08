@@ -2429,6 +2429,62 @@ Route::group('adminapi', function () {
         \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
         \app\http\middleware\admin\AdminLogMiddleware::class
     ]);
+
+    /**
+     * 社区内容
+     */
+    Route::group('community', function () {
+
+        //社区内容-文章列表
+        Route::get('community/lst', 'v1.community.Community/lst')->name('communityList')->option(['real_name' => '文章列表']);
+
+        //社区内容-文章详情
+        Route::get('community/detail/:id', 'v1.community.Community/detail')->name('communityDetail')->option(['real_name' => '文章详情']);
+
+
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
+    /**
+     * 社区分类
+     */
+    Route::group('community/category', function () {
+
+        //社区分类-列表
+        Route::get('lst', 'v1.community.CommunityCategory/lst')->name('communityCategoryList')->option(['real_name' => '社区分类列表']);
+
+        //社区分类-添加表单
+        Route::get('create/form', 'v1.community.CommunityCategory/createForm')->name('communityCategoryCreateForm')->option(['real_name' => '社区分类添加表单']);
+
+        //社区分类-添加
+        Route::post('create', 'v1.community.CommunityCategory/create')->name('communityCategoryCreate')->option(['real_name' => '社区分类添加']);
+
+        //社区分类-编辑表单
+        Route::get('edit/form/:id', 'v1.community.CommunityCategory/updateForm')->name('communityCategoryUpdateForm')->option(['real_name' => '社区分类编辑表单']);
+
+        //社区分类-编辑保存
+        Route::post('update/:id', 'v1.community.CommunityCategory/update')->name('communityCategoryUpdate')->option(['real_name' => '社区分类编辑']);
+
+        //社区分类-详情
+        Route::get('detail/:id', 'v1.community.CommunityCategory/detail')->name('communityCategoryDetail')->option(['real_name' => '社区分类详情']);
+
+        //社区分类-删除
+        Route::delete('delete/:id', 'v1.community.CommunityCategory/delete')->name('communityCategoryDelete')->option(['real_name' => '社区分类删除']);
+
+        //社区分类修改状态
+        Route::post('status/:id', 'v1.community.CommunityCategory/switchStatus')->name('communityCategoryStatus')->option(['real_name' => '社区分类修改状态']);
+
+        Route::get('option', 'v1.community.CommunityCategory/getOptions')->name('communityCategoryGetOptions')->option(['real_name' => '社区分类获取']);
+
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
     /**
      * miss 路由
      */

@@ -12,6 +12,7 @@
 namespace crmeb\basic;
 
 use crmeb\traits\ModelTrait;
+use think\db\BaseQuery;
 use think\Model;
 
 
@@ -23,4 +24,22 @@ use think\Model;
 class BaseModel extends Model
 {
 
+    /**
+     * @return static
+     */
+    public static function getInstance(): self
+    {
+        return new static();
+    }
+
+    /**
+     * @param array $scope
+     * @return BaseQuery
+     * @author xaboy
+     * @day 2020-03-30
+     */
+    public static function getDB(array $scope = [])
+    {
+        return self::getInstance()->db($scope);
+    }
 }

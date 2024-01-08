@@ -571,3 +571,91 @@ if (!function_exists('formatFileSize')) {
 
 }
 
+
+if (!function_exists('formToData')) {
+    function formToData($form): array
+    {
+        $rule = $form->formRule();
+        $action = $form->getAction();
+        $method = $form->getMethod();
+        $title = $form->getTitle();
+        $config = (object)$form->formConfig();
+        $admin = config('admin.api_admin_prefix');
+        $merchant = config('admin.api_merchant_prefix');
+        $api = $action;
+        if (strpos($api, '/' . $admin) === 0) {
+            $api = substr($api, strlen($admin) + 1);
+        } else if (strpos($api, '/' . $merchant) === 0) {
+            $api = substr($api, strlen($merchant) + 1);
+        }
+        $api = str_replace('.html', '', $api);
+        return compact('rule', 'action', 'method', 'title', 'config', 'api');
+    }
+}
+
+
+
+if (!function_exists('getModelTime')) {
+    /**
+     * @param BaseQuery $model
+     * @param string $section
+     * @param string $prefix
+     * @param string $field
+     * @return mixed
+     * @author xaboy
+     * @day 2020-04-29
+     */
+    function getModelTime(BaseQuery $model, string $section, $prefix = 'create_time', $field = '-',$time = '')
+    {
+        if (!isset($section)) return $model;
+        switch ($section) {
+            case 'today':
+                $model->whereBetween($prefix, [date('Y-m-d H:i:s', strtotime('today')), date('Y-m-d H:i:s', strtotime('tomorrow -1second'))]);
+                break;
+            case 'week':
+                $model->whereBetween($prefix, [date('Y-m-d H:i:s', strtotime('this week 00:00:00')), date('Y-m-d H:i:s', strtotime('next week 00:00:00 -1second'))]);
+                break;
+            case 'month':
+                $model->whereBetween($prefix, [date('Y-m-d H:i:s', strtotime('first Day of this month 00:00:00')), date('Y-m-d H:i:s', strtotime('first Day of next month 00:00:00 -1second'))]);
+                break;
+            case 'year':
+                $model->whereBetween($prefix, [date('Y-m-d H:i:s', strtotime('this year 1/1')), date('Y-m-d H:i:s', strtotime('next year 1/1 -1second'))]);
+                break;
+            case 'yesterday':
+                $model->whereBetween($prefix, [date('Y-m-d H:i:s', strtotime('yesterday')), date('Y-m-d H:i:s', strtotime('today -1second'))]);
+                break;
+            case 'quarter':
+                list($startTime, $endTime) = getMonth();
+                $model = $model->where($prefix, '>', $startTime);
+                $model = $model->where($prefix, '<', $endTime);
+                break;
+            case 'lately7':
+                $model = $model->where($prefix, 'between', [date('Y-m-d', strtotime("-7 day")), date('Y-m-d H:i:s')]);
+                break;
+            case 'lately30':
+                $model = $model->where($prefix, 'between', [date('Y-m-d', strtotime("-30 day")), date('Y-m-d H:i:s')]);
+                break;
+            default:
+                if (strstr($section, $field) !== false) {
+                    list($startTime, $endTime) = explode($field, $section);
+                    if (strlen($startTime) == 4) {
+                        $model->whereBetweenTime($prefix, date('Y-m-d H:i:s', strtotime($section)), date('Y-m-d H:i:s', strtotime($section . ' +1day -1second')));
+                    } else {
+                        if ($startTime == $endTime) {
+                            $model = $model->whereBetweenTime($prefix, date('Y-m-d 0:0:0', strtotime($startTime)), date('Y-m-d 23:59:59', strtotime($endTime)));
+                        } else if(strpos($startTime, ':')) {
+                            $model = $model->whereBetweenTime($prefix, $startTime, $endTime);
+                        } else {
+                            $model = $model->whereBetweenTime($prefix, date('Y-m-d H:i:s', strtotime($startTime)), date('Y-m-d H:i:s', strtotime($endTime . ' +1day -1second')));
+                        }
+                    }
+                }
+                break;
+        }
+        return $model;
+    }
+}
+
+
+
+
