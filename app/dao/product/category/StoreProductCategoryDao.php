@@ -94,15 +94,22 @@ class StoreProductCategoryDao extends BaseDao
     {
         $pid = $where['pid'] ?? 0;
         $id = $where['id'] ?? 0;
+        $is_class = $where['is_class'] ?? 0;
         if($id){
             return $this->getModel()->with('children')->where('is_show', 1)
                 ->where('id', $id)
+                ->when($is_class, function ($query) use ($is_class) {
+                    $query->where('is_class', $is_class);
+                })
                 ->order('sort desc,id desc')
                 ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
                 ->select()->toArray();
         } else {
             return $this->getModel()->with('children')->where('is_show', 1)
                 ->where('pid', $pid)
+                ->when($is_class, function ($query) use ($is_class) {
+                    $query->where('is_class', $is_class);
+                })
                 ->order('sort desc,id desc')
                 ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
                 ->select()->toArray();

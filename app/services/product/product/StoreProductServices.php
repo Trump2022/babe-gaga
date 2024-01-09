@@ -425,9 +425,9 @@ class StoreProductServices extends BaseServices
         }
 
         if ($productInfo['is_class']) {
-            $productInfo['section_time'] => [($productInfo['write_start'] ?? '') ? date('Y-m-d', $productInfo['write_start'] ?? '') : '', ($productInfo['write_end'] ?? '') ? date('Y-m-d', $productInfo['write_end'] ?? '') : ''],//[激活开始时间,激活结束时间]
+            $productInfo['section_time'] = [($productInfo['write_start'] ?? '') ? date('Y-m-d', $productInfo['write_start'] ?? '') : '', ($productInfo['write_end'] ?? '') ? date('Y-m-d', $productInfo['write_end'] ?? '') : ''];//[激活开始时间,激活结束时间]
         }
-        
+
         //无属性添加默认属性
         if (!$storeProductAttrResultServices->getResult(['product_id' => $id, 'type' => 0])) {
             $attr = [
@@ -981,13 +981,13 @@ class StoreProductServices extends BaseServices
             }
 
             if ($is_class) {
-                if (!isset($item['bar_code']) {
+                if (!isset($item['bar_code'])) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】使用次数');
                 }
                 if (!preg_match("/^\d{1,}$/", $item['bar_code']) || $item['bar_code'] <= 0) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】大于0的正确格式使用次数');
                 }
-                if (!isset($item['code']) {
+                if (!isset($item['code'])) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】使用时效天数');
                 }
                 if (!preg_match("/^\d{1,}$/", $item['code']) || $item['code'] <= 0) {

@@ -1632,12 +1632,25 @@ Route::group('adminapi', function () {
         Route::get('classes', 'v1.product.StoreClasses/index')->option(['real_name' => '课程列表']);
         //课程列表头部数据
         Route::get('classes/type_header', 'v1.product.StoreClasses/type_header')->option(['real_name' => '课程列表头部数据']);
+        //课程放入回收站
+        Route::delete('classes/:id', 'v1.product.StoreClasses/delete')->option(['real_name' => '课程放入回收站']);
+        //新建或修改课程
+        Route::post('classes/:id', 'v1.product.StoreClasses/save')->option(['real_name' => '新建或修改课程']);
+        //修改课程状态
+        Route::put('classes/set_show/:id/:is_show', 'v1.product.StoreClasses/set_show')->option(['real_name' => '修改课程状态']);
+        //课程快速编辑
+        Route::put('classes/set_product/:id', 'v1.product.StoreClasses/set_product')->option(['real_name' => '课程快速编辑']);
+        //设置批量商品上架
+        Route::put('classes/product_show', 'v1.product.StoreClasses/product_show')->option(['real_name' => '设置批量课程上架']);
+        //设置批量商品下架
+        Route::put('classes/product_unshow', 'v1.product.StoreClasses/product_unshow')->option(['real_name' => '设置批量课程下架']);
+
         //获取退出未保存的数据
         Route::get('cache', 'v1.product.StoreClasses/getCacheData')->option(['real_name' => '获取退出未保存的数据']);
         //删除退出未保存的数据
         Route::delete('cache', 'v1.product.StoreClasses/deleteCacheData')->option(['real_name' => '删除退出未保存的数据']);
 
-        //生成商品规格列表
+        //生成课程规格列表
         Route::post('generate_attr/:id/:type', 'v1.product.StoreClasses/is_format_attr')->option(['real_name' => '生成课程规格列表']);
 
         //获取课程规格属性模板

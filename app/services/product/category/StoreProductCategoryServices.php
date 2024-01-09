@@ -308,7 +308,21 @@ class StoreProductCategoryServices extends BaseServices
                 return $this->dao->getALlByIndex($where, 'id,cate_name,pid,pic', $limit);
             });
         } else {
-            return $this->dao->getCategory($where);
+            $list = $this->dao->getCategory($where);
+            /** @var StoreProductServices $storeProductServices */
+            $storeProductServices = app()->make(StoreProductServices::class);
+            foreach ($list as &$itme){
+                if(!empty($itme['children'])){
+                    foreach ($itme['children'] as &$v){
+                        $map['sid'] = $v['id'];
+                        $product_list = $storeProductServices->getProductLimit($map, 1, 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price');
+                        $v['product_list'] = $product_list;
+                    }
+                }
+
+            }
+            return $list;
+
             /*return $this->dao->cacheTag()->remember('CATEGORY_All', function () use ($where) {
                 return $this->dao->getCategory($where);
             });*/
