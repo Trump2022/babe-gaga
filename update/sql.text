@@ -7,3 +7,55 @@ ALTER TABLE `gaga_store_order` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAU
 ALTER TABLE `gaga_store_product_rule` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `type`;
 
 ALTER TABLE `gaga_store_product` ADD `write_valid` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '激活时效：1、永久； 2、购买后几天；3、固定' AFTER `is_sold`, ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '购买后：N天有效' AFTER `write_valid`, ADD `write_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活开始时间' AFTER `write_days`, ADD `write_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活结束时间' AFTER `write_start`;
+ALTER TABLE `gaga_store_product` ADD `store_overview` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '课程概述' AFTER `write_end`;
+ALTER TABLE `gaga_store_product` ADD `store_notes` VARCHAR(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '注意事项' AFTER `store_overview`;
+
+ALTER TABLE `gaga_user` ADD   `count_start` int unsigned DEFAULT '0' COMMENT '用户获赞数' AFTER `integral`;
+
+
+CREATE TABLE `gaga_relevance` (
+  `relevance_id` int UNSIGNED NOT NULL,
+  `left_id` int UNSIGNED NOT NULL,
+  `right_id` int UNSIGNED NOT NULL,
+  `type` varchar(32) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ALTER TABLE `gaga_relevance`
+  ADD PRIMARY KEY (`relevance_id`) USING BTREE,
+  ADD KEY `type` (`type`,`left_id`,`right_id`) USING BTREE;
+ALTER TABLE `gaga_relevance`
+  MODIFY `relevance_id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+COMMIT;
+
+
+
+
+CREATE TABLE `gaga_store_spu` (
+  `spu_id` int UNSIGNED NOT NULL,
+  `mer_id` int UNSIGNED DEFAULT '0' COMMENT '商户ID',
+  `product_id` int UNSIGNED DEFAULT '0' COMMENT '商品ID',
+  `product_type` int UNSIGNED DEFAULT '0' COMMENT '活动类型0普通，1秒杀，2预售，3助力',
+  `activity_id` int UNSIGNED DEFAULT '0' COMMENT '活动ID',
+  `status` int DEFAULT '0' COMMENT '0.下架，1.上架',
+  `store_name` varchar(128) DEFAULT NULL COMMENT '商品名称',
+  `ot_price` decimal(10,2) UNSIGNED DEFAULT '0.00',
+  `keyword` varchar(255) DEFAULT NULL COMMENT '关键词',
+  `price` decimal(10,2) UNSIGNED DEFAULT '0.00' COMMENT '最低价格',
+  `rank` int DEFAULT NULL COMMENT '排序',
+  `create_time` datetime DEFAULT NULL,
+  `temp_id` int UNSIGNED DEFAULT '0' COMMENT '运费模板',
+  `sort` int UNSIGNED DEFAULT '0' COMMENT '商户排序',
+  `star` int DEFAULT '1' COMMENT '星级',
+  `image` varchar(255) DEFAULT NULL COMMENT '主图',
+  `is_del` int UNSIGNED DEFAULT '0',
+  `mer_labels` varchar(255) DEFAULT '' COMMENT '标签id',
+  `sys_labels` varchar(255) DEFAULT '' COMMENT '标签id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品搜索信息表';
+ALTER TABLE `gaga_store_spu`
+  ADD PRIMARY KEY (`spu_id`),
+  ADD KEY `mer_id` (`mer_id`,`product_id`),
+  ADD KEY `activity_id` (`activity_id`,`product_type`),
+  ADD KEY `product_id` (`product_id`,`product_type`) USING BTREE;
+ALTER TABLE `gaga_store_spu`
+  MODIFY `spu_id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+COMMIT;
+

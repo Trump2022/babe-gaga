@@ -14,13 +14,19 @@ namespace app\services\community;
 
 use app\dao\community\CommunityDao;
 use app\services\BaseServices;
+use app\services\user\UserBrokerageServices;
+use app\services\system\RelevanceServices;
+use app\services\store\product\SpuServices;
 use crmeb\basic\BaseModel;
 use crmeb\services\QrcodeService;
+use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
+use FormBuilder\Form;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
+use app\model\product\product\StoreProduct;
 use think\facade\Cache;
 use think\facade\Db;
 use think\facade\Route;
@@ -54,21 +60,32 @@ class CommunityServices extends BaseServices
         $this->dao = $dao;
     }
 
-    public function title(array $where)
+    /**
+     * @param $id
+     * @param $data
+     * @return void
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 15:25
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function setStatus($id, $data)
     {
-        $where['is_type'] = self::COMMUNIT_TYPE_FONT;
-        $list[] = [
-            'count' => $this->dao->search($where)->count(),
-            'title' => '图文列表',
-            'type' => self::COMMUNIT_TYPE_FONT,
-        ];
-        $where['is_type'] = self::COMMUNIT_TYPE_VIDEO;
-        $list[] = [
-            'count' => $this->dao->search($where)->count(),
-            'title' => '短视频列表',
-            'type' => self::COMMUNIT_TYPE_VIDEO,
-        ];
-        return  $list;
+        $ret = $this->dao->get($id);
+        event('community.status.before',compact('id','data'));
+        Db::transaction(function () use($ret,$id, $data) {
+
+            if ($data['status'] == 1) {
+                $make = app()->make(UserBrokerageServices::class);
+                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+            }
+            $data['status_time'] = date('Y-m-d H:i;s', time());
+            $this->dao->update($id, $data);
+            event('community.status',compact('id'));
+        });
     }
 
     /**
@@ -100,10 +117,125 @@ class CommunityServices extends BaseServices
         return compact('count','list');
     }
 
+    /**
+     * @param $id
+     * @param $user
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 15:47
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function destroy($id, $user = null)
+    {
+        event('community.delete.before',compact('id','user'));
+        $this->dao->update($id,  ['is_del' =>  1]);
+        event('community.delete',compact('id', 'user'));
+    }
+
+    /**
+     * @param int $id
+     * @return array|BaseModel|mixed|\think\db\BaseQuery|Model|null
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author Qinii
+     * @day 10/28/21
+     */
+    public function detail(int $id)
+    {
+        $where = [
+            $this->dao->getPk() => $id,
+            'is_del' => 0
+        ];
+        return $this->dao->getSearch($where)->with([
+            'author' => function($query) {
+                $query->field('uid,real_name,status,avatar,nickname,count_start');
+            },
+            'topic',
+            'category',
+            'relevance.spu'
+        ])->find();
+    }
+
+    /**
+     * @param $id
+     * @return Form
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws FormBuilderException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 12:01
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function showForm($id): Form
+    {
+        $url = '/adminapi/community/community/status/'.$id;
+        $form = Elm::createForm(Route::buildUrl($url)->build());
+        $data = $this->dao->get($id);
+        if (!$data) throw new ValidateException('数据不存在');
+        return $form->setRule([
+            Elm::hidden('status', -1),
+            Elm::textarea('refusal', '下架理由', '信息存在违规')->required()
+        ])->setTitle('强制下架');
+    }
+
+    /**
+     * @param $id
+     * @return Form
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws FormBuilderException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 12:00
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function form($id)
+    {
+        $url = '/adminapi/community/community/update/'.$id;
+        $form = Elm::createForm(Route::buildUrl($url)->build());
+        $data = $this->dao->get($id);
+        if (!$data) throw new ValidateException('数据不存在');
+        $formData = $data->toArray();
+
+        return $form->setRule([
+            Elm::rate('start', '排序星级')->max(5)
+        ])->setTitle('编辑星级')->formData($formData);
+    }
+
+    /**
+     * @param array $where
+     * @return array
+     * @throws DbException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 15:34
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function title(array $where): array
+    {
+        $where['is_type'] = self::COMMUNIT_TYPE_FONT;
+        $list[] = [
+            'count' => $this->dao->search($where)->count(),
+            'title' => '图文列表',
+            'type' => self::COMMUNIT_TYPE_FONT,
+        ];
+        $where['is_type'] = self::COMMUNIT_TYPE_VIDEO;
+        $list[] = [
+            'count' => $this->dao->search($where)->count(),
+            'title' => '短视频列表',
+            'type' => self::COMMUNIT_TYPE_VIDEO,
+        ];
+        return  $list;
+    }
 
     public function getApiList(array $where, int $page, int $limit, $userInfo)
     {
-        $config = systemConfig("community_app_switch");
+        $config = sys_config("community_app_switch");
         if (!isset($where['is_type']) && $config) $where['is_type'] = $config;
         $where['is_del'] = 0;
         $query = $this->dao->search($where)->order('start DESC,Community.create_time DESC,community_id DESC');
@@ -198,30 +330,6 @@ class CommunityServices extends BaseServices
         return $data;
     }
 
-    /**
-     * @param int $id
-     * @return array|BaseModel|mixed|\think\db\BaseQuery|Model|null
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
-     * @author Qinii
-     * @day 10/28/21
-     */
-    public function detail(int $id)
-    {
-        $where = [
-            $this->dao->getPk() => $id,
-            'is_del' => 0
-        ];
-        return $this->dao->getSearch($where)->with([
-            'author' => function($query) {
-                $query->field('uid,real_name,status,avatar,nickname,count_start');
-            },
-            'topic',
-            'category',
-            'relevance.spu'
-        ])->find();
-    }
 
     /**
      * TODO 移动端详情展示
@@ -240,14 +348,14 @@ class CommunityServices extends BaseServices
             $where = ['is_del' => 0];
             $is_author = 1;
         }
-        $config = systemConfig("community_app_switch");
+        $config = sys_config("community_app_switch");
         if ($config) $where['is_type'] = $config;
         $where[$this->dao->getPk()] = $id;
         $data = $this->dao->getSearch($where)
             ->with([
                 'author' => function ($query) {
                     $query->field('uid,real_name,status,avatar,nickname,count_start,member_level');
-                    if (systemConfig('member_status')) $query->with(['member' => function ($query) {
+                    if (sys_config('member_status')) $query->with(['member' => function ($query) {
                         $query->field('brokerage_icon,brokerage_level');
                     }]);
                 },
@@ -270,10 +378,10 @@ class CommunityServices extends BaseServices
         $data['is_author'] = $is_author;
         $is_fans = 0;
         if ($user && !$data['is_author'])
-            $is_fans = app()->make(RelevanceRepository::class)->getWhereCount([
+            $is_fans = app()->make(RelevanceServices::class)->getWhereCount([
             'left_id' => $user->uid,
             'right_id' => $data['uid'],
-            'type' => RelevanceRepository::TYPE_COMMUNITY_FANS,
+            'type' => RelevanceServices::TYPE_COMMUNITY_FANS,
         ]);
         $data['is_fans'] = $is_fans;
         return $data;
@@ -281,10 +389,10 @@ class CommunityServices extends BaseServices
 
     public function getSpuByOrder($id, $uid)
     {
-        $where = app()->make(StoreOrderProductRepository::class)->selectWhere(['order_id' => $id]);
+        $where = app()->make(StoreProduct::class)->selectWhere(['order_id' => $id]);
         if (!$where) throw new  ValidateException('商品已下架');
 
-        $make = app()->make(SpuRepository::class);
+        $make = app()->make(SpuServices::class);
         foreach ($where as $item) {
             switch ($item['product_type']){
                 case 0:
@@ -322,7 +430,7 @@ class CommunityServices extends BaseServices
     {
         event('community.create.before',compact('data'));
         if ($data['topic_id']) {
-            $getTopic  =  app()->make(CommunityTopicRepository::class)->get($data['topic_id']);
+            $getTopic  =  app()->make(CommunityTopicServices::class)->get($data['topic_id']);
             if (!$getTopic || !$getTopic->status) throw new ValidateException('话题不存在或已关闭');
             $data['category_id'] = $getTopic->category_id;
         }
@@ -345,7 +453,7 @@ class CommunityServices extends BaseServices
     {
         event('community.update.before',compact('id','data'));
         if ($data['topic_id']) {
-            $getTopic  =  app()->make(CommunityTopicRepository::class)->get($data['topic_id']);
+            $getTopic  =  app()->make(CommunityTopicServices::class)->get($data['topic_id']);
 
             if (!$getTopic || !$getTopic->status) throw new ValidateException('话题不存在或已关闭');
             $data['category_id'] = $getTopic->category_id;
@@ -362,7 +470,7 @@ class CommunityServices extends BaseServices
 
     public function joinProduct($id, array $data)
     {
-        $make = app()->make(RelevanceRepository::class);
+        $make = app()->make(RelevanceServices::class);
         $data = array_unique($data);
         $res = [];
         foreach ($data as $value) {
@@ -370,11 +478,11 @@ class CommunityServices extends BaseServices
                 $res[] = [
                     'left_id' => $id,
                     'right_id' => $value,
-                    'type' => RelevanceRepository::TYPE_COMMUNITY_PRODUCT
+                    'type' => RelevanceServices::TYPE_COMMUNITY_PRODUCT
                 ];
             }
         }
-        $make->clear($id,RelevanceRepository::TYPE_COMMUNITY_PRODUCT,'left_id');
+        $make->clear($id,RelevanceServices::TYPE_COMMUNITY_PRODUCT,'left_id');
         if($res) $make->insertAll($res);
     }
 
@@ -388,8 +496,8 @@ class CommunityServices extends BaseServices
      */
     public function getUserInfo(int $uid, $self = null)
     {
-        $relevanceRepository = app()->make(RelevanceRepository::class);
-        $data['focus'] = $relevanceRepository->getFieldCount('left_id', $uid,RelevanceRepository::TYPE_COMMUNITY_FANS);
+        $RelevanceServices = app()->make(RelevanceServices::class);
+        $data['focus'] = $RelevanceServices->getFieldCount('left_id', $uid,RelevanceServices::TYPE_COMMUNITY_FANS);
 
 
         $is_start = $is_self = false;
@@ -398,7 +506,7 @@ class CommunityServices extends BaseServices
             $is_self = true;
         } else {
             $user = app()->make(UserRepository::class)->get($uid);
-            $is_start = $relevanceRepository->checkHas($self->uid, $uid, RelevanceRepository::TYPE_COMMUNITY_FANS) > 0;
+            $is_start = $RelevanceServices->checkHas($self->uid, $uid, RelevanceServices::TYPE_COMMUNITY_FANS) > 0;
         }
         $data['start'] = $user->count_start;
         $data['uid']   = $user->uid;
@@ -414,50 +522,29 @@ class CommunityServices extends BaseServices
 
     public function setFocus(int $id, int  $uid,int $status)
     {
-        $make = app()->make(RelevanceRepository::class);
-        $check  = $make->checkHas($uid, $id, RelevanceRepository::TYPE_COMMUNITY_FANS);
+        $make = app()->make(RelevanceServices::class);
+        $check  = $make->checkHas($uid, $id, RelevanceServices::TYPE_COMMUNITY_FANS);
         if ($status) {
             if ($check)  throw new ValidateException('您已经关注过他了～');
-            $make->create($uid, $id,RelevanceRepository::TYPE_COMMUNITY_FANS,true);
+            $make->create($uid, $id,RelevanceServices::TYPE_COMMUNITY_FANS,true);
             app()->make(UserRepository::class)->incField($id, 'count_fans', 1);
         } else {
             if (!$check) throw new ValidateException('您还未关注他哦～');
-            $make->destory($uid, $id,RelevanceRepository::TYPE_COMMUNITY_FANS);
+            $make->destory($uid, $id,RelevanceServices::TYPE_COMMUNITY_FANS);
             app()->make(UserRepository::class)->decField($id, 'count_fans', 1);
         }
         return ;
     }
 
-    public function form($id)
-    {
-        $form = Elm::createForm(Route::buildUrl('systemCommunityUpdate', ['id' => $id])->build());
-        $data = $this->dao->get($id);
-        if (!$data) throw new ValidateException('数据不存在');
-        $formData = $data->toArray();
 
-        return $form->setRule([
-            Elm::rate('start', '排序星级')->max(5)
-        ])->setTitle('编辑星级')->formData($formData);
-    }
-
-    public function showForm($id)
-    {
-        $form = Elm::createForm(Route::buildUrl('systemCommunityStatus', ['id' => $id])->build());
-        $data = $this->dao->get($id);
-        if (!$data) throw new ValidateException('数据不存在');
-        return $form->setRule([
-            Elm::hidden('status', -1),
-            Elm::textarea('refusal', '下架理由', '信息存在违规')->required()
-        ])->setTitle('强制下架');
-    }
 
     public function setCommunityStart(int $id, $userInfo, int $status)
     {
-        $make = app()->make(RelevanceRepository::class);
-        $userRepository = app()->make(UserRepository::class);
+        $make = app()->make(RelevanceServices::class);
+        $userRepository = app()->make(UserServices::class);
 
         if ($status) {
-            $res = $make->create($userInfo->uid, $id, RelevanceRepository::TYPE_COMMUNITY_START,true);
+            $res = $make->create($userInfo->uid, $id, RelevanceServices::TYPE_COMMUNITY_START,true);
             if (!$res) throw new ValidateException('您已经点赞过了');
 
             $ret = $this->dao->get($id);
@@ -466,39 +553,15 @@ class CommunityServices extends BaseServices
             if ($user) $userRepository->incField((int)$user->uid,'count_start',1);
         }
         if (!$status) {
-            if (!$make->checkHas($userInfo->uid, $id, RelevanceRepository::TYPE_COMMUNITY_START))
+            if (!$make->checkHas($userInfo->uid, $id, RelevanceServices::TYPE_COMMUNITY_START))
                 throw new ValidateException('您还没有点赞呢～');
-            $make->destory($userInfo->uid, $id, RelevanceRepository::TYPE_COMMUNITY_START);
+            $make->destory($userInfo->uid, $id, RelevanceServices::TYPE_COMMUNITY_START);
 
             $ret = $this->dao->get($id);
             $user = $userRepository->get($ret['uid']);
             $this->dao->decField($id,'count_start',1);
             if ($user)  $userRepository->decField((int)$user->uid, 'count_start',1);
         }
-    }
-
-    public function setStatus($id, $data)
-    {
-        $ret = $this->dao->get($id);
-        event('community.status.before',compact('id','data'));
-        Db::transaction(function () use($ret,$id, $data) {
-
-            if ($data['status'] == 1) {
-                $make = app()->make(UserBrokerageRepository::class);
-                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
-            }
-            $data['status_time'] = date('Y-m-d H:i;s', time());
-            $this->dao->update($id, $data);
-            event('community.status',compact('id'));
-        });
-
-    }
-
-    public function destory($id, $user = null)
-    {
-        event('community.delete.before',compact('id','user'));
-        $this->dao->update($id,  ['is_del' =>  1]);
-        event('community.delete',compact('id', 'user'));
     }
 
     public function getDataBySpu($spuId)

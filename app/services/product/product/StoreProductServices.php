@@ -792,12 +792,14 @@ class StoreProductServices extends BaseServices
     public function save(int $id, array $data, int $type = 0, int $relation_id = 0)
     {
         $is_class = (isset($data['is_class']) && $data['is_class']) ? 1 : 0;
+        $str = '商品';
         if ($is_class) { //课程默认虚拟商品
+            $str = '课程';
             $data['product_type'] = 3;
         }
-        if (count($data['cate_id']) < 1) throw new AdminException('请选择商品分类');
-        if (!$data['store_name']) throw new AdminException('请输入商品名称');
-        if (count($data['slider_image']) < 1) throw new AdminException('请上传商品轮播图');
+        if (count($data['cate_id']) < 1) throw new AdminException('请选择'.$str.'分类');
+        if (!$data['store_name']) throw new AdminException('请输入'.$str.'名称');
+        if (count($data['slider_image']) < 1) throw new AdminException('请上传'.$str.'轮播图');
         if ($data['product_type'] == 0 && isset($data['delivery_type']) && count($data['delivery_type']) < 1) throw new AdminException('请选择商品配送方式');
         if (in_array($data['product_type'], [1, 2, 3, 4])) {
             $data['freight'] = 2;
@@ -903,6 +905,10 @@ class StoreProductServices extends BaseServices
                 throw new AdminException('请选择激活时效类型');
             }
 
+            if (!isset($data['store_overview']) || !$data['store_overview']) {
+                throw new AdminException('请输入课程概述');
+            }
+
             switch ($data['write_valid']) {
                 case 1://永久
                     $data['write_days'] = 0;
@@ -993,6 +999,8 @@ class StoreProductServices extends BaseServices
                 if (!preg_match("/^\d{1,}$/", $item['code']) || $item['code'] <= 0) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】大于0的正确格式使用时效天数');
                 }
+
+                $item['quota'] = $item['quota'] ?? 0;
             } else {
                 //验证次卡商品数据
                 if ($data['product_type'] == 4) {

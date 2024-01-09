@@ -13,6 +13,7 @@
 namespace app\controller\admin\v1\community;
 
 use app\controller\admin\AuthController;
+use FormBuilder\Exception\FormBuilderException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -37,12 +38,6 @@ class Community extends AuthController
     {
         parent::__construct($app);
         $this->services = $services;
-    }
-
-    public function title()
-    {
-        $where['is_del'] =  0;
-        return app('json')->success('ok', $this->services->title($where));
     }
 
     /**
@@ -82,25 +77,58 @@ class Community extends AuthController
     public function detail($id): Response
     {
         if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
-        return app('json')->success('ok', $this->services->detail($id));
+        $detail = $this->services->detail($id);
+        $detail = $detail ? $detail->toArray() : [];
+        return app('json')->success('ok', $detail);
     }
 
-    public function updateForm($id)
+    /**
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws FormBuilderException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 12:00
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function updateForm($id): Response
     {
-        return app('json')->success(formToData($this->services->form($id)));
+        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        return app('json')->success('ok', formToData($this->services->form($id)));
     }
 
-    public function showForm($id)
+    /**
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws FormBuilderException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 12:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function showForm($id): Response
     {
         return app('json')->success(formToData($this->services->showForm($id)));
     }
 
-    public function update($id)
+    /**
+     * @param $id
+     * @return Response
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 12:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function update($id): Response
     {
         $data['start']  = $this->request->param('start',1);
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
-
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         $this->services->update($id,$data);
         return app('json')->success('修改成功');
     }
@@ -112,33 +140,47 @@ class Community extends AuthController
      */
     public function delete($id)
     {
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
-        $this->services->destory($id);
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
+        $this->services->destroy($id);
         return app('json')->success('删除成功');
     }
 
-    public function switchStatus($id)
+    /**
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 15:31
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function switchStatus($id): Response
     {
-        $data = $this->request->params(['status', 'refusal']);
+        $data = $this->request->postMore([
+            ['status', ''],
+            ['refusal', ''],
+        ]);
 
-        if (!in_array($data['status'],[0,1,-1,-2]))
-            return app('json')->fail('状态类型错误');
-
+        if ( ! in_array($data['status'],[0,1,-1,-2])) return app('json')->fail('状态类型错误');
         $data['is_show'] = ($data['status'] == 1) ? : 0;
-
-        if($data['status'] == -1 && empty($data['refusal']))
-            return app('json')->fail('请填写拒绝理由');
-        if($data['status'] == -2 && empty($data['refusal']))
-            return app('json')->fail('请填写下架原因');
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
-
+        if ($data['status'] == -1 && empty($data['refusal'])) return app('json')->fail('请填写拒绝理由');
+        if ($data['status'] == -2 && empty($data['refusal'])) return app('json')->fail('请填写下架原因');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         $this->services->setStatus($id,$data);
         return app('json')->success('操作成功');
     }
 
-    public function switchShow($id)
+    /**
+     * @param $id
+     * @return Response
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 12:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function switchShow($id): Response
     {
         $status = $this->request->param('status', 0) == 1 ? 1 : 0;
         if (!$this->services->exists($id))
@@ -148,4 +190,17 @@ class Community extends AuthController
         return app('json')->success('修改成功');
     }
 
+    /**
+     * @return Response
+     * @throws DbException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 15:34
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function title(): Response
+    {
+        $where['is_del'] =  0;
+        return app('json')->success('ok', $this->services->title($where));
+    }
 }

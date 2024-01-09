@@ -13,13 +13,13 @@
 
 namespace app\model\community;
 
+use app\services\system\RelevanceServices;
 use crmeb\basic\BaseModel;
-//use app\common\model\store\product\Spu;
-//use app\common\model\system\Relevance;
+use app\model\store\product\Spu;
+use app\model\system\Relevance;
 use app\model\user\User;
 use crmeb\traits\ModelTrait;
 
-//use app\common\repositories\system\RelevanceRepository;
 
 class Community extends BaseModel
 {
@@ -82,7 +82,7 @@ class Community extends BaseModel
     public function relevance()
     {
         return $this->hasMany(Relevance::class, 'left_id','community_id')
-            ->where('type',RelevanceRepository::TYPE_COMMUNITY_PRODUCT);
+            ->where('type',RelevanceServices::TYPE_COMMUNITY_PRODUCT);
     }
 
     /*
@@ -95,12 +95,12 @@ class Community extends BaseModel
 
     public function isStart()
     {
-        return $this->hasOne(Relevance::class, 'right_id','community_id')->where('type', RelevanceRepository::TYPE_COMMUNITY_START)->bind(['relevance_id']);
+        return $this->hasOne(Relevance::class, 'right_id','community_id')->where('type', RelevanceServices::TYPE_COMMUNITY_START)->bind(['relevance_id']);
     }
 
     public function isFans()
     {
-        return $this->hasOne(Relevance::class, 'right_id','uid')->where('type', RelevanceRepository::TYPE_COMMUNITY_FANS)->bind(['is_fans' => 'right_id']);
+        return $this->hasOne(Relevance::class, 'right_id','uid')->where('type', RelevanceServices::TYPE_COMMUNITY_FANS)->bind(['is_fans' => 'right_id']);
     }
 
     public function category()
@@ -166,7 +166,7 @@ class Community extends BaseModel
     public function searchSpuIdAttr($query, $value)
     {
         $id = Relevance::where('right_id',$value)
-            ->where('type',RelevanceRepository::TYPE_COMMUNITY_PRODUCT)
+            ->where('type',RelevanceServices::TYPE_COMMUNITY_PRODUCT)
             ->column('left_id');
         $query->where('community_id','in', $id);
     }
