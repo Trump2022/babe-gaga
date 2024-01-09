@@ -1638,11 +1638,11 @@ Route::group('adminapi', function () {
         Route::post('classes/:id', 'v1.product.StoreClasses/save')->option(['real_name' => '新建或修改课程']);
         //修改课程状态
         Route::put('classes/set_show/:id/:is_show', 'v1.product.StoreClasses/set_show')->option(['real_name' => '修改课程状态']);
-        //课程快速编辑
-        Route::put('classes/set_product/:id', 'v1.product.StoreClasses/set_product')->option(['real_name' => '课程快速编辑']);
-        //设置批量商品上架
+        //课程批量操作
+        Route::post('batch_process', 'v1.product.StoreClasses/batchProcess')->option(['real_name' => '课程批量操作']);
+        //设置批量课程上架
         Route::put('classes/product_show', 'v1.product.StoreClasses/product_show')->option(['real_name' => '设置批量课程上架']);
-        //设置批量商品下架
+        //设置批量课程下架
         Route::put('classes/product_unshow', 'v1.product.StoreClasses/product_unshow')->option(['real_name' => '设置批量课程下架']);
 
         //获取退出未保存的数据
