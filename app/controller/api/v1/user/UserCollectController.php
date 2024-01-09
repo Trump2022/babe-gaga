@@ -42,16 +42,16 @@ class UserCollectController
      */
     public function collect_user(Request $request)
     {
-		[$category] = $request->postMore([
+		[$category, $is_class] = $request->postMore([
             ['category', 'product'],
             ['is_class', 0]
         ], true);
         $uid = (int)$request->uid();
-		$list = $this->services->getUserRelationList($uid, $category);
+		$list = $this->services->getUserRelationList($uid, $is_class, $category);
 		foreach ($list as &$item) {
 		    $item['promotions'] = !isset($item['promotions']) || !$item['promotions'] ? (object)[] : $item['promotions'];
 		}
-		$count = $this->services->getUserCount($uid,0, UserRelationServices::TYPE_COLLECT, $category);
+		$count = $this->services->getUserCount($uid,0, UserRelationServices::TYPE_COLLECT, $category, $is_class);
         return app('json')->successful(compact('list', 'count'));
     }
 
