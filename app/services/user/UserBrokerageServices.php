@@ -16,6 +16,7 @@ use app\dao\user\UserBrokerageDao;
 use app\services\BaseServices;
 use app\services\order\StoreOrderCartInfoServices;
 use app\services\order\StoreOrderServices;
+use app\services\user\member\MemberInterestsServices;
 use think\exception\ValidateException;
 use crmeb\services\CacheService;
 
@@ -629,5 +630,39 @@ class UserBrokerageServices extends BaseServices
             $times = array_merge(array_unique(array_column($list, 'time_key')));
         }
         return ['list' => $list, 'time' => $times];
+    }
+
+
+    public function incMemberValue(int $uid, string $type, int $id)
+    {
+        if (!sys_config('member_status')) return ;
+        $make = app()->make(UserBillServices::class);
+        $count = $make->getWhereCount(['type' => $type, 'link_id' => $id]);
+        if ($count) return ;
+        $config = [
+            'member_pay_num'   => '下单获得成长值',
+            'member_sign_num'  => '签到获得成长值',
+            'member_reply_num' => '评价获得成长值',
+            'member_share_num' => '邀请获得成长值',
+            'member_community_num'  => '种草图文获得成长值',
+        ];
+        $inc = sys_config($type) > 0 ? sys_config($type) : 0;
+        $user = app()->make(UserServices::class)->getWhere(['uid' => $uid],'*',['member']);
+        $svip_status = $user->is_svip > 0 && sys_config('svip_switch_status') == '1';
+        if ($svip_status) {
+            $svipRate = app()->make(MemberInterestsServices::class)->getSvipInterestVal(MemberInterestsServices::HAS_TYPE_MEMBER);
+            if ($svipRate > 0) {
+                $inc = bcmul($svipRate, $inc, 0);
+            }
+        }
+        $this->checkMemberValue($user, $inc);
+        $make->incBill($user->uid, 'sys_members', $type, [
+            'number'  => $inc,
+            'title'   => $config[$type],
+            'balance' => $user->member_value,
+            'status'  => 0,
+            'link_id' => $id,
+            'mark' => $config[$type].':'.$inc,
+        ]);
     }
 }

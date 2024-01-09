@@ -17,6 +17,7 @@ use crmeb\traits\dao\CacheDaoTrait;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
+use think\db\Query;
 use think\Model;
 
 /**
@@ -154,6 +155,11 @@ abstract class BaseDao
     public function getWhereCount(array $where)
     {
         return ($this->getModel()::getDB())->where($where)->count();
+    }
+
+    public function query(array $where):Query
+    {
+        return ($this->getModel())::getInstance()->where($where);
     }
 
     public function create(array $data)

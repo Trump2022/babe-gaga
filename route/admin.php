@@ -2510,15 +2510,22 @@ Route::group('adminapi', function () {
     /**
      * 社区内容
      */
-    Route::group('community', function () {
+    Route::group('community/community', function () {
+        Route::get('lst', 'v1.community.Community/lst')->name('communityList')->option(['real_name' => '文章列表']);
+        Route::get('detail/:id', 'v1.community.Community/detail')->name('communityDetail')->option(['real_name' => '文章详情']);
 
-        //社区内容-文章列表
-        Route::get('community/lst', 'v1.community.Community/lst')->name('communityList')->option(['real_name' => '文章列表']);
-
-        //社区内容-文章详情
-        Route::get('community/detail/:id', 'v1.community.Community/detail')->name('communityDetail')->option(['real_name' => '文章详情']);
+        Route::get('edit/form/:id', 'v1.community.Community/updateForm')->name('communityUpdateForm')->option(['real_name' => '文章编辑表单']);
+        Route::post('update/:id', 'v1.community.Community/update')->name('communityUpdate')->option(['real_name' => '文章编辑']);
 
 
+        Route::get('status/form/:id', 'v1.community.Community/showForm')->name('communityStatusForm')->option(['real_name' => '修改状态表单']);
+        Route::post('status/:id', 'v1.community.Community/switchStatus')->name('communityStatus')->option(['real_name' => '修改状态']);
+
+        Route::post('show/:id', 'v1.community.Community/switchShow')->name('communityShow')->option(['real_name' => '修改显示状态']);
+
+        Route::get('title', 'v1.community.Community/title')->name('communityTitle')->option(['real_name' => '统计']);
+
+        Route::delete('delete/:id', 'v1.community.Community/delete')->name('communityDelete')->option(['real_name' => '文章删除']);
     })->middleware([
         \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
         \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
