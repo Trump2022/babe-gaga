@@ -121,11 +121,12 @@ class UserRelationServices extends BaseServices
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function getUserRelationList(int $uid, string $category = self::CATEGORY_PRODUCT, string $type = self::TYPE_COLLECT)
+    public function getUserRelationList(int $uid, string $category = self::CATEGORY_PRODUCT, string $type = self::TYPE_COLLECT, $is_class = 0)
     {
         $where['uid'] = $uid;
         $where['type'] = $type;
         $where['category'] = $category;
+        $where['is_class'] = $is_class;
         [$page, $limit] = $this->getPageValue();
 		$with = [];
 		switch ($category) {
