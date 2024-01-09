@@ -43,7 +43,8 @@ class UserCollectController
     public function collect_user(Request $request)
     {
 		[$category] = $request->postMore([
-            ['category', 'product']
+            ['category', 'product'],
+            ['is_class', 0]
         ], true);
         $uid = (int)$request->uid();
 		$list = $this->services->getUserRelationList($uid, $category);

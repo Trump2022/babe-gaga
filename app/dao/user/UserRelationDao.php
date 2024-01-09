@@ -42,10 +42,16 @@ class UserRelationDao extends BaseDao
      */
     public function getList(array $where, string $field = '*', array $with = [], int $page = 0, int $limit = 0)
     {
+        $is_class = $where['is_class'] ?? 0;
+        if(!empty($where['is_class'])){
+            unset($where['is_class']);
+        }
         return $this->search($where)->field($field)->when($with, function($query) use ($with) {
 			$query->with($with);
-        })->when($page && $limit, function($query) use ($page, $limit) {
+        })->whereExists('select 1 from gaga_store_product where gaga_user_relation.relation_id = gaga_store_product.id AND is_class = '. $is_class)
+        ->when($page && $limit, function($query) use ($page, $limit) {
 			$query->page($page, $limit);
 		})->order('add_time desc')->select()->toArray();
+
     }
 }
