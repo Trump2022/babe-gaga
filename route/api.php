@@ -66,7 +66,7 @@ Route::group('api', function () {
 		Route::get('product/hot', 'v1.product.StoreProductController/product_hot')->name('productHot');//为你推荐
 		Route::get('reply/comment/:id', 'v1.product.StoreProductController/commentList')->name('commentList');//评价回复列表
 
-		//文章分类类
+		//文章分类
 		Route::get('article/category/list', 'v1.publics.ArticleCategoryController/lst')->name('articleCategoryList');//文章分类列表
 		//文章类
 		Route::get('article/list/:cid', 'v1.publics.ArticleController/lst')->name('articleList');//文章列表
@@ -74,7 +74,14 @@ Route::group('api', function () {
 		Route::get('article/hot/list', 'v1.publics.ArticleController/hot')->name('articleHotList');//文章 热门
 		Route::get('article/new/list', 'v1.publics.ArticleController/new')->name('articleNewList');//文章 最新
 		Route::get('article/banner/list', 'v1.publics.ArticleController/banner')->name('articleBannerList');//文章 banner
-		//活动---秒杀
+
+        //定制活动分类
+        Route::get('activity/category/list', 'v1.activity.ActivityCategoryController/lst')->name('activityCategoryList');//文章分类列表
+        //定制活动
+        Route::get('activity/list/:cid', 'v1.activity.ActivityController/lst')->name('activityList');//定制活动列表
+        Route::get('activity/details/:id', 'v1.activity.ActivityController/details')->name('activityDetails');//定制活动详情
+
+        //活动---秒杀
 		Route::get('seckill/index', 'v1.activity.StoreSeckillController/index')->name('seckillIndex');//秒杀商品时间区间
 		Route::get('seckill/list/:time', 'v1.activity.StoreSeckillController/lst')->name('seckillList');//秒杀商品列表
 		Route::get('seckill/detail/:id/[:time]', 'v1.activity.StoreSeckillController/detail')->name('seckillDetail');//秒杀商品详情
