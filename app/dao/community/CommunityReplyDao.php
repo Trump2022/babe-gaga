@@ -10,12 +10,19 @@
 // +----------------------------------------------------------------------
 
 
-namespace app\common\dao\community;
+namespace app\dao\community;
 
 
 use app\dao\BaseDao;
 use app\model\community\CommunityReply;
 
+/**
+ * Class CommunityReplyDao
+ * @packge app\dao\community
+ * @date : 2024/1/10 11:07
+ * @author: QSW
+ * @email: qsw2012@outlook.com
+ */
 class CommunityReplyDao extends BaseDao
 {
     /**
@@ -35,7 +42,7 @@ class CommunityReplyDao extends BaseDao
         return $this->getModel()::getDb()->where($this->getPk(), $id)->where('uid', $uid)->where('is_del', 0)->find();
     }
 
-    public function search(array $where)
+    public function search(array $where = [])
     {
         $query = CommunityReply::hasWhere('author',function($query) use($where) {
             $query->when(isset($where['username']) && $where['username'] !== '', function ($query) use($where) {
@@ -45,21 +52,21 @@ class CommunityReplyDao extends BaseDao
         });
 
         $query->when(isset($where['keyword']) && $where['keyword'] !== '', function ($query) use($where) {
-            $query->whereLike('content',"%{$where['keyword']}%");
+            $query->whereLike('CommunityReply.content',"%{$where['keyword']}%");
         });
         $query->when(isset($where['date']) && $where['date'] !== '', function ($query) use($where) {
             getModelTime($query, $where['date'], 'CommunityReply.create_time');
         });
         $query->when(isset($where['is_del']) && $where['is_del'] !== '', function ($query) use($where) {
-           $query->where('is_del',$where['is_del']);
+           $query->where('CommunityReply.is_del',$where['is_del']);
         });
 
         $query->when(isset($where['pid']) && $where['pid'] !== '', function ($query) use($where) {
-            $query->where('pid',$where['pid']);
+            $query->where('CommunityReply.pid',$where['pid']);
         });
 
         $query->when(isset($where['community_id']) && $where['community_id'] !== '', function ($query) use($where) {
-            $query->where('community_id',$where['community_id']);
+            $query->where('CommunityReply.community_id',$where['community_id']);
         });
         return $query->order('CommunityReply.create_time DESC');
     }

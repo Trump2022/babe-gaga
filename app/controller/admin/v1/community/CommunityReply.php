@@ -13,20 +13,19 @@
 namespace app\controller\admin\v1\community;
 
 use app\controller\admin\AuthController;
+use FormBuilder\Exception\FormBuilderException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\App;
 use app\services\community\CommunityReplyServices;
+use think\Response;
 
 class CommunityReply extends AuthController
 {
     /**
-     * @var CommunityReplyServices
-     */
-    protected $services;
-
-    /**
-     * User constructor.
      * @param App $app
-     * @param  $services
+     * @param CommunityReplyServices $services
      */
     public function __construct(App $app, CommunityReplyServices $services)
     {
@@ -35,51 +34,77 @@ class CommunityReply extends AuthController
     }
 
     /**
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @return mixed
      * @author Qinii
      */
-    public function lst()
+    public function lst(): Response
     {
-        $where = $this->request->params(['keyword', 'date', 'username', 'community_id', 'pid']);
-        [$page, $limit] = $this->getPage();
-        return app('json')->success($this->services->getList($where, $page, $limit));
+        $where = $this->request->getMore([
+            ['keyword', ''],
+            ['date', ''],
+            ['username', ''],
+            ['community_id', 0],
+            ['pid', 0],
+        ]);
+        return app('json')->success('ok', $this->services->getList($where));
     }
-
 
     /**
      * @param $id
-     * @return mixed
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      */
-    public function delete($id)
+    public function delete($id): Response
     {
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
+        if (!$this->services->get($id))  return app('json')->fail('数据不存在');
         $this->services->update($id, ['is_del' => 1]);
         return app('json')->success('删除成功');
     }
 
-    public function statusForm($id)
+    /**
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException|FormBuilderException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 11:20
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function statusForm($id): Response
     {
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
+        if (!$this->services->get($id)) return app('json')->fail('数据不存在');
         return app('json')->success(formToData($this->services->statusForm($id)));
     }
 
-
-    public function switchStatus($id)
+    /**
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 11:22
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function switchStatus($id): Response
     {
-        $data = $this->request->params(['status', 'refusal']);
-
-        if (!in_array($data['status'], [1, -1]))
-            return app('json')->fail('审核类型错误');
-
-        if ($data['status'] == -1 && empty($data['refusal']))
-            return app('json')->fail('请填写拒绝理由');
-
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
-
+        $data = $this->request->getMore([
+            ['status', 0],
+            ['refusal', ''],
+        ]);
+        if ( ! in_array($data['status'], [1, -1]))  return app('json')->fail('审核类型错误');
+        if ($data['status'] == -1 && empty($data['refusal'])) return app('json')->fail('请填写拒绝理由');
+        if (!$this->services->get($id))  return app('json')->fail('数据不存在');
         $this->services->update($id, $data);
         return app('json')->success('审核成功');
     }

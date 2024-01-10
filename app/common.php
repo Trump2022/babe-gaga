@@ -8,6 +8,7 @@ use crmeb\services\SystemConfigService;
 use think\exception\ValidateException;
 use think\facade\Config;
 use think\facade\Log;
+use think\db\BaseQuery;
 
 if (!function_exists('get_tree_value')) {
     /**
@@ -593,7 +594,24 @@ if (!function_exists('formToData')) {
     }
 }
 
-
+if (!function_exists('getMonth')) {
+    /**
+     * 获取本季度 time
+     * @param int|string $time
+     * @param $ceil
+     * @return array
+     */
+    function getMonth($time = '', $ceil = 0)
+    {
+        if ($ceil != 0)
+            $season = ceil(date('n') / 3) - $ceil;
+        else
+            $season = ceil(date('n') / 3);
+        $firstday = date('Y-m-01', mktime(0, 0, 0, ($season - 1) * 3 + 1, 1, date('Y')));
+        $lastday = date('Y-m-t', mktime(0, 0, 0, $season * 3, 1, date('Y')));
+        return array($firstday, $lastday);
+    }
+}
 
 if (!function_exists('getModelTime')) {
     /**

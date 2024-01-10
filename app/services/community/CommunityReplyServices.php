@@ -12,21 +12,29 @@
 
 namespace app\services\community;
 
-use app\common\dao\community\CommunityReplyDao;
+use app\dao\community\CommunityReplyDao;
 use app\services\BaseServices;
 use Carbon\Exceptions\InvalidDateException;
+use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
+use FormBuilder\Form;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Db;
 use think\facade\Route;
 
+/**
+ * Class CommunityReplyServices
+ * @packge app\services\community
+ * @date : 2024/1/10 11:03
+ * @author: QSW
+ * @email: qsw2012@outlook.com
+ * @mixin CommunityReplyDao
+ */
 class CommunityReplyServices extends BaseServices
 {
-    /**
-     * @var CommunityReplyDao
-     */
-    protected $dao;
-
     /**
      * CommunityReplyRepository constructor.
      * @param CommunityReplyDao $dao
@@ -36,10 +44,24 @@ class CommunityReplyServices extends BaseServices
         $this->dao = $dao;
     }
 
-    public function getList(array $where, int $page, int $limit)
+    /**
+     * @param array $where
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 11:19
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getList(array $where): array
     {
+        [$page, $limit] = $this->getPageValue();
         $where['is_del'] = 0;
-        $query = $this->dao->search($where)->with([
+        $query = $this->dao
+            ->search($where)
+            ->with([
             'community' => function ($query) {
                 $query->field('community_id,title');
             },
@@ -177,13 +199,26 @@ class CommunityReplyServices extends BaseServices
         return;
     }
 
-
-    public function statusForm(int $id)
+    /**
+     * @param int $id
+     * @return Form
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws FormBuilderException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 11:25
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function statusForm(int $id): Form
     {
         $formData = $this->dao->get($id)->toArray();
 
         if ($formData['status'] !== 0) throw new ValidateException('请勿重复审核');
-        $form = Elm::createForm(Route::buildUrl('systemCommunityReplyStatus', ['id' => $id])->build());
+
+        $url = '/adminapi/community/reply/status/'.$id;
+        $form = Elm::createForm(Route::buildUrl($url)->build());
 
         $form->setRule([
             Elm::textarea('content', '评论内容')->disabled(true),

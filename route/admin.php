@@ -2603,6 +2603,20 @@ Route::group('adminapi', function () {
     ]);
 
     /**
+     * 社区评论
+     */
+    Route::group('community/reply', function () {
+        Route::get('lst', 'v1.community.CommunityReply/lst')->name('communityReplyLst')->option(['real_name' => '社区评论-列表']);
+        Route::delete('delete/:id', 'v1.community.CommunityReply/delete')->name('communityReplyDelete')->option(['real_name' => '社区评论-删除']);
+        Route::get('status/form/:id', 'v1.community.CommunityReply/statusForm')->name('communityReplyStatusForm')->option(['real_name' => '社区评论-修改状态表单']);
+        Route::post('status/:id', 'v1.community.CommunityReply/switchStatus')->name('communityReplyStatus')->option(['real_name' => '社区评论-修改状态']);
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
+    /**
      * miss 路由
      */
     Route::miss(function () {
