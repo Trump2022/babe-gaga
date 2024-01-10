@@ -90,7 +90,7 @@ class StoreProductDao extends BaseDao
                 } else {
                     $query->where('type', '<>', 2);
                 }
-            })->when(isset($where['cate_id']), function ($query) use ($where) {
+            })->when(isset($where['cate_id']) && $where['cate_id'], function ($query) use ($where) {
                 $raw = '';
                 foreach ($where['cate_id'] as $cid) {
                     if ($raw) {
