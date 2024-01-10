@@ -32,6 +32,7 @@ class RefundOrder extends AuthController
     public function getRefundList()
     {
         $where = $this->request->getMore([
+            ['is_class', 0],
             ['order_id', ''],
             ['time', ''],
             ['refund_type', 0]

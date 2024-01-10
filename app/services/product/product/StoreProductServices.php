@@ -93,6 +93,7 @@ class StoreProductServices extends BaseServices
         } else {
             $where['pid'] = 0;
         }
+
         //出售中的商品
         $onsale = $this->dao->getCount(['status' => 1] + $where);
         //已经售馨商品
@@ -138,6 +139,7 @@ class StoreProductServices extends BaseServices
         if (isset($where['sales']) && in_array($where['sales'], $order_arr)) {
             $order_string = 'sales ' . $where['sales'];
         }
+
         //门店不展示卡密商品
         $count = $this->dao->getCount($where);
         //页面搜索，第二页之后没有结果，强制返回第一页数据

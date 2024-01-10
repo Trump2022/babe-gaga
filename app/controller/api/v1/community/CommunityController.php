@@ -10,7 +10,7 @@
 // | Author: CRMEB Team <admin@crmeb.com>
 // +----------------------------------------------------------------------
 
-namespace app\controller\api\community;
+namespace app\controller\api\v1\community;
 
 use app\Request;
 use app\services\community\CommunityServices;
@@ -21,51 +21,58 @@ use app\services\system\RelevanceServices;
 use app\services\user\UserServices;
 use app\validate\api\CommunityValidate;
 //use crmeb\services\MiniProgramService;
-use think\App;
+//use think\App;
 use think\exception\ValidateException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
+use think\Response;
 
 class CommunityController
 {
-    /**
-     * @var CommunityServices
-     */
-    protected $repository;
-    protected $user;
+    protected ?int $uid = 0;
+    protected ?object $user = NULL;
+    protected ?CommunityServices $services = NULL;
 
     /**
-     * User constructor.
-     * @param App $app
-     * @param  $repository
+     * @param Request $request
+     * @param CommunityServices $services
      */
-    public function __construct(App $app, repository $repository)
+    public function __construct(Request $request, CommunityServices $services)
     {
-        parent::__construct($app);
-        $this->repository = $repository;
-        $this->user = $this->request->isLogin() ? $this->request->userInfo() : null;
-        if (!systemConfig('community_status') ) throw  new ValidateException('未开启社区功能');
+        $this->services = $services;
+        $this->uid = $request->uid() ?? 0;
+        $this->user = $request->uid() ? $request->user() : null;
+        if ( ! sys_config('community_status') ) throw  new ValidateException('未开启社区功能');
     }
 
     /**
-     * TODO 文章列表
-     * @return \think\response\Json
+     * 文章列表
+     *
+     * @param Request $request
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
-     * @day 10/29/21
      */
-    public function lst()
+    public function lst(Request $request): Response
     {
-        $where = $this->request->params(['keyword','topic_id','is_hot','category_id','spu_id']);
-        if (!$where['category_id']) {
+        $where = $request->getMore([
+            ['keyword', ''],
+            ['topic_id', ''],
+            ['is_hot', ''],
+            ['category_id', ''],
+            ['spu_id', ''],
+        ]);
+        if ( ! $where['category_id']) {
             unset($where['category_id']);
         } else  if ($where['category_id'] == -1) {
-            $where['is_type'] = $this->repository::COMMUNIT_TYPE_VIDEO;
+            $where['is_type'] = CommunityServices::COMMUNIT_TYPE_VIDEO;
             unset($where['category_id']);
         }
-        $where = array_merge($where,$this->repository::IS_SHOW_WHERE);
-        [$page, $limit] = $this->getPage();
-        return app('json')->success($this->repository->getApiList($where, $page, $limit, $this->user));
+        $where = array_merge($where,CommunityServices::IS_SHOW_WHERE);
+        return app('json')->success($this->services->getApiList($where, $this->user));
     }
 
     /**

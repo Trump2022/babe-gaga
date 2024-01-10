@@ -233,8 +233,21 @@ class CommunityServices extends BaseServices
         return  $list;
     }
 
-    public function getApiList(array $where, int $page, int $limit, $userInfo)
+    /**
+     * @param array $where
+     * @param $userInfo
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 18:14
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getApiList(array $where, $userInfo): array
     {
+        [$page, $limit] = $this->getPageValue();
         $config = sys_config("community_app_switch");
         if (!isset($where['is_type']) && $config) $where['is_type'] = $config;
         $where['is_del'] = 0;

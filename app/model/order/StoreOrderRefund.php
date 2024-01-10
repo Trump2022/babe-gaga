@@ -145,6 +145,16 @@ class StoreOrderRefund extends BaseModel
     }
 
     /**
+     * is_class
+     * @param Model $query
+     * @param $value
+     */
+    public function searchIsClasslAttr($query, $value)
+    {
+        if ($value !== '' && !is_null($value)) $query->where('is_class', $value);
+    }
+
+    /**
      * is_del搜索器
      * @param Model $query
      * @param $value

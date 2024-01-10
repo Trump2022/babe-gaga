@@ -18,7 +18,7 @@ use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
 use think\facade\App;
-use app\validate\admin\community\StoreCategoryValidate;
+use app\validate\admin\StoreCategoryValidate;
 use app\services\community\CommunityCategoryServices;
 use think\Response;
 use think\response\Json;

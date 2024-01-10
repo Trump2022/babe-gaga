@@ -11,7 +11,7 @@
 // +----------------------------------------------------------------------
 
 
-namespace app\validate\admin\community;
+namespace app\validate\admin;
 
 
 use think\Validate;

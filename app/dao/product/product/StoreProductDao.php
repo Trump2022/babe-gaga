@@ -90,10 +90,17 @@ class StoreProductDao extends BaseDao
                 } else {
                     $query->where('type', '<>', 2);
                 }
-            })->when(isset($where['cate_id']), function ($query) use ($where) {
-                $raw = "FIND_IN_SET({$where['cate_id']}, `cate_id`)";
+            })->when(isset($where['cate_id']) && $where['cate_id'], function ($query) use ($where) {
+                $raw = '';
+                foreach ($where['cate_id'] as $cid) {
+                    if ($raw) {
+                        $raw .= " OR FIND_IN_SET({$cid}, `cate_id`)";
+                    } else {
+                        $raw .= "FIND_IN_SET({$cid}, `cate_id`)";
+                    }
+                }
+                
                 $query->whereRaw($raw);
-
             });
     }
 
