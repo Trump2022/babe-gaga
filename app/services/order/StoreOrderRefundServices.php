@@ -275,6 +275,7 @@ class StoreOrderRefundServices extends BaseServices
             $cart['cart_info'] = is_string($cart['cart_info']) ? json_decode($cart['cart_info'], true) : $cart['cart_info'];
         }
         $refundData['uid'] = $uid;
+        $refundData['is_class'] = $order['is_class'];
         $refundData['store_id'] = $order['store_id'];
         $refundData['supplier_id'] = $order['supplier_id'];
         $refundData['store_order_id'] = $id;
@@ -412,6 +413,7 @@ class StoreOrderRefundServices extends BaseServices
             $cart['cart_info'] = is_string($cart['cart_info']) ? json_decode($cart['cart_info'], true) : $cart['cart_info'];
         }
         $refundData['uid'] = $order['uid'];
+        $refundData['is_class'] = $order['is_class'];
         $refundData['store_id'] = $order['store_id'];
         $refundData['supplier_id'] = $order['supplier_id'];
         $refundData['store_order_id'] = $id;

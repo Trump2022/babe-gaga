@@ -4,6 +4,8 @@ ALTER TABLE `gaga_store_product_category` ADD `is_class` INT(1) UNSIGNED NOT NUL
 
 ALTER TABLE `gaga_store_order` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `pid`;
 
+ALTER TABLE `gaga_store_order_refund` ADD `is_class` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `id`;
+
 ALTER TABLE `gaga_store_product_rule` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `type`;
 
 ALTER TABLE `gaga_store_product` ADD `write_valid` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '激活时效：1、永久； 2、购买后几天；3、固定' AFTER `is_sold`, ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '购买后：N天有效' AFTER `write_valid`, ADD `write_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活开始时间' AFTER `write_days`, ADD `write_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活结束时间' AFTER `write_start`;
