@@ -262,9 +262,9 @@ class StoreProductDao extends BaseDao
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getProductLimit(array $where, $limit, $field)
+    public function getProductLimit(array $where, $limit, $field, $order = ['val', 'desc'])
     {
-        return $this->search($where)->field($field)->order('val', 'desc')->limit($limit)->select()->toArray();
+        return $this->search($where)->field($field)->order($order[0], $order[1])->limit($limit)->select()->toArray();
 
     }
 

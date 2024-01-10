@@ -2354,9 +2354,9 @@ class StoreProductServices extends BaseServices
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getProductLimit(array $where, $limit, $field)
+    public function getProductLimit(array $where, $limit, $field, $order = ['val', 'desc'])
     {
-        return $this->dao->getProductLimit($where, $limit, $field);
+        return $this->dao->getProductLimit($where, $limit, $field, $order);
     }
 
     /**

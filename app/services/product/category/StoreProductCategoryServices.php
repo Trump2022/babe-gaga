@@ -311,11 +311,13 @@ class StoreProductCategoryServices extends BaseServices
             $list = $this->dao->getCategory($where);
             /** @var StoreProductServices $storeProductServices */
             $storeProductServices = app()->make(StoreProductServices::class);
+            $field = 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price';
+            $order = ['sort', 'desc'];
             foreach ($list as &$itme){
                 if(!empty($itme['children'])){
                     foreach ($itme['children'] as &$v){
                         $map['cate_id'] = $v['id'];
-                        $product_list = $storeProductServices->getProductLimit($map, 1, 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price');
+                        $product_list = $storeProductServices->getProductLimit($map, 1, $field, $order);
                         $v['product_list'] = $product_list;
                     }
                 }
