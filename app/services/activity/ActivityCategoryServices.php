@@ -57,7 +57,7 @@ class ActivityCategoryServices extends BaseServices
     public function createForm(int $id)
     {
         $method = 'POST';
-        $url = '/cms/category';
+        $url = '/activity/category';
         if ($id) {
             $info = $this->dao->get($id);
             $method = 'PUT';
