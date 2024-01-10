@@ -47,6 +47,7 @@ use app\services\product\product\StoreProductReplyServices;
 use app\services\product\shipping\ShippingTemplatesServices;
 use app\services\store\SystemStoreServices;
 use crmeb\services\CacheService;
+use think\facade\Log;
 
 /**
  * 订单控制器
@@ -410,6 +411,66 @@ class StoreOrderController
                     break;
             }
         } else return app('json')->fail('订单生成失败!');
+    }
+
+    /**
+     * 订单后置处理
+     * @param $userInfo
+     * @param $orderInfo
+     * @param $data
+     * @param $activity
+     * @return bool
+     */
+    public function compute($userInfo, $orderInfo, $data, $activity)
+    {
+        if (!$userInfo || !$orderInfo || $userInfo['uid'] != $orderInfo['uid']) {
+            return true;
+        }
+        $uid = (int)$orderInfo['uid'];
+        $orderId = (int)$orderInfo['id'];
+        try {
+            $spread_uid = $spread_two_uid = 0;
+            $cartInfo = $data['cartInfo'] ?? [];
+            $priceData = $data['priceData'] ?? [];
+            $addressId = $data['addressId'] ?? 0;
+            /** @var StoreOrderCreateServices $createService */
+            $createService = app()->make(StoreOrderCreateServices::class);
+            $spread_ids = [];
+            if ($cartInfo && $priceData) {
+                /** @var StoreOrderCartInfoServices $cartServices */
+                $cartServices = app()->make(StoreOrderCartInfoServices::class);
+                [$cartInfo, $spread_ids] = $createService->computeOrderProductTruePrice($orderInfo, $cartInfo, $priceData, $addressId, $uid, $userInfo);
+                $cartServices->updateCartInfo($orderId, $cartInfo);
+            }
+            $orderData = [];
+            /** @var UserServices $userServices */
+            $userServices = app()->make(UserServices::class);
+            if ($spread_ids) {
+                [$spread_uid, $spread_two_uid] = $spread_ids;
+            } else {
+                $spread_uid = $userServices->getSpreadUid($uid);
+                if ($spread_uid > 0 && sys_config('brokerage_level', 2) == 2) {
+                    $spread_two_uid = $userServices->getSpreadUid($spread_uid, [], false);
+                }
+            }
+            if ($spread_uid > 0) {
+                $orderData['spread_uid'] = $spread_uid;
+            }
+            if ($spread_two_uid > 0) {
+                $orderData['spread_two_uid'] = $spread_two_uid;
+            }
+            if ($cartInfo && (isset($activity['type']) && !in_array($activity['type'], [1, 2, 3, 5, 8]))) {
+                /** @var StoreOrderComputedServices $orderComputed */
+                $orderComputed = app()->make(StoreOrderComputedServices::class);
+                if ($userServices->checkUserPromoter($spread_uid)) $orderData['one_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'one_brokerage', false);
+                if ($userServices->checkUserPromoter($spread_two_uid)) $orderData['two_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'two_brokerage', false);
+            }
+            if ($orderData) $createService->update(['id' => $orderId], $orderData);
+        } catch (\Throwable $e) {
+            Log::error('计算订单实际优惠、gaga币、邮费、佣金失败，原因：' . $e->getMessage());
+        }
+
+        return true;
     }
 
     /**
