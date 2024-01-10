@@ -421,43 +421,51 @@ Route::group('api', function () {
     })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true);
 
     Route::group('community', function () {
-        Route::post('/create', 'v1.community.Community/create');
-        Route::post('/update/:id', 'v1.community.Community/update');
-        Route::post('/delete/:id', 'v1.community.Community/delete');
-        Route::get('pay_product/lst', 'v1.community.Community/payList');
-        Route::get('rela_product/lst', 'v1.community.Community/relationList');
-        Route::get('hist_product/lst', 'v1.community.Community/historyList');
-
-        Route::post('fans/:id', 'v1.community.Community/setFocus');
-        Route::get('fans/lst', 'v1.community.Community/getUserFans');
-        Route::get('focus/lst', 'v1.community.Community/getUserFocus');
-
-        Route::post('start/:id', 'v1.community.Community/startCommunity');
-        Route::get('start/lst', 'v1.community.Community/getUserStartCommunity');
-
-        Route::post('reply/create/:id', 'v1.community.CommunityReply/create');
-        Route::post('reply/start/:id', 'v1.community.CommunityReply/start');
-
-        Route::get('order/:id', 'v1.community.Community/getSpuByOrder');
-        Route::get('qrcode/:id', 'v1.community.Community/qrcode');
+        //分类&话题
+        Route::get('category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
         //社区文章列表
-        Route::get('/lst', 'v1.community.Community/lst');
-        Route::get('/video_lst', 'v1.community.Community/videoShow');
-        //详情
-        Route::get('/show/:id', 'v1.community.Community/show');
-        //用户页
-        Route::get('/user/info/:id', 'v1.community.Community/userInfo');
-        //用户的文章
-        Route::get('/user/community/:id', 'v1.community.Community/userCommunitylst');
-        //用户的视频
-        Route::get('/user/community_video/:id', 'v1.community.Community/userCommunityVideolst');
-        //分类&话题
-        Route::get('category/lst', 'v1.community.CommunityCategory/lst');
-        Route::get('/:id/reply', 'v1.community.CommunityReply/lst');
+        Route::get('/lst', 'v1.community.CommunityController/lst')->name('apiCommunityList');
 
-        Route::get('/focuslst', 'v1.community.Community/focuslst');
-    })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true);
+        //
+        Route::get('/video_lst', 'v1.community.CommunityController/videoShow');
+
+        //详情
+        Route::get('/show/:id', 'v1.community.CommunityController/show');
+        //用户页
+        Route::get('/user/info/:id', 'v1.community.CommunityController/userInfo');
+        //用户的文章
+        Route::get('/user/community/:id', 'v1.community.CommunityController/userCommunitylst');
+        //用户的视频
+        Route::get('/user/community_video/:id', 'v1.community.CommunityController/userCommunityVideolst');
+
+        Route::get('/focuslst', 'v1.community.CommunityController/focuslst');
+
+        Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst');
+        Route::post('reply/create/:id', 'v1.community.CommunityReplyController/create');
+        Route::post('reply/start/:id', 'v1.community.CommunityReplyController/start');
+
+        Route::post('/create', 'v1.community.CommunityController/create');
+        Route::post('/update/:id', 'v1.community.CommunityController/update');
+        Route::post('/delete/:id', 'v1.community.CommunityController/delete');
+        Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
+        Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');
+        Route::get('hist_product/lst', 'v1.community.CommunityController/historyList');
+
+        Route::post('fans/:id', 'v1.community.CommunityController/setFocus');
+        Route::get('fans/lst', 'v1.community.CommunityController/getUserFans');
+        Route::get('focus/lst', 'v1.community.CommunityController/getUserFocus');
+
+        Route::post('start/:id', 'v1.community.CommunityController/startCommunity');
+        Route::get('start/lst', 'v1.community.CommunityController/getUserStartCommunity');
+
+
+
+        Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
+        Route::get('qrcode/:id', 'v1.community.CommunityController/qrcode');
+
+
+    })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, false);
 
     /**
      * v1.1 版本路由

@@ -1419,6 +1419,9 @@ WSS;
 			case 'supplier_finance'://供应商财务设置
 				$data = $this->supplierFinanceFormBuild();
 				break;
+            case 'community': //社区配置
+                $data = $this->communityFormBuild();
+                break;
             default:
                 throw new ValidateException('类型错误');
         }
@@ -1831,6 +1834,22 @@ WSS;
         ]);
 
         return $build->toArray();
+    }
+
+    /**
+     * @return array
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 16:47
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function communityFormBuild(): array
+    {
+        return $this->getConfigAllField([
+            'community_status', 'community_audit', 'community_auth', 'community_reply_status',
+            'community_reply_auth', 'community_reply_audit',
+            'community_app_switch', 'community_video_audit',
+        ]);
     }
 
     /**

@@ -13,8 +13,6 @@
 namespace app\services\community;
 
 use app\dao\community\CommunityCategoryDao;
-//use app\controller\api\community\CommunityTopic;
-
 use app\services\BaseServices;
 use app\services\community\CommunityTopicServices;
 use FormBuilder\Exception\FormBuilderException;
@@ -117,10 +115,26 @@ class CommunityCategoryServices extends BaseServices
      */
     public function options(): array
     {
-        $data =  $this->dao->getSearch(['is_show' => 1])->order('sort DESC,category_id DESC')
-            ->field('category_id as value,cate_name as label')->select();
-        if ($data) $res = $data->toArray();
-        return $res;
+        return  $this->dao->getSearch(['is_show' => 1])
+            ->field('category_id as value,cate_name as label')
+            ->order('sort DESC,category_id DESC')->select()->toArray();
+    }
+
+    /**
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 17:42
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getApiList(): array
+    {
+        return $this->dao->getSearch(['is_show' => 1])->order('sort DESC')
+            ->setOption('filed',[])->field('category_id,cate_name')
+            ->with(['children'])->order('sort DESC,category_id DESC')->select()->toArray();
     }
 }
 
