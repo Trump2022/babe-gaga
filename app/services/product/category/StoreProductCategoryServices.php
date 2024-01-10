@@ -309,20 +309,23 @@ class StoreProductCategoryServices extends BaseServices
             });
         } else {
             $list = $this->dao->getCategory($where);
-            /** @var StoreProductServices $storeProductServices */
-            $storeProductServices = app()->make(StoreProductServices::class);
-            $field = 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price';
-            $order = ['sort', 'desc'];
-            foreach ($list as &$itme){
-                if(!empty($itme['children'])){
-                    foreach ($itme['children'] as &$v){
-                        $map['cate_id'] = $v['id'];
-                        $product_list = $storeProductServices->getProductLimit($map, 1, $field, $order);
-                        $v['product_list'] = $product_list;
+            if(!empty($list)){
+                /** @var StoreProductServices $storeProductServices */
+                $storeProductServices = app()->make(StoreProductServices::class);
+                $field = 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price';
+                $order = ['sort', 'desc'];
+                foreach ($list as &$itme){
+                    if(!empty($itme['children'])){
+                        foreach ($itme['children'] as &$v){
+                            $map['cate_id'] = $v['id'];
+                            $product_list = $storeProductServices->getProductLimit($map, 1, $field, $order);
+                            $v['product_list'] = $product_list;
+                        }
                     }
-                }
 
+                }
             }
+
             return $list;
 
             /*return $this->dao->cacheTag()->remember('CATEGORY_All', function () use ($where) {
