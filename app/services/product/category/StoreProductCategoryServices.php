@@ -322,7 +322,6 @@ class StoreProductCategoryServices extends BaseServices
                             $v['product_list'] = $product_list;
                         }
                     }
-
                 }
             }
 
