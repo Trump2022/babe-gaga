@@ -93,6 +93,14 @@ class StoreProductServices extends BaseServices
         } else {
             $where['pid'] = 0;
         }
+
+        if (isset($where['cate_id'])) {
+            if ($where['cate_id'] == '') {
+                unset($where['cate_id']);
+            } elseif (is_array($where['cate_id'])) {
+                $where['cate_id'] = implode(',', $where['cate_id']);
+            }
+        }
         //出售中的商品
         $onsale = $this->dao->getCount(['status' => 1] + $where);
         //已经售馨商品
