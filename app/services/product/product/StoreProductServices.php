@@ -138,6 +138,13 @@ class StoreProductServices extends BaseServices
         if (isset($where['sales']) && in_array($where['sales'], $order_arr)) {
             $order_string = 'sales ' . $where['sales'];
         }
+        if (isset($where['cate_id'])) {
+            if ($where['cate_id'] == '') {
+                unset($where['cate_id']);
+            } elseif (is_array($where['cate_id'])) {
+                $where['cate_id'] = implode(',', $where['cate_id']);
+            }
+        }
         //门店不展示卡密商品
         $count = $this->dao->getCount($where);
         //页面搜索，第二页之后没有结果，强制返回第一页数据
