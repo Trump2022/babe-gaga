@@ -486,7 +486,7 @@ class WechatTemplateListService extends NoticeService
     }
 
     /**
-     * 获得积分
+     * 获得gaga币
      * @param $uid
      * @param $order
      * @return bool|mixed
@@ -494,7 +494,7 @@ class WechatTemplateListService extends NoticeService
     public function sendUserIntegral($uid, $order,$data)
     {
         return $this->sendTemplate('INTEGRAL_ACCOUT', $uid, [
-            'first' => '亲，您的积分已到账',
+            'first' => '亲，您的gaga币已到账',
             'keyword1' => $data['storeTitle'],
             'keyword2' => $order['pay_price'],
             'keyword3' => $order['use_integral'],

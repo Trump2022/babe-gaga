@@ -145,7 +145,7 @@ class StoreOrderTakeServices extends BaseServices
             $userServices = app()->make(UserServices::class);
             $userInfo = $userServices->get((int)$order['uid']);
             $res = $this->transaction(function () use ($order, $userInfo, $storeTitle) {
-                //赠送积分
+                //赠送gaga币
                 $res1 = $this->gainUserIntegral($order, $userInfo, $storeTitle);
                 //返佣
                 $res2 = $this->backOrderBrokerage($order, $userInfo);
@@ -167,7 +167,7 @@ class StoreOrderTakeServices extends BaseServices
     }
 
     /**
-     * 赠送积分
+     * 赠送gaga币
      * @param $order
      * @param $userInfo
      * @param $storeTitle
@@ -179,7 +179,7 @@ class StoreOrderTakeServices extends BaseServices
         if (!$userInfo) {
             return true;
         }
-        // 营销产品送积分
+        // 营销产品送gaga币
         if (!isset($order['type']) || in_array($order['type'], [1, 2, 3, 5, 8])) {
             return true;
         }
@@ -194,9 +194,9 @@ class StoreOrderTakeServices extends BaseServices
         $res3 = true;
         $order_give_integral = sys_config('order_give_integral');
         if ($order['pay_price'] && $order_give_integral) {
-            //会员消费返积分翻倍
+            //会员消费返gaga币翻倍
             if ($userInfo['is_money_level'] > 0) {
-                //看是否开启消费返积分翻倍奖励
+                //看是否开启消费返gaga币翻倍奖励
                 /** @var MemberCardServices $memberCardService */
                 $memberCardService = app()->make(MemberCardServices::class);
                 $integral_rule_number = $memberCardService->isOpenMemberCardCache('integral');

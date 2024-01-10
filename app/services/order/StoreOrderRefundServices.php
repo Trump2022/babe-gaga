@@ -576,7 +576,7 @@ class StoreOrderRefundServices extends BaseServices
     }
 
     /**
-     * 同意退款：拆分退款单、退积分、佣金等
+     * 同意退款：拆分退款单、退gaga币、佣金等
      * @param int $id
      * @param array $refundData
      * @return bool
@@ -589,9 +589,9 @@ class StoreOrderRefundServices extends BaseServices
         $order = $this->transaction(function () use ($id, $refundData) {
             //退款拆分
             $order = $this->agreeSplitRefundOrder($id);
-            //回退积分和优惠卷
+            //回退gaga币和优惠卷
             if (!$this->integralAndCouponBack($order)) {
-                throw new ValidateException('回退积分和优惠卷失败');
+                throw new ValidateException('回退gaga币和优惠卷失败');
             }
             //退拼团
             if ($order['pid'] == 0 && $order['type'] == 3) {
@@ -830,7 +830,7 @@ class StoreOrderRefundServices extends BaseServices
     }
 
     /**
-     * 回退积分和优惠卷
+     * 回退gaga币和优惠卷
      * @param $order
      * @return bool
      */
@@ -843,21 +843,21 @@ class StoreOrderRefundServices extends BaseServices
             $coumonUserServices = app()->make(StoreCouponUserServices::class);
             $res = $res && $coumonUserServices->recoverCoupon((int)$order['coupon_id']);
         }
-        //回退积分
+        //回退gaga币
         [$order, $changeIntegral] = $this->regressionIntegral($order);
         /** @var StoreOrderStatusServices $statusService */
         $statusService = app()->make(StoreOrderStatusServices::class);
         $statusService->save([
             'oid' => $order['id'],
             'change_type' => 'integral_back',
-            'change_message' => '商品退积分:' . $changeIntegral,
+            'change_message' => '商品退gaga币:' . $changeIntegral,
             'change_time' => time()
         ]);
         return $res && $order->save();
     }
 
     /**
-     * 回退使用积分和赠送积分
+     * 回退使用gaga币和赠送gaga币
      * @param $order
      * @return array
      * @throws \think\db\exception\DataNotFoundException
@@ -878,7 +878,7 @@ class StoreOrderRefundServices extends BaseServices
             return [$order, 0];
         }
         $res1 = $res2 = $res3 = $res4 = true;
-        //订单赠送积分
+        //订单赠送gaga币
         /** @var UserBillServices $userBillServices */
         $userBillServices = app()->make(UserBillServices::class);
         $where = [
@@ -901,7 +901,7 @@ class StoreOrderRefundServices extends BaseServices
             }
         }
         if ($give_integral) {
-            //判断订单是否已经回退积分
+            //判断订单是否已经回退gaga币
             $count = $userBillServices->count(['category' => 'integral', 'type' => 'deduction', 'link_id' => $order['id']]);
             if (!$count) {
                 if ($integral > $give_integral) {
@@ -909,20 +909,20 @@ class StoreOrderRefundServices extends BaseServices
                 } else {
                     $integral = 0;
                 }
-                //记录赠送积分收回
+                //记录赠送gaga币收回
                 $res1 = $userBillServices->income('integral_refund', $order['uid'], (int)$give_integral, (int)$integral, $order['id']);
             }
         }
-        //返还下单使用积分
+        //返还下单使用gaga币
         $use_integral = $order['use_integral'];
         if ($use_integral > 0) {
             $integral = bcadd((string)$integral, (string)$use_integral);
-            //记录下单使用积分还回
+            //记录下单使用gaga币还回
             $res2 = $userBillServices->income('pay_product_integral_back', $order['uid'], (int)$use_integral, (int)$integral, $order['id']);
         }
         $res3 = $userServices->update($order['uid'], ['integral' => $integral]);
         if (!($res1 && $res2 && $res3)) {
-            throw new ValidateException('回退积分增加失败');
+            throw new ValidateException('回退gaga币增加失败');
         }
         if ($use_integral > $give_integral) {
             $order->back_integral = bcsub($use_integral, $give_integral, 2);
@@ -1061,7 +1061,7 @@ class StoreOrderRefundServices extends BaseServices
     }
 
     /**
-     * 退积分表单创建
+     * 退gaga币表单创建
      * @param int $id
      * @return array
      * @throws \FormBuilder\Exception\FormBuilderException
@@ -1071,18 +1071,18 @@ class StoreOrderRefundServices extends BaseServices
         if (!$orderInfo = $this->storeOrderServices->get($id))
             throw new ValidateException('订单不存在');
         if ($orderInfo->use_integral < 0 || $orderInfo->use_integral == $orderInfo->back_integral)
-            throw new ValidateException('积分已退或者积分为零无法再退');
+            throw new ValidateException('gaga币已退或者gaga币为零无法再退');
         if (!$orderInfo->paid)
-            throw new ValidateException('未支付无法退积分');
+            throw new ValidateException('未支付无法退gaga币');
         $f[] = Form::input('order_id', '退款单号', $orderInfo->getData('order_id'))->disabled(1);
-        $f[] = Form::number('use_integral', '使用的积分', (float)$orderInfo->getData('use_integral'))->min(0)->disabled(1);
-        $f[] = Form::number('use_integrals', '已退积分', (float)$orderInfo->getData('back_integral'))->min(0)->disabled(1);
-        $f[] = Form::number('back_integral', '可退积分', (float)bcsub($orderInfo->getData('use_integral'), $orderInfo->getData('back_integral')))->min(0)->precision(0)->required('请输入可退积分');
-        return create_form('退积分', $f, $this->url('/order/refund_integral/' . $id), 'PUT');
+        $f[] = Form::number('use_integral', '使用的gaga币', (float)$orderInfo->getData('use_integral'))->min(0)->disabled(1);
+        $f[] = Form::number('use_integrals', '已退gaga币', (float)$orderInfo->getData('back_integral'))->min(0)->disabled(1);
+        $f[] = Form::number('back_integral', '可退gaga币', (float)bcsub($orderInfo->getData('use_integral'), $orderInfo->getData('back_integral')))->min(0)->precision(0)->required('请输入可退gaga币');
+        return create_form('退gaga币', $f, $this->url('/order/refund_integral/' . $id), 'PUT');
     }
 
     /**
-     * 单独退积分处理
+     * 单独退gaga币处理
      * @param $orderInfo
      * @param $back_integral
      */
@@ -1101,13 +1101,13 @@ class StoreOrderRefundServices extends BaseServices
             $res3 = $statusService->save([
                 'oid' => $orderInfo['id'],
                 'change_type' => 'integral_back',
-                'change_message' => '商品退积分:' . $back_integral,
+                'change_message' => '商品退gaga币:' . $back_integral,
                 'change_time' => time()
             ]);
             $res4 = $orderInfo->save();
             $res = $res1 && $res2 && $res3 && $res4;
             if (!$res) {
-                throw new ValidateException('订单退积分失败');
+                throw new ValidateException('订单退gaga币失败');
             }
             return true;
         });

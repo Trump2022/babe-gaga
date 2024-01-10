@@ -179,7 +179,7 @@ class StoreOrderComputedServices extends BaseServices
             $payPrice = 0;
         }
         if (sys_config('integral_ratio_status') && !$isActivity) {
-            //使用积分
+            //使用gaga币
             [$payPrice, $deductionPrice, $usedIntegral, $SurplusIntegral] = $this->useIntegral($useIntegral, $userInfo, $payPrice, $other);
         }
         $payPrice = (float)bcadd((string)$payPrice, (string)$payPostage, 2);
@@ -340,7 +340,7 @@ class StoreOrderComputedServices extends BaseServices
 
 
     /**
-     * 使用积分
+     * 使用gaga币
      * @param $useIntegral
      * @param $userInfo
      * @param $payPrice
@@ -353,8 +353,8 @@ class StoreOrderComputedServices extends BaseServices
         $deductionPrice = 0;
         $usedIntegral = 0;
         if ($userInfo && $useIntegral && $userInfo['integral'] > 0 && $payPrice) {
-			$integralMaxType = sys_config('integral_max_type', 1);//积分抵用上限类型1：积分、2：订单金额比例
-			if ($integralMaxType == 1) {//最多抵用积分
+			$integralMaxType = sys_config('integral_max_type', 1);//gaga币抵用上限类型1：gaga币、2：订单金额比例
+			if ($integralMaxType == 1) {//最多抵用gaga币
 				$integralMaxNum = sys_config('integral_max_num', 200);
 				if ($integralMaxNum > 0 && $userInfo['integral'] > $integralMaxNum) {
 					$integral = $integralMaxNum;

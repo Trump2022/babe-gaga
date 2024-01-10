@@ -81,7 +81,7 @@ class HotDataServices extends BaseServices
                     }
                 }
                 break;
-            case 4://积分商品
+            case 4://gaga币商品
                 /** @var StoreIntegralServices $integralServices */
                 $integralServices = app()->make(StoreIntegralServices::class);
                 $products = $integralServices->getColumn(['is_del' => 0], 'id');

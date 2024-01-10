@@ -40,8 +40,8 @@ class UserBatchProcessServices extends BaseServices
 			'level_id' => 0,//等级ID
 			'money_status' => 0,//余额变动状态
 			'money'=> 0,//余额变动金额
-			'integration_status'=> 0,//积分变动状态
-			'integration' => 0,//积分变动数量
+			'integration_status'=> 0,//gaga币变动状态
+			'integration' => 0,//gaga币变动数量
 			'days_status' => 0,//付费会员条数变动状态
 			'day' => 0,//变动天数
 			'spread_uid' => 0,//上级推广人uid
@@ -128,19 +128,19 @@ class UserBatchProcessServices extends BaseServices
 				if (!$systemLevel) throw new AdminException('您选择赠送的用户等级不存在！');
 				$data['level_id'] = $level_id;
                 break;
-			case 4://积分余额
+			case 4://gaga币余额
 				$data['money_status'] = $input_data['money_status'] ?? 0;
 				$data['money'] = $input_data['money'] ?? 0;
 				$data['integration_status'] = $input_data['integration_status'] ?? 0;
 				$data['integration'] = $input_data['integration'] ?? 0;
 				if (!$data['money_status'] && !$data['integration_status']) {
-					throw new AdminException('请选择操作积分或余额');
+					throw new AdminException('请选择操作gaga币或余额');
 				}
 				if ($data['money_status'] && !$data['money']) {
 					throw new AdminException('请填写变动余额数量');
 				}
 				if ($data['integration_status'] && !$data['integration']) {
-					throw new AdminException('请填写变动积分数量');
+					throw new AdminException('请填写变动gaga币数量');
 				}
                 break;
 			case 5://赠送会员

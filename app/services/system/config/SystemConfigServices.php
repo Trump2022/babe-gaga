@@ -1401,7 +1401,7 @@ WSS;
             case 'kefu'://客服配置
                 $data = $this->kefuFormBuild();
                 break;
-            case 'integral'://积分设置
+            case 'integral'://gaga币设置
                 $data = $this->integralFormBuild();
                 break;
             case 'distribution'://分销设置
@@ -1536,7 +1536,7 @@ WSS;
     }
 
     /**
-     * 积分设置
+     * gaga币设置
      * @return array
      */
     public function integralFormBuild()
@@ -1556,7 +1556,7 @@ WSS;
         [$next_clear_year_time] = $userIntergralServices->getTime(3);
 
         $build->rule([
-            Build::card('积分设置')->components([
+            Build::card('gaga币设置')->components([
                 Build::switch('integral_ratio_status', $data['integral_ratio_status']['info'], (int)$data['integral_ratio_status']['value'])
                     ->falseValue('关闭', 0)->trueValue('开启', 1)->control(1, [
                         Build::inputNum('integral_ratio', $data['integral_ratio']['info'], $data['integral_ratio']['value'])->info($data['integral_ratio']['desc'])->min(0),

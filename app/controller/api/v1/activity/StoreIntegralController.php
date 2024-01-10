@@ -19,7 +19,7 @@ use think\db\exception\ModelNotFoundException;
 
 
 /**
- * 积分商城
+ * gaga币商城
  * Class StoreIntegralController
  * @package app\controller\api\activity
  */
@@ -34,7 +34,7 @@ class StoreIntegralController
     }
 
     /**
-     * 积分商城首页数据
+     * gaga币商城首页数据
      * @return mixed
      * @throws DataNotFoundException
      * @throws ModelNotFoundException
@@ -42,7 +42,7 @@ class StoreIntegralController
      */
     public function index()
     {
-        $data['banner'] = sys_data('integral_shop_banner') ?? [];// 积分商城banner
+        $data['banner'] = sys_data('integral_shop_banner') ?? [];// gaga币商城banner
         $where = ['is_show' => 1];
         $where['is_host'] = 1;
         $data['list'] = $this->services->getIntegralList($where);
@@ -67,7 +67,7 @@ class StoreIntegralController
     }
 
     /**
-     * 积分商品详情
+     * gaga币商品详情
      * @param Request $request
      * @param $id
      * @return mixed

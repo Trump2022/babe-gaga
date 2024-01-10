@@ -154,7 +154,7 @@ class UserBillController
     }
 
     /**
-     * 积分记录
+     * gaga币记录
      * @param Request $request
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException

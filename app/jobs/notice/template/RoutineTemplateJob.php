@@ -305,7 +305,7 @@ class RoutineTemplateJob extends BaseJobs
     }
 
     /**
-     * 赠送积分消息提醒
+     * 赠送gaga币消息提醒
      * @param $openid
      * @param $order
      * @param $storeTitle

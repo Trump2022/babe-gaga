@@ -63,8 +63,8 @@ class MemberRightServices extends BaseServices
         if (!$data['image']) throw new AdminException("请上传会员权益图标");
         switch ($data['right_type']) {
             case "integral":
-                if (!$data['number']) throw new AdminException("请设置返还积分倍数");
-                if ($data['number'] < 0) throw new AdminException("返还积分倍数不能为负数");
+                if (!$data['number']) throw new AdminException("请设置返还gaga币倍数");
+                if ($data['number'] < 0) throw new AdminException("返还gaga币倍数不能为负数");
                 $save['number'] = abs($data['number']);
                 break;
             case "express" :
@@ -73,8 +73,8 @@ class MemberRightServices extends BaseServices
                 $save['number'] = abs($data['number']);
                 break;
             case "sign" :
-                if (!$data['number']) throw new AdminException("请设置签到积分倍数");
-                if ($data['number'] < 0) throw new AdminException("签到积分倍数不能为负数");
+                if (!$data['number']) throw new AdminException("请设置签到gaga币倍数");
+                if ($data['number'] < 0) throw new AdminException("签到gaga币倍数不能为负数");
                 $save['number'] = abs($data['number']);
                 break;
             case "offline" :

@@ -82,7 +82,7 @@ class StorePromotions extends AuthController
             [['discount_type', 'd'], 1],//优惠类型1:满减2:满折
             [['n_piece_n_discount', 'd'], 3],//n件n折类型：1:第二件半件2:买1送1 3:自定义
             ['discount', 0],//优惠
-            [['give_integral', 'd'], 0],//赠送积分
+            [['give_integral', 'd'], 0],//赠送gaga币
             ['give_coupon_id', []],//赠送优惠券ID
             ['give_product_id', []],//赠送商品ID
             ['give_product_unique', []],//赠送商品规格唯一值

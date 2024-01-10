@@ -98,7 +98,7 @@ class ExportExcel extends AuthController
     }
 
     /**
-     * 用户积分
+     * 用户gaga币
      * @param UserBillServices $services
      * @return mixed
      */
@@ -411,7 +411,7 @@ class ExportExcel extends AuthController
     }
 
     /**
-     * 导出积分兑换订单
+     * 导出gaga币兑换订单
      * @param StoreIntegralOrderServices $services
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException

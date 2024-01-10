@@ -39,7 +39,7 @@ class StoreOrderValidate extends Validate
         'pay_price.float'      => '订单金额必须为数字',
         'pay_postage.require'   => '订单邮费必须填写',
         'pay_postage.float'    => '订单邮费必须为数字',
-        'gain_integral.float'  => '赠送积分必须为数字',
+        'gain_integral.float'  => '赠送gaga币必须为数字',
     ];
 
     protected $scene = [

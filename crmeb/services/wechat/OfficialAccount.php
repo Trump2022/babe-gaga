@@ -393,7 +393,7 @@ class OfficialAccount extends BaseApplication
             'code' => $code, //创建会员卡时获取的初始code。
             'activate_begin_time' => '', //激活后的有效起始时间。若不填写默认以创建时的 data_info 为准。Unix时间戳格式
             'activate_end_time' => '', //激活后的有效截至时间。若不填写默认以创建时的 data_info 为准。Unix时间戳格式。
-            'init_bonus' => '0', //初始积分，不填为0。
+            'init_bonus' => '0', //初始gaga币，不填为0。
             'init_balance' => '0', //初始余额，不填为0。
         ];
         try {

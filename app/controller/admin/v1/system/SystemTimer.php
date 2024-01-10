@@ -45,7 +45,7 @@ class SystemTimer extends AuthController
             'auto_cancel' => '自动取消订单',
             'auto_take' => '自动确认收货',
             'auto_comment' => '自动好评',
-            'auto_clear_integral' => '自动清空用户积分',
+            'auto_clear_integral' => '自动清空用户gaga币',
             'auto_off_user_svip' => '自动取消用户到期svip',
             'auto_agent' => '自动解绑上下级',
             'auto_clear_poster' => '自动清除昨日海报',
@@ -57,7 +57,7 @@ class SystemTimer extends AuthController
             'auto_moment' => '定时创建发送朋友圈任务',
             'auto_group_task' => '定时发送群发任务',
             'auto_seckill' => '定时清理秒杀数据过期的数据缓存',
-            'rebate_points_orders' => '未支付积分订单退积分',
+            'rebate_points_orders' => '未支付gaga币订单退gaga币',
             'code_not_operating' => '桌码长期未操作取消桌码记录',
             'collate_not_operating' => '拼单长期未操作取消拼单记录',
             'reminder_unverified_remind' => '次卡商品未核销短信提醒'

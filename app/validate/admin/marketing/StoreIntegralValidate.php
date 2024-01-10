@@ -45,7 +45,7 @@ class StoreIntegralValidate extends Validate
         'unit_name.require' => '请填写单位',
 //        'image.require' => '请选择商品主图',
         'images.require' => '请选择商品轮播图',
-        'description.require' => '请填写积分商品详情',
+        'description.require' => '请填写gaga币商品详情',
         'attrs.require' => '请选择规格',
     ];
 

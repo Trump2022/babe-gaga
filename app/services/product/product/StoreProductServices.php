@@ -1365,7 +1365,7 @@ class StoreProductServices extends BaseServices
             $header[] = ['title' => '成本价', 'key' => 'cost', 'align' => 'center', 'minWidth' => 80];
             $header[] = ['title' => '日常售价', 'key' => 'r_price', 'align' => 'center', 'minWidth' => 80];
         } elseif ($type == 4) {
-            $header[] = ['title' => '兑换积分', 'key' => 'integral', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
+            $header[] = ['title' => '兑换gaga币', 'key' => 'integral', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
             $header[] = ['title' => '金额', 'key' => 'price', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
         } else {
             $header[] = ['title' => '成本价', 'key' => 'cost', 'align' => 'center', 'minWidth' => 80];

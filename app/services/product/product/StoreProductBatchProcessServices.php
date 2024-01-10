@@ -40,7 +40,7 @@ class StoreProductBatchProcessServices extends BaseServices
 			'freight' => 1,//运费设置1：包邮，2：固定运费，3：运费模版
 			'postage' => 0,//邮费金额
 			'temp_id' => 0,//运费模版
-			'give_integral' => 0,//赠送积分
+			'give_integral' => 0,//赠送gaga币
 			'coupon_ids' => [],//赠送优惠券ids
 			'label_id' => [],//关联用户标签ids
 			'recommend' => [],//活动推荐：is_hot、is_benefit、is_new、is_best、is_good
@@ -116,12 +116,12 @@ class StoreProductBatchProcessServices extends BaseServices
 				$data['delivery_type'] = $input_data['delivery_type'] ?? [];
 				if (!$data['delivery_type']) throw new AdminException('请选择商品配送方式');
                 break;
-			case 4://购买即送积分、优惠券
+			case 4://购买即送gaga币、优惠券
 				$isBatch = false;
 				$data['give_integral'] = $input_data['give_integral'] ?? 0;
 				$data['coupon_ids'] = $input_data['coupon_ids'] ?? [];
 				if (!$data['give_integral'] && !$data['coupon_ids']) {
-					throw new AdminException('请输入赠送积分或选择赠送优惠券');
+					throw new AdminException('请输入赠送gaga币或选择赠送优惠券');
 				}
                 break;
 			case 5://关联用户标签 不选默认清空标签
@@ -244,7 +244,7 @@ class StoreProductBatchProcessServices extends BaseServices
 	}
 
 	/**
- 	* 保存商品赠送积分、优惠券
+ 	* 保存商品赠送gaga币、优惠券
 	* @param int $id
 	* @param array $data
 	* @return bool

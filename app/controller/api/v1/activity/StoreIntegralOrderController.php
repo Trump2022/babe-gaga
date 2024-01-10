@@ -22,7 +22,7 @@ use app\services\pay\OrderPayServices;
 use app\services\pay\YuePayServices;
 
 /**
- * 积分订单
+ * gaga币订单
  * Class StoreIntegralController
  * @package app\controller\api\activity
  */
@@ -91,7 +91,7 @@ class StoreIntegralOrderController
         $productInfo['attrInfo'] = $attrValue;
 
         $num = (int)$num;
-        //判断积分商品限量
+        //判断gaga币商品限量
         [$attrValue, $unique, $storeIntegralProductInfo] = $storeIntegralServices->checkoutProductStock($uid, $productInfo['id'], $num, $unique);
         try {
             //弹出队列

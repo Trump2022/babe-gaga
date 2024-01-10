@@ -51,7 +51,7 @@ class OrderShipping implements ListenerInterface
                 } else {
                     return;
                 }
-            } else if ($order_type == 'integral') { // 积分兑换订单
+            } else if ($order_type == 'integral') { // gaga币兑换订单
                 if ($order['price'] > 0 && $order['pay_type'] == 'weixin') {
                     $order_id = $order['order_id'];
 					$out_trade_no = $order['trade_no'];

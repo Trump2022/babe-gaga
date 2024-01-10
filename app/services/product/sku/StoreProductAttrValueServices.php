@@ -92,7 +92,7 @@ class StoreProductAttrValueServices extends BaseServices
                 /** @var StoreCombinationServices $activityServices */
                 $activityServices = app()->make(StoreCombinationServices::class);
                 break;
-            case 4://积分
+            case 4://gaga币
                 /** @var StoreIntegralServices $activityServices */
                 $activityServices = app()->make(StoreIntegralServices::class);
                 break;

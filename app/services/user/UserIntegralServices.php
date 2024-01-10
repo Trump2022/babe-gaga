@@ -16,7 +16,7 @@ use app\jobs\user\UserIntegralJob;
 use app\services\BaseServices;
 
 /**
- * 用户积分
+ * 用户gaga币
  * Class UserIntegralServices
  * @package app\services\user
  * @mixin UserBillDao
@@ -34,12 +34,12 @@ class UserIntegralServices extends BaseServices
     }
 
     /**
-     * 清空到期积分（分批加入队列）
+     * 清空到期gaga币（分批加入队列）
      * @return bool
      */
     public function clearExpireIntegral()
     {
-        //是否开启积分有效期
+        //是否开启gaga币有效期
         if (!sys_config('integral_effective_status', 0)) {
             return true;
         }
@@ -58,14 +58,14 @@ class UserIntegralServices extends BaseServices
     }
 
     /**
-     * 执行清空到期积分
+     * 执行清空到期gaga币
      * @param array $uids
      * @return bool
      */
     public function doClearExpireIntegral(array $uids)
     {
         if (!$uids) return true;
-        //是否开启积分有效期
+        //是否开启gaga币有效期
         if (!sys_config('integral_effective_status', 0)) {
             return true;
         }
@@ -100,7 +100,7 @@ class UserIntegralServices extends BaseServices
                 } else {
                     $user_data['integral'] = (int)bcsub((string)$user['integral'], (string)$userSumIntegral, 0);
                 }
-                //记录清除积分
+                //记录清除gaga币
                 $userBillServices->income('system_clear_integral', $uid, (int)$number, (int)$user_data['integral'], $uid);
                 $userServices->update($uid, $user_data);
             }
@@ -109,7 +109,7 @@ class UserIntegralServices extends BaseServices
     }
 
     /**
-     * 获取用户清空到期积分
+     * 获取用户清空到期gaga币
      * @param int $uid
      * @param array $user
      * @return array|int[]
@@ -117,7 +117,7 @@ class UserIntegralServices extends BaseServices
     public function getUserClearIntegral(int $uid, $user = [])
     {
         if (!$uid) return [0, 0];
-        //是否开启积分有效期
+        //是否开启gaga币有效期
         if (!sys_config('integral_effective_status', 0)) {
             return [0, 0];
         }
@@ -148,7 +148,7 @@ class UserIntegralServices extends BaseServices
 
 
     /**
-     * 获取清空积分时间段
+     * 获取清空gaga币时间段
      * @param int $type
      * @return int[]
      */
@@ -178,7 +178,7 @@ class UserIntegralServices extends BaseServices
     }
 
 	/**
- 	* 新人礼赠送积分
+ 	* 新人礼赠送gaga币
 	* @param int $uid
 	* @return bool
 	 */
@@ -210,7 +210,7 @@ class UserIntegralServices extends BaseServices
 	}
 
 	/**
- 	* 会员卡激活赠送积分
+ 	* 会员卡激活赠送gaga币
 	* @param int $uid
 	* @return bool
 	 */

@@ -118,7 +118,7 @@ class CashierOrderServices extends BaseServices
         }
         $SurplusIntegral = $usedIntegral = 0;
         $deductionPrice = '0';
-        //使用积分
+        //使用gaga币
         if ($userInfo && $integral) {
             [
                 $payPrice,
@@ -140,9 +140,9 @@ class CashierOrderServices extends BaseServices
             'couponPrice' => $couponPrice,//优惠券金额
             'promotionsPrice' => floatval($promotionsPrice),//优惠活动金额
             'promotionsDetail' => $promotionsDetail,//优惠
-            'deductionPrice' => floatval($deductionPrice),//积分抵扣多少钱
-            'surplusIntegral' => $SurplusIntegral,//抵扣了多少积分
-            'usedIntegral' => $usedIntegral,//使用了多少积分
+            'deductionPrice' => floatval($deductionPrice),//gaga币抵扣多少钱
+            'surplusIntegral' => $SurplusIntegral,//抵扣了多少gaga币
+            'usedIntegral' => $usedIntegral,//使用了多少gaga币
             'deduction' => $deduction,
             'cartInfo' => $cartInfo,//购物列表
             'is_cashier_yue_pay_verify' => $is_cashier_yue_pay_verify,//收银台余额支付验证 1 验证 0不验证
@@ -425,7 +425,7 @@ class CashierOrderServices extends BaseServices
                 throw new ValidateException('使用优惠劵失败!');
             }
         }
-        //积分抵扣
+        //gaga币抵扣
         $orderServices->deductIntegral($userInfo, $useIntegral, [
             'SurplusIntegral' => $computeData['surplusIntegral'],
             'usedIntegral' => $computeData['usedIntegral'],

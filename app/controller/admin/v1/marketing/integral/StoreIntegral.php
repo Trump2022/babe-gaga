@@ -17,7 +17,7 @@ use think\facade\App;
 
 
 /**
- * 积分商城管理
+ * gaga币商城管理
  * Class StoreCombination
  * @package app\controller\admin\v1\store
  */
@@ -35,7 +35,7 @@ class StoreIntegral extends AuthController
     }
 
     /**
-     * 积分商品列表
+     * gaga币商品列表
      * @return mixed
      */
     public function index()

@@ -191,17 +191,17 @@ class WechatCardServices extends BaseServices
 //            'name' => $card['title'],//入口名称
 //            'tips' => $card['description'],//入口提示语
 //            'url' => $baseUrl,//入口跳转地址
-            'supply_bonus' => true,//显示积分
+            'supply_bonus' => true,//显示gaga币
             'bonus_rule' => [
                 'cost_money_unit' => 100,//消费金额。以分为单位
-                'increase_bonus' => $integral['order_give_integral'],//对应增加的积分
-                'max_increase_bonus' => $integral['integral_max_num'],//用户单次可获取的积分上限
-                'cost_bonus_unit' => 1,//每使用X积分
+                'increase_bonus' => $integral['order_give_integral'],//对应增加的gaga币
+                'max_increase_bonus' => $integral['integral_max_num'],//用户单次可获取的gaga币上限
+                'cost_bonus_unit' => 1,//每使用Xgaga币
                 'reduce_money' => bcmul($integral['integral_ratio'], '100', 0),//抵扣xx元，（这里以分为单位）
             ],
             'supply_balance' => false,//是否支持充值
 //            'activate_url' => $baseUrl,
-            'bonus_url' => $baseUrl . '/pages/users/user_integral/index',//积分详情跳转链接
+            'bonus_url' => $baseUrl . '/pages/users/user_integral/index',//gaga币详情跳转链接
             'prerogative' => $card['prerogative'],
 //            'auto_activate' => false,
             'wx_activate' => true,

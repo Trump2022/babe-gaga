@@ -314,7 +314,7 @@ class StoreProductCategoryServices extends BaseServices
             foreach ($list as &$itme){
                 if(!empty($itme['children'])){
                     foreach ($itme['children'] as &$v){
-                        $map['sid'] = $v['id'];
+                        $map['cate_id'] = $v['id'];
                         $product_list = $storeProductServices->getProductLimit($map, 1, 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price');
                         $v['product_list'] = $product_list;
                     }

@@ -86,20 +86,20 @@ class UserServices extends BaseServices
             } else {
                 $res1 = true;
             }
-            if ($data['integration_status'] && $data['integration']) {//积分增加或者减少
+            if ($data['integration_status'] && $data['integration']) {//gaga币增加或者减少
                 $integral_data = ['link_id' => $data['adminId'] ?? 0, 'number' => $data['integration'], 'balance' => $user['integral']];
                 /** @var UserBillServices $userBill */
                 $userBill = app()->make(UserBillServices::class);
                 if ($data['integration_status'] == 1) {//增加
                     $edit['integral'] = bcadd($user['integral'], $data['integration'], 2);
-                    $integral_data['title'] = '系统增加积分';
-                    $integral_data['mark'] = '系统增加了' . floatval($data['integration']) . '积分';
+                    $integral_data['title'] = '系统增加gaga币';
+                    $integral_data['mark'] = '系统增加了' . floatval($data['integration']) . 'gaga币';
 					$type = 'system_add';
 					$pm = 1;
                 } else if ($data['integration_status'] == 2) {//减少
                     $edit['integral'] = bcsub($user['integral'], $data['integration'], 2);
-                    $integral_data['title'] = '系统减少积分';
-                    $integral_data['mark'] = '系统扣除了' . floatval($data['integration']) . '积分';
+                    $integral_data['title'] = '系统减少gaga币';
+                    $integral_data['mark'] = '系统扣除了' . floatval($data['integration']) . 'gaga币';
 					$type = 'system_sub';
 					$pm = 0;
                 }

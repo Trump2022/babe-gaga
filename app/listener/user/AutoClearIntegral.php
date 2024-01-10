@@ -16,7 +16,7 @@ use crmeb\interfaces\ListenerInterface;
 use think\facade\Log;
 
 /**
- * 定时清空用户积分
+ * 定时清空用户gaga币
  * Class AutoClearIntegral
  * @package app\listener\user
  */
@@ -27,20 +27,20 @@ class AutoClearIntegral extends Cron implements ListenerInterface
      */
     public function handle($event): void
     {
-        //定时清空用户积分
+        //定时清空用户gaga币
         $this->tick(1000 * 60 * 60, function () {
-            //清空积分
+            //清空gaga币
             try {
                 /** @var UserIntegralServices $userIntegralServices */
                 $userIntegralServices = app()->make(UserIntegralServices::class);
                 [$clear_time, $start_time, $end_time] = $userIntegralServices->getTime();
-                //到清空积分的最后一天
+                //到清空gaga币的最后一天
                 if ($clear_time == strtotime(date('Y-m-d', time()))) {
                     return $userIntegralServices->clearExpireIntegral();
                 }
                 return true;
             } catch (\Throwable $e) {
-                Log::error('清空积分,失败原因:[' . class_basename($this) . ']' . $e->getMessage());
+                Log::error('清空gaga币,失败原因:[' . class_basename($this) . ']' . $e->getMessage());
             }
         });
 

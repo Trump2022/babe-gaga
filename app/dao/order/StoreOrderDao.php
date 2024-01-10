@@ -993,7 +993,7 @@ class StoreOrderDao extends BaseDao
 	/**
 	 * 获取活动订单列表：
 	 * @param int $id
-	 * @param int $type 0:普通、1：秒杀、2:砍价、3:拼团、4:积分、5:套餐、6:预售、7:新人礼
+	 * @param int $type 0:普通、1：秒杀、2:砍价、3:拼团、4:gaga币、5:套餐、6:预售、7:新人礼
 	 * @param array $where
 	 * @param int $page
 	 * @param int $limit

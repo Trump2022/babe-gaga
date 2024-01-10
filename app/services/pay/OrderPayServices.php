@@ -112,7 +112,7 @@ class OrderPayServices
     }
 
     /**
-     * 积分商品订单发起支付
+     * gaga币商品订单发起支付
      * @param array $orderInfo
      * @return array|string
      */
@@ -150,7 +150,7 @@ class OrderPayServices
     }
 
     /**
-     * 积分商品支付宝支付
+     * gaga币商品支付宝支付
      * @param array $orderInfo
      * @param string $quitUrl
      * @return array|string

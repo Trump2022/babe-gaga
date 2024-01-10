@@ -138,10 +138,10 @@ Route::group('api', function () {
 		Route::post('user/set_visit', 'v1.user.UserController/set_visit')->name('setVisit');// 添加用户访问记录
 		Route::get('copy_words', 'v1.PublicController/copy_words')->name('copyWords');// 复制口令接口
 
-		//活动---积分商城
-		Route::get('store_integral/index', 'v1.activity.StoreIntegralController/index')->name('storeIntegralIndex');//积分商城首页数据
-		Route::get('store_integral/list', 'v1.activity.StoreIntegralController/lst')->name('storeIntegralList');//积分商品列表
-		Route::get('store_integral/detail/:id', 'v1.activity.StoreIntegralController/detail')->name('storeIntegralDetail');//积分商品详情
+		//活动---gaga币商城
+		Route::get('store_integral/index', 'v1.activity.StoreIntegralController/index')->name('storeIntegralIndex');//gaga币商城首页数据
+		Route::get('store_integral/list', 'v1.activity.StoreIntegralController/lst')->name('storeIntegralList');//gaga币商品列表
+		Route::get('store_integral/detail/:id', 'v1.activity.StoreIntegralController/detail')->name('storeIntegralDetail');//gaga币商品详情
 
 		//优惠套餐列表
 		Route::get('store_discounts/list/:product_id', 'v1.activity.StoreDiscountsController/index');
@@ -364,7 +364,7 @@ Route::group('api', function () {
         Route::post('spread/order', 'v1.user.UserBrokerageController/spread_order')->name('spreadOrder');//推广订单
         Route::get('spread/commission/:type', 'v1.user.UserBillController/spread_commission')->name('spreadCommission');//推广佣金明细
         Route::get('spread/count/:type', 'v1.user.UserBrokerageController/spread_count')->name('spreadCount');//推广 佣金 3/提现 4 总和
-        Route::get('integral/list', 'v1.user.UserBillController/integral_list')->name('integralList');//积分记录
+        Route::get('integral/list', 'v1.user.UserBillController/integral_list')->name('integralList');//gaga币记录
         Route::get('user/routine_code', 'v1.user.UserBillController/getRoutineCode')->name('getRoutineCode');//小程序二维码
         Route::get('user/spread_info', 'v1.user.UserBillController/getSpreadInfo')->name('getSpreadInfo');//获取分销背景等信息
         //提现类
@@ -400,7 +400,7 @@ Route::group('api', function () {
         Route::post('order/offline/check/price', 'v1.order.OtherOrderController/computed_offline_pay_price')->name('orderOfflineCheckPrice'); //检测线下付款金额
         Route::post('order/offline/create', 'v1.order.OtherOrderController/create')->name('orderOfflineCreate'); //检测线下付款金额
         Route::get('order/offline/pay/type', 'v1.order.OtherOrderController/pay_type')->name('orderOfflineCreate'); //线下付款支付方式
-        //积分商城订单
+        //gaga币商城订单
         Route::post('store_integral/order/confirm', 'v1.activity.StoreIntegralOrderController/confirm')->name('storeIntegralOrderConfirm'); //订单确认
         Route::post('store_integral/order/create', 'v1.activity.StoreIntegralOrderController/create')->name('storeIntegralOrderCreate'); //订单创建
         Route::get('store_integral/order/detail/:uni', 'v1.activity.StoreIntegralOrderController/detail')->name('storeIntegralOrderDetail'); //订单详情

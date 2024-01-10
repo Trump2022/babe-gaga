@@ -836,7 +836,7 @@ class UserServices extends BaseServices
         } else {
             $res1 = true;
         }
-        if ($data['integration_status'] && $data['integration']) {//积分增加或者减少
+        if ($data['integration_status'] && $data['integration']) {//gaga币增加或者减少
             $integral_data = ['link_id' => $data['adminId'] ?? 0, 'number' => $data['integration'], 'balance' => $user['integral']];
             /** @var UserBillServices $userBill */
             $userBill = app()->make(UserBillServices::class);
@@ -931,9 +931,9 @@ class UserServices extends BaseServices
         $f = array();
         $f[] = Form::radio('money_status', '修改余额', 1)->options([['value' => 1, 'label' => '增加'], ['value' => 2, 'label' => '减少']]);
         $f[] = Form::number('money', '余额', 0)->max(999999)->min(0)->style(['width' => '100px']);
-        $f[] = Form::radio('integration_status', '修改积分', 1)->options([['value' => 1, 'label' => '增加'], ['value' => 2, 'label' => '减少']]);
-        $f[] = Form::number('integration', '积分', 0)->max(999999)->min(0)->precision(0)->style(['width' => '100px']);
-        return create_form('修改积分余额', $f, Url::buildUrl('/user/update_other/' . $id), 'PUT');
+        $f[] = Form::radio('integration_status', '修改gaga币', 1)->options([['value' => 1, 'label' => '增加'], ['value' => 2, 'label' => '减少']]);
+        $f[] = Form::number('integration', 'gaga币', 0)->max(999999)->min(0)->precision(0)->style(['width' => '100px']);
+        return create_form('修改gaga币余额', $f, Url::buildUrl('/user/update_other/' . $id), 'PUT');
     }
 
     /**
@@ -1260,7 +1260,7 @@ class UserServices extends BaseServices
     }
 
     /**
-     * 获取用户详情里面的用户消费能力和用户余额积分等
+     * 获取用户详情里面的用户消费能力和用户余额gaga币等
      * @param $uid
      * @return array[]
      */
@@ -1289,7 +1289,7 @@ class UserServices extends BaseServices
                 'key' => '元',
             ],
             [
-                'title' => '积分',
+                'title' => 'gaga币',
                 'value' => $userInfo['integral'] ?? 0,
                 'key' => '',
             ],

@@ -36,8 +36,8 @@ class MemberInterestsServices extends BaseServices
     //签到收益
     const INTERESTS_TYPE = [
         1 => ['label'=> '会员特价', 'msg' => ''],
-        2 => ['label'=> '签到返利' , 'msg' => '积分倍数' ],
-        3 => ['label'=> '消费返利' , 'msg' => '积分倍数' ],
+        2 => ['label'=> '签到返利' , 'msg' => 'gaga币倍数' ],
+        3 => ['label'=> '消费返利' , 'msg' => 'gaga币倍数' ],
         4 => ['label'=> '专属客服' , 'msg' => '' ],
         5 => ['label'=> '经验翻倍' , 'msg' => '经验翻倍' ],
         6 => ['label'=> '会员优惠券', 'msg' => ''],

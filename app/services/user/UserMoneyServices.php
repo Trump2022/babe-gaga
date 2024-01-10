@@ -110,9 +110,9 @@ class UserMoneyServices extends BaseServices
             'pm' => 1
         ],
         'pay_integral_product' => [
-            'title' => '余额支付购买积分商品',
+            'title' => '余额支付购买gaga币商品',
             'type' => 'pay_integral_product',
-            'mark' => '余额支付{%num%}元购买积分商品',
+            'mark' => '余额支付{%num%}元购买gaga币商品',
             'status' => 1,
             'pm' => 0
         ],

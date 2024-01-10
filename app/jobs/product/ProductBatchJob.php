@@ -109,7 +109,7 @@ class ProductBatchJob extends BaseJobs
                 case 1://分类
                     $batchProcessServices->setPrdouctCate($id, $data);
                     break;
-                case 4://购买即送积分、优惠券
+                case 4://购买即送gaga币、优惠券
                     $batchProcessServices->setGiveIntegralCoupon($id, $data);
                     break;
 				case 2://商品标签

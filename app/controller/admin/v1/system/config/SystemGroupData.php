@@ -314,7 +314,7 @@ class SystemGroupData extends AuthController
         $name = $services->value(['id' => $gid], 'config_name');
         if ($name == 'sign_day_num') {
             if (!$params['sign_num']) {
-                throw new AdminException('请输入签到赠送积分');
+                throw new AdminException('请输入签到赠送gaga币');
             }
             if (!preg_match('/^\+?[1-9]\d*$/', $params['sign_num'])) {
                 throw new AdminException('请输入大于等于0的整数');

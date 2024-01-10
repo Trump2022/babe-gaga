@@ -124,12 +124,12 @@ class SystemTimer extends Cron implements ListenerInterface
                     ]);
                 }
                 break;
-            case 'auto_clear_integral' : // 自动清空用户积分
+            case 'auto_clear_integral' : // 自动清空用户gaga币
                 try {
                     /** @var UserIntegralServices $userIntegralServices */
                     $userIntegralServices = app()->make(UserIntegralServices::class);
                     [$clear_time, $start_time, $end_time] = $userIntegralServices->getTime();
-                    //到清空积分的最后一天
+                    //到清空gaga币的最后一天
                     if ($clear_time == strtotime(date('Y-m-d', time()))) {
                         return $userIntegralServices->clearExpireIntegral();
                     }
@@ -137,7 +137,7 @@ class SystemTimer extends Cron implements ListenerInterface
                 } catch (\Throwable $e) {
 
                     response_log_write([
-                        'message' => '清空积分,失败原因:[' . class_basename($this) . ']' . $e->getMessage(),
+                        'message' => '清空gaga币,失败原因:[' . class_basename($this) . ']' . $e->getMessage(),
                         'file' => $e->getFile(),
                         'line' => $e->getLine()
                     ]);
@@ -293,14 +293,14 @@ class SystemTimer extends Cron implements ListenerInterface
                     ]);
                 }
                 break;
-            case 'rebate_points_orders' : // 未支付积分订单退积分
+            case 'rebate_points_orders' : // 未支付gaga币订单退gaga币
                 /** @var StoreIntegralOrderServices $service */
                 $service = app()->make(StoreIntegralOrderServices::class);
                 try {
                     return $service->rebatePointsOrders();
                 } catch (\Throwable $e) {
                     response_log_write([
-                        'message' => '执行积分订单未支付时退积分任务失败:' . $e->getMessage(),
+                        'message' => '执行gaga币订单未支付时退gaga币任务失败:' . $e->getMessage(),
                         'file' => $e->getFile(),
                         'line' => $e->getLine()
                     ]);

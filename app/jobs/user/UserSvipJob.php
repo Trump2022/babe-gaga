@@ -27,7 +27,7 @@ class UserSvipJob extends BaseJobs
     use QueueTrait;
 
     /**
-     * 执行清除到期积分
+     * 执行清除到期gaga币
      * @param $openids
      * @return bool
      */

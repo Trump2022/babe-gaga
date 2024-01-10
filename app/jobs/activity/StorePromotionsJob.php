@@ -54,7 +54,7 @@ class StorePromotionsJob extends BaseJobs
 				$userServices->update(['uid' => $userInfo['uid']], ['integral' => $balance]);
 				$userBillServices->income('order_promotions_give_integral', $uid, (int)$give_integral, (int)$balance, $orderInfo['id']);
             } catch (\Throwable $e) {
-                Log::error('优惠活动下单赠送积分失败,失败原因:' . $e->getMessage());
+                Log::error('优惠活动下单赠送gaga币失败,失败原因:' . $e->getMessage());
             }
             
         }

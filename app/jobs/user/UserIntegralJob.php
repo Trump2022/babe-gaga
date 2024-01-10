@@ -18,7 +18,7 @@ use crmeb\traits\QueueTrait;
 use think\facade\Log;
 
 /**
- * 清除到期积分
+ * 清除到期gaga币
  * Class UserIntegralJob
  * @package app\jobs
  */
@@ -27,7 +27,7 @@ class UserIntegralJob extends BaseJobs
     use QueueTrait;
 
     /**
-     * 执行清除到期积分
+     * 执行清除到期gaga币
      * @param $openids
      * @return bool
      */
@@ -41,13 +41,13 @@ class UserIntegralJob extends BaseJobs
             $userIntegralServices = app()->make(UserIntegralServices::class);
             $userIntegralServices->doClearExpireIntegral($uids);
         } catch (\Throwable $e) {
-            Log::error('清除用户到期积分失败,失败原因:' . $e->getMessage());
+            Log::error('清除用户到期gaga币失败,失败原因:' . $e->getMessage());
         }
         return true;
     }
 
 	/**
- 	* 赠送新人礼积分
+ 	* 赠送新人礼gaga币
 	* @param $uid
 	* @return bool
 	 */
@@ -58,13 +58,13 @@ class UserIntegralJob extends BaseJobs
             $userIntegralServices = app()->make(UserIntegralServices::class);
             $userIntegralServices->newcomerGiveIntegral((int)$uid);
         } catch (\Throwable $e) {
-            Log::error('赠送新人礼积分失败,失败原因:' . $e->getMessage());
+            Log::error('赠送新人礼gaga币失败,失败原因:' . $e->getMessage());
         }
         return true;
 	}
 
 	/**
- 	* 会员卡激活赠送积分
+ 	* 会员卡激活赠送gaga币
 	* @param $uid
 	* @return bool
 	 */
@@ -75,7 +75,7 @@ class UserIntegralJob extends BaseJobs
             $userIntegralServices = app()->make(UserIntegralServices::class);
             $userIntegralServices->levelGiveIntegral((int)$uid);
         } catch (\Throwable $e) {
-            Log::error('会员卡激活赠送积分失败,失败原因:' . $e->getMessage());
+            Log::error('会员卡激活赠送gaga币失败,失败原因:' . $e->getMessage());
         }
         return true;
 	}
