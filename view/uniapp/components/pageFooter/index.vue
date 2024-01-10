@@ -58,7 +58,7 @@
 		},
 		methods: {
 			navigationInfo(){
-				getNavigation().then(res => {
+				getNavigation({type: 2}).then(res => {
 					this.newData = res.data
 					this.$emit('newDataStatus', this.newData.status?this.newData.status.status:false)
 					if (this.newData.status && this.newData.status.status) {

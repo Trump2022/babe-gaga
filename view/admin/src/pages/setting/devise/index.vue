@@ -407,6 +407,7 @@ export default {
     showTitle() {
       this.activeIndex = -100;
       let obj = {};
+      console.log('mConfig', mConfig);
       for (var i in mConfig) {
         if (i == "pageTitle") {
           // this.rConfig = obj

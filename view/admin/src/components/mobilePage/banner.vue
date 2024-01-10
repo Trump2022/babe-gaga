@@ -133,6 +133,12 @@ export default {
             },
           ],
         },
+        // 文本
+        textConfig: {
+          title: "文本展示",
+          val: '',
+          place: '显示的文本，多文本以逗号分隔',
+        },
         isShow: {
           title: '是否显示背景色',
           val: true

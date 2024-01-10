@@ -42,7 +42,7 @@
                     </RadioGroup>
                 </div>
                 <div v-if="bgPic">
-                    <div class="title">建议尺寸：690 * 240px</div>
+                    <div class="title">建议尺寸：750 * *px</div>
                     <div class="boxs" @click="modalPicTap('单选')">
                         <img :src="bgPicUrl" alt="" v-if="bgPicUrl">
                         <div class="upload-box" v-else><Icon type="ios-camera-outline" size="36" /></div>

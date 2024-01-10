@@ -546,3 +546,23 @@ export function settleTable(data) {
 export function emptyTableData(data) {
 	return request.get("v2/user/empty/data", data);
 }
+
+/**
+ * 门店列表
+ * @param {Object} data
+ */
+export function storeList(data) {
+	return request.get("store/list", data, {
+		noAuth: true
+	});
+}
+
+/**
+ * 课程分类
+ * @param {Object} data
+ */
+export function storeCategory(data) {
+	return request.get("category", data, {
+		noAuth: true
+	});
+}

@@ -144,7 +144,7 @@
 				titleConfig: this.dataConfig.titleConfig.value,
 				storeName: '',
 				addressInfo:'选择地址',
-				addressInfos:"选择地址",
+				addressInfos:"获取地址",
 				location: {},
 				canGetPrivacySetting: false,
 			};
@@ -250,7 +250,8 @@
 				}).then(res=>{
 					let address = res.data.address_component;
 					this.addressInfo = address?address.city.slice(0,4) : '选择地址';
-					this.addressInfos = address?(address.city+address.district).slice(0,7) : '选择地址';
+					// this.addressInfos = address?(address.city+address.district).slice(0,7) : '选择地址';
+					this.addressInfos = address?address.city : '选择地址';
 				})
 			},
 			goLink(){
@@ -259,22 +260,26 @@
 			},
 			chooseLocation: function() {
 				let that = this;
+				console.log('1111111111')
 				if(that.storeVal == 0){
 					uni.navigateTo({
 						url:'/pages/store/store_list/index?type=1&isCollage=1'
 					})
 				}else{
-					uni.chooseLocation({
-						success: (res) => {
-							let address = that.$util.addressInfo(res.address);
-							this.addressInfo = address?address.city.slice(0,4) : '选择地址';
-							this.addressInfos = address?(address.city+address.district).slice(0,7) : '选择地址';
-							that.location = { latitude: res.latitude, longitude: res.longitude };
-						},
-						fail: (err)=>{
-							console.log(err)
-						}
-					})
+					this.selfLocation();
+					// uni.chooseLocation({
+					// 	success: (res) => {
+					// 		console.log('1111111111', res)
+					// 		let address = that.$util.addressInfo(res.address);
+					// 		this.addressInfo = address?address.city.slice(0,4) : '选择地址';
+					// 		// this.addressInfos = address?(address.city+address.district).slice(0,7) : '选择地址';
+					// 		this.addressInfos = address?address.city : '选择地址';
+					// 		that.location = { latitude: res.latitude, longitude: res.longitude };
+					// 	},
+					// 	fail: (err)=>{
+					// 		console.log(err)
+					// 	}
+					// })
 				}
 			},
 			getnearbyStore(data) {

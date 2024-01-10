@@ -9,6 +9,7 @@
 // +----------------------------------------------------------------------
 import index from './modules/index';
 import product from './modules/product';
+import classes from './modules/classes';
 import order from './modules/order';
 import user from './modules/user';
 import supplier from './modules/supplier';
@@ -19,6 +20,7 @@ import store from './modules/store';
 import agent from './modules/agent';
 import finance from './modules/finance';
 import cms from './modules/cms';
+import activity from './modules/activity';
 import marketing from './modules/marketing';
 import app from './modules/app';
 import system from './modules/system';
@@ -190,6 +192,7 @@ const frameIn = [
     },
     index,
     product,
+    classes,
     order,
     user,
     supplier,
@@ -200,6 +203,7 @@ const frameIn = [
     agent,
     finance,
     cms,
+    activity,
     marketing,
     app,
     system,

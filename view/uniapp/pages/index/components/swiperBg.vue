@@ -27,6 +27,12 @@
 				<view v-if="docConfig==2" class="dot acea-row" :style="{paddingLeft: paddinglr+20 + 'rpx',paddingRight: paddinglr+20 + 'rpx',justifyContent: (txtStyle==1?'center':txtStyle==2?'flex-end':'flex-start')}">
 					<view class="instruct">{{current}}/{{imgUrls.length}}</view>
 				</view>
+				<view class="show-text">
+					<view class="show-text-item" v-for="(item, index) in textConfig.split(',')" :key="index">
+						<view class="show-text-item-dot"></view>
+						<text>{{item}}</text>
+					</view>
+				</view>
 			</view>
 		</block>
 	</view>
@@ -57,6 +63,7 @@
 				paddinglr: (this.dataConfig.lrConfig.val)*2, //轮播左右边距
 				docConfig: this.dataConfig.docConfig.type, //指示点样式
 				imgConfig: this.dataConfig.imgConfig.type, //是否为圆角
+				textConfig: this.dataConfig.textConfig.value, //显示的文本
 				imageH: 0,
 				isColor: this.dataConfig.isShow.val,
 				txtStyle: this.dataConfig.txtStyle.type,
@@ -150,7 +157,7 @@
 			.dot{
 				position: absolute;
 				left:0;
-				bottom: 20rpx;
+				bottom: 40rpx;
 				width: 100%;
 				.instruct {
 					width: 50rpx;
@@ -223,5 +230,31 @@
 	.item-img image {
 		display: block;
 		width: 100%;
+	}
+	
+	.show-text {
+		position: absolute;
+		bottom: 10rpx;
+		padding: 0 30rpx;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 20rpx;
+		color: #fff;
+		width: calc(100% - 60rpx);
+		box-sizing: border-box;
+		
+		.show-text-item {
+			display: flex;
+			align-items: center;
+			
+			.show-text-item-dot {
+				width: 24rpx;
+				height: 24rpx;
+				border-radius: 50%;
+				background-color: #fff;
+				margin-right: 6rpx;
+			}
+		}
 	}
 </style>
