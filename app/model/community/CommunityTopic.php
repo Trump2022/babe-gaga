@@ -33,7 +33,6 @@ class CommunityTopic extends BaseModel
     protected $name = 'community_topic';
 
     /**
-     * TODO
      * @return string
      * @author Qinii
      * @day 10/26/21
@@ -44,7 +43,6 @@ class CommunityTopic extends BaseModel
     }
 
     /**
-     * TODO
      * @return string
      * @author Qinii
      * @day 10/26/21

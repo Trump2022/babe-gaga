@@ -16,6 +16,13 @@ namespace app\dao\community;
 use app\dao\BaseDao;
 use app\model\community\CommunityTopic;
 
+/**
+ * Class CommunityTopicDao
+ * @packge app\dao\community
+ * @date : 2024/1/9 19:13
+ * @author: QSW
+ * @email: qsw2012@outlook.com
+ */
 class CommunityTopicDao extends BaseDao
 {
     /**

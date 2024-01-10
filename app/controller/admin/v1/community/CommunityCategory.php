@@ -43,7 +43,10 @@ class CommunityCategory extends AuthController
     }
 
     /**
-     * @return mixed
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      */
     public function lst()
@@ -180,7 +183,6 @@ class CommunityCategory extends AuthController
     {
         if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
         $this->services->delete($id);
-        $this->services->clearCahe();
         return app('json')->success('删除成功');
     }
 
@@ -201,7 +203,6 @@ class CommunityCategory extends AuthController
         if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
 
         $this->services->update($id,['is_show' => $status]);
-        $this->services->clearCahe();
         return app('json')->success('修改成功');
     }
 
