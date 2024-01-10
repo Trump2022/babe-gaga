@@ -275,7 +275,7 @@ class StoreCartServices extends BaseServices
                 $combinationService = app()->make(StoreCombinationServices::class);
                 [$attrInfo, $unique, $productInfo] = $combinationService->checkCombinationStock($uid, $activity_id, $cartNum, $unique);
                 break;
-			case 4://积分
+			case 4://gaga币
 				/** @var StoreIntegralServices $storeIntegralServices */
 				$storeIntegralServices = app()->make(StoreIntegralServices::class);
 				[$attrInfo, $unique, $productInfo] = $storeIntegralServices->checkoutProductStock($uid, $activity_id, $cartNum, $unique);
@@ -930,7 +930,7 @@ class StoreCartServices extends BaseServices
                 $productIds[] = $cart['product_id'];
                 $suk = '';
                 $cart_type = $cart['type'];
-                //类型 0:普通、1：秒杀、2:砍价、3:拼团、4:积分、5:套餐、6:预售、7:新人礼、8:抽奖、9:拼单、10:桌码
+                //类型 0:普通、1：秒杀、2:砍价、3:拼团、4:gaga币、5:套餐、6:预售、7:新人礼、8:抽奖、9:拼单、10:桌码
                 switch ($cart['type']) {
                     case 0:
                     case 6:

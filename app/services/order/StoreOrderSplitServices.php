@@ -472,7 +472,7 @@ class StoreOrderSplitServices extends BaseServices
                 $order_update['pay_price'] = bcmul((string)bcdiv((string)$pay_price, (string)$order_pay_price, 4), (string)$order_update['pay_price'], 2);
             }
         }
-        if (!$pre_pay_price) {//最后一个订单保留赠送 积分 优惠券信息
+        if (!$pre_pay_price) {//最后一个订单保留赠送 gaga币 优惠券信息
             $order_update['give_integral'] = 0;
             $order_update['give_coupon'] = '';
         }
@@ -502,7 +502,7 @@ class StoreOrderSplitServices extends BaseServices
     }
 
     /**
-     * 部分发货重新计算订单商品：实际金额、优惠、积分等金额
+     * 部分发货重新计算订单商品：实际金额、优惠、gaga币等金额
      * @param int $cart_num
      * @param array $cart_info
      * @param int $i

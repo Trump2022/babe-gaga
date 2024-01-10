@@ -32,7 +32,7 @@ class ActivateLevel implements ListenerInterface
     {
         [$uid] = $event;
 
-		//会员卡激活赠送积分
+		//会员卡激活赠送gaga币
 		UserIntegralJob::dispatchDo('levelGiveIntegral', [$uid]);
 		//会员卡激活赠送余额
 		UserMoneyJob::dispatchDo('levelGiveMoney', [$uid]);

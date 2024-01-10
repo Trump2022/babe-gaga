@@ -201,7 +201,7 @@ class WriteOffOrderServices extends BaseServices
             $orderInfo = $this->dao->getOne(['id' => $oid, 'is_del' => 0], '*', ['user', 'pink']);
             $order_type = 'order';
             if (!$orderInfo) {
-				//积分兑换订单
+				//gaga币兑换订单
                 /** @var StoreIntegralOrderServices $storeIntegralOrderServices */
                 $storeIntegralOrderServices = app()->make(StoreIntegralOrderServices::class);
                 $orderInfo = $storeIntegralOrderServices->getOne(['id' => $oid]);
@@ -212,7 +212,7 @@ class WriteOffOrderServices extends BaseServices
             $orderInfo = $this->dao->getOne(['verify_code' => $code, 'is_del' => 0], '*', ['user', 'pink']);
             $order_type = 'order';
             if (!$orderInfo) {
-                //积分兑换订单
+                //gaga币兑换订单
                 /** @var StoreIntegralOrderServices $storeIntegralOrderServices */
                 $storeIntegralOrderServices = app()->make(StoreIntegralOrderServices::class);
                 $orderInfo = $storeIntegralOrderServices->getOne(['verify_code' => $code]);
@@ -450,7 +450,7 @@ class WriteOffOrderServices extends BaseServices
 				return $data;
             });
 			event('order.writeoff', [$orderInfo, $auth, $data, $cartIds, $cartInfo]);
-        } else {//积分订单
+        } else {//gaga币订单
             if ($orderInfo['status'] == 3) {
                 throw new ValidateException('订单已核销');
             }

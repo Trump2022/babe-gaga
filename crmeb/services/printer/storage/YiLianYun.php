@@ -109,7 +109,7 @@ class YiLianYun extends BasePrinter
 姓    名: {$orderInfo['real_name']}\r
 电    话: {$orderInfo['user_phone']}\r
 地    址: {$orderInfo['user_address']}\r
-赠送积分: {$orderInfo['gain_integral']}\r
+赠送gaga币: {$orderInfo['gain_integral']}\r
 订单备注：{$orderInfo['mark']}\r
 *************商品***************\r
 {$goodsStr}
@@ -176,7 +176,7 @@ CONTENT;
     }
 
     /**
-     * 积分商城打印内容
+     * gaga币商城打印内容
      * @param array $config
      * @return YiLianYun
      */
@@ -184,7 +184,7 @@ CONTENT;
     {
         $timeYmd = date('Y-m-d', time());
         $timeHis = date('H:i:s', time());
-        $goodsStr = '<table><tr><td>商品名称</td><td>数量</td><td>单价</td><td>总积分</td></tr>';
+        $goodsStr = '<table><tr><td>商品名称</td><td>数量</td><td>单价</td><td>总gaga币</td></tr>';
         $goodsStr .= '<tr>';
         $goodsStr .= "<td>{$config['orderInfo']['store_name']}</td><td>{$config['orderInfo']['total_num']}</td><td>{$config['orderInfo']['price']}</td><td>{$config['orderInfo']['total_price']}</td>";
         $goodsStr .= '</tr>';
@@ -205,7 +205,7 @@ CONTENT;
 {$goodsStr}
 ********************************\r
 <FH>
-<right>合计：{$orderInfo['total_price']}积分</right>           
+<right>合计：{$orderInfo['total_price']}gaga币</right>           
 </FH>
 <FS><center> ** 完 **</center></FS>
 CONTENT;

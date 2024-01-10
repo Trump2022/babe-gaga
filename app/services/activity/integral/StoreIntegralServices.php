@@ -62,7 +62,7 @@ class StoreIntegralServices extends BaseServices
     }
 
     /**
-     * 积分商品添加
+     * gaga币商品添加
      * @param int $id
      * @param array $data
      */
@@ -195,7 +195,7 @@ class StoreIntegralServices extends BaseServices
     }
 
     /**
-     * 积分商品列表
+     * gaga币商品列表
      * @param array $where
      * @return array
      */
@@ -219,7 +219,7 @@ class StoreIntegralServices extends BaseServices
             throw new ValidateException('查看的商品不存在!');
         }
         if ($info->is_del) {
-            throw new ValidateException('您查看的积分商品已被删除!');
+            throw new ValidateException('您查看的gaga币商品已被删除!');
         }
         $info['price'] = floatval($info['price']);
         /** @var StoreDescriptionServices $storeDescriptionServices */
@@ -257,7 +257,7 @@ class StoreIntegralServices extends BaseServices
             $header[] = ['title' => $item['value'], 'key' => 'value' . ($key + 1), 'align' => 'center', 'minWidth' => 80];
         }
         $header[] = ['title' => '图片', 'slot' => 'pic', 'align' => 'center', 'minWidth' => 120];
-        $header[] = ['title' => '兑换积分', 'key' => 'integral', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
+        $header[] = ['title' => '兑换gaga币', 'key' => 'integral', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
         $header[] = ['title' => '金额', 'key' => 'price', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
         $header[] = ['title' => '库存', 'key' => 'stock', 'align' => 'center', 'minWidth' => 80];
         $header[] = ['title' => '兑换次数', 'key' => 'quota', 'type' => 1, 'align' => 'center', 'minWidth' => 80];
@@ -312,7 +312,7 @@ class StoreIntegralServices extends BaseServices
     }
 
     /**
-     * 积分商品详情
+     * gaga币商品详情
      * @param Request $request
      * @param int $id
      * @return mixed
@@ -380,9 +380,9 @@ class StoreIntegralServices extends BaseServices
         if ($unique) {
             /** @var StoreProductAttrValueServices $skuValueServices */
             $skuValueServices = app()->make(StoreProductAttrValueServices::class);
-            //减去积分商品的sku库存增加销量
+            //减去gaga币商品的sku库存增加销量
             $res = false !== $skuValueServices->dao->decStockIncSalesDecQuota(['product_id' => $integralId, 'unique' => $unique, 'type' => 4], $num);
-            //减去积分商品库存
+            //减去gaga币商品库存
             $res = $res && $this->dao->decStockIncSales(['id' => $integralId, 'type' => 4], $num);
             //获取拼团的sku
             $sku = $skuValueServices->value(['product_id' => $integralId, 'unique' => $unique, 'type' => 4], 'suk');
@@ -399,7 +399,7 @@ class StoreIntegralServices extends BaseServices
     }
 
     /**
-     * 获取一条积分商品
+     * 获取一条gaga币商品
      * @param $id
      * @return mixed
      */
@@ -409,7 +409,7 @@ class StoreIntegralServices extends BaseServices
     }
 
 	/**
-	 * 验证积分商品下单库存限量
+	 * 验证gaga币商品下单库存限量
 	 * @param int $uid
 	 * @param int $integralId
 	 * @param int $num
@@ -454,7 +454,7 @@ class StoreIntegralServices extends BaseServices
     }
 
     /**
-     * 获取推荐积分商品
+     * 获取推荐gaga币商品
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -468,7 +468,7 @@ class StoreIntegralServices extends BaseServices
     }
 
     /**
-     * 获取全部积分商品
+     * 获取全部gaga币商品
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException

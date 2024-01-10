@@ -259,10 +259,10 @@ Route::group('adminapi', function () {
         Route::get('look_xcx_code', 'v1.agent.AgentManage/look_xcx_code')->option(['real_name' => '查看小程序推广二维码']);
         //查看H5推广二维码
         Route::get('look_h5_code', 'v1.agent.AgentManage/look_h5_code')->option(['real_name' => '查看H5推广二维码']);
-        //积分配置编辑表单
-        Route::get('config/edit_basics', 'v1.system.config.SystemConfig/edit_basics')->option(['real_name' => '积分配置编辑表单']);
-        //积分配置保存数据
-        Route::post('config/save_basics', 'v1.system.config.SystemConfig/save_basics')->option(['real_name' => '积分配置保存数据']);
+        //gaga币配置编辑表单
+        Route::get('config/edit_basics', 'v1.system.config.SystemConfig/edit_basics')->option(['real_name' => 'gaga币配置编辑表单']);
+        //gaga币配置保存数据
+        Route::post('config/save_basics', 'v1.system.config.SystemConfig/save_basics')->option(['real_name' => 'gaga币配置保存数据']);
         //分销员等级资源路由
         Route::resource('level', 'v1.agent.AgentLevel')->name('AgentLevelResource')->option(['real_name' => [
             'index' => '获取分销等级列表',
@@ -587,8 +587,8 @@ Route::group('adminapi', function () {
         Route::get('userFinance', 'v1.other.export.ExportExcel/userFinance')->option(['real_name' => '用户资金导出']);
         //用户佣金
         Route::get('userCommission', 'v1.other.export.ExportExcel/userCommission')->option(['real_name' => '用户佣金导出']);
-        //用户积分
-        Route::get('userPoint', 'v1.other.export.ExportExcel/userPoint')->option(['real_name' => '用户积分导出']);
+        //用户gaga币
+        Route::get('userPoint', 'v1.other.export.ExportExcel/userPoint')->option(['real_name' => '用户gaga币导出']);
         //用户充值
         Route::get('userRecharge', 'v1.other.export.ExportExcel/userRecharge')->option(['real_name' => '用户充值导出']);
         //分销员推广列表
@@ -613,8 +613,8 @@ Route::group('adminapi', function () {
         Route::get('batchOrderDelivery/:id/:queueType/:cacheType', 'v1.other.export.ExportExcel/batchOrderDelivery')->option(['real_name' => '批量发货记录导出']);
         //物流公司对照表导出
         Route::get('expressList', 'v1.other.export.ExportExcel/expressList')->option(['real_name' => '物流公司对照表导出']);
-        //积分兑换订单导出
-        Route::get('storeIntegralOrder', 'v1.other.export.ExportExcel/storeIntegralOrder')->option(['real_name' => '积分兑换订单导出']);
+        //gaga币兑换订单导出
+        Route::get('storeIntegralOrder', 'v1.other.export.ExportExcel/storeIntegralOrder')->option(['real_name' => 'gaga币兑换订单导出']);
         //门店账单导出
         Route::get('storeFinanceRecord', 'v1.other.export.ExportExcel/financeRecord')->option(['real_name' => '门店账单导出']);
         //门店流水导出
@@ -962,65 +962,65 @@ Route::group('adminapi', function () {
         //秒杀商品订单
         Route::get('seckill/statistics/order/:id','v1.marketing.seckill.StoreSeckill/seckillOrder')->option(['real_name' => '秒杀活动订单']);
 
-        //积分日志列表
-        Route::get('integral', 'v1.marketing.integral.UserPoint/index')->option(['real_name' => '积分日志列表']);
-        //积分日志头部数据
-        Route::get('integral/statistics', 'v1.marketing.integral.UserPoint/integral_statistics')->option(['real_name' => '积分日志头部数据']);
-        //积分配置编辑表单
-        Route::get('integral_config/edit_basics', 'v1.system.config.SystemConfig/edit_basics')->option(['real_name' => '积分配置编辑表单']);
-        //积分配置保存数据
-        Route::post('integral_config/save_basics', 'v1.system.config.SystemConfig/save_basics')->option(['real_name' => '积分配置保存数据']);
-        //积分商品列表
-        Route::get('integral_product', 'v1.marketing.integral.StoreIntegral/index')->option(['real_name' => '积分商品列表']);
-        //积分商品批量保存
-        Route::post('integral/batch', 'v1.marketing.integral.StoreIntegral/batch_add')->option(['real_name' => '积分商品批量保存']);
-        //积分商品新增或编辑
-        Route::post('integral/:id', 'v1.marketing.integral.StoreIntegral/save')->option(['real_name' => '积分商品新增或编辑']);
-        //积分商品详情
-        Route::get('integral/:id', 'v1.marketing.integral.StoreIntegral/read')->option(['real_name' => '积分商品详情']);
-        //修改积分商品状态
-        Route::put('integral/set_show/:id/:is_show', 'v1.marketing.integral.StoreIntegral/set_show')->option(['real_name' => '修改积分商品状态']);
-        //积分商品删除
-        Route::delete('integral/:id', 'v1.marketing.integral.StoreIntegral/delete')->option(['real_name' => '积分商品删除']);
-        //积分商城订单列表
-        Route::get('integral/order/list', 'v1.marketing.integral.StoreIntegralOrder/lst')->option(['real_name' => '积分商城订单列表']);
-        //积分商城订单数据
-        Route::get('integral/order/chart', 'v1.marketing.integral.StoreIntegralOrder/chart')->option(['real_name' => '积分商城订单数据']);
-        //积分商城订单详情数据
-        Route::get('integral/order/info/:id', 'v1.marketing.integral.StoreIntegralOrder/order_info')->option(['real_name' => '积分商城订单详情数据']);
-        //修改积分商品订单备注信息
-        Route::put('integral/order/remark/:id', 'v1.marketing.integral.StoreIntegralOrder/remark')->option(['real_name' => '修改积分商品订单备注信息']);
-        //获取积分订单状态
-        Route::get('integral/order/status/:id', 'v1.marketing.integral.StoreIntegralOrder/status')->option(['real_name' => '获取积分订单状态']);
-        //删除积分订单
-        Route::delete('integral/order/del/:id', 'v1.marketing.integral.StoreIntegralOrder/del')->option(['real_name' => '删除积分订单']);
-        //积分订单发送货
-        Route::put('integral/order/delivery/:id', 'v1.marketing.integral.StoreIntegralOrder/update_delivery')->option(['real_name' => '积分订单发送货']);
-        //获取积分订单配送信息表单
-        Route::get('integral/order/distribution/:id', 'v1.marketing.integral.StoreIntegralOrder/distribution')->option(['real_name' => '获取积分订单配送信息表单']);
-        //修改积分订单配送信息
-        Route::put('integral/order/distribution/:id', 'v1.marketing.integral.StoreIntegralOrder/update_distribution')->option(['real_name' => '修改积分订单配送信息']);
-        //积分订单确认收货
-        Route::put('integral/order/take/:id', 'v1.marketing.integral.StoreIntegralOrder/take_delivery')->option(['real_name' => '积分订单确认收货']);
-        //积分订单获取物流公司
-        Route::get('integral/order/express_list', 'v1.marketing.integral.StoreIntegralOrder/express')->option(['real_name' => '积分订单获取物流公司']);
-        //积分订单快递公司电子面单模版
-        Route::get('integral/order/express/temp', 'v1.marketing.integral.StoreIntegralOrder/express_temp')->option(['real_name' => '积分订单快递公司电子面单模版']);
-        //积分订单获取物流信息
-        Route::get('integral/order/express/:id', 'v1.marketing.integral.StoreIntegralOrder/get_express')->option(['real_name' => '积分订单获取物流信息']);
-        //打印积分订单
-        Route::get('integral/order/print/:id', 'v1.marketing.integral.StoreIntegralOrder/order_print')->option(['real_name' => '打印积分订单']);
-        //积分订单列表获取配送员
-        Route::get('integral/order/delivery/list', 'v1.order.DeliveryService/get_delivery_list')->option(['real_name' => '积分订单列表获取配送员']);
-        //积分订单获取面单默认配置信息
-        Route::get('integral/order/sheet_info', 'v1.marketing.integral.StoreIntegralOrder/getDeliveryInfo')->option(['real_name' => '积分订单获取面单默认配置信息']);
-        //积分记录
-        Route::get('point_record', 'v1.marketing.integral.UserPoint/pointRecord')->option(['read_name' => '积分记录列表']);
-        Route::post('point_record/remark/:id', 'v1.marketing.integral.UserPoint/pointRecordRemark')->option(['read_name' => '积分记录列表备注']);
-        Route::get('point/get_basic', 'v1.marketing.integral.UserPoint/getBasic')->option(['read_name' => '积分统计基本信息']);
-        Route::get('point/get_trend', 'v1.marketing.integral.UserPoint/getTrend')->option(['read_name' => '积分统计趋势图']);
-        Route::get('point/get_channel', 'v1.marketing.integral.UserPoint/getChannel')->option(['read_name' => '积分来源统计']);
-        Route::get('point/get_type', 'v1.marketing.integral.UserPoint/getType')->option(['read_name' => '积分消耗统计']);
+        //gaga币日志列表
+        Route::get('integral', 'v1.marketing.integral.UserPoint/index')->option(['real_name' => 'gaga币日志列表']);
+        //gaga币日志头部数据
+        Route::get('integral/statistics', 'v1.marketing.integral.UserPoint/integral_statistics')->option(['real_name' => 'gaga币日志头部数据']);
+        //gaga币配置编辑表单
+        Route::get('integral_config/edit_basics', 'v1.system.config.SystemConfig/edit_basics')->option(['real_name' => 'gaga币配置编辑表单']);
+        //gaga币配置保存数据
+        Route::post('integral_config/save_basics', 'v1.system.config.SystemConfig/save_basics')->option(['real_name' => 'gaga币配置保存数据']);
+        //gaga币商品列表
+        Route::get('integral_product', 'v1.marketing.integral.StoreIntegral/index')->option(['real_name' => 'gaga币商品列表']);
+        //gaga币商品批量保存
+        Route::post('integral/batch', 'v1.marketing.integral.StoreIntegral/batch_add')->option(['real_name' => 'gaga币商品批量保存']);
+        //gaga币商品新增或编辑
+        Route::post('integral/:id', 'v1.marketing.integral.StoreIntegral/save')->option(['real_name' => 'gaga币商品新增或编辑']);
+        //gaga币商品详情
+        Route::get('integral/:id', 'v1.marketing.integral.StoreIntegral/read')->option(['real_name' => 'gaga币商品详情']);
+        //修改gaga币商品状态
+        Route::put('integral/set_show/:id/:is_show', 'v1.marketing.integral.StoreIntegral/set_show')->option(['real_name' => '修改gaga币商品状态']);
+        //gaga币商品删除
+        Route::delete('integral/:id', 'v1.marketing.integral.StoreIntegral/delete')->option(['real_name' => 'gaga币商品删除']);
+        //gaga币商城订单列表
+        Route::get('integral/order/list', 'v1.marketing.integral.StoreIntegralOrder/lst')->option(['real_name' => 'gaga币商城订单列表']);
+        //gaga币商城订单数据
+        Route::get('integral/order/chart', 'v1.marketing.integral.StoreIntegralOrder/chart')->option(['real_name' => 'gaga币商城订单数据']);
+        //gaga币商城订单详情数据
+        Route::get('integral/order/info/:id', 'v1.marketing.integral.StoreIntegralOrder/order_info')->option(['real_name' => 'gaga币商城订单详情数据']);
+        //修改gaga币商品订单备注信息
+        Route::put('integral/order/remark/:id', 'v1.marketing.integral.StoreIntegralOrder/remark')->option(['real_name' => '修改gaga币商品订单备注信息']);
+        //获取gaga币订单状态
+        Route::get('integral/order/status/:id', 'v1.marketing.integral.StoreIntegralOrder/status')->option(['real_name' => '获取gaga币订单状态']);
+        //删除gaga币订单
+        Route::delete('integral/order/del/:id', 'v1.marketing.integral.StoreIntegralOrder/del')->option(['real_name' => '删除gaga币订单']);
+        //gaga币订单发送货
+        Route::put('integral/order/delivery/:id', 'v1.marketing.integral.StoreIntegralOrder/update_delivery')->option(['real_name' => 'gaga币订单发送货']);
+        //获取gaga币订单配送信息表单
+        Route::get('integral/order/distribution/:id', 'v1.marketing.integral.StoreIntegralOrder/distribution')->option(['real_name' => '获取gaga币订单配送信息表单']);
+        //修改gaga币订单配送信息
+        Route::put('integral/order/distribution/:id', 'v1.marketing.integral.StoreIntegralOrder/update_distribution')->option(['real_name' => '修改gaga币订单配送信息']);
+        //gaga币订单确认收货
+        Route::put('integral/order/take/:id', 'v1.marketing.integral.StoreIntegralOrder/take_delivery')->option(['real_name' => 'gaga币订单确认收货']);
+        //gaga币订单获取物流公司
+        Route::get('integral/order/express_list', 'v1.marketing.integral.StoreIntegralOrder/express')->option(['real_name' => 'gaga币订单获取物流公司']);
+        //gaga币订单快递公司电子面单模版
+        Route::get('integral/order/express/temp', 'v1.marketing.integral.StoreIntegralOrder/express_temp')->option(['real_name' => 'gaga币订单快递公司电子面单模版']);
+        //gaga币订单获取物流信息
+        Route::get('integral/order/express/:id', 'v1.marketing.integral.StoreIntegralOrder/get_express')->option(['real_name' => 'gaga币订单获取物流信息']);
+        //打印gaga币订单
+        Route::get('integral/order/print/:id', 'v1.marketing.integral.StoreIntegralOrder/order_print')->option(['real_name' => '打印gaga币订单']);
+        //gaga币订单列表获取配送员
+        Route::get('integral/order/delivery/list', 'v1.order.DeliveryService/get_delivery_list')->option(['real_name' => 'gaga币订单列表获取配送员']);
+        //gaga币订单获取面单默认配置信息
+        Route::get('integral/order/sheet_info', 'v1.marketing.integral.StoreIntegralOrder/getDeliveryInfo')->option(['real_name' => 'gaga币订单获取面单默认配置信息']);
+        //gaga币记录
+        Route::get('point_record', 'v1.marketing.integral.UserPoint/pointRecord')->option(['read_name' => 'gaga币记录列表']);
+        Route::post('point_record/remark/:id', 'v1.marketing.integral.UserPoint/pointRecordRemark')->option(['read_name' => 'gaga币记录列表备注']);
+        Route::get('point/get_basic', 'v1.marketing.integral.UserPoint/getBasic')->option(['read_name' => 'gaga币统计基本信息']);
+        Route::get('point/get_trend', 'v1.marketing.integral.UserPoint/getTrend')->option(['read_name' => 'gaga币统计趋势图']);
+        Route::get('point/get_channel', 'v1.marketing.integral.UserPoint/getChannel')->option(['read_name' => 'gaga币来源统计']);
+        Route::get('point/get_type', 'v1.marketing.integral.UserPoint/getType')->option(['read_name' => 'gaga币消耗统计']);
 
 
         //添加或修改优惠套餐商品
@@ -1347,10 +1347,10 @@ Route::group('adminapi', function () {
         Route::put('no_refund/:id', 'v1.order.StoreOrder/update_un_refund')->name('StoreOrderorUpdateNoRefund')->option(['real_name' => '修改不退款理由']);
         //线下支付
         Route::post('pay_offline/:id', 'v1.order.StoreOrder/pay_offline')->name('StoreOrderorPayOffline')->option(['real_name' => '线下支付']);
-        //获取退积分表单
-        Route::get('refund_integral/:id', 'v1.order.StoreOrder/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退积分表单']);
-        //修改退积分
-        Route::put('refund_integral/:id', 'v1.order.StoreOrder/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退积分']);
+        //获取退gaga币表单
+        Route::get('refund_integral/:id', 'v1.order.StoreOrder/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退gaga币表单']);
+        //修改退gaga币
+        Route::put('refund_integral/:id', 'v1.order.StoreOrder/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退gaga币']);
         //修改备注信息
         Route::put('remark/:id', 'v1.order.StoreOrder/remark')->name('StoreOrderorRemark')->option(['real_name' => '修改备注信息']);
         //获取订单状态
@@ -2183,10 +2183,10 @@ Route::group('adminapi', function () {
         Route::put('save_give_level_time/:id', 'v1.user.user/save_give_level_time')->option(['real_name' => '执行赠送付费会员时长']);
         //清除用户等级
         Route::delete('del_level/:id', 'v1.user.user/del_level')->option(['real_name' => '清除用户等级']);
-        //修改积分余额表单
-        Route::get('edit_other/:id', 'v1.user.user/edit_other')->option(['real_name' => '修改积分余额表单']);
-        //修改积分余额
-        Route::put('update_other/:id', 'v1.user.user/update_other')->option(['real_name' => '修改积分余额']);
+        //修改gaga币余额表单
+        Route::get('edit_other/:id', 'v1.user.user/edit_other')->option(['real_name' => '修改gaga币余额表单']);
+        //修改gaga币余额
+        Route::put('update_other/:id', 'v1.user.user/update_other')->option(['real_name' => '修改gaga币余额']);
         //修改用户状态
         Route::put('set_status/:status/:id', 'v1.user.user/set_status')->option(['real_name' => '修改用户状态']);
         //获取指定用户的信息
@@ -2453,10 +2453,10 @@ Route::group('adminapi', function () {
             Route::put('no_refund/:id', 'v1.supplier.StoreOrder/update_un_refund')->name('StoreOrderorUpdateNoRefund')->option(['real_name' => '修改不退款理由']);
             //线下支付
             Route::post('pay_offline/:id', 'v1.supplier.StoreOrder/pay_offline')->name('StoreOrderorPayOffline')->option(['real_name' => '线下支付']);
-            //获取退积分表单
-            Route::get('refund_integral/:id', 'v1.supplier.StoreOrder/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退积分表单']);
-            //修改退积分
-            Route::put('refund_integral/:id', 'v1.supplier.StoreOrder/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退积分']);
+            //获取退gaga币表单
+            Route::get('refund_integral/:id', 'v1.supplier.StoreOrder/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退gaga币表单']);
+            //修改退gaga币
+            Route::put('refund_integral/:id', 'v1.supplier.StoreOrder/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退gaga币']);
             //更多操作打印电子面单
             Route::get('order_dump/:order_id', 'v1.supplier.StoreOrder/order_dump')->option(['real_name' => '更多操作打印电子面单']);
             //删除单个订单

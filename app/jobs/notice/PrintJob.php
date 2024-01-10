@@ -75,7 +75,7 @@ class PrintJob extends BaseJobs
     }
 
 	/**
-	 * 积分订单小票打印
+	 * gaga币订单小票打印
 	 * @param $id
 	 * @return bool
 	 */

@@ -45,7 +45,7 @@ class LuckLotteryServices extends BaseServices
      * @var string[]
      */
     protected $lottery_factor = [
-        '1' => '积分',
+        '1' => 'gaga币',
         '2' => '余额',
         '3' => '下单支付成功',
         '4' => '订单评价',
@@ -364,7 +364,7 @@ class LuckLotteryServices extends BaseServices
         if (!$lottery) {
             throw new ValidateException('该活动已经下架，请持续关注');
         }
-        //抽奖类型：1:积分2：余额3：下单支付成功4：订单评价5：拉新人
+        //抽奖类型：1:gaga币2：余额3：下单支付成功4：订单评价5：拉新人
         switch ($lottery['factor']) {
             case 1:
                 return $userInfo['integral'] > 0 && $lottery['factor_num'] > 0 ? floor($userInfo['integral'] / $lottery['factor_num']) : 0;
@@ -474,10 +474,10 @@ class LuckLotteryServices extends BaseServices
             throw new ValidateException('该活动状态有误，请联系管理员');
         }
         if ($this->getLotteryNum($uid, $lottery_id, $userInfo, $lottery) < 1) {
-            //抽奖类型：1:积分2：余额3：下单支付成功4：订单评价5：拉新人
+            //抽奖类型：1:gaga币2：余额3：下单支付成功4：订单评价5：拉新人
             switch ($lottery['factor']) {
                 case 1:
-                    throw new ValidateException('积分不足，没有更多抽奖次数');
+                    throw new ValidateException('gaga币不足，没有更多抽奖次数');
                     break;
                 case 2:
                     throw new ValidateException('余额不足，没有更多抽奖次数');
@@ -496,7 +496,7 @@ class LuckLotteryServices extends BaseServices
                     break;
             }
         }
-		if ($lottery['factor'] == 1) {//积分抽奖
+		if ($lottery['factor'] == 1) {//gaga币抽奖
 			/** @var LuckLotteryRecordServices $lotteryRecordServices */
 			$lotteryRecordServices = app()->make(LuckLotteryRecordServices::class);
 			$data = $lotteryRecordServices->getLotteryNum($uid, (int)$lottery['id']);
@@ -519,7 +519,7 @@ class LuckLotteryServices extends BaseServices
 
         try {
             $res = $this->transaction(function () use ($prize, $luckPrizeServices, $uid, $lotteryPrize, $userInfo, $lottery) {
-                //中奖扣除积分、余额
+                //中奖扣除gaga币、余额
                 $this->lotteryFactor($uid, $userInfo, $lottery);
                 //中奖减少奖品数量
                 $luckPrizeServices->decPrizeNum($prize['id'], $prize);
@@ -544,7 +544,7 @@ class LuckLotteryServices extends BaseServices
     }
 
     /**
-     * 抽奖消耗扣除用户积分、余额等
+     * 抽奖消耗扣除用户gaga币、余额等
      * @param int $uid
      * @param array $userInfo
      * @param array $lottery
@@ -556,7 +556,7 @@ class LuckLotteryServices extends BaseServices
         if (!$userInfo || !$lottery) {
             return true;
         }
-        //抽奖类型：1:积分2：余额3：下单支付成功4：订单评价5：拉新人
+        //抽奖类型：1:gaga币2：余额3：下单支付成功4：订单评价5：拉新人
         switch ($lottery['factor']) {
             case 1:
                 if ($userInfo['integral'] > $lottery['factor_num']) {
@@ -570,7 +570,7 @@ class LuckLotteryServices extends BaseServices
                 $userBillServices = app()->make(UserBillServices::class);
                 $userBillServices->income('lottery_use_integral', $uid, (int)$lottery['factor_num'], (int)$integral, $lottery['id']);
                 if (!$userServices->update($uid, ['integral' => $integral], 'uid')) {
-                    throw new ValidateException('抽奖扣除用户积分失败');
+                    throw new ValidateException('抽奖扣除用户gaga币失败');
                 }
                 break;
             case 2:

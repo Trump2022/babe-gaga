@@ -27,11 +27,11 @@ use think\exception\ValidateException;
 class LuckPrizeServices extends BaseServices
 {
     /**
-     * @var array 1：未中奖2：积分3:余额4：红包5:优惠券6：站内商品7：等级经验8：用户等级 9：svip天数
+     * @var array 1：未中奖2：gaga币3:余额4：红包5:优惠券6：站内商品7：等级经验8：用户等级 9：svip天数
      */
     public $prize_type = [
         '1' => '未中奖',
-        '2' => '积分',
+        '2' => 'gaga币',
         '3' => '余额',
         '4' => '红包',
         '5' => '优惠券',
@@ -97,7 +97,7 @@ class LuckPrizeServices extends BaseServices
             $msg = '';
             switch ($data['type']) {
                 case 2:
-                    $msg = '积分';
+                    $msg = 'gaga币';
                     break;
                 case 3:
                     $msg = '余额';

@@ -69,7 +69,7 @@ class StoreCartController
             [['secKillId', 'd'], 0],//秒杀商品编号
             [['bargainId', 'd'], 0],//砍价商品编号
 			[['combinationId', 'd'], 0],//拼团商品编号
-			[['integralId', 'd'], 0],//积分商品编号
+			[['integralId', 'd'], 0],//gaga币商品编号
             [['discountId', 'd'], 0],//优惠套餐编号
             ['discountInfos', []],//优惠套餐商品信息
             [['newcomerId', 'd'], 0],//新人专享商品编号

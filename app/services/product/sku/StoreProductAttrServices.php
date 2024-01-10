@@ -116,10 +116,10 @@ class StoreProductAttrServices extends BaseServices
             }
 			if ($type == 4) {
 				if (!isset($value['integral']) || !is_numeric($value['integral']) || floatval($value['integral']) != $value['integral']) {
-					throw new AdminException('请填写正确的商品兑换积分');
+					throw new AdminException('请填写正确的商品兑换gaga币');
 				}
 				if (isset($value['price']) && $value['price'] <= 0 && isset($value['integral']) && $value['integral'] <= 0) {
-					throw new AdminException('积分商品兑换积分和价格不能同时为空');
+					throw new AdminException('gaga币商品兑换gaga币和价格不能同时为空');
 				}
 			}
             if (!isset($value['stock']) || !is_numeric($value['stock']) || intval($value['stock']) != $value['stock']) {

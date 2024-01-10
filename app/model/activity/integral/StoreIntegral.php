@@ -18,7 +18,7 @@ use crmeb\basic\BaseModel;
 use think\Model;
 
 /**
- * 积分商品Model
+ * gaga币商品Model
  * Class StoreIntegral
  * @package app\model\activity\integral
  */
@@ -197,7 +197,7 @@ class StoreIntegral extends BaseModel
     }
 
     /**
-     * 积分商品名称搜索器
+     * gaga币商品名称搜索器
      * @param Model $query
      * @param $value
      * @param $data

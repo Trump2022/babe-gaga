@@ -16,7 +16,7 @@ use app\dao\BaseDao;
 use app\model\user\UserBill;
 
 /**
- * 积分&经验
+ * gaga币&经验
  * Class UserBilldao
  * @package app\dao\user
  */
@@ -252,7 +252,7 @@ class UserBilldao extends BaseDao
     }
 
 	/**
-	 * 积分趋势
+	 * gaga币趋势
 	 * @param $time
 	 * @param $timeType
 	 * @param $field

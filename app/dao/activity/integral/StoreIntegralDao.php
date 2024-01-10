@@ -16,7 +16,7 @@ use app\dao\BaseDao;
 use app\model\activity\integral\StoreIntegral;
 
 /**
- * 积分商品
+ * gaga币商品
  * Class StoreIntegralDao
  * @package app\dao\activity\integral
  */
@@ -33,7 +33,7 @@ class StoreIntegralDao extends BaseDao
     }
 
     /**
-     * 积分商品列表
+     * gaga币商品列表
      * @param array $where
      * @param int $page
      * @param int $limit
@@ -67,7 +67,7 @@ class StoreIntegralDao extends BaseDao
     }
 
     /**
-     * 获取一条积分商品数据
+     * 获取一条gaga币商品数据
      * @param int $id
      * @param string $field
      * @return array|\think\Model|null

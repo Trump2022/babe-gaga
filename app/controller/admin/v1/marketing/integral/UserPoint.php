@@ -17,7 +17,7 @@ use app\services\activity\integral\UserPointServices;
 use think\facade\App;
 
 /**
- * 积分控制器
+ * gaga币控制器
  * Class UserPoint
  * @package app\controller\admin\v1\markging\integral
  */
@@ -51,7 +51,7 @@ class UserPoint extends AuthController
     }
 
     /**
-     * 获取积分日志头部信息
+     * 获取gaga币日志头部信息
      * @return mixed
      */
     public function integral_statistics()
@@ -65,7 +65,7 @@ class UserPoint extends AuthController
     }
 
 	/**
-	 * 积分记录
+	 * gaga币记录
 	 * @return mixed
 	 */
 	public function pointRecord(UserPointServices $pointServices)
@@ -79,7 +79,7 @@ class UserPoint extends AuthController
 	}
 
 	/**
-	 * 积分记录备注
+	 * gaga币记录备注
 	 * @return mixed
 	 */
 	public function pointRecordRemark(UserPointServices $pointServices, $id = 0)
@@ -92,7 +92,7 @@ class UserPoint extends AuthController
 	}
 
 	/**
-	 * 积分统计基础信息
+	 * gaga币统计基础信息
 	 * @return mixed
 	 */
 	public function getBasic(UserPointServices $pointServices)
@@ -105,7 +105,7 @@ class UserPoint extends AuthController
 	}
 
 	/**
-	 * 积分统计趋势图
+	 * gaga币统计趋势图
 	 * @return mixed
 	 */
 	public function getTrend(UserPointServices $pointServices)
@@ -118,7 +118,7 @@ class UserPoint extends AuthController
 	}
 
 	/**
-	 * 积分来源
+	 * gaga币来源
 	 * @return mixed
 	 */
 	public function getChannel(UserPointServices $pointServices)
@@ -131,7 +131,7 @@ class UserPoint extends AuthController
 	}
 
 	/**
-	 * 积分消耗
+	 * gaga币消耗
 	 * @return mixed
 	 */
 	public function getType(UserPointServices $pointServices)

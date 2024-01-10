@@ -65,7 +65,7 @@ class FeiEYun extends BasePrinter
         $this->printerContent .= '姓   名: ' . $orderInfo['real_name'] . '<BR>';
         $this->printerContent .= '电   话: ' . $orderInfo['user_phone'] . '<BR>';
         $this->printerContent .= '地   址: ' . $orderInfo['user_address'] . '<BR>';
-        $this->printerContent .= '赠送积分: ' . $orderInfo['gain_integral'] . '<BR>';
+        $this->printerContent .= '赠送gaga币: ' . $orderInfo['gain_integral'] . '<BR>';
         $this->printerContent .= '订单备注：' . $orderInfo['mark'] . '<BR>';
         $this->printerContent .= '**************商品**************<BR>';
         $this->printerContent .= '名称           单价  数量 金额<BR>';
@@ -273,7 +273,7 @@ class FeiEYun extends BasePrinter
 	}
 
 	/**
-	 * 积分商城打印内容
+	 * gaga币商城打印内容
 	 * @param array $config
 	 * @return YiLianYun
 	 */
@@ -379,7 +379,7 @@ class FeiEYun extends BasePrinter
 		}
 		$this->printerContent .= '--------------------------------<BR>';
 		$this->printerContent .= '金额：' . $orderInfo['price'] . '元<BR>';
-		$this->printerContent .= '积分：' . $orderInfo['integral'] . '<BR>';
+		$this->printerContent .= 'gaga币：' . $orderInfo['integral'] . '<BR>';
 		return $this;
 	}
 }

@@ -16,7 +16,7 @@ use app\dao\BaseDao;
 use app\model\activity\integral\StoreIntegralOrderStatus;
 
 /**
- * 积分订单状态
+ * gaga币订单状态
  * Class StoreIntegralOrderStatusDao
  * @package app\dao\activity\integral
  */

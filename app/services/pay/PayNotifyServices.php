@@ -47,7 +47,7 @@ class PayNotifyServices
     }
 
     /**
-     * 积分商品 订单支付成功之后
+     * gaga币商品 订单支付成功之后
      * @param string|null $order_id 订单id
      * @return bool
      */
@@ -128,7 +128,7 @@ class PayNotifyServices
     }
 
     /**
-     * 积分商品 支付宝支付异步回调处理事件
+     * gaga币商品 支付宝支付异步回调处理事件
      * @param string|null $order_id
      * @param string|null $trade_no
      * @return bool

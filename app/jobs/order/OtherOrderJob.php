@@ -54,7 +54,7 @@ class OtherOrderJob extends BaseJobs
         try {
             $this->sendMemberIntegral($order);
         } catch (\Throwable $e) {
-            Log::error('消费积分返还失败,失败原因:' . $e->getMessage());
+            Log::error('消费gaga币返还失败,失败原因:' . $e->getMessage());
         }
 
         return true;
@@ -148,7 +148,7 @@ class OtherOrderJob extends BaseJobs
     }
 
     /**
-     * 线下付款奖励积分
+     * 线下付款奖励gaga币
      * @param $order
      * @return bool
      */
@@ -163,7 +163,7 @@ class OtherOrderJob extends BaseJobs
             $userInfo = $userService->getUserInfo($order['uid']);
             if (!$userInfo) return false;
             if ($userInfo['is_money_level'] > 0) {
-                //看是否开启消费返积分翻倍奖励
+                //看是否开启消费返gaga币翻倍奖励
                 /** @var MemberCardServices $memberCardService */
                 $memberCardService = app()->make(MemberCardServices::class);
                 $integral_rule_number = $memberCardService->isOpenMemberCardCache('integral');

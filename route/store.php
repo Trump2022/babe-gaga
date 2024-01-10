@@ -612,10 +612,10 @@ Route::group('storeapi', function () {
         Route::put('no_refund/:id', 'order.Order/update_un_refund')->name('StoreOrderorUpdateNoRefund')->option(['real_name' => '修改不退款理由']);
         //线下支付
         Route::post('pay_offline/:id', 'order.Order/pay_offline')->name('StoreOrderorPayOffline')->option(['real_name' => '线下支付']);
-        //获取退积分表单
-        Route::get('refund_integral/:id', 'order.Order/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退积分表单']);
-        //修改退积分
-        Route::put('refund_integral/:id', 'order.Order/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退积分']);
+        //获取退gaga币表单
+        Route::get('refund_integral/:id', 'order.Order/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退gaga币表单']);
+        //修改退gaga币
+        Route::put('refund_integral/:id', 'order.Order/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退gaga币']);
         //修改备注信息
         Route::put('remark/:id', 'order.Order/remark')->name('StoreOrderorRemark')->option(['real_name' => '修改备注信息']);
         //获取订单状态

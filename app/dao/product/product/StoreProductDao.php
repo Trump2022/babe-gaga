@@ -90,6 +90,10 @@ class StoreProductDao extends BaseDao
                 } else {
                     $query->where('type', '<>', 2);
                 }
+            })->when(isset($where['cate_id']), function ($query) use ($where) {
+                $raw = "FIND_IN_SET({$where['cate_id']}, `cate_id`)";
+                $query->whereRaw($raw);
+
             });
     }
 
@@ -258,9 +262,9 @@ class StoreProductDao extends BaseDao
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getProductLimit(array $where, $limit, $field)
+    public function getProductLimit(array $where, $limit, $field, $order = ['val', 'desc'])
     {
-        return $this->search($where)->field($field)->order('val', 'desc')->limit($limit)->select()->toArray();
+        return $this->search($where)->field($field)->order($order[0], $order[1])->limit($limit)->select()->toArray();
 
     }
 

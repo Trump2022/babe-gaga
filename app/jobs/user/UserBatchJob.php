@@ -116,7 +116,7 @@ class UserBatchJob extends BaseJobs
                         $userServices->saveGiveLevel($uid, $level_id);
                     }
                     break;
-                case 4://积分余额
+                case 4://gaga币余额
                     $data['money'] = (string)$data['money'];
                     $data['integration'] = (string)$data['integration'];
                     $data['is_other'] = true;

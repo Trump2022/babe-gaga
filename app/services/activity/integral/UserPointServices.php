@@ -20,7 +20,7 @@ class UserPointServices extends BaseServices
     }
 
     /**
-     * 积分记录
+     * gaga币记录
      * @param $where
      * @return array
      */
@@ -29,17 +29,17 @@ class UserPointServices extends BaseServices
         $where['category'] = 'integral';
         $status = [
             'invite_user' => '邀新奖励',
-            'system_add' => '系统增加积分',
-            'system_sub' => '系统减少积分',
-            'gain' => '下单赠送积分',
-            'product_gain' => '购买商品赠送积分',
-            'deduction' => '下单积分抵扣',
-            'lottery_use' => '参与抽奖使用积分',
-            'lottery_add' => '抽奖中奖赠送积分',
-            'order_deduction' => '扣除订单下单赠送积分',
-            'storeIntegral_use' => '积分兑换商品',
-            'pay_product_integral_back' => '返还下单使用积分',
-            'sign' => '签到获得积分',
+            'system_add' => '系统增加gaga币',
+            'system_sub' => '系统减少gaga币',
+            'gain' => '下单赠送gaga币',
+            'product_gain' => '购买商品赠送gaga币',
+            'deduction' => '下单gaga币抵扣',
+            'lottery_use' => '参与抽奖使用gaga币',
+            'lottery_add' => '抽奖中奖赠送gaga币',
+            'order_deduction' => '扣除订单下单赠送gaga币',
+            'storeIntegral_use' => 'gaga币兑换商品',
+            'pay_product_integral_back' => '返还下单使用gaga币',
+            'sign' => '签到获得gaga币',
         ];
         [$page, $limit] = $this->getPageValue();
         $list = $this->dao->getList($where, '*', $page, $limit);
@@ -69,7 +69,7 @@ class UserPointServices extends BaseServices
     }
 
     /**
-     * 积分记录备注
+     * gaga币记录备注
      * @param $data
      * @return bool
      */
@@ -153,8 +153,8 @@ class UserPointServices extends BaseServices
         $point_sub = array_column($this->dao->getPointTrend($time, $timeType, 'add_time', 'sum(number)', 'sub'), 'num', 'days');
         $data = $series = [];
         foreach ($xAxis as $item) {
-            $data['积分积累'][] = isset($point_add[$item]) ? floatval($point_add[$item]) : 0;
-            $data['积分消耗'][] = isset($point_sub[$item]) ? floatval($point_sub[$item]) : 0;
+            $data['gaga币积累'][] = isset($point_add[$item]) ? floatval($point_add[$item]) : 0;
+            $data['gaga币消耗'][] = isset($point_sub[$item]) ? floatval($point_sub[$item]) : 0;
         }
         foreach ($data as $key => $item) {
             $series[] = [

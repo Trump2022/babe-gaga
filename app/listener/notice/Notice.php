@@ -235,7 +235,7 @@ class Notice implements ListenerInterface
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendRechargeSuccess($UserRecharge['uid'], $UserRecharge, $UserRecharge['now_money']);
                         break;
-                    //积分
+                    //gaga币
                     case 'integral_accout':
                         $order = $data['order'];
                         $order['gain_integral'] = $data['give_integral'];

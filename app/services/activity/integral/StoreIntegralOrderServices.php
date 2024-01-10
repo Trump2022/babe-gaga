@@ -183,7 +183,7 @@ class StoreIntegralOrderServices extends BaseServices
 
         $total_price = bcmul($productInfo['attrInfo']['price'], $num, 2);
         $total_integral = bcmul($productInfo['attrInfo']['integral'], $num, 2);
-        if ($total_integral > $userInfo['integral']) throw new ValidateException('积分不足!');
+        if ($total_integral > $userInfo['integral']) throw new ValidateException('gaga币不足!');
         if ($total_price <= 0) {
             $paid = 1;
             $orderInfo['pay_time'] = time();
@@ -226,7 +226,7 @@ class StoreIntegralOrderServices extends BaseServices
             }
             //扣库存
             $this->decGoodsStock($productInfo, $num);
-            //减积分
+            //减gaga币
             $this->deductIntegral($userInfo, $total_integral, (int)$userInfo['uid'], $order->id);
             if ($total_price <= 0) {
                 //卡密发放
@@ -250,7 +250,7 @@ class StoreIntegralOrderServices extends BaseServices
     }
 
     /**
-     * 抵扣积分
+     * 抵扣gaga币
      * @param array $userInfo
      * @param bool $useIntegral
      * @param array $priceData
@@ -275,11 +275,11 @@ class StoreIntegralOrderServices extends BaseServices
             $res2 = $res2 && false != $res3;
         }
         if (!$res2) {
-            throw new ValidateException('使用积分抵扣失败!');
+            throw new ValidateException('使用gaga币抵扣失败!');
         }
     }
 
-    /**未支付积分订单退积分
+    /**未支付gaga币订单退gaga币
      * @return bool|void
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
@@ -314,10 +314,10 @@ class StoreIntegralOrderServices extends BaseServices
                         $integral = bcadd((string)$user_integral, (string)$item['integral']);
                         $res1 = $userBillServices->income('integral_refund', $item['uid'], (int)$item['integral'], (int)$integral, $item['id']);
                         //修改订单状态
-                        $res = $res && $res1 && $this->dao->update($item['id'], ['is_del' => 1, 'is_system_del' => 1, 'mark' => '积分订单未支付已超过系统预设时间']);
+                        $res = $res && $res1 && $this->dao->update($item['id'], ['is_del' => 1, 'is_system_del' => 1, 'mark' => 'gaga币订单未支付已超过系统预设时间']);
                     });
                 } catch (\Throwable $e) {
-                    Log::error('未支付积分订单退积分失败,失败原因:' . $e->getMessage(), $e->getTrace());
+                    Log::error('未支付gaga币订单退gaga币失败,失败原因:' . $e->getMessage(), $e->getTrace());
                 }
             }
         }
@@ -387,7 +387,7 @@ class StoreIntegralOrderServices extends BaseServices
                         if ($orderInfo['total_price'] > 0) {
                             $content .= '支付金额' . $orderInfo['total_price'] . '元，';
                         } elseif ($orderInfo['total_integral'] > 0) {
-                            $content .= '支付积分' . $orderInfo['total_integral'];
+                            $content .= '支付gaga币' . $orderInfo['total_integral'];
                         }
                         $content .= '，订单号：' . $orderInfo['order_id'] . '，密钥：' . $disk_info . '，感谢您的光临！';
                         $virtual_info = '密钥自动发放：' . $disk_info;
@@ -406,7 +406,7 @@ class StoreIntegralOrderServices extends BaseServices
                             if ($orderInfo['total_price'] > 0) {
                                 $content .= '支付金额' . $orderInfo['total_price'] . '元，';
                             } elseif ($orderInfo['total_integral'] > 0) {
-                                $content .= '支付积分' . $orderInfo['total_integral'];
+                                $content .= '支付gaga币' . $orderInfo['total_integral'];
                             }
                             $content .= '，订单号：' . $orderInfo['order_id'];
                             $update = [];
@@ -947,7 +947,7 @@ class StoreIntegralOrderServices extends BaseServices
     }
 
     /**
-     * 获取全部积分商品订单
+     * 获取全部gaga币商品订单
      * @return array
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException

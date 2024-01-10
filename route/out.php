@@ -40,7 +40,7 @@ Route::group('outapi', function () {
         Route::post('order/create', 'Order/create')->name('create');//提交订单
         //会员
         Route::get('user/detail/:uid', 'User/index')->name('detail'); //会员详情
-        Route::post('user/update_other/:id', 'User/update_other')->name('update_other');//修改积分余额
+        Route::post('user/update_other/:id', 'User/update_other')->name('update_other');//修改gaga币余额
         Route::post('user/save/:id', 'User/update')->name('update');//用户信息修改
         Route::get('user/address/:uid', 'User/address_list')->name('addressList');//用户地址列表
         Route::get('user/money/:uid', 'User/money')->name('money');  //获取余额详情

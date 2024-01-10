@@ -198,7 +198,7 @@ class StoreOrderCartInfoServices extends BaseServices
     }
 
     /**
-     * 订单创建成功之后计算订单（实际优惠、积分、佣金、上级、上上级）
+     * 订单创建成功之后计算订单（实际优惠、gaga币、佣金、上级、上上级）
      * @param $oid
      * @param array $cartInfo
      * @return bool

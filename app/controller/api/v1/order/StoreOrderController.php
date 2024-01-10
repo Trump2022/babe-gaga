@@ -1184,7 +1184,7 @@ class StoreOrderController
     }
 
     /**
-     * 订单取消   未支付的订单回退积分,回退优惠券,回退库存
+     * 订单取消   未支付的订单回退gaga币,回退优惠券,回退库存
      * @param Request $request
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException

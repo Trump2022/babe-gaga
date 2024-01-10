@@ -71,7 +71,7 @@ class StoreProductAttrValue extends BaseModel
     }
 
     /**
-     * 关联积分商城表
+     * 关联gaga币商城表
      * @return \think\model\relation\HasOne
      */
     public function storeIntegral()

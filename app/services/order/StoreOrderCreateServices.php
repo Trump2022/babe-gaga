@@ -251,7 +251,7 @@ class StoreOrderCreateServices extends BaseServices
                 $couponServices = app()->make(StoreCouponUserServices::class);
                 $couponServices->useCoupon($couponId, (int)$userInfo['uid'], $cartInfo, [], $storeId);
             }
-            //抵扣积分
+            //抵扣gaga币
             $this->deductIntegral($userInfo, $useIntegral, $priceData, (int)$userInfo['uid'], $key);
             //扣库存
             $this->decGoodsStock($cartInfo, $type, $activity_id, $orderInfo['store_id'] ?? 0);
@@ -283,7 +283,7 @@ class StoreOrderCreateServices extends BaseServices
 
 
     /**
-     * 抵扣积分
+     * 抵扣gaga币
      * @param array $userInfo
      * @param bool $useIntegral
      * @param array $priceData
@@ -312,7 +312,7 @@ class StoreOrderCreateServices extends BaseServices
             $res2 = $res2 && false != $res3;
         }
         if (!$res2) {
-            throw new ValidateException('使用积分抵扣失败!');
+            throw new ValidateException('使用gaga币抵扣失败!');
         }
     }
 
@@ -449,7 +449,7 @@ class StoreOrderCreateServices extends BaseServices
             throw new ValidateException('订单商品结算失败');
         }
         //truePice实际支付单价（存在）
-        //几件商品总体优惠 以及积分抵扣金额
+        //几件商品总体优惠 以及gaga币抵扣金额
         foreach ($cartInfo as &$cart) {
             $coupon_price = $cart['coupon_price'] ?? 0;
             $integral_price = $cart['integral_price'] ?? 0;
@@ -596,7 +596,7 @@ class StoreOrderCreateServices extends BaseServices
     }
 
     /**
-     * 计算订单商品积分实际抵扣金额
+     * 计算订单商品gaga币实际抵扣金额
      * @param array $cartInfo
      * @param array $priceData
      * @return array

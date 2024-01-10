@@ -194,7 +194,7 @@ class BranchOrderServices extends BaseServices
         /** @var StoreOrderRefundServices $refundServices */
         $refundServices = app()->make(StoreOrderRefundServices::class);
         $this->transaction(function () use ($refundServices, $order) {
-            //回退积分和优惠卷
+            //回退gaga币和优惠卷
             $res = $refundServices->integralAndCouponBack($order);
             //回退库存和销量
             $res = $res && $refundServices->regressionStock($order);

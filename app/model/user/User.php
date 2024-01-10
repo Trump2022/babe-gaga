@@ -232,7 +232,7 @@ class User extends BaseModel
     }
 
     /**
-     * 关联积分数据
+     * 关联gaga币数据
      * @return \think\model\relation\HasMany
      */
     public function bill()

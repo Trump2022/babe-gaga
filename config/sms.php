@@ -63,7 +63,7 @@ return [
 
                 //退款成功通知
                 'ORDER_REFUND_STATUS'=> 979010,
-                //积分到账通知
+                //gaga币到账通知
                 'INTEGRAL_ACCOUT' => 979009,
                 //佣金到账
                 'ORDER_BROKERAGE' => 979008,

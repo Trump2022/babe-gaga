@@ -199,6 +199,7 @@ class StoreClasses extends AuthController
 			$cateId = array_unique(array_diff($cateId, [0]));
 		}
 		$where['cate_id'] = $cateId;
+        return $this->success($where);
 		unset($where['supplier_id'], $where['store_id']);
         $data = $this->service->getList($where);
         return $this->success($data);

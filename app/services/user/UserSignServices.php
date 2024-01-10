@@ -60,7 +60,7 @@ class UserSignServices extends BaseServices
      * 设置签到数据
      * @param int $uid 用户uid
      * @param string $title 签到说明
-     * @param int $number 签到获得积分
+     * @param int $number 签到获得gaga币
      * @param int $integral_balance
      * @param int $exp_banlance
      * @param int $exp_num
@@ -157,9 +157,9 @@ class UserSignServices extends BaseServices
                 break;
             }
         }
-        //会员签到积分会员奖励
+        //会员签到gaga币会员奖励
         if ($user->is_money_level > 0) {
-            //看是否开启签到积分翻倍奖励
+            //看是否开启签到gaga币翻倍奖励
             /** @var MemberCardServices $memberCardService */
             $memberCardService = app()->make(MemberCardServices::class);
             $sign_rule_number = $memberCardService->isOpenMemberCardCache('sign');
@@ -221,7 +221,7 @@ class UserSignServices extends BaseServices
         [$clear_integral, $clear_time] = $userIntegralServices->getUserClearIntegral($uid, $user);
         $user['clear_integral'] = $clear_integral;
         $user['clear_time'] = $clear_time;
-        //是否统计积分使用情况
+        //是否统计gaga币使用情况
         if ($integral || $all) {
             /** @var UserBillServices $userBill */
             $userBill = app()->make(UserBillServices::class);

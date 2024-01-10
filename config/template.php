@@ -42,7 +42,7 @@ return [
                 //提现成功通知
 //                'USER_EXTRACT' => 'OPENTM405876306',
                 'USER_EXTRACT' => 51729,
-                //积分到账通知
+                //gaga币到账通知
 //                'INTEGRAL_ACCOUT' => 'OPENTM201661503',
                 //佣金到账
 //                'ORDER_BROKERAGE' => 'OPENTM400590844',
@@ -96,7 +96,7 @@ return [
                 'ORDER_REFUND' => 1451,
                 //充值成功
                 'RECHARGE_SUCCESS' => 755,
-                //积分到账提醒
+                //gaga币到账提醒
                 'INTEGRAL_ACCOUT' => 335,
                 //佣金到账
                 'ORDER_BROKERAGE' => 14403,

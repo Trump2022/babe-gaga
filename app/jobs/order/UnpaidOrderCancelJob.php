@@ -54,7 +54,7 @@ class UnpaidOrderCancelJob extends BaseJobs
 
         try {
             $res = $refundServices->transaction(function () use ($orderInfo, $refundServices) {
-                //回退积分和优惠卷
+                //回退gaga币和优惠卷
                 $refundServices->integralAndCouponBack($orderInfo);
                 //回退库存和销量
                 $refundServices->regressionStock($orderInfo);

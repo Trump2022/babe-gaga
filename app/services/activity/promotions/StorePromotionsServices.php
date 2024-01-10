@@ -66,7 +66,7 @@ class StorePromotionsServices extends BaseServices
         'discount_type' => 1,//优惠类型1:满减2:满折
         'n_piece_n_discount' => 3,//n件n折类型：1:第二件半件2:买1送1 3:自定义
         'discount' => 0,//优惠
-        'give_integral' => 0,//赠送积分
+        'give_integral' => 0,//赠送gaga币
         'give_coupon_id' => [],//赠送优惠券ID
         'give_product_id' => [],//赠送商品ID
     ];
@@ -160,7 +160,7 @@ class StorePromotionsServices extends BaseServices
                         }
                         $base .= $p['threshold_type'] == 1 ? '元送' : '件送';
                         if ($p['give_integral']) {
-                            $desc[] = $base . floatval($p['give_integral'] ?? 0) . '积分';
+                            $desc[] = $base . floatval($p['give_integral'] ?? 0) . 'gaga币';
                         }
                         if ($p['give_coupon_id']) {
                             $desc[] = $base . '优惠券';
@@ -1532,7 +1532,7 @@ class StorePromotionsServices extends BaseServices
                 }
             }
 
-            //获取赠送积分、优惠券、商品
+            //获取赠送gaga币、优惠券、商品
             [$cartList, $computedArr, $useGivePromotionsIds] = $this->getPromotionsGive($uid, $cartList, $computedArr, $promotionsDetail, $productDetails, $promotionsArr, $isCart);
             $usePromotionsIds = array_unique(array_merge($usePromotionsIds, $useGivePromotionsIds));
             //整合返回数据

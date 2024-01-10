@@ -69,7 +69,7 @@ class CancelUserJob extends BaseJobs
             $deliveryServices->update(['uid' => $uid], ['is_del' => 1]);
             $storeServiceServices->update(['uid' => $uid], ['is_del' => 1]);
 
-            // 删除订单，删除退款单，删除其他订单，删除积分订单，删除购物车
+            // 删除订单，删除退款单，删除其他订单，删除gaga币订单，删除购物车
             $otherOrderServices->update(['uid' => $uid], ['is_del' => 1]);
             $storeOrderServices->update(['uid' => $uid], ['is_del' => 1]);
             $storeOrderRefundServices->update(['uid' => $uid], ['is_del' => 1]);

@@ -90,7 +90,7 @@ class YuePayServices extends BaseServices
     }
 
     /**
-     * 积分商品订单余额支付
+     * gaga币商品订单余额支付
      * @param array $orderInfo
      * @param $uid
      * @return bool[]|string[]
@@ -120,7 +120,7 @@ class YuePayServices extends BaseServices
         $this->transaction(function () use ($services, $orderInfo, $userInfo, $type) {
             $res = false !== $services->bcDec($userInfo['uid'], 'now_money', $orderInfo['total_price'], 'uid');
             switch ($type) {
-                case 'pay_integral_product'://积分商品余额
+                case 'pay_integral_product'://gaga币商品余额
                     $id = $orderInfo['id'] ?? 0;
                     /** @var StoreIntegralOrderServices $orderSerives */
                     $orderSerives = app()->make(StoreIntegralOrderServices::class);

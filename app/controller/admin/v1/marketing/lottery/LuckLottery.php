@@ -124,10 +124,10 @@ class LuckLottery extends AuthController
             return $this->fail('请添加奖品');
         }
         if (in_array($data['factor'], [1, 2]) && !$data['factor_num']) {
-            return $this->fail('请填写消耗' . ($data['factor'] == '1' ? '积分' : '余额') . '数量');
+            return $this->fail('请填写消耗' . ($data['factor'] == '1' ? 'gaga币' : '余额') . '数量');
         }
         if ($data['factor'] == 1 && $data['lottery_num'] > $data['total_lottery_num']) {
-            return $this->fail('积分抽奖时每天抽奖次数不能大于总次数');
+            return $this->fail('gaga币抽奖时每天抽奖次数不能大于总次数');
         }
 		$this->services->add($data);
         return $this->success( '保存成功');
@@ -185,10 +185,10 @@ class LuckLottery extends AuthController
             return $this->fail('请添加奖品');
         }
         if (in_array($data['factor'], [1, 2]) && !$data['factor_num']) {
-            return $this->fail('请填写消耗' . ($data['factor'] == '1' ? '积分' : '余额') . '数量');
+            return $this->fail('请填写消耗' . ($data['factor'] == '1' ? 'gaga币' : '余额') . '数量');
         }
         if ($data['factor'] == 1 && $data['lottery_num'] > $data['total_lottery_num']) {
-            return $this->fail('积分抽奖时每天抽奖次数不能大于总次数');
+            return $this->fail('gaga币抽奖时每天抽奖次数不能大于总次数');
         }
 		$this->services->edit((int)$id, $data);
         return $this->success('保存成功');

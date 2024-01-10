@@ -64,7 +64,7 @@ class LuckLotteryController
                 $user_record = $lotteryRecordServices->getWinList(['lottery_id' => $lottery['id'], 'uid' => $uid]);
             }
         }
-		if ($lottery['factor'] == 1) {//积分抽奖
+		if ($lottery['factor'] == 1) {//gaga币抽奖
 			$data = $lotteryRecordServices->getLotteryNum($uid, (int)$lottery['id']);
 			$lotteryData['todayCount'] = (int)max(bcsub((string)$lottery['lottery_num'], (string)$data['todayCount'], 0), 0);
 			$lotteryData['totalCount'] = (int)max(bcsub((string)$lottery['total_lottery_num'], (string)$data['totalCount'], 0), 0);

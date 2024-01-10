@@ -357,10 +357,10 @@ Route::group('supplierapi', function () {
         Route::put('no_refund/:id', 'Order/update_un_refund')->name('StoreOrderorUpdateNoRefund')->option(['real_name' => '修改不退款理由']);
         //线下支付
         Route::post('pay_offline/:id', 'Order/pay_offline')->name('StoreOrderorPayOffline')->option(['real_name' => '线下支付']);
-        //获取退积分表单
-        Route::get('refund_integral/:id', 'Order/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退积分表单']);
-        //修改退积分
-        Route::put('refund_integral/:id', 'Order/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退积分']);
+        //获取退gaga币表单
+        Route::get('refund_integral/:id', 'Order/refund_integral')->name('StoreOrderorRefundIntegral')->option(['real_name' => '获取退gaga币表单']);
+        //修改退gaga币
+        Route::put('refund_integral/:id', 'Order/update_refund_integral')->name('StoreOrderorUpdateRefundIntegral')->option(['real_name' => '修改退gaga币']);
         //更多操作打印电子面单
         Route::get('order_dump/:order_id', 'Order/order_dump')->option(['real_name' => '更多操作打印电子面单']);
         //删除单个订单

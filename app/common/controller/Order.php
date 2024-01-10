@@ -900,7 +900,7 @@ trait Order
     }
 
     /**
-     * 退积分表单获取
+     * 退gaga币表单获取
      * @param StoreOrderRefundServices $services
      * @param $id
      * @return mixed
@@ -914,7 +914,7 @@ trait Order
     }
 
     /**
-     * 退积分保存
+     * 退gaga币保存
      * @param $id
      * @return mixed
      */
@@ -925,26 +925,26 @@ trait Order
             return app('json')->fail('订单不存在');
         }
         if ($orderInfo->is_del) {
-            return app('json')->fail('订单已删除无法退积分');
+            return app('json')->fail('订单已删除无法退gaga币');
         }
         if ($back_integral <= 0) {
-            return app('json')->fail('请输入积分');
+            return app('json')->fail('请输入gaga币');
         }
         if ($orderInfo['use_integral'] == $orderInfo['back_integral']) {
-            return app('json')->fail('已退完积分!不能再积分了');
+            return app('json')->fail('已退完gaga币!不能再gaga币了');
         }
 
         $data['back_integral'] = bcadd((string)$back_integral, (string)$orderInfo['back_integral'], 2);
         $bj = bccomp((string)$orderInfo['use_integral'], (string)$data['back_integral'], 2);
         if ($bj < 0) {
-            return app('json')->fail('退积分大于支付积分，请修改退积分');
+            return app('json')->fail('退gaga币大于支付gaga币，请修改退gaga币');
         }
-        //积分退款处理
+        //gaga币退款处理
         $orderInfo->back_integral = $data['back_integral'];
         if ($services->refundIntegral($orderInfo, $back_integral)) {
-            return app('json')->success('退积分成功');
+            return app('json')->success('退gaga币成功');
         } else {
-            return app('json')->fail('退积分失败');
+            return app('json')->fail('退gaga币失败');
         }
     }
 

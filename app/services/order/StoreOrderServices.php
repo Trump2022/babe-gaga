@@ -62,7 +62,7 @@ class StoreOrderServices extends BaseServices
 		1 => '秒杀',
 		2 => '砍价',
 		3 => '拼团',
-		4 => '积分',
+		4 => 'gaga币',
 		5 => '套餐',
 		6 => '预售',
 		7 => '新人礼',
@@ -649,8 +649,8 @@ class StoreOrderServices extends BaseServices
                         $color = '#457856';
                     }
                     break;
-				case 4://积分
-					$pink_name = $abridge ? '积分' : '[积分订单]';
+				case 4://gaga币
+					$pink_name = $abridge ? 'gaga币' : '[gaga币订单]';
 					$color = '#12c5e9';
 					break;
                 case 5://套餐
@@ -1084,7 +1084,7 @@ HTML;
         $f[] = Form::number('total_postage', '原始邮费', (float)$product->getData('total_postage'))->min(0)->disabled(true);
         $f[] = Form::number('pay_postage', '实际支付邮费', (float)$product->getData('pay_postage') ?: 0)->disabled(true);
         $f[] = Form::number('pay_price', '实际支付金额', (float)$product->getData('pay_price'))->min(0);
-        $f[] = Form::number('gain_integral', '赠送积分', (float)$product->getData('gain_integral') ?: 0)->precision(0);
+        $f[] = Form::number('gain_integral', '赠送gaga币', (float)$product->getData('gain_integral') ?: 0)->precision(0);
         return create_form('修改订单', $f, $this->url('/order/update/' . $id), 'PUT');
     }
 
@@ -1854,12 +1854,12 @@ HTML;
             'change_time' => time()
         ]);
         if ($order->save() && $res) {
-            //未支付和已退款的状态下才可以退积分退库存退优惠券
+            //未支付和已退款的状态下才可以退gaga币退库存退优惠券
             if ($order['_status']['_type'] == 0 || $order['_status']['_type'] == -2) {
                 /** @var StoreOrderRefundServices $refundServices */
                 $refundServices = app()->make(StoreOrderRefundServices::class);
                 $this->transaction(function () use ($order, $refundServices) {
-                    //回退积分和优惠卷
+                    //回退gaga币和优惠卷
                     $res = $refundServices->integralAndCouponBack($order);
                     //回退库存
                     $res = $res && $refundServices->regressionStock($order);
@@ -1894,7 +1894,7 @@ HTML;
         /** @var StoreOrderRefundServices $refundServices */
         $refundServices = app()->make(StoreOrderRefundServices::class);
         $this->transaction(function () use ($refundServices, $order) {
-            //回退积分和优惠卷
+            //回退gaga币和优惠卷
             $res = $refundServices->integralAndCouponBack($order);
             //回退库存和销量
             $res = $res && $refundServices->regressionStock($order);
@@ -2079,7 +2079,7 @@ HTML;
             if (($order['add_time'] + bcmul($secs, '3600', 0)) < time()) {
                 try {
                     $this->transaction(function () use ($order, $refundServices) {
-                        //回退积分和优惠卷
+                        //回退gaga币和优惠卷
                         $res = $refundServices->integralAndCouponBack($order);
                         //回退库存和销量
                         $res = $res && $refundServices->regressionStock($order);

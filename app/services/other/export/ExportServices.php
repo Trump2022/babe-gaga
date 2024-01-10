@@ -167,14 +167,14 @@ class ExportServices extends BaseServices
     }
 
     /**
-     * 用户积分导出
+     * 用户gaga币导出
      * @param $data 导出数据
      */
     public function userPoint($data = [], $type = 1)
     {
-        $header = ['编号', '标题', '变动后积分', '积分变动', '备注', '用户微信昵称', '添加时间'];
-        $title = ['积分日志', '积分日志' . time(), '生成时间：' . date('Y-m-d H:i:s', time())];
-        $filename = '积分日志_' . date('YmdHis', time());
+        $header = ['编号', '标题', '变动后gaga币', 'gaga币变动', '备注', '用户微信昵称', '添加时间'];
+        $title = ['gaga币日志', 'gaga币日志' . time(), '生成时间：' . date('Y-m-d H:i:s', time())];
+        $filename = 'gaga币日志_' . date('YmdHis', time());
         $export = [];
         $filekey = [];
         if (!empty($data)) {
@@ -360,7 +360,7 @@ class ExportServices extends BaseServices
      */
     public function orderFinance($data = [], $type = 1)
     {
-        $header = ['时间', '营业额(元)', '支出(元)', '成本', '优惠', '积分抵扣', '盈利(元)'];
+        $header = ['时间', '营业额(元)', '支出(元)', '成本', '优惠', 'gaga币抵扣', '盈利(元)'];
         $title = ['财务统计', '财务统计', date('Y-m-d H:i:s', time())];
         $filename = '财务统计_' . date('YmdHis', time());
         $export = [];
@@ -372,7 +372,7 @@ class ExportServices extends BaseServices
                 $price = $info['total_price'] + $info['pay_postage'];
                 $zhichu = $info['coupon_price'] + $info['deduction_price'] + $info['cost'];
                 $profit = ($info['total_price'] + $info['pay_postage']) - ($info['coupon_price'] + $info['deduction_price'] + $info['cost']);
-                $deduction = $info['deduction_price'];//积分抵扣
+                $deduction = $info['deduction_price'];//gaga币抵扣
                 $coupon = $info['coupon_price'];//优惠
                 $cost = $info['cost'];//成本
                 $one_data = compact('time', 'price', 'zhichu', 'cost', 'coupon', 'deduction', 'profit');
@@ -403,7 +403,7 @@ class ExportServices extends BaseServices
     public function storeBargain($data = [], $type = 1)
     {
         $header = ['砍价活动名称', '砍价活动简介', '砍价金额', '砍价最低价',
-            '用户每次砍价的次数', '砍价状态', '砍价开启时间', '砍价结束时间', '销量', '库存', '返多少积分', '添加时间'];
+            '用户每次砍价的次数', '砍价状态', '砍价开启时间', '砍价结束时间', '销量', '库存', '返多少gaga币', '添加时间'];
         $title = ['砍价商品导出', '商品信息' . time(), ' 生成时间：' . date('Y-m-d H:i:s', time())];
         $filename = '砍价商品导出_' . date('YmdHis', time());
         $export = [];
@@ -620,7 +620,7 @@ class ExportServices extends BaseServices
     {
         if (!$type) {
             $header = ['订单ID', '订单编号', '性别', '电话', '收货人姓名', '收货人电话', '收货地址', '商品信息', '商品总数',
-                '总价格', '实际支付', '邮费', '会员优惠金额', '优惠卷金额', '积分抵扣金额', '支付状态', '支付时间', '订单状态', '下单时间', '用户备注'];
+                '总价格', '实际支付', '邮费', '会员优惠金额', '优惠卷金额', 'gaga币抵扣金额', '支付状态', '支付时间', '订单状态', '下单时间', '用户备注'];
             $title = ['订单导出', '订单信息' . time(), ' 生成时间：' . date('Y-m-d H:i:s', time())];
             $filename = '订单导出_' . date('YmdHis', time());
         } else {
@@ -1135,7 +1135,7 @@ class ExportServices extends BaseServices
 
 
     /**
-     * 导出积分兑换订单
+     * 导出gaga币兑换订单
      * @param array $data
      * @param int $type
      * @return array|mixed
@@ -1143,8 +1143,8 @@ class ExportServices extends BaseServices
     public function storeIntegralOrder($data = [], $type = 1)
     {
         $header = ['订单号', '电话', '收货人姓名', '收货人电话', '收货地址', '商品信息', '订单状态', '下单时间', '用户备注'];
-        $title = ['积分兑换订单导出', '订单信息' . time(), ' 生成时间：' . date('Y-m-d H:i:s', time())];
-        $filename = '积分兑换订单导出_' . date('YmdHis', time());
+        $title = ['gaga币兑换订单导出', '订单信息' . time(), ' 生成时间：' . date('Y-m-d H:i:s', time())];
+        $filename = 'gaga币兑换订单导出_' . date('YmdHis', time());
         $export = [];
         $filekey = [];
         if (!empty($data)) {

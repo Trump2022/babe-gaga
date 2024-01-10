@@ -185,7 +185,7 @@ class LuckLotteryRecordServices extends BaseServices
 		}
 
         $this->transaction(function () use ($uid, $userInfo, $lottery_record_id, $data, $prize, $userServices, $receive_info) {
-            //奖品类型1：未中奖2：积分3:余额4：红包5:优惠券6：站内商品7：等级经验8：用户等级 9：svip天数
+            //奖品类型1：未中奖2：gaga币3:余额4：红包5:优惠券6：站内商品7：等级经验8：用户等级 9：svip天数
             switch ($prize['type']) {
                 case 1:
                     break;

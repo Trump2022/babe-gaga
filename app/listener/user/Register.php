@@ -66,7 +66,7 @@ class Register implements ListenerInterface
 			UserJob::dispatchDo('setUserNewcomer', [$uid]);
             //新人礼优惠券
 			StoreCouponJob::dispatchDo('NewcomerGiveCoupon', [$uid]);
-			//新人礼积分
+			//新人礼gaga币
 			UserIntegralJob::dispatchDo('newcomerGiveIntegral', [$uid]);
 			//新人礼余额
 			UserMoneyJob::dispatchDo('newcomerGiveMoney', [$uid]);

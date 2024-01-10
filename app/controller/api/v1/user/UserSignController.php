@@ -48,7 +48,7 @@ class UserSignController
         $user = $userServices->getUserInfo($uid);
         //是否是付费会员
         if ($user['is_money_level'] > 0) {
-            //看是否开启签到积分翻倍奖励
+            //看是否开启签到gaga币翻倍奖励
             /** @var MemberCardServices $memberCardService */
             $memberCardService = app()->make(MemberCardServices::class);
             $sign_rule_number = $memberCardService->isOpenMemberCardCache('sign');
@@ -92,7 +92,7 @@ class UserSignController
     {
         $uid = (int)$request->uid();
         if ($integral = $this->services->sign($uid)) {
-            return app('json')->successful('签到获得' . floatval($integral) . '积分', ['integral' => $integral]);
+            return app('json')->successful('签到获得' . floatval($integral) . 'gaga币', ['integral' => $integral]);
         }
         return app('json')->fail('签到失败');
     }
