@@ -739,6 +739,7 @@ class StoreProductServices extends BaseServices
 //        $header[] = ['title' => '会员价', 'slot' => 'vip_price', 'align' => 'center', 'minWidth' => 140];
         $header[] = ['title' => '库存', 'slot' => 'stock', 'align' => 'center', 'minWidth' => 140];
         if ($is_class) {
+            $product_type = 3;
             $header[] = ['title' => '使用次数(次)', 'slot' => 'bar_code', 'align' => 'center', 'minWidth' => 100];
             $header[] = ['title' => '使用时效(天)', 'slot' => 'code', 'align' => 'center', 'minWidth' => 100];
             $header[] = ['title' => '限购数量', 'slot' => 'quota', 'align' => 'center', 'minWidth' => 80];
