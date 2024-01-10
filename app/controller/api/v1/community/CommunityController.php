@@ -12,23 +12,25 @@
 
 namespace app\controller\api\community;
 
-use app\common\repositories\community\CommunityRepository;
-use app\common\repositories\store\order\StoreOrderProductRepository;
-use app\common\repositories\system\RelevanceRepository;
-use app\common\repositories\user\UserHistoryRepository;
-use app\common\repositories\user\UserRelationRepository;
-use app\common\repositories\user\UserRepository;
+use app\Request;
+use app\services\community\CommunityServices;
+//use app\common\repositories\store\order\StoreOrderProductRepository;
+use app\services\system\RelevanceServices;
+//use app\common\repositories\user\UserHistoryRepository;
+//use app\common\repositories\user\UserRelationRepository;
+use app\services\user\UserServices;
 use app\validate\api\CommunityValidate;
-use crmeb\basic\BaseController;
-use crmeb\services\MiniProgramService;
+//use crmeb\services\MiniProgramService;
 use think\App;
-use app\common\repositories\community\CommunityRepository as repository;
 use think\exception\ValidateException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
-class Community extends BaseController
+class CommunityController
 {
     /**
-     * @var CommunityRepository
+     * @var CommunityServices
      */
     protected $repository;
     protected $user;
