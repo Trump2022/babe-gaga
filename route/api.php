@@ -174,7 +174,8 @@ Route::group('api', function () {
 
 		//需要授权接口
 		Route::group(function () {
-
+            //社区
+            Route::get('/community', 'v1.diy.Diy/community');
 		})->middleware(AuthTokenMiddleware::class, true);
 
 	})->middleware(StationOpenMiddleware::class);
@@ -417,6 +418,45 @@ Route::group('api', function () {
 		Route::post('user/apply/supplier/:id', 'v1.system.UserApplyController/userApply')->name('userApplySupplier'); //供应商申请
 		Route::get('user/apply/:id', 'v1.system.UserApplyController/getInfo')->name('userApplyInfo'); //单个申请记录数据
 
+    })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true);
+
+    Route::group('community', function () {
+        Route::post('/create', 'v1.community.Community/create');
+        Route::post('/update/:id', 'v1.community.Community/update');
+        Route::post('/delete/:id', 'v1.community.Community/delete');
+        Route::get('pay_product/lst', 'v1.community.Community/payList');
+        Route::get('rela_product/lst', 'v1.community.Community/relationList');
+        Route::get('hist_product/lst', 'v1.community.Community/historyList');
+
+        Route::post('fans/:id', 'v1.community.Community/setFocus');
+        Route::get('fans/lst', 'v1.community.Community/getUserFans');
+        Route::get('focus/lst', 'v1.community.Community/getUserFocus');
+
+        Route::post('start/:id', 'v1.community.Community/startCommunity');
+        Route::get('start/lst', 'v1.community.Community/getUserStartCommunity');
+
+        Route::post('reply/create/:id', 'v1.community.CommunityReply/create');
+        Route::post('reply/start/:id', 'v1.community.CommunityReply/start');
+
+        Route::get('order/:id', 'v1.community.Community/getSpuByOrder');
+        Route::get('qrcode/:id', 'v1.community.Community/qrcode');
+
+        //社区文章列表
+        Route::get('/lst', 'v1.community.Community/lst');
+        Route::get('/video_lst', 'v1.community.Community/videoShow');
+        //详情
+        Route::get('/show/:id', 'v1.community.Community/show');
+        //用户页
+        Route::get('/user/info/:id', 'v1.community.Community/userInfo');
+        //用户的文章
+        Route::get('/user/community/:id', 'v1.community.Community/userCommunitylst');
+        //用户的视频
+        Route::get('/user/community_video/:id', 'v1.community.Community/userCommunityVideolst');
+        //分类&话题
+        Route::get('category/lst', 'v1.community.CommunityCategory/lst');
+        Route::get('/:id/reply', 'v1.community.CommunityReply/lst');
+
+        Route::get('/focuslst', 'v1.community.Community/focuslst');
     })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true);
 
     /**

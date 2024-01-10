@@ -14,7 +14,12 @@ namespace app\services\community;
 
 use app\dao\community\CommunityTopicDao;
 use app\services\BaseServices;
+use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
+use FormBuilder\Form;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Route;
 
@@ -42,19 +47,43 @@ class CommunityTopicServices extends BaseServices
         $this->dao = $dao;
     }
 
-    public function form(?int $id)
+    public function getList(array $where = []): array
+    {
+        [$page, $limit] = $this->getPageValue();
+        $where['is_del'] = 0;
+        $query = $this->dao->getSearch($where)->with(['category'])->order('sort DESC,create_time DESC');
+        $count = $query->count();
+        $list = $query->page($page, $limit)->select();
+
+        return compact('count','list');
+    }
+
+    /**
+     * @param int|null $id
+     * @return Form
+     * @throws FormBuilderException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/9 18:08
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function form(?int $id): Form
     {
         $formData = [];
-        if (!$id) {
-            $form = Elm::createForm(Route::buildUrl('systemCommunityTopicCreate')->build());
+        if ( ! $id) {
+            $url = '/adminapi/community/topic/create';
         } else {
+            $url = '/adminapi/community/topic/update/'.$id;
             $formData = $this->dao->get($id)->toArray();
-            $form = Elm::createForm(Route::buildUrl('systemCommunityTopicUpdate', ['id' => $id])->build());
         }
+        $form = Elm::createForm(Route::buildUrl($url)->build());
 
         $form->setRule([
             Elm::select('category_id', '社区分类')->options(function () {
-                return app()->make(CommunityCategoryRepository::class)->options();
+                return app()->make(CommunityCategoryServices::class)->options();
             })->requiredNum(),
 
             Elm::frameImage('pic', '图标', '/' . config('admin.admin_prefix') . '/setting/uploadPicture?field=pic&type=1')
@@ -71,21 +100,11 @@ class CommunityTopicServices extends BaseServices
 
     public function delete(int $id)
     {
-        $make = app()->make(CommunityRepository::class);
-        if ( $make->getWhereCount(CommunityRepository::IS_SHOW_WHERE) ) throw new ValidateException('该话题下存在数据');
+        $make = app()->make(CommunityServices::class);
+        if ( $make->getWhereCount(CommunityServices::IS_SHOW_WHERE) ) throw new ValidateException('该话题下存在数据');
         $this->dao->delete($id);
     }
 
-    public function getList(array $where, int $page, int $limit)
-    {
-        $where['is_del'] = 0;
-        $query = $this->dao->getSearch($where)->with(['category'])
-            ->order('sort DESC,create_time DESC');
-        $count = $query->count();
-        $list = $query->page($page, $limit)->select();
-
-        return compact('count','list');
-    }
 
     /**
      * TODO 获取推荐的话题

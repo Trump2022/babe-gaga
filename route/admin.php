@@ -2521,31 +2521,6 @@ Route::group('adminapi', function () {
     ]);
 
     /**
-     * 社区内容
-     */
-    Route::group('community/community', function () {
-        Route::get('lst', 'v1.community.Community/lst')->name('communityList')->option(['real_name' => '文章列表']);
-        Route::get('detail/:id', 'v1.community.Community/detail')->name('communityDetail')->option(['real_name' => '文章详情']);
-
-        Route::get('edit/form/:id', 'v1.community.Community/updateForm')->name('communityUpdateForm')->option(['real_name' => '文章编辑表单']);
-        Route::post('update/:id', 'v1.community.Community/update')->name('communityUpdate')->option(['real_name' => '文章编辑']);
-
-
-        Route::get('status/form/:id', 'v1.community.Community/showForm')->name('communityStatusForm')->option(['real_name' => '修改状态表单']);
-        Route::post('status/:id', 'v1.community.Community/switchStatus')->name('communityStatus')->option(['real_name' => '修改状态']);
-
-        Route::post('show/:id', 'v1.community.Community/switchShow')->name('communityShow')->option(['real_name' => '修改显示状态']);
-
-        Route::get('title', 'v1.community.Community/title')->name('communityTitle')->option(['real_name' => '统计']);
-
-        Route::delete('delete/:id', 'v1.community.Community/delete')->name('communityDelete')->option(['real_name' => '文章删除']);
-    })->middleware([
-        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
-        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
-        \app\http\middleware\admin\AdminLogMiddleware::class
-    ]);
-
-    /**
      * 社区分类
      */
     Route::group('community/category', function () {
@@ -2574,8 +2549,67 @@ Route::group('adminapi', function () {
         //社区分类修改状态
         Route::post('status/:id', 'v1.community.CommunityCategory/switchStatus')->name('communityCategoryStatus')->option(['real_name' => '社区分类修改状态']);
 
-        Route::get('option', 'v1.community.CommunityCategory/getOptions')->name('communityCategoryGetOptions')->option(['real_name' => '社区分类获取']);
+        Route::get('option', 'v1.community.CommunityCategory/getOptions')->name('communityCategoryGetOptions')->option(['real_name' => '社区分类-获取下拉选项']);
 
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
+    /**
+     * 社区内容
+     */
+    Route::group('community/community', function () {
+        Route::get('lst', 'v1.community.Community/lst')->name('communityList')->option(['real_name' => '文章列表']);
+        Route::get('detail/:id', 'v1.community.Community/detail')->name('communityDetail')->option(['real_name' => '文章详情']);
+
+        Route::get('edit/form/:id', 'v1.community.Community/updateForm')->name('communityUpdateForm')->option(['real_name' => '文章编辑表单']);
+        Route::post('update/:id', 'v1.community.Community/update')->name('communityUpdate')->option(['real_name' => '文章编辑']);
+
+
+        Route::get('status/form/:id', 'v1.community.Community/showForm')->name('communityStatusForm')->option(['real_name' => '修改状态表单']);
+        Route::post('status/:id', 'v1.community.Community/switchStatus')->name('communityStatus')->option(['real_name' => '修改状态']);
+
+        Route::post('show/:id', 'v1.community.Community/switchShow')->name('communityShow')->option(['real_name' => '修改显示状态']);
+
+        Route::get('title', 'v1.community.Community/title')->name('communityTitle')->option(['real_name' => '统计']);
+
+        Route::delete('delete/:id', 'v1.community.Community/delete')->name('communityDelete')->option(['real_name' => '文章删除']);
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
+    /**
+     * 社区话题
+     */
+    Route::group('community/topic', function () {
+        Route::get('lst', 'v1.community.CommunityTopic/lst')->name('communityTopicLst')->option(['real_name' => '社区话题列表']);
+        Route::get('create/form', 'v1.community.CommunityTopic/createForm')->name('communityTopicCreateForm')->option(['real_name' => '社区话题-添加表单']);
+        Route::post('create', 'v1.community.CommunityTopic/create')->name('communityTopicCreate')->option(['real_name' => '社区话题-添加']);
+        Route::get('edit/form/:id', 'v1.community.CommunityTopic/updateForm')->name('communityTopicUpdateForm')->option(['real_name' => '社区话题-编辑表单']);
+        Route::post('update/:id', 'v1.community.CommunityTopic/update')->name('communityTopicUpdate')->option(['real_name' => '社区话题-编辑']);
+        Route::get('detail/:id', 'v1.community.CommunityTopic/detail')->name('communityTopicDetail')->option(['real_name' => '社区话题-详情']);
+        Route::delete('delete/:id', 'v1.community.CommunityTopic/delete')->name('communityTopicDelete')->option(['real_name' => '社区话题-删除']);
+        Route::post('status/:id', 'v1.community.CommunityTopic/switchStatus')->name('communityTopicStatus')->option(['real_name' => '社区话题-修改状态']);
+        Route::post('hot/:id', 'v1.community.CommunityTopic/switchHot')->name('communityTopicHot')->option(['real_name' => '社区话题-推荐']);
+        Route::get('option', 'v1.community.CommunityTopic/getOptions')->option(['real_name' => '社区话题-获取下拉选项']);
+    })->middleware([
+        \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
+        \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,
+        \app\http\middleware\admin\AdminLogMiddleware::class
+    ]);
+
+    /**
+     * 社区评论
+     */
+    Route::group('community/reply', function () {
+        Route::get('lst', 'v1.community.CommunityReply/lst')->name('communityReplyLst')->option(['real_name' => '社区评论-列表']);
+        Route::delete('delete/:id', 'v1.community.CommunityReply/delete')->name('communityReplyDelete')->option(['real_name' => '社区评论-删除']);
+        Route::get('status/form/:id', 'v1.community.CommunityReply/statusForm')->name('communityReplyStatusForm')->option(['real_name' => '社区评论-修改状态表单']);
+        Route::post('status/:id', 'v1.community.CommunityReply/switchStatus')->name('communityReplyStatus')->option(['real_name' => '社区评论-修改状态']);
     })->middleware([
         \app\http\middleware\admin\AdminAuthTokenMiddleware::class,
         \app\http\middleware\admin\AdminCkeckRoleMiddleware::class,

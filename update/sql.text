@@ -59,3 +59,15 @@ ALTER TABLE `gaga_store_spu`
   MODIFY `spu_id` int UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
+INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_title`, `status`, `info`, `icon`, `type`, `sort`) VALUES (91, '0', '0', '社区配置', 'community', '1', '0', '', '0', '0');
+
+INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`)
+VALUES
+(512, 91, 0, 0, 10, '社区开启', 'community_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
+(513, 91, 0, 0, 9, '图文免审核', 'community_audit', 'radio', '0=>审核\n1=>免审核', '', 'required:true'),
+(514, 91, 0, 0, 0, '允许发帖用户', 'community_auth', 'radio', '0=>全部用户\n1=>绑定手机号用户', '', 'required:true'),
+(515, 91, 0, 0, 0, '社区评论开关', 'community_reply_status', 'radio', '0=>关闭\n1=>开启', '', 'required:true'),
+(516, 91, 0, 0, 0, '评论用户', 'community_reply_auth', 'radio', '0=>全部用户\n1=>绑定手机号用户', '', 'required:true'),
+(517, 91, 0, 0, 0, '评论审核', 'community_reply_audit', 'radio', '0=>免审核\n1=>审核', '0', 'required:true'),
+(518, 91, 0, 0, 7, '移动端内容展示', 'community_app_switch', 'checkbox', '1=>图文展示\n2=>短视频展示', '1', ''),
+(519, 91, 0, 0, 8, '短视频审核', 'community_video_audit', 'radio', '0=>审核\n1=>免审核', '0', 'required:true');

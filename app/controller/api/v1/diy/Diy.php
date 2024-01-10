@@ -11,6 +11,7 @@
 namespace app\controller\api\v1\diy;
 
 
+use app\services\community\CommunityServices;
 use app\Request;
 use app\services\activity\coupon\StoreCouponUserServices;
 use app\services\activity\newcomer\StoreNewcomerServices;
@@ -105,4 +106,26 @@ class Diy
 	}
 
 
+    /**
+     * TODO DIY社区文章列表
+     * @param CommunityServices $CommunityServices
+     * @return \think\response\Json
+     * @author Qinii
+     * @day 2023/8/15
+     */
+    public function community(CommunityServices $CommunityServices)
+    {
+        $limit = $this->request->param('limit',10);
+        $data = $this->cache(function() use($CommunityServices,$limit) {
+            $where = $CommunityServices::IS_SHOW_WHERE;
+            $list = $CommunityServices->search($where)->with([
+                'author' => function($query) {
+                    $query->field('uid,real_name,status,avatar,nickname,count_start');
+                },
+            ])->limit($limit)->select();
+            if ($list) $data['list'] = $list->toArray();
+            return $data;
+        });
+        return app('json')->success($data);
+    }
 }

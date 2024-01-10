@@ -13,11 +13,14 @@
 
 namespace app\model\community;
 
+use app\services\system\RelevanceServices;
 use crmeb\basic\BaseModel;
 use crmeb\traits\ModelTrait;
 
-//use app\common\model\system\Relevance;
-//use app\common\model\user\User;
+use app\model\user\User;
+use app\model\system\Relevance;
+use think\model\relation\HasOne;
+
 //use app\common\repositories\system\RelevanceRepository;
 
 class CommunityReply extends BaseModel
@@ -37,7 +40,6 @@ class CommunityReply extends BaseModel
     protected $name = 'community_reply';
 
     /**
-     * TODO
      * @return string
      * @author Qinii
      * @day 10/26/21
@@ -48,7 +50,6 @@ class CommunityReply extends BaseModel
     }
 
     /**
-     * TODO
      * @return string
      * @author Qinii
      * @day 10/26/21
@@ -68,7 +69,14 @@ class CommunityReply extends BaseModel
         return $this->hasOne(self::class, 'pid', 'reply_id');
     }
 
-    public function author()
+    /**
+     * @return HasOne
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/10 11:15
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function author(): HasOne
     {
         return $this->hasOne(User::class, 'uid', 'uid');
     }
@@ -85,7 +93,7 @@ class CommunityReply extends BaseModel
 
     public function isStart()
     {
-        return $this->hasOne(Relevance::class, 'right_id', 'reply_id')->where('type', RelevanceRepository::TYPE_COMMUNITY_REPLY_START)->bind(['relevance_id']);
+        return $this->hasOne(Relevance::class, 'right_id', 'reply_id')->where('type', RelevanceServices::TYPE_COMMUNITY_REPLY_START)->bind(['relevance_id']);
     }
 
     /**
