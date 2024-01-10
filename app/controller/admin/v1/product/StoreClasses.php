@@ -95,7 +95,11 @@ class StoreClasses extends AuthController
             ['slider_image', []],
             ['is_sub', []],//佣金是单独还是默认
             ['sort', 0],
-            ['sales', 0],
+            ['store_overview', ''],//课程概述
+            ['store_notes', ''],//注意事项
+            ['write_valid', 1],//激活时效
+            ['write_days', 0],//购买后：N天有效
+            ['section_time', ['', '']],//激活开始时间,结束时间
             ['ficti', 0],
             ['give_integral', 0],
             ['is_show', 0],
@@ -112,7 +116,7 @@ class StoreClasses extends AuthController
             ['video_link', ''],//视频链接
             ['items', []],
             ['attrs', []],
-            ['activity', []],
+            ['activity', ["默认", "秒杀", "砍价", "拼团"]],
             ['coupon_ids', []],
             ['label_id', []],
             ['command_word', ''],
@@ -498,7 +502,11 @@ class StoreClasses extends AuthController
             ['slider_image', []],
             ['is_sub', []],//佣金是单独还是默认
             ['sort', 0],
-//            ['sales', 0],
+            ['store_overview', ''],//课程概述
+            ['store_notes', ''],//注意事项
+            ['write_valid', 1],//激活时效
+            ['write_days', 0],//购买后：N天有效
+            ['section_time', ['', '']],//激活开始时间,结束时间
             ['ficti', 0],
             ['give_integral', 0],
             ['is_show', 0],
@@ -509,16 +517,16 @@ class StoreClasses extends AuthController
             ['mer_use', 0],
             ['is_postage', 0],
             ['is_good', 0],
-            ['description', ''],
+            ['description', ''],//课程详情
             ['spec_type', 0],
             ['video_open', 0],
             ['video_link', ''],
             ['items', []],
             ['attrs', []],
             ['recommend', []],//课程推荐
-            ['activity', []],
+            ['activity', ["默认", "秒杀", "砍价", "拼团"]],
             ['coupon_ids', []],
-            ['label_id', []],
+            ['label_id', []],//关联用户标签
             ['command_word', ''],
             ['tao_words', ''],
             ['type', 0, '', 'is_copy'],

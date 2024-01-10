@@ -99,7 +99,7 @@ class UserRelationServices extends BaseServices
      * @param string $category
      * @return int
      */
-    public function getUserCount(int $uid, int $relationId = 0, string $type = self::TYPE_COLLECT, string $category = self::CATEGORY_PRODUCT)
+    public function getUserCount(int $uid, int $relationId = 0, string $type = self::TYPE_COLLECT, string $category = self::CATEGORY_PRODUCT, $is_class = 0)
     {
         $where = ['uid' => $uid];
 		if ($type) {
@@ -111,7 +111,10 @@ class UserRelationServices extends BaseServices
         if ($relationId) {
             $where['relation_id'] = $relationId;
         }
-        return $this->dao->count($where);
+        if ($is_class) {
+            $where['is_class'] = $is_class;
+        }
+        return $this->dao->relationCount($where);
     }
 
     /**
@@ -121,11 +124,12 @@ class UserRelationServices extends BaseServices
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function getUserRelationList(int $uid, string $category = self::CATEGORY_PRODUCT, string $type = self::TYPE_COLLECT)
+    public function getUserRelationList(int $uid , $is_class = 0, string $category = self::CATEGORY_PRODUCT, string $type = self::TYPE_COLLECT)
     {
         $where['uid'] = $uid;
         $where['type'] = $type;
         $where['category'] = $category;
+        $where['is_class'] = $is_class;
         [$page, $limit] = $this->getPageValue();
 		$with = [];
 		switch ($category) {
