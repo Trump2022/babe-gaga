@@ -54,6 +54,7 @@ trait Order
     public function chart(Request $request)
     {
         $where = $request->getMore([
+            ['is_class', 0],
             ['status', ''],
             ['real_name', ''],
             ['data', '', '', 'time'],
@@ -84,6 +85,7 @@ trait Order
     public function lst(Request $request)
     {
         $where = $request->getMore([
+            ['is_class', 0],
             ['status', ''],
             ['real_name', ''],
             ['is_del', ''],
