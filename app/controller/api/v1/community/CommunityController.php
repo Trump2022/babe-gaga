@@ -14,6 +14,7 @@ namespace app\controller\api\v1\community;
 
 use app\Request;
 use app\services\community\CommunityServices;
+use app\services\system\config\SystemConfigServices;
 //use app\common\repositories\store\order\StoreOrderProductRepository;
 use app\services\system\RelevanceServices;
 //use app\common\repositories\user\UserHistoryRepository;
@@ -21,12 +22,15 @@ use app\services\system\RelevanceServices;
 use app\services\user\UserServices;
 use app\validate\api\CommunityValidate;
 //use crmeb\services\MiniProgramService;
+use crmeb\services\wechat\MiniProgram;
 //use think\App;
+use crmeb\services\SystemConfigService;
 use think\exception\ValidateException;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
 use think\Response;
+use think\response\Json;
 
 class CommunityController
 {
@@ -76,8 +80,130 @@ class CommunityController
     }
 
     /**
+     * @param $request
+     * @return array
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 15:32
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function checkParams($request): array
+    {
+        $data = $request->params([
+            'image', 'topic_id', 'content', 'spu_id', 'order_id',
+            ['is_type', 1],
+            'video_link'
+        ]);
+
+        $config = system_config(["community_app_switch",'community_audit','community_video_audit']);
+        $data['status'] = 0;
+        $data['is_show'] = 0;
+        if ($data['is_type'] == 1) {
+            if (!in_array(CommunityServices::COMMUNIT_TYPE_FONT,$config['community_app_switch']))
+                throw new ValidateException('社区图文未开启');
+            if ($config['community_audit']) {
+                $data['status'] = 1;
+                $data['is_show'] = 1;
+                $data['status_time'] = date('Y-m-d H:i:s', time());
+            }
+        } else {
+            if ( ! in_array(CommunityServices::COMMUNIT_TYPE_VIDEO,$config['community_app_switch']))
+                throw new ValidateException('短视频未开启');
+            if ($config['community_video_audit']) {
+                $data['status'] = 1;
+                $data['is_show'] = 1;
+                $data['status_time'] = date('Y-m-d H:i:s', time());
+            }
+            if (!$data['video_link']) throw new ValidateException('请上传视频');
+
+        }
+
+        $data['content'] = filter_emoji($data['content']);
+        app()->make(CommunityValidate::class)->check($data);
+        $arr = explode("\n", $data['content']);
+        $title = rtrim(ltrim($arr[0]));
+        if (mb_strlen($title) > 40 ){
+            $data['title'] = mb_substr($title,0,30,'utf-8');
+        } else {
+            $data['title'] = $title;
+        }
+        if ($data['image']) $data['image'] = implode(',',$data['image']);
+        return $data;
+    }
+
+    /**
+     * @param $request
+     * @return bool
+     * @author Qinii
+     * @day 10/30/21
+     */
+    public function checkUserAuth($request): bool
+    {
+        $user = $request->user();
+        if ( sys_config('community_auth') ) {
+            if ($user->phone) {
+                return true;
+            }
+            throw  new ValidateException('请先绑定您的手机号');
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 发布文章
+     * @param Request $request
+     * @return Json
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author Qinii
+     * @day 10/29/21
+     */
+    public function create(Request $request): Json
+    {
+        $data = $this->checkParams($request);
+        $this->checkUserAuth($request);
+        $data['uid'] = $request->uid();
+        $res = $this->services->create($data);
+        return app('json')->success(['community_id' => $res]);
+    }
+
+    /**
+     * 编辑
+     * @param Request $request
+     * @param $id
+     * @return Json
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author Qinii
+     * @day 10/29/21
+     */
+    public function update(Request $request, $id): Json
+    {
+        $data = $this->checkParams($request);
+        $this->checkUserAuth($request);
+        if( ! $this->services->uidExists($id, $this->user->uid)) return app('json')->success('内容不存在或不属于您');
+        $this->services->edit($id, $data);
+        return app('json')->success(['community_id' => $id]);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @author Qinii
+     */
+    public function delete($id)
+    {
+        if ( ! $this->services->uidExists($id, $this->user->uid)) return app('json')->fail('内容不存在或不属于您');
+        $this->services->destroy($id, $this->user);
+        return app('json')->success('删除成功');
+    }
+
+    /**
      * TODO 视频列表
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 2022/11/29
      */
@@ -92,7 +218,7 @@ class CommunityController
     /**
      * TODO  关注的人的文章
      * @param RelevanceRepository $relevanceRepository
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 11/2/21
      */
@@ -115,7 +241,7 @@ class CommunityController
     /**
      * TODO 某个用户的文章
      * @param $id
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/29/21
      */
@@ -133,7 +259,7 @@ class CommunityController
     /**
      * TODO 某个用户的视频
      * @param $id
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/29/21
      */
@@ -163,7 +289,7 @@ class CommunityController
     /**
      * TODO 我赞过的文章
      * @param RelevanceRepository $relevanceRepository
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -187,7 +313,7 @@ class CommunityController
 
     /**
      * TODO 已购商品
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -201,7 +327,7 @@ class CommunityController
 
     /**
      * TODO 收藏商品
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -223,118 +349,12 @@ class CommunityController
         return app('json')->success($data);
     }
 
-    /**
-     * TODO 发布文章
-     * @return \think\response\Json
-     * @author Qinii
-     * @day 10/29/21
-     */
-    public function create()
-    {
-        $data = $this->checkParams();
-        $this->checkUserAuth();
-        $data['uid'] = $this->request->uid();
-        $res = $this->repository->create($data);
-        return app('json')->success(['community_id' => $res]);
-    }
-
-    /**
-     * TODO
-     * @return bool|\think\response\Json
-     * @author Qinii
-     * @day 10/30/21
-     */
-    public function checkUserAuth()
-    {
-        $user = $this->request->userInfo();
-        if ( systemConfig('community_auth') ) {
-            if ($user->phone) {
-                return true;
-            }
-            throw  new ValidateException('请先绑定您的手机号');
-        } else {
-            return true;
-        }
-    }
-
-
-    /**
-     * TODO 编辑
-     * @param $id
-     * @return \think\response\Json
-     * @author Qinii
-     * @day 10/29/21
-     */
-    public function update($id)
-    {
-        $data = $this->checkParams();
-        $this->checkUserAuth();
-        if(!$this->repository->uidExists($id, $this->user->uid))
-            return app('json')->success('内容不存在或不属于您');
-        $this->repository->edit($id, $data);
-        return app('json')->success(['community_id' => $id]);
-    }
-
-    public function checkParams()
-    {
-        $data = $this->request->params(['image','topic_id','content','spu_id','order_id',['is_type',1],'video_link']);
-        $config = systemConfig(["community_app_switch",'community_audit','community_video_audit']);
-        $data['status'] = 0;
-        $data['is_show'] = 0;
-        if ($data['is_type'] == 1) {
-            if (!in_array($this->repository::COMMUNIT_TYPE_FONT,$config['community_app_switch']))
-                throw new ValidateException('社区图文未开启');
-            if ($config['community_audit']) {
-                $data['status'] = 1;
-                $data['is_show'] = 1;
-                $data['status_time'] = date('Y-m-d H:i:s', time());
-            }
-        } else {
-            if (!in_array($this->repository::COMMUNIT_TYPE_VIDEO,$config['community_app_switch']))
-                throw new ValidateException('短视频未开启');
-            if ($config['community_video_audit']) {
-                $data['status'] = 1;
-                $data['is_show'] = 1;
-                $data['status_time'] = date('Y-m-d H:i:s', time());
-            }
-            if (!$data['video_link']) throw new ValidateException('请上传视频');
-
-        }
-
-        $data['content'] = filter_emoji($data['content']);
-        MiniProgramService::create()->msgSecCheck($this->request->userInfo(), $data['content'],3,0);
-        app()->make(CommunityValidate::class)->check($data);
-        $arr = explode("\n", $data['content']);
-        $title = rtrim(ltrim($arr[0]));
-        if (mb_strlen($title) > 40 ){
-            $data['title'] = mb_substr($title,0,30,'utf-8');
-        } else {
-            $data['title'] = $title;
-        }
-        if ($data['image']) $data['image'] = implode(',',$data['image']);
-        return $data;
-    }
-
-
-    /**
-     * @param $id
-     * @return mixed
-     * @author Qinii
-     */
-    public function delete($id)
-    {
-        if (!$this->repository->uidExists($id, $this->user->uid))
-            return app('json')->fail('内容不存在或不属于您');
-        $this->repository->destory($id, $this->user);
-
-        return app('json')->success('删除成功');
-    }
 
     /**
      * TODO 文章点赞/取消
      * @param $id
      * @param RelevanceRepository $relevanceRepository
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -355,7 +375,7 @@ class CommunityController
      * TODO 用户关注/取消
      * @param $id
      * @param RelevanceRepository $relevanceRepository
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -380,7 +400,7 @@ class CommunityController
     /**
      * TODO 我的粉丝
      * @param RelevanceRepository $relevanceRepository
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -394,7 +414,7 @@ class CommunityController
     /**
      * TODO 我的关注
      * @param RelevanceRepository $relevanceRepository
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */
@@ -409,7 +429,7 @@ class CommunityController
     /**
      * TODO 用户信息
      * @param $id
-     * @return \think\response\Json
+     * @return Json
      * @author Qinii
      * @day 10/28/21
      */

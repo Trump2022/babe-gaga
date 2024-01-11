@@ -434,8 +434,12 @@ class CommunityServices extends BaseServices
     }
 
     /**
-     * TODO 创建
+     * 创建
      * @param array $data
+     * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
@@ -456,9 +460,13 @@ class CommunityServices extends BaseServices
     }
 
     /**
-     * TODO 编辑
+     * 编辑
      * @param int $id
      * @param array $data
+     * @return void
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */

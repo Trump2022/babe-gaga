@@ -61,34 +61,186 @@ class Sts{
 			if(array_key_exists('policy', $config)){
 				$policy = $config['policy'];
 			}else{
+
 				if(array_key_exists('bucket', $config)){
 					$ShortBucketName = substr($config['bucket'],0, strripos($config['bucket'], '-'));
 					$AppId = substr($config['bucket'], 1 + strripos($config['bucket'], '-'));
 				}else{
 					throw new \Exception("bucket== null");
 				}
+
 				if(array_key_exists('allowPrefix', $config)){
-					if(!(strpos($config['allowPrefix'], '/') === 0)){
-					$config['allowPrefix'] = '/' . $config['allowPrefix'];
+					$resource = array();
+					foreach($config['allowPrefix'] as &$val) {
+						if (!(strpos($val, '/') === 0)) {
+							$allow = '/' . $val;
+						}
+						$resource[] = 'qcs::cos:' . $config['region'] . ':uid/' . $AppId . ':' . $config['bucket'] . '/' . $val;
+					}
+					// 处理万象资源
+					if(array_key_exists('allowCiSource', $config) && $config['allowCiSource'] === true) {
+						$resource[] = 'qcs::ci:' . $config['region'] . ':uid/' . $AppId . ':' . 'bucket/' . $config['bucket'] . '/*';
 					}
 				}else{
 					throw new \Exception("allowPrefix == null");
 				}
+
+
 				if(!array_key_exists('region', $config)) {
 					throw new \Exception("region == null");
 				}
-				$policy = array(
-					'version'=> '2.0',
-					'statement'=> array(
-						array(
-							'action'=> $config['allowActions'],
-							'effect'=> 'allow',
-							'resource'=> array(
-								'qcs::cos:' . $config['region'] . ':uid/' . $AppId . ':' . $config['bucket'] . $config['allowPrefix']
+
+				if (!array_key_exists('condition', $config)) {
+					$policy = array(
+						'version'=> '2.0',
+						'statement'=> array(
+							array(
+								'action'=> $config['allowActions'],
+								'effect'=> 'allow',
+								'resource'=> $resource
 							)
 						)
-					)
-				);	
+					);
+				} else {
+					$policy = array(
+						'version'=> '2.0',
+						'statement'=> array(
+							array(
+								'action'=> $config['allowActions'],
+								'effect'=> 'allow',
+								'resource'=> $resource,
+								'condition'=>$config['condition']
+							)
+						)
+					);
+				}
+			}
+			$policyStr = str_replace('\\/', '/', json_encode($policy));
+			$Action = 'GetFederationToken';
+			$Nonce = rand(10000, 20000);
+			$Timestamp = time();
+			$Method = 'POST';
+			if(array_key_exists('durationSeconds', $config)){
+				if(!(is_integer($config['durationSeconds']))){
+					throw new \Exception("durationSeconds must be a int type");
+				}
+			}
+			$params = array(
+				'SecretId'=> $config['secretId'],
+				'Timestamp'=> $Timestamp,
+				'Nonce'=> $Nonce,
+				'Action'=> $Action,
+				'DurationSeconds'=> $config['durationSeconds'],
+				'Version'=>'2018-08-13',
+				'Name'=> 'cos',
+				'Region'=> $config['region'],
+				'Policy'=> urlencode($policyStr)
+			);
+			$params['Signature'] = $this->getSignature($params, $config['secretKey'], $Method, $config);
+			$url = 'https://sts.tencentcloudapi.com/';
+
+			if(array_key_exists('url', $config)) {
+				$url = $config['url'];
+			}
+
+			if(!array_key_exists('url', $config) && array_key_exists('domain', $config)) {
+				$url = 'https://sts.' . $config['domain'];
+			}
+
+			if(array_key_exists('endpoint', $config)) {
+				$url = 'https://sts.' . $config['endpoint'];
+			}
+
+			$ch = curl_init($url);
+			if(array_key_exists('proxy', $config)){
+				$config['proxy'] && curl_setopt($ch, CURLOPT_PROXY, $config['proxy']);
+			}
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,0);
+			curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,0);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $this->json2str($params));
+			$result = curl_exec($ch);
+			if(curl_errno($ch)) $result = curl_error($ch);
+			curl_close($ch);
+			$result = json_decode($result, 1);
+			if (isset($result['Response'])) {
+				$result = $result['Response'];
+				if(isset($result['Error'])){
+					throw new \Exception("get cam failed");
+				}
+				$result['startTime'] = $result['ExpiredTime'] - $config['durationSeconds'];
+			}
+			$result = $this->backwardCompat($result);
+			return $result;
+		}catch(\Exception $e){
+			if($result == null){
+				$result = "error: " . $e->getMessage();
+			}else{
+				$result = json_encode($result);
+			}
+			throw new \Exception($result);
+		}
+	}
+
+	// 获取临时密钥-兼容万象资源 不在维护，请使用getTempKeys函数，$config的ci_source字段
+	function getTempKeys4Ci($config) {
+		$result = null;
+		try{
+			if(array_key_exists('policy', $config)){
+				$policy = $config['policy'];
+			}else{
+
+				if(array_key_exists('bucket', $config)){
+					$ShortBucketName = substr($config['bucket'],0, strripos($config['bucket'], '-'));
+					$AppId = substr($config['bucket'], 1 + strripos($config['bucket'], '-'));
+				}else{
+					throw new Exception("bucket== null");
+				}
+
+				$resource = array();
+				$resource[] = 'qcs::ci:' . $config['region'] . ':uid/' . $AppId . ':' . 'bucket/' . $config['bucket'] . '/*';
+				if(array_key_exists('allowPrefix', $config)){
+					foreach($config['allowPrefix'] as &$val) {
+						if (!(strpos($val, '/') === 0)) {
+							$allow = '/' . $val;
+						}
+                        $resource[] = 'qcs::cos:' . $config['region'] . ':uid/' . $AppId . ':' . $config['bucket'] . '/' . $val;
+					}
+				}else{
+					throw new \Exception("allowPrefix == null");
+				}
+
+				if(!array_key_exists('region', $config)) {
+					throw new \Exception("region == null");
+				}
+
+				if (!array_key_exists('condition', $config)) {
+					$policy = array(
+						'version'=> '2.0',
+						'statement'=> array(
+							array(
+								'action'=> $config['allowActions'],
+								'effect'=> 'allow',
+								'resource'=> $resource
+							)
+						)
+					);
+				} else {
+					$policy = array(
+						'version'=> '2.0',
+						'statement'=> array(
+							array(
+								'action'=> $config['allowActions'],
+								'effect'=> 'allow',
+								'resource'=> $resource,
+								'condition'=>$config['condition']
+							)
+						)
+					);
+				}
+
 			}
 			$policyStr = str_replace('\\/', '/', json_encode($policy));
 			$Action = 'GetFederationToken';
@@ -173,8 +325,12 @@ class Sts{
 					throw new \Exception("bucket== null");
 				}
 				if(array_key_exists('allowPrefix', $config)){
-					if(!(strpos($config['allowPrefix'], '/') === 0)){
-						$config['allowPrefix'] = '/' . $config['allowPrefix'];
+					$resource = array();
+					foreach($config['allowPrefix'] as &$val) {
+						if (!(strpos($val, '/') === 0)) {
+							$allow = '/' . $val;
+						}
+                        $resource[] = 'qcs::cos:' . $config['region'] . ':uid/' . $AppId . ':' . $config['bucket'] . '/' . $val;
 					}
 				}else{
 					throw new \Exception("allowPrefix == null");
@@ -182,18 +338,30 @@ class Sts{
 				if(!array_key_exists('region', $config)) {
 					throw new \Exception("region == null");
 				}
-				$policy = array(
-					'version'=> '2.0',
-					'statement'=> array(
-						array(
-							'action'=> $config['allowActions'],
-							'effect'=> 'allow',
-							'resource'=> array(
-								'qcs::cos:' . $config['region'] . ':uid/' . $AppId . ':' . $config['bucket'] . $config['allowPrefix']
+				if (!array_key_exists('condition', $config)) {
+					$policy = array(
+						'version'=> '2.0',
+						'statement'=> array(
+							array(
+								'action'=> $config['allowActions'],
+								'effect'=> 'allow',
+								'resource'=> $resource
 							)
 						)
-					)
-				);
+					);
+				} else {
+					$policy = array(
+						'version'=> '2.0',
+						'statement'=> array(
+							array(
+								'action'=> $config['allowActions'],
+								'effect'=> 'allow',
+								'resource'=> $resource,
+								'condition'=>$config['condition']
+							)
+						)
+					);
+				}
 			}
 			if (array_key_exists('roleArn', $config)) {
 				$RoleArn = $config['roleArn'];
@@ -266,33 +434,33 @@ class Sts{
 		}
 	}
 
-	
+
 	// get policy
 	function getPolicy($scopes){
 		if (!is_array($scopes)){
 			return null;
 		}
 		$statements = array();
-		
+
 		for($i=0, $counts=count($scopes); $i < $counts; $i++){
 			$actions=array();
 			$resources = array();
 			array_push($actions, $scopes[$i]->get_action());
 			array_push($resources, $scopes[$i]->get_resource());
-			
+
 			$statement = array(
-			'action' => $actions,
-			'effect' => $scopes[$i]->get_effect(),
-			'resource' => $resources
+				'action' => $actions,
+				'effect' => $scopes[$i]->get_effect(),
+				'resource' => $resources
 			);
 			array_push($statements, $statement);
 		}
-			
+
 		$policy = array(
 			'version' => '2.0',
 			'statement' => $statements
 		);
 		return $policy;
-	}	
+	}
 }
 ?>

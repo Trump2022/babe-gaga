@@ -7,6 +7,7 @@ use AsyncAws\Core\Input;
 use AsyncAws\Core\Request;
 use AsyncAws\Core\Stream\StreamFactory;
 use AsyncAws\Core\Sts\ValueObject\PolicyDescriptorType;
+use AsyncAws\Core\Sts\ValueObject\ProvidedContext;
 use AsyncAws\Core\Sts\ValueObject\Tag;
 
 final class AssumeRoleRequest extends Input
@@ -229,20 +230,33 @@ final class AssumeRoleRequest extends Input
     private $sourceIdentity;
 
     /**
+     * A list of previously acquired trusted context assertions in the format of a JSON array. The trusted context assertion
+     * is signed and encrypted by Amazon Web Services STS.
+     *
+     * The following is an example of a `ProvidedContext` value that includes a single trusted context assertion and the ARN
+     * of the context provider from which the trusted context assertion was generated.
+     *
+     * `[{"ProviderArn":"arn:aws:iam::aws:contextProvider/IdentityCenter","ContextAssertion":"trusted-context-assertion"}]`
+     *
+     * @var ProvidedContext[]|null
+     */
+    private $providedContexts;
+
+    /**
      * @param array{
      *   RoleArn?: string,
      *   RoleSessionName?: string,
-     *   PolicyArns?: PolicyDescriptorType[],
-     *   Policy?: string,
-     *   DurationSeconds?: int,
-     *   Tags?: Tag[],
-     *   TransitiveTagKeys?: string[],
-     *   ExternalId?: string,
-     *   SerialNumber?: string,
-     *   TokenCode?: string,
-     *   SourceIdentity?: string,
-     *
-     *   @region?: string,
+     *   PolicyArns?: null|array<PolicyDescriptorType|array>,
+     *   Policy?: null|string,
+     *   DurationSeconds?: null|int,
+     *   Tags?: null|array<Tag|array>,
+     *   TransitiveTagKeys?: null|string[],
+     *   ExternalId?: null|string,
+     *   SerialNumber?: null|string,
+     *   TokenCode?: null|string,
+     *   SourceIdentity?: null|string,
+     *   ProvidedContexts?: null|array<ProvidedContext|array>,
+     *   '@region'?: string|null,
      * } $input
      */
     public function __construct(array $input = [])
@@ -258,9 +272,27 @@ final class AssumeRoleRequest extends Input
         $this->serialNumber = $input['SerialNumber'] ?? null;
         $this->tokenCode = $input['TokenCode'] ?? null;
         $this->sourceIdentity = $input['SourceIdentity'] ?? null;
+        $this->providedContexts = isset($input['ProvidedContexts']) ? array_map([ProvidedContext::class, 'create'], $input['ProvidedContexts']) : null;
         parent::__construct($input);
     }
 
+    /**
+     * @param array{
+     *   RoleArn?: string,
+     *   RoleSessionName?: string,
+     *   PolicyArns?: null|array<PolicyDescriptorType|array>,
+     *   Policy?: null|string,
+     *   DurationSeconds?: null|int,
+     *   Tags?: null|array<Tag|array>,
+     *   TransitiveTagKeys?: null|string[],
+     *   ExternalId?: null|string,
+     *   SerialNumber?: null|string,
+     *   TokenCode?: null|string,
+     *   SourceIdentity?: null|string,
+     *   ProvidedContexts?: null|array<ProvidedContext|array>,
+     *   '@region'?: string|null,
+     * }|AssumeRoleRequest $input
+     */
     public static function create($input): self
     {
         return $input instanceof self ? $input : new self($input);
@@ -287,6 +319,14 @@ final class AssumeRoleRequest extends Input
     public function getPolicyArns(): array
     {
         return $this->policyArns ?? [];
+    }
+
+    /**
+     * @return ProvidedContext[]
+     */
+    public function getProvidedContexts(): array
+    {
+        return $this->providedContexts ?? [];
     }
 
     public function getRoleArn(): ?string
@@ -378,6 +418,16 @@ final class AssumeRoleRequest extends Input
     public function setPolicyArns(array $value): self
     {
         $this->policyArns = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param ProvidedContext[] $value
+     */
+    public function setProvidedContexts(array $value): self
+    {
+        $this->providedContexts = $value;
 
         return $this;
     }
@@ -490,6 +540,15 @@ final class AssumeRoleRequest extends Input
         }
         if (null !== $v = $this->sourceIdentity) {
             $payload['SourceIdentity'] = $v;
+        }
+        if (null !== $v = $this->providedContexts) {
+            $index = 0;
+            foreach ($v as $mapValue) {
+                ++$index;
+                foreach ($mapValue->requestBody() as $bodyKey => $bodyValue) {
+                    $payload["ProvidedContexts.member.$index.$bodyKey"] = $bodyValue;
+                }
+            }
         }
 
         return $payload;
