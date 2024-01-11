@@ -26,6 +26,7 @@ use app\jobs\user\UserUpdateJob;
 use crmeb\interfaces\ListenerInterface;
 use crmeb\services\SystemConfigService;
 use crmeb\utils\Arr;
+use think\facade\Log;
 
 /**
  * 订单创建事件
@@ -39,6 +40,7 @@ class Create implements ListenerInterface
      */
     public function handle($event): void
     {
+        Log::info('订单后置事件');
         [$orderInfo, $userInfo, $group, $activity, $invoice_id] = $event;
         $uid = (int)($userInfo['uid'] ?? 0);
         $orderId = (int)$orderInfo['id'];
