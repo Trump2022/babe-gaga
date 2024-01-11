@@ -426,27 +426,12 @@ Route::group('api', function () {
             //分类&话题
             Route::get('category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
-            //社区文章列表
-            Route::get('/lst', 'v1.community.CommunityController/lst')->name('apiCommunityList');
 
-            //
-            Route::get('/video_lst', 'v1.community.CommunityController/videoShow');
 
-            //详情
-            Route::get('/show/:id', 'v1.community.CommunityController/show');
-
-            //用户页
-            Route::get('/user/info/:id', 'v1.community.CommunityController/userInfo');
-
-            //用户的文章
-            Route::get('/user/community/:id', 'v1.community.CommunityController/userCommunitylst');
-
-            //用户的视频
-            Route::get('/user/community_video/:id', 'v1.community.CommunityController/userCommunityVideolst');
-            Route::get('/focuslst', 'v1.community.CommunityController/focuslst');
             Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst');
             Route::post('reply/create/:id', 'v1.community.CommunityReplyController/create');
             Route::post('reply/start/:id', 'v1.community.CommunityReplyController/start');
+
             Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
             Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');
             Route::get('hist_product/lst', 'v1.community.CommunityController/historyList');
@@ -462,13 +447,41 @@ Route::group('api', function () {
         //未授权接口---不会抛异常
         Route::group(function () {
 
+            //社区文章列表
+            Route::get('/lst', 'v1.community.CommunityController/lst')->name('apiCommunityList');
+
+            //视频列表
+            Route::get('/video_lst', 'v1.community.CommunityController/videoShow')->name('apiCommunityVideoShow');
+
+            //详情
+            Route::get('/show/:id', 'v1.community.CommunityController/show')->name('apiCommunityShow');
+
+            //关注的人的文章
+            Route::get('/focus_list', 'v1.community.CommunityController/focusList')->name('apiCommunityFocusList');
+
+            //用户的文章
+            Route::get('/user/community/:id', 'v1.community.CommunityController/userCommunityList')->name('apiUserCommunityList');
+
+            //用户的视频
+            Route::get('/user/community_video/:id', 'v1.community.CommunityController/userCommunityVideoList')->name('apiUserCommunityVideoList');
+
+            //用户页
+            Route::get('/user/info/:id', 'v1.community.CommunityController/userInfo')->name('apiCommunityUserInfo');
+
         })->middleware(AuthTokenMiddleware::class, false);
 
         //需要授权接口
         Route::group(function () {
+
+            //创建
             Route::post('/create', 'v1.community.CommunityController/create')->name('apiCommunityCreate');
+
+            //更新
             Route::post('/update/:id', 'v1.community.CommunityController/update')->name('apiCommunityUpdate');
+
+            //删除
             Route::post('/delete/:id', 'v1.community.CommunityController/delete')->name('apiCommunityDelete');
+
         })->middleware(AuthTokenMiddleware::class, true);
 
     })->middleware(StationOpenMiddleware::class);

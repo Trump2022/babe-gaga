@@ -73,7 +73,7 @@ class CommunityTopic extends AuthController
     {
         $row = $this->services->get($id, ['*'], ['category']);
         if ( ! $row) return app('json')->fail('数据不存在');
-        return app('json')->success('ok', $row->toArray());
+        return app('json')->success($row->toArray());
     }
 
     /**

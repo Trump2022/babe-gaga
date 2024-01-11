@@ -73,3 +73,20 @@ VALUES
 (517, 91, 0, 0, 0, '评论审核', 'community_reply_audit', 'radio', '0=>免审核\n1=>审核', '0', 'required:true'),
 (518, 91, 0, 0, 7, '移动端内容展示', 'community_app_switch', 'checkbox', '1=>图文展示\n2=>短视频展示', '1', ''),
 (519, 91, 0, 0, 8, '短视频审核', 'community_video_audit', 'radio', '0=>审核\n1=>免审核', '0', 'required:true');
+
+INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_title`, `status`, `info`, `icon`, `type`, `sort`)
+ VALUES (92, '0', '0', '会员配置', 'members', '1', '0', '', '0', '0');
+
+ INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`)
+ VALUES
+ (520, 92, 0, 0, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
+ (521, 92, 0, 0, 0, '下单可获得成长值', 'member_pay_num', 'number', '', '0', 'min:0,precision:0'),
+ (522, 92, 0, 0, 0, '签到可获得成长值', 'member_sign_num', 'number', '', '0', 'min:0,precision:0'),
+ (523, 92, 0, 0, 0, '评价可获得成长值', 'member_reply_num', 'number', '', '0', 'min:0,precision:0'),
+ (524, 92, 0, 0, 0, '邀请可获得成长值', 'member_share_num', 'number', '', '0', 'min:0,precision:0'),
+ (525, 92, 0, 0, 0, '种草图文可获得成长值', 'member_community_num', 'number', '', '0', 'min:0,precision:0'),
+ (526, 92, 0, 0, 0, '会员权益开关', 'member_interests_status', 'radio', '0=>开启\n1=>关闭', '0', 'required:true');
+
+
+ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员成长值' AFTER `integral`;
+ALTER TABLE `gaga_user` ADD `member_level` int unsigned DEFAULT '0' COMMENT '免费会员等级' AFTER `integral`;

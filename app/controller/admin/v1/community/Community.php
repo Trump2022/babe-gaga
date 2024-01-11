@@ -63,7 +63,7 @@ class Community extends AuthController
         ]);
         $where['order'] =  'start';
         $where['is_del'] =  0;
-        return app('json')->success('ok', $this->services->getList($where));
+        return app('json')->success($this->services->getList($where));
     }
 
     /**
@@ -79,7 +79,7 @@ class Community extends AuthController
         if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
         $detail = $this->services->detail($id);
         $detail = $detail ? $detail->toArray() : [];
-        return app('json')->success('ok', $detail);
+        return app('json')->success($detail);
     }
 
     /**
@@ -97,7 +97,7 @@ class Community extends AuthController
     public function updateForm($id): Response
     {
         if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
-        return app('json')->success('ok', formToData($this->services->form($id)));
+        return app('json')->success(formToData($this->services->form($id)));
     }
 
     /**
@@ -201,6 +201,6 @@ class Community extends AuthController
     public function title(): Response
     {
         $where['is_del'] =  0;
-        return app('json')->success('ok', $this->services->title($where));
+        return app('json')->success($this->services->title($where));
     }
 }

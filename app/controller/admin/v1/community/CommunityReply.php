@@ -50,7 +50,7 @@ class CommunityReply extends AuthController
             ['community_id', 0],
             ['pid', 0],
         ]);
-        return app('json')->success('ok', $this->services->getList($where));
+        return app('json')->success($this->services->getList($where));
     }
 
     /**

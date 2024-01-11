@@ -202,86 +202,115 @@ class CommunityController
     }
 
     /**
-     * TODO 视频列表
-     * @return Json
+     * 视频列表
+     * @param Request $request
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 2022/11/29
      */
-    public  function videoShow()
+    public  function videoShow(Request $request): Response
     {
-        [$page, $limit] = $this->getPage();
-        $where = $this->repository::IS_SHOW_WHERE;
-        $where['community_id'] = $this->request->param('id','');
-        return app('json')->success($this->repository->getApiVideoList($where, $page, $limit, $this->user));
+        $where = CommunityServices::IS_SHOW_WHERE;
+        $where['community_id'] = $request->param('id','');
+        return app('json')->success($this->services->getApiVideoList($where, $this->user));
     }
 
     /**
-     * TODO  关注的人的文章
-     * @param RelevanceRepository $relevanceRepository
-     * @return Json
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 17:31
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function show($id): Response
+    {
+        return app('json')->success('ok', $this->services->show($id, $this->user));
+    }
+
+    /**
+     * 关注的人的文章
+     *
+     * @param Request $request
+     * @param RelevanceServices $RelevanceServices
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 11/2/21
      */
-    public function focuslst(RelevanceRepository $relevanceRepository)
+    public function focusList(Request $request, RelevanceServices $RelevanceServices): Response
     {
-        $where = $this->repository::IS_SHOW_WHERE;
+        $where = CommunityServices::IS_SHOW_WHERE;
         $where_ = [
             'left_id' => $this->user->uid ?? null ,
-            'type'    => RelevanceRepository::TYPE_COMMUNITY_FANS,
+            'type'    => RelevanceServices::TYPE_COMMUNITY_FANS,
         ];
-        $where['uids'] = $relevanceRepository->getSearch($where_)->column('right_id');
-        [$page, $limit] = $this->getPage();
-        $type = $this->request->param('type',0);
+        $where['uids'] = $RelevanceServices->getSearch($where_)->column('right_id');
+        $type = $request->param('type',0);
         if ($type) {
-            $where['is_type'] = $this->repository::COMMUNIT_TYPE_VIDEO;
+            $where['is_type'] = CommunityServices::COMMUNIT_TYPE_VIDEO;
         }
-        return app('json')->success($this->repository->getApiList($where, $page, $limit, $this->user));
+        return app('json')->success($this->services->getApiList($where, $this->user));
     }
 
     /**
-     * TODO 某个用户的文章
+     * 某个用户的文章
      * @param $id
-     * @return Json
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
-    public function userCommunitylst($id)
+    public function userCommunityList($id): Response
     {
         $where = [];
-        if (!$this->user || $this->user->uid !=  $id) {
-            $where = $this->repository::IS_SHOW_WHERE;
+        if ( ! $this->user || $this->user->uid !=  $id) {
+            $where = CommunityServices::IS_SHOW_WHERE;
         }
         $where['uid'] = $id;
-        [$page, $limit] = $this->getPage();
-        return app('json')->success($this->repository->getApiList($where, $page, $limit, $this->user));
+        return app('json')->success($this->services->getApiList($where, $this->user));
     }
 
     /**
-     * TODO 某个用户的视频
+     * 某个用户的视频
+     *
+     * @param Request $request
      * @param $id
      * @return Json
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
-    public function userCommunityVideolst($id)
+    public function userCommunityVideoList(Request $request, $id): Json
     {
         $where = [];
-        [$page, $limit] = $this->getPage();
-        $is_start = $this->request->param('is_star',0);
+        $is_start = $request->param('is_star',0);
         if ($is_start) {
             //某人赞过的视频
-            $where = $this->repository::IS_SHOW_WHERE;
+            $where = CommunityServices::IS_SHOW_WHERE;
         } else {
             //某个人的视频
             if (!$this->user || $this->user->uid !=  $id) {
-                $where =$this->repository::IS_SHOW_WHERE;
+                $where = CommunityServices::IS_SHOW_WHERE;
             }
             $where['uid'] = $id;
         }
         $where['is_del'] = 0;
-        $where['community_id'] = $this->request->param('community_id','');
+        $where['community_id'] = $request->param('community_id','');
 
-        $data = $this->repository->getApiVideoList($where, $page, $limit, $this->user,$is_start);
+        $data = $this->services->getApiVideoList($where, $this->user, (int) $is_start);
         return app('json')->success($data);
     }
 
@@ -301,15 +330,6 @@ class CommunityController
         return app('json')->success($data);
     }
 
-    /**
-     * @param $id
-     * @return mixed
-     * @author Qinii
-     */
-    public function show($id)
-    {
-        return app('json')->success($this->repository->show($id, $this->user));
-    }
 
     /**
      * TODO 已购商品
@@ -425,18 +445,20 @@ class CommunityController
         return app('json')->success($start);
     }
 
-
     /**
-     * TODO 用户信息
+     * 用户信息
      * @param $id
-     * @return Json
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/28/21
      */
-    public function userInfo($id)
+    public function userInfo($id): Response
     {
-        if (!$id)  return app('json')->fail('缺少参数');
-        $data = $this->repository->getUserInfo($id, $this->user);
+        if ( ! $id)  return app('json')->fail('缺少参数');
+        $data = $this->services->getUserInfo($id, $this->user);
         return app('json')->success($data);
     }
 
