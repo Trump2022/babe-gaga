@@ -40,7 +40,6 @@ class Create implements ListenerInterface
      */
     public function handle($event): void
     {
-        Log::info('订单后置事件');
         [$orderInfo, $userInfo, $group, $activity, $invoice_id] = $event;
         $uid = (int)($userInfo['uid'] ?? 0);
         $orderId = (int)$orderInfo['id'];

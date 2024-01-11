@@ -107,7 +107,7 @@ class StoreProductCategoryDao extends BaseDao
         } else {
             return $this->getModel()->with('children')->where('is_show', 1)
                 ->where('pid', $pid)
-                ->when($is_class, function ($query) use ($is_class) {
+                ->when(isset($where['is_class']), function ($query) use ($is_class) {
                     $query->where('is_class', $is_class);
                 })
                 ->order('sort desc,id desc')
