@@ -122,7 +122,7 @@ class CommunityTopic extends AuthController
      */
     public function updateForm($id): Response
     {
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         return app('json')->success(formToData($this->services->form($id)));
     }
 
@@ -140,7 +140,7 @@ class CommunityTopic extends AuthController
     public function update($id): Response
     {
         $data = $this->checkParams();
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         if ($this->services->fieldExists('topic_name', $data['topic_name'],$id)) {
             return app('json')->fail('话题重复');
         }
@@ -151,9 +151,6 @@ class CommunityTopic extends AuthController
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:18
      * @author: QSW
@@ -161,7 +158,7 @@ class CommunityTopic extends AuthController
      */
     public function delete($id): Response
     {
-        if (!$this->services->get($id))  return app('json')->fail('数据不存在');
+        if (!$this->services->exists($id))  return app('json')->fail('数据不存在');
         $this->services->update($id,['is_del' => 1]);
         return app('json')->success('删除成功');
     }
@@ -190,9 +187,6 @@ class CommunityTopic extends AuthController
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:14
      * @author: QSW
@@ -201,7 +195,7 @@ class CommunityTopic extends AuthController
     public function switchStatus($id): Response
     {
         $status = $this->request->param('status', 0) == 1 ? 1 : 0;
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         $this->services->update($id,['status' => $status]);
         return app('json')->success('修改成功');
     }
@@ -221,9 +215,6 @@ class CommunityTopic extends AuthController
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:22
      * @author: QSW
@@ -232,7 +223,7 @@ class CommunityTopic extends AuthController
     public function switchHot($id): Response
     {
         $status = $this->request->param('status', 0) == 1 ? 1 : 0;
-        if (!$this->services->get($id)) return app('json')->fail('数据不存在');
+        if (!$this->services->exists($id)) return app('json')->fail('数据不存在');
         $this->services->update($id,['is_hot' => $status]);
         return app('json')->success('修改成功');
     }

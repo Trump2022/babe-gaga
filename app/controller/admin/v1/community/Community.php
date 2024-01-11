@@ -76,7 +76,7 @@ class Community extends AuthController
      */
     public function detail($id): Response
     {
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         $detail = $this->services->detail($id);
         $detail = $detail ? $detail->toArray() : [];
         return app('json')->success($detail);
@@ -96,7 +96,7 @@ class Community extends AuthController
      */
     public function updateForm($id): Response
     {
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         return app('json')->success(formToData($this->services->form($id)));
     }
 
@@ -183,8 +183,7 @@ class Community extends AuthController
     public function switchShow($id): Response
     {
         $status = $this->request->param('status', 0) == 1 ? 1 : 0;
-        if (!$this->services->exists($id))
-            return app('json')->fail('数据不存在');
+        if (!$this->services->exists($id)) return app('json')->fail('数据不存在');
 
         $this->services->update($id,['is_show' => $status]);
         return app('json')->success('修改成功');

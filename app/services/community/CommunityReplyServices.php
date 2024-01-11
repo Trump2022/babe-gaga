@@ -14,6 +14,7 @@ namespace app\services\community;
 
 use app\dao\community\CommunityReplyDao;
 use app\services\BaseServices;
+use app\services\system\RelevanceServices;
 use Carbon\Exceptions\InvalidDateException;
 use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
@@ -24,6 +25,7 @@ use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Db;
 use think\facade\Route;
+use think\Model;
 
 /**
  * Class CommunityReplyServices
@@ -36,7 +38,11 @@ use think\facade\Route;
 class CommunityReplyServices extends BaseServices
 {
     /**
-     * CommunityReplyRepository constructor.
+     * @var CommunityReplyDao
+     */
+    protected $dao;
+
+    /**
      * @param CommunityReplyDao $dao
      */
     public function __construct(CommunityReplyDao $dao)
@@ -81,13 +87,25 @@ class CommunityReplyServices extends BaseServices
         return compact('count', 'list');
     }
 
-
-    public function getApiList(array $where, int $page, int $limit, $userInfo)
+    /**
+     * @param array $where
+     * @param $userInfo
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 18:12
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getApiList(array $where, $userInfo): array
     {
-        $make = app()->make(CommunityRepository::class);
+        [$page, $limit] = $this->getPageValue();
+        $make = app()->make(CommunityServices::class);
 
         $where_['community_id'] = $where['community_id'];
-        $where_ = CommunityRepository::IS_SHOW_WHERE;
+        $where_ = CommunityServices::IS_SHOW_WHERE;
 
         if ($userInfo && $make->uidExists((int)$where['community_id'], $userInfo->uid)) {
             $where_ = ['is_del' => 0];
@@ -95,7 +113,7 @@ class CommunityReplyServices extends BaseServices
 
         $where_['community_id'] = $where['community_id'];
 
-        if (!$make->getWhereCount($where_)) throw new ValidateException('内容不存在，可能被删删除了哦～');
+        if ( ! $make->getWhereCount($where_)) throw new ValidateException('内容不存在，可能被删删除了哦～');
 
         $where['status'] = 1;
         $all = $this->dao->getSearch($where)->count();
@@ -117,7 +135,7 @@ class CommunityReplyServices extends BaseServices
                         $query->field('uid,nickname,avatar');
                     },
                     'reply' => function ($query) {
-                        $query->field('uid,nickname,avatar')->order('create_time ASC');
+                        $query->field('uid,nickname,avatar');
                     },
                     'is_start' => function ($query) use ($userInfo) {
                         $query->where('left_id', $userInfo->uid ?? null);
@@ -131,17 +149,21 @@ class CommunityReplyServices extends BaseServices
 
 
     /**
-     * TODO 发表评论
+     * 发表评论
      * @param int $replyId
      * @param array $data
+     * @return array|Model|null
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
     public function create(int $replyId, array $data)
     {
-        $make = app()->make(CommunityRepository::class);
+        $make = app()->make(CommunityServices::class);
 
-        if (!$make->exists($data['community_id']))
+        if ( ! $make->exists($data['community_id']))
             throw  new ValidateException('内容不存在，可能已被删除了哦～');
 
         $data['pid'] = $replyId;
@@ -160,43 +182,58 @@ class CommunityReplyServices extends BaseServices
             return $res;
         });
 
-        $ret = $this->dao->getWhere(['reply_id' => $res->reply_id], '*', [
+        return $this->dao->getWhere(['reply_id' => $res->reply_id], '*', [
             'author' => function ($query) {
                 $query->field('uid,nickname,avatar');
             },
             'reply' => function ($query) {
-                $query->field('uid,nickname,avatar')->order('create_time ASC');
+                $query->field('uid,nickname,avatar');
             },
         ]);
-        return $ret;
     }
 
+    /**
+     * @param $id
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 19:26
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
     public function delete($id)
     {
         Db::transaction(function () use ($id) {
             $get = $this->dao->get($id);
-            $make = app()->make(CommunityRepository::class);
-            if ($get->pid) $this->dao->decField($get['pid'], 'count_reply', 1);
+            $make = app()->make(CommunityServices::class);
+            if ($get && $get->pid) $this->dao->decField($get['pid'], 'count_reply', 1);
             $make->decField($get['community_id'], 'count_reply', 1);
-            $get->delete();
+            if ($get) $get->delete();
         });
     }
 
-
+    /**
+     * @param int $id
+     * @param int $uid
+     * @param int $status
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 19:44
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
     public function setStart(int $id, int  $uid, int $status)
     {
-        $make = app()->make(RelevanceRepository::class);
-        $check  = $make->checkHas($uid, $id, RelevanceRepository::TYPE_COMMUNITY_REPLY_START);
+        $make = app()->make(RelevanceServices::class);
+        $check  = $make->checkHas($uid, $id, RelevanceServices::TYPE_COMMUNITY_REPLY_START);
         if ($status) {
             if ($check)  throw new ValidateException('您已经赞过过他了～');
-            $make->create($uid, $id, RelevanceRepository::TYPE_COMMUNITY_REPLY_START, true);
+            $make->create($uid, $id, RelevanceServices::TYPE_COMMUNITY_REPLY_START, true);
             $this->dao->incField($id, 'count_start', 1);
         } else {
             if (!$check) throw new ValidateException('您还未赞过他哦～');
-            $make->destory($uid, $id, RelevanceRepository::TYPE_COMMUNITY_REPLY_START);
+            $make->destory($uid, $id, RelevanceServices::TYPE_COMMUNITY_REPLY_START);
             $this->dao->decField($id, 'count_start', 1);
         }
-        return;
     }
 
     /**

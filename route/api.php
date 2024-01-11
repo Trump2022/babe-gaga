@@ -424,13 +424,7 @@ Route::group('api', function () {
         //无需登录接口
         Route::group(function () {
             //分类&话题
-            Route::get('category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
-
-
-
-            Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst');
-            Route::post('reply/create/:id', 'v1.community.CommunityReplyController/create');
-            Route::post('reply/start/:id', 'v1.community.CommunityReplyController/start');
+            Route::get('/category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
             Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
             Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');
@@ -468,6 +462,9 @@ Route::group('api', function () {
             //用户页
             Route::get('/user/info/:id', 'v1.community.CommunityController/userInfo')->name('apiCommunityUserInfo');
 
+            //回复列表
+            Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst')->name('apiCommunityReplyList');
+
         })->middleware(AuthTokenMiddleware::class, false);
 
         //需要授权接口
@@ -481,6 +478,15 @@ Route::group('api', function () {
 
             //删除
             Route::post('/delete/:id', 'v1.community.CommunityController/delete')->name('apiCommunityDelete');
+
+            //评论
+            Route::post('/reply/create/:id', 'v1.community.CommunityReplyController/create')->name('apiCommunityReplyCreate');
+
+            //删除评论
+            Route::post('/reply/delete/:id', 'v1.community.CommunityReplyController/delete')->name('apiCommunityReplyDelete');
+
+            //评论点赞
+            Route::post('/reply/start/:id', 'v1.community.CommunityReplyController/start')->name('apiCommunityReplyStart');
 
         })->middleware(AuthTokenMiddleware::class, true);
 

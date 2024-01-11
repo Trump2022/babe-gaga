@@ -142,16 +142,13 @@ class CommunityCategory extends AuthController
      */
     public function updateForm($id): Response
     {
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         return app('json')->success(formToData($this->services->form($id)));
     }
 
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 17:52
      * @author: QSW
@@ -160,7 +157,7 @@ class CommunityCategory extends AuthController
     public function update($id): Response
     {
         $data = $this->checkParams();
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         if ($this->services->fieldExists('cate_name', $data['cate_name'],$id)) {
             return app('json')->fail('分类名重复');
         }
@@ -171,9 +168,6 @@ class CommunityCategory extends AuthController
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:15
      * @author: QSW
@@ -181,7 +175,7 @@ class CommunityCategory extends AuthController
      */
     public function delete($id): Response
     {
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
         $this->services->delete($id);
         return app('json')->success('删除成功');
     }
@@ -189,9 +183,6 @@ class CommunityCategory extends AuthController
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:26
      * @author: QSW
@@ -200,7 +191,7 @@ class CommunityCategory extends AuthController
     public function switchStatus($id): Response
     {
         $status = $this->request->param('status', 0) == 1 ? 1 : 0;
-        if ( ! $this->services->get($id)) return app('json')->fail('数据不存在');
+        if ( ! $this->services->exists($id)) return app('json')->fail('数据不存在');
 
         $this->services->update($id,['is_show' => $status]);
         return app('json')->success('修改成功');

@@ -32,6 +32,13 @@ use think\db\exception\ModelNotFoundException;
 use think\Response;
 use think\response\Json;
 
+/**
+ * Class CommunityController
+ * @packge app\controller\api\v1\community
+ * @date : 2024/1/11 18:16
+ * @author: QSW
+ * @email: qsw2012@outlook.com
+ */
 class CommunityController
 {
     protected ?int $uid = 0;
