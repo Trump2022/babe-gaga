@@ -11,6 +11,7 @@
 namespace app\controller\api\v1\activity;
 
 use app\services\activity\ActivityCategoryServices;
+use app\services\activity\ActivityServices;
 use crmeb\services\CacheService;
 use think\Request;
 
@@ -46,6 +47,14 @@ class ActivityCategoryController
                 $cateInfo = $this->services->getActivityCategory();
                 return $cateInfo;
             });
+            if(!empty($cateInfo)){
+                /** @var ActivityServices $activityServicess */
+                $activityServicess = app()->make(ActivityServices::class);
+                foreach ($cateInfo as &$itme){
+                    $cid = $itme['id'];
+                    $itme['activity_list'] = $activityServicess->cidByActivityList(['cid' => $cid], 1, 1, "id,title,image_input,visit,from_unixtime(add_time,'%Y-%m-%d %H:%i') as add_time,synopsis,url");
+                }
+            }
         }
         return app('json')->successful($cateInfo);
     }
