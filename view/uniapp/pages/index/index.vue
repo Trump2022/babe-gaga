@@ -69,6 +69,8 @@
             <!-- 标题 -->
 					<titles v-if="item.name == 'titles'" :dataConfig="item" :isSortType="isSortType"></titles>
 				</block>
+				<storeCom></storeCom>
+				<goodsCom v-for="(item, index) in storeCategoryList" :key="item.id" :item="item"></goodsCom>
 				<!-- #endif -->
 				<!-- 分类商品模块 -->
 				<!-- #ifdef  APP-PLUS -->
@@ -189,21 +191,21 @@
 	import couponWindow from '@/components/couponWindow/index';
 	import permision from "@/js_sdk/wa-permission/permission.js";
 	import skeletons from './components/skeletons';
-
-
 	import {
 		getCouponV2,
 		getCouponNewUser,
-		copyRight
+		copyRight,
+		getTemlIds,
+		getDiy,
+		getIndexData,
+		getDiyVersion
 	} from '@/api/api.js';
 	import {
+		silenceAuth,
 		getShare
 	} from '@/api/public.js';
 	// #ifdef H5
 	import mConfig from './components/index.js';
-	import {
-		silenceAuth
-	} from '@/api/public.js';
 	// #endif
 	// #ifdef MP || APP-PLUS
 	import userInfor from './components/userInfor';
@@ -231,9 +233,8 @@
 	import swiperBg from './components/swiperBg';
 	import tabNav from './components/tabNav';
 	import titles from './components/titles';
-	import {
-		getTemlIds
-	} from '@/api/api.js';
+	import storeCom from './components/storeCom';
+	import goodsCom from './components/goodsCom';
 	import {
 		SUBSCRIBE_MESSAGE,
 		TIPS_KEY
@@ -245,15 +246,11 @@
 		mapMutations
 	} from 'vuex';
 	import {
-		getDiy,
-		getIndexData,
-		getDiyVersion
-	} from '@/api/api.js';
-	import {
 		getCategoryList,
 		getProductslist,
 		getProductHot,
-    diyProduct
+		diyProduct,
+		storeCategory
 	} from '@/api/store.js';
 	import {
 		goShopDetail
@@ -303,7 +300,9 @@
 			seckill,
 			swiperBg,
 			tabNav,
-			titles
+			titles,
+			storeCom,
+			goodsCom
 			// #endif
 		},
 		data() {
@@ -359,7 +358,8 @@
 				// isShowAuth: false,
 				isScrolled:false,
 				product_video_status: false,
-				confirm_video_status: false
+				confirm_video_status: false,
+				storeCategoryList: []
 			};
 		},
 		onLoad(options) {
@@ -412,6 +412,7 @@
 					}
 				});
 			});
+			this.getStoreCategory()
 		},
 		onUnload(){
 			// 清除监听
@@ -472,15 +473,21 @@
 			// authColse: function(e) {
 			//   this.isShowAuth = e
 			// },
-      // div商品详情
-      getdiyProduct() {
-        diyProduct().then(res=>{
-          uni.setStorageSync('diyProduct',JSON.stringify(res.data.product_detail))
-          uni.setStorageSync('product_video_status',JSON.stringify(res.data.product_video_status))
-		  this.$eventHub.$emit('product_video_status', res.data.product_video_status);
-		  this.product_video_status = res.data.product_video_status;
-        })
-      },
+			getStoreCategory() {
+				storeCategory({is_class: 1}).then(res => {
+					console.log('res===================>', res)
+					this.storeCategoryList = res.data
+				})
+			},
+			  // div商品详情
+			  getdiyProduct() {
+				diyProduct().then(res=>{
+				  uni.setStorageSync('diyProduct',JSON.stringify(res.data.product_detail))
+				  uni.setStorageSync('product_video_status',JSON.stringify(res.data.product_video_status))
+				  this.$eventHub.$emit('product_video_status', res.data.product_video_status);
+				  this.product_video_status = res.data.product_video_status;
+				})
+			  },
 			getCopyRight(){
 				copyRight().then(res => {
 					let data = res.data;
@@ -764,7 +771,7 @@
 				this.showSkeleton = false
 			},
 			getDiyData() {
-				getDiy(0).then(res => {
+				getDiy(0, {type: 2}).then(res => {
 					uni.setStorageSync('diyData', JSON.stringify(res.data));
 					this.setDiyData(res.data);
 				}).catch(error => {

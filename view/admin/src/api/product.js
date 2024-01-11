@@ -391,7 +391,7 @@ export function labelListApi() {
  */
 export function cascaderListApi(type) {
     return request({
-        url: `product/category/cascader_list/${type}`,
+        url: `classes/category/cascader_list/${type}`,
         method: 'get'
     });
 }

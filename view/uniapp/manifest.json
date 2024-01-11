@@ -1,6 +1,6 @@
 {
     "name" : "crmeb",
-    "appid" : "__UNI__0A10130",
+    "appid" : "__UNI__210A98A",
     "description" : "crmeb商城",
     "versionName" : "2.6.0",
     "versionCode" : 267,
@@ -177,7 +177,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wx6ca9ac1a01f617a1",
+        "appid" : "wx7dfdb4025393fca7",
         "setting" : {
             "urlCheck" : false,
             "minified" : true,

@@ -1,3 +1,11 @@
+/*
+ * @Author: 默°
+ * @Date: 2023-12-29 18:02:39
+ * @LastEditTime: 2024-01-06 15:11:14
+ * @LastEditors: 默°
+ * @Description: 搬什么砖，摸鱼吧
+ * 舒适圈那么舒服为什么要离开
+ */
 // +----------------------------------------------------------------------
 // | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
 // +----------------------------------------------------------------------
@@ -13,23 +21,23 @@
 const env = process.env.NODE_ENV;
 
 const Setting = {
-    // 是否使用 Mock 的数据，默认 开发环境为 true，生产环境为 false
-    isMock: env === 'development',
-    // 部署应用包时的基本 URL
-    // publicPath: env === 'development' ? '' : '',
-    publicPath: '/',
-    // 生产环境构建文件的目录名
-    outputDir: 'dist',
-    // 放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录。
-    assetsDir: 'view_admin',
-    // 开发环境每次保存时 lint 代码，会将 lint 错误输出为编译警告
-    // true || false || error
-    lintOnSave: true,
-    // iView Loader 的选项
-    // 详见 https://www.iviewui.com/docs/guide/iview-loader
-    iviewLoaderOptions: {
-        prefix: false
-    }
+  // 是否使用 Mock 的数据，默认 开发环境为 true，生产环境为 false
+  isMock: env === 'development',
+  // 部署应用包时的基本 URL
+  // publicPath: env === 'development' ? '' : '',
+  publicPath: '/',
+  // 生产环境构建文件的目录名
+  outputDir: 'dist',
+  // 放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录。
+  assetsDir: 'view_admin',
+  // 开发环境每次保存时 lint 代码，会将 lint 错误输出为编译警告
+  // true || false || error
+  lintOnSave: false,
+  // iView Loader 的选项
+  // 详见 https://www.iviewui.com/docs/guide/iview-loader
+  iviewLoaderOptions: {
+    prefix: false,
+  },
 };
 
 module.exports = Setting;

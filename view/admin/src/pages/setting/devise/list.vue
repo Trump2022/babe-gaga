@@ -23,7 +23,7 @@
     <Row class="ivu-mt box-wrapper acea-row">
       <Col class="left-wrapper">
         <!-- 左侧菜单 -->
-        <Menu :theme="theme3" :active-name="1" width="auto">
+        <Menu :theme="theme3" :active-name="0" width="auto">
           <MenuGroup>
             <MenuItem
               :name="item.id"
@@ -47,7 +47,7 @@
                 margin-right: 30px;
                 position: relative;
               "
-              v-if="isDiy"
+              v-if="isDiy && cardShow == 0"
             >
               <iframe
                 class="iframe-box"
@@ -62,7 +62,101 @@
                 <Row type="flex">
                   <Col v-bind="grid">
                     <div class="button acea-row row-middle">
-                      <Button type="primary" @click="add">添加主题</Button>
+                      <Button type="primary" @click="add(2)">添加主题</Button>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+              <Table
+                :columns="columns1"
+                :data="list"
+                ref="table"
+                class="mt25"
+                :loading="loading"
+                highlight-row
+                no-userFrom-text="暂无数据"
+                no-filtered-userFrom-text="暂无筛选结果"
+              >
+                <template slot-scope="{ row, index }" slot="region">
+                  <div class="font-blue">
+                    {{
+                      row.type == 1
+                        ? '默认模板'
+                        : row.type == 2
+                        ? '行业模板'
+                        : '活动模板'
+                    }}
+                  </div>
+                </template>
+                <template slot-scope="{ row, index }" slot="action">
+                  <a @click="edit(row)" v-if="row.status || row.is_diy">编辑</a>
+                  <div
+                    v-if="row.id != 1 && row.is_diy"
+                    style="display: inline-block"
+                  >
+                    <Divider type="vertical" v-if="row.status || row.is_diy" />
+                    <a @click="del(row, 2)">删除</a>
+                  </div>
+                  <div style="display: inline-block" v-if="row.status != 1">
+                    <Divider type="vertical" v-if="row.status || row.is_diy" />
+                    <a @click="setStatus(row, 2)">设为首页</a>
+                  </div>
+                  <div
+                    v-if="row.status || row.is_diy"
+                    style="display: inline-block"
+                  >
+                    <Divider type="vertical" />
+                    <!--<a class="copy-data"v-clipboard:copy="BaseURL+'pages/annex/special/index?id='+row.id"-->
+                    <!--v-clipboard:success="onCopy"-->
+                    <!--v-clipboard:error="onError">预览</a>-->
+                    <a class="copy-data" @click="preview(row)">预览</a>
+                  </div>
+                  <div style="display: inline-block" v-if="!row.is_diy">
+                    <Divider type="vertical" />
+                    <a @click="recovery(row, index)">恢复初始设置</a>
+                    <Divider type="vertical" />
+                    <a @click="del(row)">删除</a>
+                  </div>
+                </template>
+              </Table>
+              <div class="acea-row row-right page">
+                <Page
+                  :total="total"
+                  :current="diyFrom.page"
+                  show-elevator
+                  show-total
+                  @on-change="pageChange"
+                  :page-size="diyFrom.limit"
+                />
+              </div>
+            </Col>
+          </Row>
+        </Card>
+        <Card :bordered="false" dis-hover v-if="cardShow == 1">
+          <Row v-if="cardShow == 1">
+            <Col
+              style="
+                width: 310px;
+                height: 550px;
+                margin-right: 30px;
+                position: relative;
+              "
+              v-if="isDiy && cardShow == 1"
+            >
+              <iframe
+                class="iframe-box"
+                :src="imgUrl"
+                frameborder="0"
+                ref="iframe"
+              ></iframe>
+              <div class="mask"></div>
+            </Col>
+            <Col :class="isDiy ? 'tableDiv' : 'table'">
+              <div class="acea-row row-between-wrapper">
+                <Row type="flex">
+                  <Col v-bind="grid">
+                    <div class="button acea-row row-middle">
+                      <Button type="primary" @click="add(1)">添加主题</Button>
                     </div>
                   </Col>
                 </Row>
@@ -99,7 +193,7 @@
                   </div>
                   <div style="display: inline-block" v-if="row.status != 1">
                     <Divider type="vertical" v-if="row.status || row.is_diy" />
-                    <a @click="setStatus(row, index)">设为首页</a>
+                    <a @click="setStatus(row, 1)">设为首页</a>
                   </div>
                   <div
                     v-if="row.status || row.is_diy"
@@ -133,19 +227,19 @@
           </Row>
         </Card>
         <goodClass
-          v-if="cardShow == 1"
+          v-if="cardShow == 2"
           ref="category"
           @parentFun="getChildData"
         ></goodClass>
 
         <newGoods
-          v-if="cardShow === 2"
+          v-if="cardShow === 3"
           ref="newGoods"
           @parentFun="getChildData"
         ></newGoods>
 
         <users
-          v-if="cardShow == 3"
+          v-if="cardShow == 4"
           ref="users"
           @parentFun="getChildData"
         ></users>
@@ -156,7 +250,7 @@
       dis-hover
       class="fixed-card"
       :style="{ left: `${!menuCollapse ? '200px' : isMobile ? '0' : '80px'}` }"
-      v-show="cardShow == 1 || cardShow == 2 || cardShow == 3"
+      v-show="cardShow == 0 || cardShow == 1 || cardShow == 2 || cardShow == 3"
     >
       <div class="acea-row row-center-wrapper">
         <Button
@@ -166,7 +260,7 @@
           :loading="loadingExist"
           >保存</Button
         >
-        <Button class="bnt ml20" @click="reast" v-if="cardShow==1">重置</Button>
+        <Button class="bnt ml20" @click="reast" v-if="cardShow == 0 || cardShow==1">重置</Button>
       </div>
     </Card>
     <Modal v-model="modal" title="预览" footer-hide>
@@ -219,6 +313,10 @@ export default {
       loading: false,
       theme3: 'light',
       menuList: [
+        {
+          name: '课程首页',
+          id: 0,
+        },
         {
           name: '商城首页',
           id: 1,
@@ -273,7 +371,7 @@ export default {
       isDiy: 1,
       qrcodeImg: '',
       diyFrom: {
-        type: 1,
+        type: 2,
         page: 1,
         limit: 10,
       },
@@ -292,6 +390,7 @@ export default {
     },
     submit() {
       switch (this.cardShow) {
+        case 0:
         case 1:
           this.$refs.category.onSubmit()
           break
@@ -314,6 +413,14 @@ export default {
       }
     },
     bindMenuItem(index) {
+        if(index == 0) {
+            this.diyFrom.type = 2
+            this.getList()
+        }
+        if(index == 1) {
+            this.diyFrom.type = 1
+            this.getList()
+        }
       this.cardShow = index
     },
     onCopy() {
@@ -369,7 +476,7 @@ export default {
         data.list.forEach(function (e) {
           if (e.status == 1) {
             that.isDiy = e.is_diy
-            let imgUrl = `${that.BaseURL}pages/annex/special/index?id=${e.id}`
+            let imgUrl = `${that.BaseURL}pages/annex/special/index?id=${e.id}?type=${that.diyFrom.type}`
             storage.setItem('imgUrl', imgUrl)
             that.imgUrl = imgUrl
             // let imgUrl = JSON.parse(storage.getItem('menuList'));
@@ -401,10 +508,10 @@ export default {
       }
     },
     // 添加
-    add() {
+    add(type) {
       this.$router.push({
         path: this.roterPre + '/pages/diy',
-        query: { id: 0, name: '首页', type: 1 },
+        query: { id: 0, name: '首页', type },
       })
     },
     // 删除
@@ -427,13 +534,13 @@ export default {
         })
     },
     // 使用模板
-    async setStatus(row) {
+    async setStatus(row, type) {
       this.$Modal.confirm({
         title: '提示',
         content: '<p>是否把该模板设为首页</p>',
         onOk: () => {
           setStatus(row.id, {
-            type: 1,
+            type,
           })
             .then((res) => {
               let that = this

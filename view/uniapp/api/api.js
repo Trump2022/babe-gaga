@@ -317,8 +317,8 @@ export function getLiveList(page, limit) {
 /**
  * 获取首页DIY；
  */
-export function getDiy(id) {
-	return request.get('diy/get_diy/' + id, {}, {
+export function getDiy(id, data = {}) {
+	return request.get('diy/get_diy/' + id, data, {
 		noAuth: true
 	});
 }

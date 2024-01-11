@@ -13,9 +13,9 @@ module.exports = {
 	// 小程序配置
 	// #ifdef MP || APP-PLUS
 	// 请求域名 格式： https://您的域名
-	HTTP_REQUEST_URL: `https://您的域名`,
+	HTTP_REQUEST_URL: `https://gaga.fanxinghy.com`,
 	// 长连接 格式：wss://您的域名 
-	VUE_APP_WS_URL: `wss://您的域名/ws`,
+	VUE_APP_WS_URL: `wss://gaga.fanxinghy.com/ws`,
 	// #endif
 	// H5配置
 	// #ifdef H5
