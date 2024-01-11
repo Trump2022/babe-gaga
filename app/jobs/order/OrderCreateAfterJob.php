@@ -104,6 +104,7 @@ class OrderCreateAfterJob extends BaseJobs
                 if ($userServices->checkUserPromoter($spread_two_uid)) $orderData['two_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'two_brokerage', false);
             }
             if ($orderData) $createService->update(['id' => $orderId], $orderData);
+            Log::info('下单后置事件' . json_encode($orderData));
         } catch (\Throwable $e) {
             Log::error('计算订单实际优惠、gaga币、邮费、佣金失败，原因：' . $e->getMessage());
         }
