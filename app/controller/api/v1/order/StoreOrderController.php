@@ -778,6 +778,11 @@ class StoreOrderController
             } else {
                 $orderData['write_day'] = ($start ? date('Y-m-d', $start) : '') . '/' . ($end ? date('Y-m-d', $end) : '');
             }
+
+            if ($order['is_class']) {
+                $orderData['active_time'] = '';
+                
+            }
         }
 		// 判断是否开启小程序订单管理
 		$orderData['order_shipping_open'] = false;

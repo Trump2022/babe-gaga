@@ -422,9 +422,14 @@ class WriteOffOrderServices extends BaseServices
                     }
                 } else {
                     //整单核销
-
-                    if($cartInfo['write_surplus_times'] > 0){
+                    if ($cartInfo['write_surplus_times'] > 0) {
                         //修改原来订单商品信息
+                        if ($orderInfo['is_class'] && ($cartInfo['write_surplus_times'] == $cartInfo['write_times'])) {
+                            // 第一次核销，激活课程, 使用时效的开始和结束时间
+                            $cartData['write_start'] = time();
+                            $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$cartInfo['write_days'], '86400'));
+                        }
+
                         //核销减1
                         $cartInfoServices->decUpdate(['oid' => $orderInfo['id']], 'write_surplus_times');
 
@@ -434,7 +439,7 @@ class WriteOffOrderServices extends BaseServices
                         $userInfo = $userServices->get((int)$orderInfo['uid']);
 
                         $write_surplus_times = $cartInfo['write_surplus_times'] - 1;
-                        if($write_surplus_times == 0){
+                        if ($write_surplus_times == 0) {
                             //核销完成
                             $cartData['is_writeoff'] = 1;
                             $cartData['writeoff_time'] = time();
