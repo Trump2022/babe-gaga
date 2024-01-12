@@ -2,7 +2,7 @@
 
 namespace think\swoole\resetters;
 
-use think\App;
+use think\Container;
 use think\swoole\concerns\ModifyProperty;
 use think\swoole\contract\ResetterInterface;
 use think\swoole\Sandbox;
@@ -10,12 +10,13 @@ use think\swoole\Sandbox;
 /**
  * Class ResetEvent
  * @package think\swoole\resetters
+ * @property Container $app;
  */
 class ResetEvent implements ResetterInterface
 {
     use ModifyProperty;
 
-    public function handle(App $app, Sandbox $sandbox)
+    public function handle(Container $app, Sandbox $sandbox)
     {
         $event = clone $sandbox->getEvent();
         $this->modifyProperty($event, $app);

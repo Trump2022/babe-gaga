@@ -245,7 +245,7 @@ class Template
 
             // 页面缓存
             ob_start();
-            if (version_compare(PHP_VERSION, '8.0', '>=')) {
+            if (PHP_VERSION > 8.0) {
                 ob_implicit_flush(false);
             } else {
                 ob_implicit_flush(0);

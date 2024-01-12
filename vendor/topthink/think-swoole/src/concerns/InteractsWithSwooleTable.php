@@ -13,12 +13,13 @@ namespace think\swoole\concerns;
 
 use Swoole\Table as SwooleTable;
 use think\App;
+use think\Container;
 use think\swoole\Table;
 
 /**
  * Trait InteractsWithSwooleTable
  *
- * @property App $container
+ * @property Container $container
  * @property App $app
  */
 trait InteractsWithSwooleTable

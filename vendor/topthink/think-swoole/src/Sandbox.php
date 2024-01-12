@@ -11,6 +11,8 @@ use think\App;
 use think\Config;
 use think\Container;
 use think\Event;
+use think\Http;
+use think\Model;
 use think\swoole\App as SwooleApp;
 use think\swoole\concerns\ModifyProperty;
 use think\swoole\contract\ResetterInterface;
@@ -18,8 +20,6 @@ use think\swoole\coroutine\Context;
 use think\swoole\resetters\ClearInstances;
 use think\swoole\resetters\ResetConfig;
 use think\swoole\resetters\ResetEvent;
-use think\swoole\resetters\ResetModel;
-use think\swoole\resetters\ResetPaginator;
 use think\swoole\resetters\ResetService;
 use Throwable;
 
@@ -70,6 +70,8 @@ class Sandbox
         Container::setInstance(function () {
             return $this->getApplication();
         });
+
+        $this->app->bind(Http::class, \think\swoole\Http::class);
 
         $this->setInitialConfig();
         $this->setInitialServices();
@@ -232,8 +234,6 @@ class Sandbox
             ResetConfig::class,
             ResetEvent::class,
             ResetService::class,
-            ResetModel::class,
-            ResetPaginator::class,
         ];
 
         $resetters = array_merge($resetters, $this->config->get('swoole.resetters', []));
@@ -250,12 +250,22 @@ class Sandbox
     /**
      * Reset Application.
      *
-     * @param App $app
+     * @param Container $app
      */
-    protected function resetApp(App $app)
+    protected function resetApp(Container $app)
     {
         foreach ($this->resetters as $resetter) {
             $resetter->handle($app, $this);
+        }
+        $this->resetModel();
+    }
+
+    protected function resetModel()
+    {
+        if (class_exists(Model::class)) {
+            Model::setInvoker(function (...$args) {
+                return Container::getInstance()->invoke(...$args);
+            });
         }
     }
 

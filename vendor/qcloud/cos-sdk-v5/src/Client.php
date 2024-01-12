@@ -51,7 +51,7 @@ use GuzzleHttp\Psr7;
  * @method object PutObject(array $args) 上传对象
  * @method object AppendObject(array $args) 追加对象
  * @method object PutObjectAcl(array $args) 设置 COS 对象的访问权限信息（Access Control List, ACL）
- * @method object PutBucketAcl(array $args) 设置存储桶（Bucket）的访问权限 (Access Control List, ACL)
+ * @method object PutBucketAcl(array $args) 设置存储桶（Bucket）的访问权限（Access Control List, ACL)
  * @method object PutBucketCors(array $args) 设置存储桶（Bucket）的跨域配置信息
  * @method object PutBucketDomain(array $args) 设置存储桶（Bucket）的Domain信息
  * @method object PutBucketLifecycle(array $args) 设置存储桶（Bucket）生命周期配置
@@ -121,175 +121,43 @@ use GuzzleHttp\Psr7;
  * @method object DescribeMediaVoiceSeparateJob(array $args) 查询指定的人声分离任务
  * @method object DetectWebpage(array $args) 提交网页审核任务
  * @method object GetDetectWebpageResult(array $args) 查询网页审核任务结果
- * @method object DescribeMediaBuckets(array $args) 查询媒体处理开通状态
- * @method object GetPrivateM3U8(array $args) 获取私有 M3U8 ts 资源的下载授权
- * @method object DescribeMediaQueues(array $args) 搜索媒体处理队列
- * @method object UpdateMediaQueue(array $args) 更新媒体处理队列
- * @method object CreateMediaSmartCoverJobs(array $args) 提交智能封面任务
- * @method object CreateMediaVideoProcessJobs(array $args) 提交视频增强任务
- * @method object CreateMediaVideoMontageJobs(array $args) 提交精彩集锦任务
- * @method object CreateMediaAnimationJobs(array $args) 提交动图任务
- * @method object CreateMediaPicProcessJobs(array $args) 提交图片处理任务
- * @method object CreateMediaSegmentJobs(array $args) 提交转封装任务
- * @method object CreateMediaVideoTagJobs(array $args) 提交视频标签任务
- * @method object CreateMediaSuperResolutionJobs(array $args) 提交超分辨率任务
- * @method object CreateMediaSDRtoHDRJobs(array $args) 提交 SDR to HDR 任务
- * @method object CreateMediaDigitalWatermarkJobs(array $args) 嵌入数字水印任务(添加水印)
- * @method object CreateMediaExtractDigitalWatermarkJobs(array $args) 提取数字水印任务(提取水印)
- * @method object DetectLiveVideo(array $args) 直播流审核
- * @method object CancelLiveVideoAuditing(array $args) 取消直播流审核
- * @method object OpticalOcrRecognition(array $args) 通用文字识别
- * @method object TriggerWorkflow(array $args) 手动触发工作流
- * @method object GetWorkflowInstances(array $args) 获取工作流实例列表
- * @method object GetWorkflowInstance(array $args) 获取工作流实例详情
- * @method object CreateMediaSnapshotTemplate(array $args) 新增截图模板
- * @method object UpdateMediaSnapshotTemplate(array $args) 更新截图模板
- * @method object CreateMediaTranscodeTemplate(array $args) 新增转码模板
- * @method object UpdateMediaTranscodeTemplate(array $args) 更新转码模板
- * @method object CreateMediaHighSpeedHdTemplate(array $args) 新增极速高清转码模板
- * @method object UpdateMediaHighSpeedHdTemplate(array $args) 更新极速高清转码模板
- * @method object CreateMediaAnimationTemplate(array $args) 新增动图模板
- * @method object UpdateMediaAnimationTemplate(array $args) 更新动图模板
- * @method object CreateMediaConcatTemplate(array $args) 新增拼接模板
- * @method object UpdateMediaConcatTemplate(array $args) 更新拼接模板
- * @method object CreateMediaVideoProcessTemplate(array $args) 新增视频增强模板
- * @method object UpdateMediaVideoProcessTemplate(array $args) 更新视频增强模板
- * @method object CreateMediaVideoMontageTemplate(array $args) 新增精彩集锦模板
- * @method object UpdateMediaVideoMontageTemplate(array $args) 更新精彩集锦模板
- * @method object CreateMediaVoiceSeparateTemplate(array $args) 新增人声分离模板
- * @method object UpdateMediaVoiceSeparateTemplate(array $args) 更新人声分离模板
- * @method object CreateMediaSuperResolutionTemplate(array $args) 新增超分辨率模板
- * @method object UpdateMediaSuperResolutionTemplate(array $args) 更新超分辨率模板
- * @method object CreateMediaPicProcessTemplate(array $args) 新增图片处理模板
- * @method object UpdateMediaPicProcessTemplate(array $args) 更新图片处理模板
- * @method object CreateMediaWatermarkTemplate(array $args) 新增水印模板
- * @method object UpdateMediaWatermarkTemplate(array $args) 更新水印模板
- * @method object DescribeMediaTemplates(array $args) 查询模板列表
- * @method object DescribeWorkflow(array $args) 搜索工作流
- * @method object DeleteWorkflow(array $args) 删除工作流
- * @method object CreateInventoryTriggerJob(array $args) 触发批量存量任务
- * @method object DescribeInventoryTriggerJobs(array $args) 批量拉取存量任务
- * @method object DescribeInventoryTriggerJob(array $args) 查询存量任务
- * @method object CancelInventoryTriggerJob(array $args) 取消存量任务
- * @method object CreateMediaNoiseReductionJobs(array $args) 提交音频降噪任务
- * @method object ImageRepairProcess(array $args) 图片水印修复
- * @method object ImageDetectCarProcess(array $args) 车辆车牌检测
- * @method object ImageAssessQualityProcess(array $args) 图片质量评估
- * @method object ImageSearchOpen(array $args) 开通以图搜图
- * @method object ImageSearchAdd(array $args) 添加图库图片
- * @method object ImageSearch(array $args) 图片搜索接口
- * @method object ImageSearchDelete(array $args) 图片搜索接口
- * @method object BindCiService(array $args) 绑定数据万象服务
- * @method object GetCiService(array $args) 查询数据万象服务
- * @method object UnBindCiService(array $args) 解绑数据万象服务
- * @method object GetHotLink(array $args) 查询防盗链
- * @method object AddHotLink(array $args) 查询防盗链
- * @method object OpenOriginProtect(array $args) 开通原图保护
- * @method object GetOriginProtect(array $args) 查询原图保护状态
- * @method object CloseOriginProtect(array $args) 关闭原图保护
- * @method object ImageDetectFace(array $args) 人脸检测
- * @method object ImageFaceEffect(array $args) 人脸特效
- * @method object IDCardOCR(array $args) 身份证识别
- * @method object IDCardOCRByUpload(array $args) 身份证识别-上传时处理
- * @method object GetLiveCode(array $args) 获取数字验证码
- * @method object GetActionSequence(array $args) 获取动作顺序
- * @method object DescribeDocProcessBuckets(array $args) 查询文档预览开通状态
- * @method object UpdateDocProcessQueue(array $args) 更新文档转码队列
- * @method object CreateMediaQualityEstimateJobs(array $args) 提交视频质量评分任务
- * @method object CreateMediaStreamExtractJobs(array $args) 提交音视频流分离任务
- * @method object FileJobs4Hash(array $args) 哈希值计算同步请求
- * @method object OpenFileProcessService(array $args) 开通文件处理服务
- * @method object GetFileProcessQueueList(array $args) 搜索文件处理队列
- * @method object UpdateFileProcessQueue(array $args) 更新文件处理的队列
- * @method object CreateFileHashCodeJobs(array $args) 提交哈希值计算任务
- * @method object GetFileHashCodeResult(array $args) 查询哈希值计算结果
- * @method object CreateFileUncompressJobs(array $args) 提交文件解压任务
- * @method object GetFileUncompressResult(array $args) 查询文件解压结果
- * @method object CreateFileCompressJobs(array $args) 提交多文件打包压缩任务
- * @method object GetFileCompressResult(array $args) 查询多文件打包压缩结果
- * @method object CreateM3U8PlayListJobs(array $args) 获取指定hls/m3u8文件指定时间区间内的ts资源
- * @method object GetPicQueueList(array $args) 搜索图片处理队列
- * @method object UpdatePicQueue(array $args) 更新图片处理队列
- * @method object GetPicBucketList(array $args) 查询图片处理服务状态
- * @method object GetAiBucketList(array $args) 查询 AI 内容识别服务状态
- * @method object OpenAiService(array $args) 开通 AI 内容识别
- * @method object CloseAiService(array $args) 关闭AI内容识别服务
- * @method object GetAiQueueList(array $args) 搜索 AI 内容识别队列
- * @method object UpdateAiQueue(array $args) 更新 AI 内容识别队列
- * @method object CreateMediaTranscodeProTemplate(array $args) 创建音视频转码 pro 模板
- * @method object UpdateMediaTranscodeProTemplate(array $args) 更新音视频转码 pro 模板
- * @method object CreateVoiceTtsTemplate(array $args) 创建语音合成模板
- * @method object UpdateVoiceTtsTemplate(array $args) 更新语音合成模板
- * @method object CreateMediaSmartCoverTemplate(array $args) 创建智能封面模板
- * @method object UpdateMediaSmartCoverTemplate(array $args) 更新智能封面模板
- * @method object CreateVoiceSpeechRecognitionTemplate(array $args) 创建语音识别模板
- * @method object UpdateVoiceSpeechRecognitionTemplate(array $args) 更新语音识别模板
- * @method object CreateVoiceTtsJobs(array $args) 提交一个语音合成任务
- * @method object CreateAiTranslationJobs(array $args) 提交一个翻译任务
- * @method object CreateVoiceSpeechRecognitionJobs(array $args) 提交一个语音识别任务
- * @method object CreateAiWordsGeneralizeJobs(array $args) 提交一个分词任务
- * @method object CreateMediaVideoEnhanceJobs(array $args) 提交画质增强任务
- * @method object CreateMediaVideoEnhanceTemplate(array $args) 创建画质增强模板
- * @method object UpdateMediaVideoEnhanceTemplate(array $args) 更新画质增强模板
- * @method object OpenImageSlim(array $args) 开通图片瘦身
- * @method object CloseImageSlim(array $args) 关闭图片瘦身
- * @method object GetImageSlim(array $args) 查询图片瘦身状态
- * @method object AutoTranslationBlockProcess(array $args) 实时文字翻译
- * @method object RecognizeLogoProcess(array $args) Logo 识别
- * @method object DetectLabelProcess(array $args) 图片标签
- * @method object AIGameRecProcess(array $args) 游戏场景识别
- * @method object AIBodyRecognitionProcess(array $args) 人体识别
- * @method object DetectPetProcess(array $args) 宠物识别
- * @method object AILicenseRecProcess(array $args) 卡证识别
- * @method object CreateMediaTargetRecTemplate(array $args) 创建视频目标检测模板
- * @method object UpdateMediaTargetRecTemplate(array $args) 更新视频目标检测模板
- * @method object CreateMediaTargetRecJobs(array $args) 提交视频目标检测任务
- * @method object CreateMediaSegmentVideoBodyJobs(array $args) 提交视频人像抠图任务
  * @see \Qcloud\Cos\Service::getService()
  */
 class Client extends GuzzleClient {
-    const VERSION = '2.6.8';
+    const VERSION = '2.5.1';
 
     public $httpClient;
-
+    
     private $api;
     private $desc;
     private $action;
     private $operation;
+    private $cosConfig;
     private $signature;
     private $rawCosConfig;
 
-    private $cosConfig = [
-        'scheme' => 'http',
-        'region' => null,
-        'credentials' => [
-            'appId' => null,
-            'secretId' => '',
-            'secretKey' => '',
-            'anonymous' => false,
-            'token' => null,
-        ],
-        'timeout' => 3600,
-        'connect_timeout' => 3600,
-        'ip' => null,
-        'port' => null,
-        'endpoint' => null,
-        'domain' => null,
-        'proxy' => null,
-        'retry' => 1,
-        'userAgent' => 'cos-php-sdk-v5.' . Client::VERSION,
-        'pathStyle' => false,
-        'signHost' => true,
-        'allow_redirects' => false,
-        'allow_accelerate' => false,
-        'timezone' => 'PRC',
-        'locationWithScheme' => false,
-    ];
-
     public function __construct(array $cosConfig) {
         $this->rawCosConfig = $cosConfig;
-
-        $this->cosConfig = processCosConfig(array_replace_recursive($this->cosConfig, $cosConfig));
+        $this->cosConfig['schema'] = isset($cosConfig['schema']) ? $cosConfig['schema'] : 'http';
+        $this->cosConfig['region'] = isset($cosConfig['region']) ? region_map($cosConfig['region']) : null;
+        $this->cosConfig['appId'] = isset($cosConfig['credentials']['appId']) ? $cosConfig['credentials']['appId'] : null;
+        $this->cosConfig['secretId'] = isset($cosConfig['credentials']['secretId']) ? trim($cosConfig['credentials']['secretId']) : '';
+        $this->cosConfig['secretKey'] = isset($cosConfig['credentials']['secretKey']) ? trim($cosConfig['credentials']['secretKey']) : '';
+        $this->cosConfig['anonymous'] = isset($cosConfig['credentials']['anonymous']) ? $cosConfig['credentials']['anonymous'] : false;
+        $this->cosConfig['token'] = isset($cosConfig['credentials']['token']) ? trim($cosConfig['credentials']['token']) : null;
+        $this->cosConfig['timeout'] = isset($cosConfig['timeout']) ? $cosConfig['timeout'] : 3600;
+        $this->cosConfig['connect_timeout'] = isset($cosConfig['connect_timeout']) ? $cosConfig['connect_timeout'] : 3600;
+        $this->cosConfig['ip'] = isset($cosConfig['ip']) ? $cosConfig['ip'] : null;
+        $this->cosConfig['port'] = isset($cosConfig['port']) ? $cosConfig['port'] : null;
+        $this->cosConfig['endpoint'] = isset($cosConfig['endpoint']) ? $cosConfig['endpoint'] : null;
+        $this->cosConfig['domain'] = isset($cosConfig['domain']) ? $cosConfig['domain'] : null;
+        $this->cosConfig['proxy'] = isset($cosConfig['proxy']) ? $cosConfig['proxy'] : null;
+        $this->cosConfig['retry'] = isset($cosConfig['retry']) ? $cosConfig['retry'] : 1;
+        $this->cosConfig['userAgent'] = isset($cosConfig['userAgent']) ? $cosConfig['userAgent'] : 'cos-php-sdk-v5.'. Client::VERSION;
+        $this->cosConfig['pathStyle'] = isset($cosConfig['pathStyle']) ? $cosConfig['pathStyle'] : false;
+        $this->cosConfig['signHost'] = isset($cosConfig['signHost']) ? $cosConfig['signHost'] : true;
+        $this->cosConfig['allow_redirects'] = isset($cosConfig['allow_redirects']) ? $cosConfig['allow_redirects'] : false;
+        $this->cosConfig['allow_accelerate'] = isset($cosConfig['allow_accelerate']) ? $cosConfig['allow_accelerate'] : false;
 
         // check config
         $this->inputCheck();
@@ -301,11 +169,10 @@ class Client extends GuzzleClient {
 			return $request->withHeader('User-Agent', $this->cosConfig['userAgent']);
         }));
         if ($this->cosConfig['anonymous'] != true) {
-            $handler->push($this::handleSignature($this->cosConfig['secretId'], $this->cosConfig['secretKey'], $this->cosConfig));
+            $handler->push($this::handleSignature($this->cosConfig['secretId'], $this->cosConfig['secretKey'], $this->cosConfig['signHost']));
         }
         if ($this->cosConfig['token'] != null) {
             $handler->push(Middleware::mapRequest(function (RequestInterface $request) {
-                $request = $request->withHeader('x-ci-security-token', $this->cosConfig['token']);
                 return $request->withHeader('x-cos-security-token', $this->cosConfig['token']);
             }));
         }
@@ -313,7 +180,7 @@ class Client extends GuzzleClient {
         $this->signature = new Signature($this->cosConfig['secretId'], $this->cosConfig['secretKey'], $this->cosConfig, $this->cosConfig['token']);
         $area = $this->cosConfig['allow_accelerate'] ? 'accelerate' : $this->cosConfig['region'];
         $this->httpClient = new HttpClient([
-            'base_uri' => "{$this->cosConfig['scheme']}://cos.{$area}.myqcloud.com/",
+            'base_uri' => "{$this->cosConfig['schema']}://cos.{$area}.myqcloud.com/",
             'timeout' => $this->cosConfig['timeout'],
             'handler' => $handler,
             'proxy' => $this->cosConfig['proxy'],
@@ -332,8 +199,7 @@ class Client extends GuzzleClient {
         if (empty($this->cosConfig['region'])   &&
             empty($this->cosConfig['domain'])   &&
             empty($this->cosConfig['endpoint']) &&
-            empty($this->cosConfig['ip'])       &&
-            !$this->cosConfig['allow_accelerate']) {
+            empty($this->cosConfig['ip'])) {
             $message = 'Region is empty';
         }
         //检查Secret
@@ -392,7 +258,6 @@ class Client extends GuzzleClient {
         $request = $transformer->uploadBodyTransformer($command, $request);
         $request = $transformer->metadataTransformer($command, $request);
         $request = $transformer->queryStringTransformer($command, $request);
-        $request = $transformer->headerTransformer($command, $request);
         $request = $transformer->md5Transformer($command, $request);
         $request = $transformer->specialParamTransformer($command, $request);
         $request = $transformer->ciParamTransformer($command, $request);
@@ -435,22 +300,8 @@ class Client extends GuzzleClient {
         return $this->api;
     }
 
-    /**
-     * Get the config of the cos client.
-     *
-     * @param array|string $option
-     * @return mixed
-     */
-    public function getCosConfig($option = null)
-    {
-        return $option === null
-            ? $this->cosConfig
-            : (isset($this->cosConfig[$option]) ? $this->cosConfig[$option] : array());
-    }
-
-    public function setCosConfig($option, $value)
-    {
-        $this->cosConfig[$option] = $value;
+    private function getCosConfig() {
+        return $this->cosConfig;
     }
 
     private function createPresignedUrl(RequestInterface $request, $expires) {
@@ -463,6 +314,7 @@ class Client extends GuzzleClient {
         return $this->createPresignedUrl($request, $expires);
     }
 
+
     public function getObjectUrl($bucket, $key, $expires = "+30 minutes", array $args = array()) {
         $command = $this->getCommand('GetObject', $args + array('Bucket' => $bucket, 'Key' => $key));
         $request = $this->commandToRequestTransformer($command);
@@ -472,7 +324,7 @@ class Client extends GuzzleClient {
     public function getObjectUrlWithoutSign($bucket, $key, array $args = array()) {
         $command = $this->getCommand('GetObject', $args + array('Bucket' => $bucket, 'Key' => $key));
         $request = $this->commandToRequestTransformer($command);
-        return $request->getUri()->__toString();
+        return $request->getUri()-> __toString();
     }
 
     public function upload($bucket, $key, $body, $options = array()) {
@@ -499,6 +351,7 @@ class Client extends GuzzleClient {
 
     public function download($bucket, $key, $saveAs, $options = array()) {
         $options['PartSize'] = isset($options['PartSize']) ? $options['PartSize'] : RangeDownload::DEFAULT_PART_SIZE;
+        $contentLength = 0;
         $versionId = isset($options['VersionId']) ? $options['VersionId'] : '';
 
         $rt = $this->headObject(array(
@@ -621,9 +474,10 @@ class Client extends GuzzleClient {
         return $final_key;
     }
 
-    public static function handleSignature($secretId, $secretKey, $options) {
-            return function (callable $handler) use ($secretId, $secretKey, $options) {
-                    return new SignatureMiddleware($handler, $secretId, $secretKey, $options);
+
+    public static function handleSignature($secretId, $secretKey, $signHost) {
+            return function (callable $handler) use ($secretId, $secretKey, $signHost) {
+                    return new SignatureMiddleware($handler, $secretId, $secretKey, $signHost);
             };
     }
 

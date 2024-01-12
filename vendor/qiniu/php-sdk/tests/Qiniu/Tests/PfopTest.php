@@ -1,12 +1,10 @@
 <?php
 namespace Qiniu\Tests;
 
-use PHPUnit\Framework\TestCase;
-
 use Qiniu\Processing\Operation;
 use Qiniu\Processing\PersistentFop;
 
-class PfopTest extends TestCase
+class PfopTest extends \PHPUnit_Framework_TestCase
 {
     public function testPfop()
     {

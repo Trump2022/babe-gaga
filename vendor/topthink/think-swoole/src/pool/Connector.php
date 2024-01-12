@@ -25,7 +25,7 @@ class Connector implements ConnectorInterface
 
     public function isConnected($connection): bool
     {
-        return !property_exists($connection, Proxy::KEY_DISCONNECTED);
+        return true;
     }
 
     public function reset($connection, array $config)

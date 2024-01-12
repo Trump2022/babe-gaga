@@ -144,18 +144,15 @@ class SwooleClient implements IHttp2Client
      */
     public function close()
     {
-        $this->recvCo = false;
+        $this->http2Client = null;
+        $url = ($this->ssl ? 'https://' : 'http://') . $this->host . ':' . $this->port;
+        $this->handler->getHttp2ConnectionManager()->closeConnection($url);
         $recvChannels = &$this->recvChannels;
         foreach ($recvChannels as $channel)
         {
             $channel->close();
         }
         $recvChannels = [];
-        $this->requestMap = [];
-        $this->http2Client->close();
-        $url = ($this->ssl ? 'https://' : 'http://') . $this->host . ':' . $this->port;
-        $this->handler->getHttp2ConnectionManager()->release($url, $this->http2Client);
-        $this->http2Client = null;
     }
 
     /**
@@ -183,17 +180,14 @@ class SwooleClient implements IHttp2Client
         $request = $request->withAttribute(Attributes::HTTP2_PIPELINE, $pipeline);
         $this->handler->buildRequest($request, $http2Client, $http2Request);
         $streamId = $http2Client->send($http2Request);
-        if ($streamId)
-        {
-            if (!$dropRecvResponse)
-            {
-                $this->recvChannels[$streamId] = new Channel(1);
-                $this->requestMap[$streamId] = $request;
-            }
-        }
-        else
+        if (!$streamId)
         {
             $this->close();
+        }
+        if (!$dropRecvResponse)
+        {
+            $this->recvChannels[$streamId] = new Channel(1);
+            $this->requestMap[$streamId] = $request;
         }
 
         return $streamId;
@@ -236,7 +230,7 @@ class SwooleClient implements IHttp2Client
     public function recv($streamId = -1, $timeout = null)
     {
         $recvCo = $this->recvCo;
-        if (!$recvCo || !Coroutine::exists($recvCo))
+        if (!$recvCo || (true !== $recvCo && !Coroutine::exists($recvCo)))
         {
             $this->startRecvCo();
         }
@@ -249,6 +243,12 @@ class SwooleClient implements IHttp2Client
         {
             $recvChannels[$streamId] = $channel = new Channel(-1 === $streamId ? $this->serverPushQueueLength : 1);
         }
+        $swooleResponse = $channel->pop(null === $timeout ? -1 : $timeout);
+        if (-1 !== $streamId)
+        {
+            unset($recvChannels[$streamId]);
+            $channel->close();
+        }
         $requestMap = &$this->requestMap;
         if (isset($requestMap[$streamId]))
         {
@@ -258,15 +258,6 @@ class SwooleClient implements IHttp2Client
         else
         {
             $request = null;
-        }
-        $swooleResponse = $channel->pop(null === $timeout ? -1 : $timeout);
-        if ($this->recvCo === $recvCo)
-        {
-            if (-1 !== $streamId)
-            {
-                unset($recvChannels[$streamId]);
-                $channel->close();
-            }
         }
         $response = $this->handler->buildHttp2Response($request, $this->http2Client, $swooleResponse);
 
@@ -295,12 +286,13 @@ class SwooleClient implements IHttp2Client
         {
             return false;
         }
+        $recvCo = &$this->recvCo;
+        $recvCo = true;
 
-        return Coroutine::create(function () {
-            $this->recvCo = $coid = Coroutine::getCid();
+        return $recvCo = Coroutine::create(function () {
             $http2Client = &$this->http2Client;
             $recvChannels = &$this->recvChannels;
-            while ($coid === $this->recvCo && $this->isConnected())
+            while ($this->isConnected())
             {
                 if ($this->timeout > 0)
                 {
@@ -309,10 +301,6 @@ class SwooleClient implements IHttp2Client
                 else
                 {
                     $swooleResponse = $http2Client->recv();
-                }
-                if ($coid !== $this->recvCo)
-                {
-                    return;
                 }
                 if (!$swooleResponse)
                 {

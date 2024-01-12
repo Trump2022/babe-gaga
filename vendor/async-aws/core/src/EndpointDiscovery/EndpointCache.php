@@ -11,19 +11,10 @@ use AsyncAws\Core\Exception\LogicException;
  */
 class EndpointCache
 {
-    /**
-     * @var array<string, array<string, int>>
-     */
     private $endpoints = [];
 
-    /**
-     * @var array<string, array<string, int>>
-     */
     private $expired = [];
 
-    /**
-     * @param EndpointInterface[] $endpoints
-     */
     public function addEndpoints(?string $region, array $endpoints): void
     {
         $now = time();
@@ -35,6 +26,7 @@ class EndpointCache
             $this->endpoints[$region] = [];
         }
 
+        /** @var EndpointInterface $endpoint */
         foreach ($endpoints as $endpoint) {
             $this->endpoints[$region][$this->sanitizeEndpoint($endpoint->getAddress())] = $now + ($endpoint->getCachePeriodInMinutes() * 60);
         }

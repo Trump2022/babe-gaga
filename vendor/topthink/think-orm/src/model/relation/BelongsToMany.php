@@ -346,11 +346,6 @@ class BelongsToMany extends Relation
             $closure($this->getClosureType($closure));
         }
 
-        $withLimit = $this->query->getOptions('limit');
-        if ($withLimit) {
-            $this->query->removeOption('limit');
-        }
-
         // 预载入关联查询 支持嵌套预载入
         $list = $this->belongsToManyQuery($this->foreignKey, $this->localKey, $where)
             ->with($subRelation)
@@ -358,12 +353,12 @@ class BelongsToMany extends Relation
             ->select();
 
         // 组装模型数据
-        $data      = [];
+        $data = [];
         foreach ($list as $set) {
             $pivot = $this->matchPivot($set);
             $key   = $pivot[$this->localKey];
 
-            if ($withLimit && isset($data[$key]) && count($data[$key]) >= $withLimit) {
+            if ($this->withLimit && isset($data[$key]) && count($data[$key]) >= $this->withLimit) {
                 continue;
             }
 
@@ -393,6 +388,10 @@ class BelongsToMany extends Relation
             }
 
             $fields = $this->getQueryFields($tableName);
+
+            if ($this->withLimit) {
+                $this->query->limit($this->withLimit);
+            }
 
             $this->query
                 ->field($fields)

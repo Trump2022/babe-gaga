@@ -160,7 +160,7 @@ class Column extends \Phinx\Db\Table\Column
 
     public static function timestamp($name)
     {
-        return self::make($name, AdapterInterface::PHINX_TYPE_TIMESTAMP, ['null' => true, 'default' => null]);
+        return self::make($name, AdapterInterface::PHINX_TYPE_TIMESTAMP);
     }
 
     public static function uuid($name)

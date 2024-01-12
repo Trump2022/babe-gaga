@@ -1,58 +1,47 @@
 <?php
 namespace Qiniu\Tests;
 
-use PHPUnit\Framework\TestCase;
-
-use Qiniu\Http\RequestOptions;
+use phpDocumentor\Reflection\DocBlock\Tags\Version;
+use Qiniu\Region;
 use Qiniu\Storage\BucketManager;
+use Qiniu\Storage\ResumeUploader;
 use Qiniu\Storage\UploadManager;
 use Qiniu\Http\Client;
 use Qiniu\Config;
+use Qiniu\Zone;
 
-class ResumeUpTest extends TestCase
+class ResumeUpTest extends \PHPUnit_Framework_TestCase
 {
-    private static $bucketName;
+    private static $keyToDelete = array();
 
-    private static $auth;
-
-    private static $keysToCleanup = array();
-
-    /**
-     * @beforeClass
-     */
-    public static function setUpAuthAndBucket()
+    public static function tearDownAfterClass()
     {
         global $bucketName;
-        self::$bucketName = $bucketName;
+        global $testAuth;
+
+        $config = new Config();
+        $bucketManager = new BucketManager($testAuth, $config);
+        foreach (self::$keyToDelete as $key) {
+            $bucketManager->delete($bucketName, $key);
+        }
+    }
+    protected $bucketName;
+    protected $auth;
+
+    protected function setUp()
+    {
+        global $bucketName;
+        $this->bucketName = $bucketName;
 
         global $testAuth;
-        self::$auth = $testAuth;
-    }
-
-
-    /**
-     * @afterClass
-     */
-    public static function cleanupTestData()
-    {
-        $ops = BucketManager::buildBatchDelete(self::$bucketName, self::$keysToCleanup);
-
-        $bucketManager = new BucketManager(self::$auth);
-        $bucketManager->batch($ops);
-    }
-
-    private static function getObjectKey($key)
-    {
-        $result = $key . rand();
-        self::$keysToCleanup[] = $result;
-        return $result;
+        $this->auth = $testAuth;
     }
 
     public function test4ML()
     {
-        $key = self::getObjectKey('resumePutFile4ML_');
+        $key = "resumePutFile4ML_".rand();
         $upManager = new UploadManager();
-        $token = self::$auth->uploadToken(self::$bucketName, $key);
+        $token = $this->auth->uploadToken($this->bucketName, $key);
         $tempFile = qiniuTempFile(4 * 1024 * 1024 + 10);
         $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
         $this->assertNotFalse($resumeFile);
@@ -67,6 +56,7 @@ class ResumeUpTest extends TestCase
         );
         $this->assertNull($error);
         $this->assertNotNull($ret['hash']);
+        unlink($resumeFile);
 
         $domain = getenv('QINIU_TEST_DOMAIN');
         $response = Client::get("http://$domain/$key");
@@ -77,10 +67,10 @@ class ResumeUpTest extends TestCase
 
     public function test4ML2()
     {
-        $key = self::getObjectKey('resumePutFile4ML_');
+        $key = 'resumePutFile4ML_'.rand();
         $cfg = new Config();
         $upManager = new UploadManager($cfg);
-        $token = self::$auth->uploadToken(self::$bucketName, $key);
+        $token = $this->auth->uploadToken($this->bucketName, $key);
         $tempFile = qiniuTempFile(4 * 1024 * 1024 + 10);
         $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
         $this->assertNotFalse($resumeFile);
@@ -95,37 +85,7 @@ class ResumeUpTest extends TestCase
         );
         $this->assertNull($error);
         $this->assertNotNull($ret['hash']);
-
-        $domain = getenv('QINIU_TEST_DOMAIN');
-        $response = Client::get("http://$domain/$key");
-        $this->assertEquals(200, $response->statusCode);
-        $this->assertEquals(md5_file($tempFile, true), md5($response->body(), true));
-        unlink($tempFile);
-    }
-
-    public function test4ML2WithProxy()
-    {
-        $key = self::getObjectKey('resumePutFile4ML_');
-        $cfg = new Config();
-        $upManager = new UploadManager($cfg);
-        $token = self::$auth->uploadToken(self::$bucketName, $key);
-        $tempFile = qiniuTempFile(4 * 1024 * 1024 + 10);
-        $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
-        $this->assertNotFalse($resumeFile);
-        list($ret, $error) = $upManager->putFile(
-            $token,
-            $key,
-            $tempFile,
-            null,
-            'application/octet-stream',
-            false,
-            $resumeFile,
-            'v2',
-            Config::BLOCK_SIZE,
-            $this->makeReqOpt()
-        );
-        $this->assertNull($error);
-        $this->assertNotNull($ret['hash']);
+        unlink($resumeFile);
 
         $domain = getenv('QINIU_TEST_DOMAIN');
         $response = Client::get("http://$domain/$key");
@@ -138,7 +98,7 @@ class ResumeUpTest extends TestCase
     // {
     //     $key = 'resumePutFile8M';
     //     $upManager = new UploadManager();
-    //     $token = self::$auth->uploadToken(self::$bucketName, $key);
+    //     $token = $this->auth->uploadToken($this->bucketName, $key);
     //     $tempFile = qiniuTempFile(8*1024*1024+10);
     //     list($ret, $error) = $upManager->putFile($token, $key, $tempFile);
     //     $this->assertNull($error);
@@ -149,7 +109,7 @@ class ResumeUpTest extends TestCase
     public function testFileWithFileType()
     {
         $config = new Config();
-        $bucketManager = new BucketManager(self::$auth, $config);
+        $bucketManager = new BucketManager($this->auth, $config);
 
         $testCases = array(
             array(
@@ -167,16 +127,17 @@ class ResumeUpTest extends TestCase
         );
 
         foreach ($testCases as $testCase) {
-            $key = self::getObjectKey('FileType' . $testCase["name"]);
+            $key = 'FileType'.$testCase["name"].rand();
             $police = array(
                 "fileType" => $testCase["fileType"],
             );
-            $token = self::$auth->uploadToken(self::$bucketName, $key, 3600, $police);
+            $token = $this->auth->uploadToken($this->bucketName, $key, 3600, $police);
             $upManager = new UploadManager();
             list($ret, $error) = $upManager->putFile($token, $key, __file__, null, 'text/plain');
             $this->assertNull($error);
             $this->assertNotNull($ret);
-            list($ret, $err) = $bucketManager->stat(self::$bucketName, $key);
+            array_push(self::$keyToDelete, $key);
+            list($ret, $err) = $bucketManager->stat($this->bucketName, $key);
             $this->assertNull($err);
             $this->assertEquals($testCase["fileType"], $ret["type"]);
         }
@@ -184,10 +145,10 @@ class ResumeUpTest extends TestCase
 
     public function testResumeUploadWithParams()
     {
-        $key = self::getObjectKey('resumePutFile4ML_');
+        $key = "resumePutFile4ML_".rand();
         $upManager = new UploadManager();
         $policy = array('returnBody' => '{"hash":$(etag),"fname":$(fname),"var_1":$(x:var_1),"var_2":$(x:var_2)}');
-        $token = self::$auth->uploadToken(self::$bucketName, $key, 3600, $policy);
+        $token = $this->auth->uploadToken($this->bucketName, $key, 3600, $policy);
         $tempFile = qiniuTempFile(4 * 1024 * 1024 + 10);
         $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
         $this->assertNotFalse($resumeFile);
@@ -195,7 +156,7 @@ class ResumeUpTest extends TestCase
             $token,
             $key,
             $tempFile,
-            array("x:var_1" => "val_1", "x:var_2" => "val_2", "x-qn-meta-m1" => "val_1", "x-qn-meta-m2" => "val_2"),
+            ["x:var_1" => "val_1", "x:var_2" => "val_2", "x-qn-meta-m1" => "val_1", "x-qn-meta-m2" => "val_2"],
             'application/octet-stream',
             false,
             $resumeFile
@@ -205,14 +166,14 @@ class ResumeUpTest extends TestCase
         $this->assertEquals("val_1", $ret['var_1']);
         $this->assertEquals("val_2", $ret['var_2']);
         $this->assertEquals(basename($tempFile), $ret['fname']);
+        unlink($resumeFile);
 
         $domain = getenv('QINIU_TEST_DOMAIN');
         $response = Client::get("http://$domain/$key");
         $this->assertEquals(200, $response->statusCode);
         $this->assertEquals(md5_file($tempFile, true), md5($response->body(), true));
-        $headers = $response->headers();
-        $this->assertEquals("val_1", $headers["X-Qn-Meta-M1"]);
-        $this->assertEquals("val_2", $headers["X-Qn-Meta-M2"]);
+        $this->assertEquals("val_1", $response->headers()["X-Qn-Meta-M1"]);
+        $this->assertEquals("val_2", $response->headers()["X-Qn-Meta-M2"]);
         unlink($tempFile);
     }
 
@@ -229,8 +190,8 @@ class ResumeUpTest extends TestCase
         );
         $partSize = 5 * 1024 * 1024;
         foreach ($testFileSize as $item) {
-            $key = self::getObjectKey('resumePutFile4ML_');
-            $token = self::$auth->uploadToken(self::$bucketName, $key);
+            $key = 'resumePutFile4ML_'.rand()."_";
+            $token = $this->auth->uploadToken($this->bucketName, $key);
             $tempFile = qiniuTempFile($item);
             $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
             $this->assertNotFalse($resumeFile);
@@ -247,6 +208,7 @@ class ResumeUpTest extends TestCase
             );
             $this->assertNull($error);
             $this->assertNotNull($ret['hash']);
+            unlink($resumeFile);
 
             $domain = getenv('QINIU_TEST_DOMAIN');
             $response = Client::get("http://$domain/$key");
@@ -258,10 +220,10 @@ class ResumeUpTest extends TestCase
 
     public function testResumeUploadV2WithParams()
     {
-        $key = self::getObjectKey('resumePutFile4ML_');
+        $key = "resumePutFile4ML_".rand();
         $upManager = new UploadManager();
         $policy = array('returnBody' => '{"hash":$(etag),"fname":$(fname),"var_1":$(x:var_1),"var_2":$(x:var_2)}');
-        $token = self::$auth->uploadToken(self::$bucketName, $key, 3600, $policy);
+        $token = $this->auth->uploadToken($this->bucketName, $key, 3600, $policy);
         $tempFile = qiniuTempFile(4 * 1024 * 1024 + 10);
         $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
         $this->assertNotFalse($resumeFile);
@@ -269,7 +231,7 @@ class ResumeUpTest extends TestCase
             $token,
             $key,
             $tempFile,
-            array("x:var_1" => "val_1", "x:var_2" => "val_2", "x-qn-meta-m1" => "val_1", "x-qn-meta-m2" => "val_2"),
+            ["x:var_1" => "val_1", "x:var_2" => "val_2", "x-qn-meta-m1" => "val_1", "x-qn-meta-m2" => "val_2"],
             'application/octet-stream',
             false,
             $resumeFile,
@@ -280,14 +242,14 @@ class ResumeUpTest extends TestCase
         $this->assertEquals("val_1", $ret['var_1']);
         $this->assertEquals("val_2", $ret['var_2']);
         $this->assertEquals(basename($tempFile), $ret['fname']);
+        unlink($resumeFile);
 
         $domain = getenv('QINIU_TEST_DOMAIN');
         $response = Client::get("http://$domain/$key");
         $this->assertEquals(200, $response->statusCode);
         $this->assertEquals(md5_file($tempFile, true), md5($response->body(), true));
-        $headers = $response->headers();
-        $this->assertEquals("val_1", $headers["X-Qn-Meta-M1"]);
-        $this->assertEquals("val_2", $headers["X-Qn-Meta-M2"]);
+        $this->assertEquals("val_1", $response->headers()["X-Qn-Meta-M1"]);
+        $this->assertEquals("val_2", $response->headers()["X-Qn-Meta-M2"]);
         unlink($tempFile);
     }
 
@@ -309,8 +271,8 @@ class ResumeUpTest extends TestCase
 
         $expectExceptionCount = 0;
         foreach ($testInvalidVersions as $invalidVersion) {
-            $key = self::getObjectKey('resumePutFile4ML_');
-            $token = self::$auth->uploadToken(self::$bucketName, $key);
+            $key = 'resumePutFile4ML_'.rand()."_";
+            $token = $this->auth->uploadToken($this->bucketName, $key);
             $tempFile = qiniuTempFile($testFileSize);
             $resumeFile = tempnam(sys_get_temp_dir(), 'resume_file');
             $this->assertNotFalse($resumeFile);
@@ -339,16 +301,9 @@ class ResumeUpTest extends TestCase
                 $this->assertTrue($isRightException);
             }
 
+            unlink($resumeFile);
             unlink($tempFile);
         }
         $this->assertEquals(count($testInvalidVersions), $expectExceptionCount);
-    }
-
-    private function makeReqOpt()
-    {
-        $reqOpt = new RequestOptions();
-        $reqOpt->proxy = 'socks5://127.0.0.1:8080';
-        $reqOpt->proxy_user_password = 'user:pass';
-        return $reqOpt;
     }
 }

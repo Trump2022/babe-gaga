@@ -17,13 +17,10 @@ use Symfony\Contracts\Service\ResetInterface;
 final class CacheProvider implements CredentialProvider, ResetInterface
 {
     /**
-     * @var array<string, Credentials|null>
+     * @var (Credentials|null)[]
      */
     private $cache = [];
 
-    /**
-     * @var CredentialProvider
-     */
     private $decorated;
 
     public function __construct(CredentialProvider $decorated)

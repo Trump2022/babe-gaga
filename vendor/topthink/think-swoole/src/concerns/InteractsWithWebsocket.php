@@ -10,6 +10,7 @@ use Swoole\Http\Response;
 use Swoole\WebSocket\CloseFrame;
 use Swoole\WebSocket\Frame;
 use think\App;
+use think\Container;
 use think\helper\Str;
 use think\swoole\contract\websocket\HandlerInterface;
 use think\swoole\contract\websocket\RoomInterface;
@@ -17,14 +18,13 @@ use think\swoole\Middleware;
 use think\swoole\Websocket;
 use think\swoole\websocket\message\PushMessage;
 use think\swoole\websocket\Room;
-use Throwable;
 
 /**
  * Trait InteractsWithWebsocket
  * @package think\swoole\concerns
  *
  * @property App $app
- * @property App $container
+ * @property Container $container
  */
 trait InteractsWithWebsocket
 {
@@ -57,14 +57,17 @@ trait InteractsWithWebsocket
 
             $websocket->setClient($res);
 
+            $request = $this->prepareRequest($req);
+            $request = $this->setRequestThroughMiddleware($app, $request);
+
             $fd = $this->wsIdAtomic->add();
 
             $this->wsMessageChannel[$fd] = new Channel(1);
 
-            Coroutine::create(function () use ($websocket, $res, $fd) {
+            Coroutine::create(function () use ($res, $fd) {
                 //推送消息
                 while ($message = $this->wsMessageChannel[$fd]->pop()) {
-                    $websocket->setConnected($res->push($message));
+                    $res->push($message);
                 }
             });
 
@@ -74,22 +77,11 @@ trait InteractsWithWebsocket
                 $websocket->setSender($id);
                 $websocket->join($id);
 
-                $this->runWithBarrier(function () use ($req, $app, $handler) {
-                    $request = $this->prepareRequest($req);
-                    try {
-                        $request = $this->setRequestThroughMiddleware($app, $request);
-                        $handler->onOpen($request);
-                    } catch (Throwable $e) {
-                        $this->logServerError($e);
-                    }
+                $this->runWithBarrier(function () use ($request, $handler) {
+                    $handler->onOpen($request);
                 });
 
                 $this->runWithBarrier(function () use ($handler, $res) {
-
-                    $cid      = Coroutine::getCid();
-                    $messages = 0;
-                    $wait     = false;
-
                     $frame = null;
                     while (true) {
                         /** @var Frame|false|string $recv */
@@ -107,43 +99,19 @@ trait InteractsWithWebsocket
                         }
 
                         $frame->data .= $recv->data;
-
                         $frame->finish = $recv->finish;
 
                         if ($frame->finish) {
-                            Coroutine::create(function () use (&$wait, &$messages, $cid, $frame, $handler) {
-                                ++$messages;
-                                Coroutine::defer(function () use (&$wait, &$messages, $cid) {
-                                    --$messages;
-                                    if ($wait) {
-                                        Coroutine::resume($cid);
-                                    }
-                                });
-                                try {
-                                    $handler->onMessage($frame);
-                                } catch (Throwable $e) {
-                                    $this->logServerError($e);
-                                }
-                            });
+                            Coroutine::create([$handler, 'onMessage'], $frame);
                             $frame = null;
                         }
-                    }
-
-                    //等待消息执行完毕
-                    while ($messages > 0) {
-                        $wait = true;
-                        Coroutine::yield();
                     }
                 });
 
                 //关闭连接
                 $res->close();
                 $this->runWithBarrier(function () use ($handler) {
-                    try {
-                        $handler->onClose();
-                    } catch (Throwable $e) {
-                        $this->logServerError($e);
-                    }
+                    $handler->onClose();
                 });
             } finally {
                 // leave all rooms
@@ -152,7 +120,7 @@ trait InteractsWithWebsocket
                     $this->wsMessageChannel[$fd]->close();
                     unset($this->wsMessageChannel[$fd]);
                 }
-                $websocket->setConnected(false);
+                $websocket->setClient(null);
             }
         });
     }

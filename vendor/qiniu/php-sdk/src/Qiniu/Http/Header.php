@@ -35,9 +35,8 @@ class Header implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public static function parseRawText($raw)
     {
-        $multipleHeaders = explode("\r\n\r\n", trim($raw));
         $headers = array();
-        $headerLines = explode("\r\n", end($multipleHeaders));
+        $headerLines = explode("\r\n", $raw);
         foreach ($headerLines as $line) {
             $headerLine = trim($line);
             $kv = explode(':', $headerLine);
@@ -83,7 +82,7 @@ class Header implements \ArrayAccess, \IteratorAggregate, \Countable
             return $key;
         }
 
-        return \Qiniu\ucwords(strtolower($key), '-');
+        return ucwords(strtolower($key), '-');
     }
 
     /**

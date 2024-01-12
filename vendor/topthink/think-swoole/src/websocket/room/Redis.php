@@ -24,7 +24,7 @@ class Redis implements RoomInterface
     /**
      * @var string
      */
-    protected $prefix = 'swoole:room:';
+    protected $prefix = 'swoole:';
 
     /** @var Manager */
     protected $manager;

@@ -5,33 +5,20 @@ namespace AsyncAws\Core\Signer;
 use AsyncAws\Core\Request;
 
 /**
+ * @internal
+ *
  * @author Jérémy Derussé <jeremy@derusse.com>
  */
-final class SigningContext
+class SigningContext
 {
-    /**
-     * @var Request
-     */
     private $request;
 
-    /**
-     * @var \DateTimeImmutable
-     */
     private $now;
 
-    /**
-     * @var string
-     */
     private $credentialString;
 
-    /**
-     * @var string
-     */
     private $signingKey;
 
-    /**
-     * @var string
-     */
     private $signature = '';
 
     public function __construct(

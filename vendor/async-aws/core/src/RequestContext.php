@@ -2,15 +2,16 @@
 
 namespace AsyncAws\Core;
 
-use AsyncAws\Core\Exception\Http\HttpException;
 use AsyncAws\Core\Exception\InvalidArgument;
 
 /**
  * Contains contextual information alongside a request.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
+ *
+ * @internal
  */
-final class RequestContext
+class RequestContext
 {
     public const AVAILABLE_OPTIONS = [
         'region' => true,
@@ -53,20 +54,20 @@ final class RequestContext
     private $currentDate;
 
     /**
-     * @var array<string, class-string<HttpException>>
+     * @var array<string, string>
      */
     private $exceptionMapping = [];
 
     /**
      * @param array{
-     *  operation?: null|string,
-     *  region?: null|string,
-     *  expirationDate?: null|\DateTimeImmutable,
-     *  currentDate?: null|\DateTimeImmutable,
-     *  exceptionMapping?: array<string, class-string<HttpException>>,
-     *  usesEndpointDiscovery?: bool,
-     *  requiresEndpointDiscovery?: bool,
-     * } $options
+     *  operation?: null|string
+     *  region?: null|string
+     *  expirationDate?: null|\DateTimeImmutable
+     *  currentDate?: null|\DateTimeImmutable
+     *  exceptionMapping?: string[]
+     *  usesEndpointDiscovery?: bool
+     *  requiresEndpointDiscovery?: bool
+     * }
      */
     public function __construct(array $options = [])
     {
@@ -99,9 +100,6 @@ final class RequestContext
         return $this->currentDate;
     }
 
-    /**
-     * @return array<string, class-string<HttpException>>
-     */
     public function getExceptionMapping(): array
     {
         return $this->exceptionMapping;

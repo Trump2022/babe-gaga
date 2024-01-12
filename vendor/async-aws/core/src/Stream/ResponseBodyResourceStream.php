@@ -18,15 +18,12 @@ class ResponseBodyResourceStream implements ResultStream
      */
     private $resource;
 
-    /**
-     * @param resource $resource
-     */
     public function __construct($resource)
     {
         $this->resource = $resource;
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return $this->getContentAsString();
     }

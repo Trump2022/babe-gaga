@@ -19,8 +19,6 @@ class AssumeRoleResponse extends Result
      *
      * > The size of the security token that STS API operations return is not fixed. We strongly recommend that you make no
      * > assumptions about the maximum size.
-     *
-     * @var Credentials|null
      */
     private $credentials;
 
@@ -29,8 +27,6 @@ class AssumeRoleResponse extends Result
      * resulting temporary security credentials. For example, you can reference these credentials as a principal in a
      * resource-based policy by using the ARN or assumed role ID. The ARN and ID include the `RoleSessionName` that you
      * specified when you called `AssumeRole`.
-     *
-     * @var AssumedRoleUser|null
      */
     private $assumedRoleUser;
 
@@ -38,8 +34,6 @@ class AssumeRoleResponse extends Result
      * A percentage value that indicates the packed size of the session policies and session tags combined passed in the
      * request. The request fails if the packed size is greater than 100 percent, which means the policies and tags exceeded
      * the allowed space.
-     *
-     * @var int|null
      */
     private $packedPolicySize;
 
@@ -56,8 +50,6 @@ class AssumeRoleResponse extends Result
      * characters with no spaces. You can also include underscores or any of the following characters: =,.@-
      *
      * [^1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_control-access_monitor.html
-     *
-     * @var string|null
      */
     private $sourceIdentity;
 

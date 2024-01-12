@@ -12,6 +12,7 @@
 namespace think\model\relation;
 
 use Closure;
+use think\helper\Str;
 use think\Model;
 
 /**

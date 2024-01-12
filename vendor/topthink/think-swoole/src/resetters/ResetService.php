@@ -2,7 +2,7 @@
 
 namespace think\swoole\resetters;
 
-use think\App;
+use think\Container;
 use think\swoole\concerns\ModifyProperty;
 use think\swoole\contract\ResetterInterface;
 use think\swoole\Sandbox;
@@ -10,6 +10,7 @@ use think\swoole\Sandbox;
 /**
  * Class ResetService
  * @package think\swoole\resetters
+ * @property Container $app;
  */
 class ResetService implements ResetterInterface
 {
@@ -18,10 +19,10 @@ class ResetService implements ResetterInterface
     /**
      * "handle" function for resetting app.
      *
-     * @param App $app
-     * @param Sandbox $sandbox
+     * @param Container $app
+     * @param Sandbox   $sandbox
      */
-    public function handle(App $app, Sandbox $sandbox)
+    public function handle(Container $app, Sandbox $sandbox)
     {
         foreach ($sandbox->getServices() as $service) {
             $this->modifyProperty($service, $app);

@@ -10,7 +10,8 @@ final class GetCallerIdentityRequest extends Input
 {
     /**
      * @param array{
-     *   '@region'?: string|null,
+     *
+     *   @region?: string,
      * } $input
      */
     public function __construct(array $input = [])
@@ -18,11 +19,6 @@ final class GetCallerIdentityRequest extends Input
         parent::__construct($input);
     }
 
-    /**
-     * @param array{
-     *   '@region'?: string|null,
-     * }|GetCallerIdentityRequest $input
-     */
     public static function create($input): self
     {
         return $input instanceof self ? $input : new self($input);

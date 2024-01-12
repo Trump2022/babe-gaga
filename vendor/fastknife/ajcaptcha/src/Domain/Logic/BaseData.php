@@ -42,7 +42,7 @@ class BaseData
     /**
      * 获取默认图片
      * @param $dir
-     * @param array|string $images
+     * @param $images
      * @return array|false
      */
     protected function getDefaultImage($dir, $images)

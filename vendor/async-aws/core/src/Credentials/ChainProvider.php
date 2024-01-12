@@ -21,18 +21,15 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 final class ChainProvider implements CredentialProvider, ResetInterface
 {
-    /**
-     * @var iterable<CredentialProvider>
-     */
     private $providers;
 
     /**
-     * @var array<string, CredentialProvider|null>
+     * @var (CredentialProvider|null)[]
      */
     private $lastSuccessfulProvider = [];
 
     /**
-     * @param iterable<CredentialProvider> $providers
+     * @param CredentialProvider[] $providers
      */
     public function __construct(iterable $providers)
     {

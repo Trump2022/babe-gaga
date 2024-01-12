@@ -20,14 +20,8 @@ final class ConfigurationProvider implements CredentialProvider
 {
     use DateFromResult;
 
-    /**
-     * @var LoggerInterface
-     */
     private $logger;
 
-    /**
-     * @var HttpClientInterface|null
-     */
     private $httpClient;
 
     public function __construct(?HttpClientInterface $httpClient = null, ?LoggerInterface $logger = null)

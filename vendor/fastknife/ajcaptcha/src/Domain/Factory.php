@@ -125,20 +125,11 @@ class Factory
         $backgroundVo = $data->getBackgroundVo($this->config['click_world']['backgrounds']);
         $image->setBackgroundVo($backgroundVo);
 
-        $wordNum = $this->config['click_world']['word_num'] ?? 3;
-        if($wordNum > 5){
-            // 最多只能写5个字
-            $wordNum = 5;
-        }
-        if($wordNum < 2){
-            // 最少要写2个字
-            $wordNum = 2;
-        }
         //随机文字坐标
         $pointList = $data->getPointList(
             $image->getBackgroundVo()->image->getWidth(),
             $image->getBackgroundVo()->image->getHeight(),
-            $wordNum
+            3
         );
         $worldList = $data->getWordList(count($pointList));
         $image
@@ -167,13 +158,4 @@ class Factory
     {
         return (new BlockData())->setFaultOffset($this->config['block_puzzle']['offset']);
     }
-
-    /**
-     * @return array
-     */
-    public function getConfig(): array
-    {
-        return $this->config;
-    }
-
 }

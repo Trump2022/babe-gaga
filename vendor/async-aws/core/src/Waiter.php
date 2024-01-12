@@ -54,7 +54,7 @@ class Waiter
      */
     private $resolved = false;
 
-    public function __construct(Response $response, AbstractApi $awsClient, ?object $request)
+    public function __construct(Response $response, AbstractApi $awsClient, $request)
     {
         $this->response = $response;
         $this->awsClient = $awsClient;

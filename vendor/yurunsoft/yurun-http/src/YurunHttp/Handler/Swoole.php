@@ -14,13 +14,11 @@ use Yurun\Util\YurunHttp\Http\Psr7\Uri;
 use Yurun\Util\YurunHttp\Http\Response;
 use Yurun\Util\YurunHttp\Traits\TCookieManager;
 use Yurun\Util\YurunHttp\Traits\THandler;
-use Yurun\Util\YurunHttp\Traits\TLogger;
 
 class Swoole implements IHandler
 {
     use TCookieManager;
     use THandler;
-    use TLogger;
 
     /**
      * http 连接管理器.
@@ -58,25 +56,14 @@ class Swoole implements IHandler
     private $poolIsEnabled = false;
 
     /**
-     * 配置选项.
-     *
-     * @var array
-     */
-    private $options = [];
-
-    /**
      * 本 Handler 默认的 User-Agent.
      *
      * @var string
      */
     private static $defaultUA;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct()
     {
-        $this->options = $options;
         if (null === static::$defaultUA)
         {
             static::$defaultUA = sprintf('Mozilla/5.0 YurunHttp/%s Swoole/%s', YurunHttp::VERSION, \defined('SWOOLE_VERSION') ? \SWOOLE_VERSION : 'unknown');
@@ -217,17 +204,13 @@ class Swoole implements IHandler
     public function send(&$request)
     {
         $this->poolIsEnabled = ConnectionPool::isEnabled() && false !== $request->getAttribute(Attributes::CONNECTION_POOL);
-        $beginTime = microtime(true);
         $request = $this->sendDefer($request);
         if ($request->getAttribute(Attributes::PRIVATE_IS_HTTP2) && $request->getAttribute(Attributes::HTTP2_NOT_RECV))
         {
             return true;
         }
 
-        $result = $this->recvDefer($request);
-        $this->result = $this->result->withTotalTime(microtime(true) - $beginTime);
-
-        return (bool) $result;
+        return (bool) $this->recvDefer($request);
     }
 
     /**
@@ -407,24 +390,13 @@ class Swoole implements IHandler
         }
         $result = &$this->result;
         $statusCode = $result->getStatusCode();
-        if ($retryCount < $request->getAttribute(Attributes::RETRY, 0))
+        // 状态码为5XX或者0才需要重试
+        if ((0 === $statusCode || (5 === (int) ($statusCode / 100))) && $retryCount < $request->getAttribute(Attributes::RETRY, 0))
         {
-            if ($retryCallback = $request->getAttribute(Attributes::RETRY_CALLBACK))
-            {
-                $retry = !$retryCallback($request, $result, $retryCount);
-            }
-            else
-            {
-                // 状态码为5XX或者0才需要重试
-                $retry = (0 === $statusCode || (5 === (int) ($statusCode / 100)));
-            }
-            if ($retry)
-            {
-                $request = $request->withAttribute(Attributes::PRIVATE_RETRY_COUNT, ++$retryCount);
-                $deferRequest = $this->sendDefer($request);
+            $request = $request->withAttribute(Attributes::RETRY, ++$retryCount);
+            $deferRequest = $this->sendDefer($request);
 
-                return $this->recvDefer($deferRequest, $timeout);
-            }
+            return $this->recvDefer($deferRequest, $timeout);
         }
         if (!$isWebSocket && $statusCode >= 300 && $statusCode < 400 && $request->getAttribute(Attributes::FOLLOW_LOCATION, true) && '' !== ($location = $result->getHeaderLine('location')))
         {
@@ -461,8 +433,6 @@ class Swoole implements IHandler
         {
             $result = $result->withSavedFileName($savedFileName);
         }
-        $this->cookieManager->gc();
-        $this->saveCookieJar();
 
         return $result;
     }
@@ -809,7 +779,6 @@ class Swoole implements IHandler
         /** @var Swoole[] $handlers */
         $handlers = [];
         $results = [];
-        $beginTime = microtime(true);
         foreach ($requests as $i => &$request)
         {
             $results[$i] = null;
@@ -829,7 +798,7 @@ class Swoole implements IHandler
                     break;
                 }
             }
-            $results[$i] = $handlers[$i]->recvDefer($request, $recvTimeout)->withTotalTime(microtime(true) - $beginTime);
+            $results[$i] = $handlers[$i]->recvDefer($request, $recvTimeout);
         }
 
         return $results;

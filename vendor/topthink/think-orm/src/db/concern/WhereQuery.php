@@ -455,15 +455,18 @@ trait WhereQuery
      */
     protected function parseArrayWhereItems(array $field, string $logic)
     {
-        $where = [];
-        foreach ($field as $key => $val) {
-            if (is_int($key)) {
-                $where[] = $val;
-            } elseif ($val instanceof Raw) {
-                $where[] = [$key, 'exp', $val];
-            } else {
-                $where[] = is_null($val) ? [$key, 'NULL', ''] : [$key, is_array($val) ? 'IN' : '=', $val];
+        if (key($field) !== 0) {
+            $where = [];
+            foreach ($field as $key => $val) {
+                if ($val instanceof Raw) {
+                    $where[] = [$key, 'exp', $val];
+                } else {
+                    $where[] = is_null($val) ? [$key, 'NULL', ''] : [$key, is_array($val) ? 'IN' : '=', $val];
+                }
             }
+        } else {
+            // 数组批量查询
+            $where = $field;
         }
 
         if (!empty($where)) {

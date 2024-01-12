@@ -22,19 +22,10 @@ final class ContainerProvider implements CredentialProvider
 {
     private const ENDPOINT = 'http://169.254.170.2';
 
-    /**
-     * @var LoggerInterface
-     */
     private $logger;
 
-    /**
-     * @var HttpClientInterface
-     */
     private $httpClient;
 
-    /**
-     * @var float
-     */
     private $timeout;
 
     public function __construct(?HttpClientInterface $httpClient = null, ?LoggerInterface $logger = null, float $timeout = 1.0)

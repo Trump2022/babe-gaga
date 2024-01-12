@@ -22,19 +22,10 @@ final class WebIdentityProvider implements CredentialProvider
 {
     use DateFromResult;
 
-    /**
-     * @var IniFileLoader
-     */
     private $iniFileLoader;
 
-    /**
-     * @var LoggerInterface
-     */
     private $logger;
 
-    /**
-     * @var HttpClientInterface|null
-     */
     private $httpClient;
 
     public function __construct(?LoggerInterface $logger = null, ?IniFileLoader $iniFileLoader = null, ?HttpClientInterface $httpClient = null)

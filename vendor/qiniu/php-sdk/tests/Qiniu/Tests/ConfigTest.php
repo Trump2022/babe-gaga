@@ -1,20 +1,14 @@
 <?php
 
 namespace Qiniu\Tests {
-
-    use PHPUnit\Framework\TestCase;
-
     use Qiniu\Config;
 
-    class ConfigTest extends TestCase
+    class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         protected $accessKey;
         protected $bucketName;
 
-        /**
-         * @before
-         */
-        protected function setUpAkAndBucket()
+        protected function setUp()
         {
             global $accessKey;
             $this->accessKey = $accessKey;
@@ -33,6 +27,7 @@ namespace Qiniu\Tests {
                 $hasException = true;
             }
             $this->assertFalse($hasException);
+            $this->assertEquals('http://api.qiniu.com', $apiHost);
         }
 
         public function testGetApiHostErrored()
@@ -52,6 +47,7 @@ namespace Qiniu\Tests {
             $conf = new Config();
             list($apiHost, $err) = $conf->getApiHostV2($this->accessKey, $this->bucketName);
             $this->assertNull($err);
+            $this->assertEquals('http://api.qiniu.com', $apiHost);
         }
 
         public function testGetApiHostV2Errored()
@@ -61,58 +57,6 @@ namespace Qiniu\Tests {
             $this->assertNotNull($err->code());
             $this->assertEquals(631, $err->code());
             $this->assertNull($apiHost);
-        }
-
-        public function testSetUcHost()
-        {
-            $conf = new Config();
-            $this->assertEquals("http://uc.qbox.me", $conf->getUcHost());
-            $conf->setUcHost("uc.example.com");
-            $this->assertEquals("http://uc.example.com", $conf->getUcHost());
-
-            $conf = new Config();
-            $conf->useHTTPS = true;
-            $this->assertEquals("https://uc.qbox.me", $conf->getUcHost());
-            $conf->setUcHost("uc.example.com");
-            $this->assertEquals("https://uc.example.com", $conf->getUcHost());
-        }
-
-        public function testGetRegionWithCustomDomain()
-        {
-            $conf = new Config();
-            $conf->setQueryRegionHost(
-                "uc.qbox.me"
-            );
-            list(, $err) = $conf->getRsHostV2($this->accessKey, $this->bucketName);
-            $this->assertNull($err);
-        }
-
-        public function testGetRegionWithBackupDomains()
-        {
-            $conf = new Config();
-            $conf->setQueryRegionHost(
-                "fake-uc.phpsdk.qiniu.com",
-                array(
-                    "unavailable-uc.phpsdk.qiniu.com",
-                    "uc.qbox.me" // real uc
-                )
-            );
-            list(, $err) = $conf->getRsHostV2($this->accessKey, $this->bucketName);
-            $this->assertNull($err);
-        }
-
-        public function testGetRegionWithUcAndBackupDomains()
-        {
-            $conf = new Config();
-            $conf->setUcHost("fake-uc.phpsdk.qiniu.com");
-            $conf->setBackupQueryRegionHosts(
-                array(
-                    "unavailable-uc.phpsdk.qiniu.com",
-                    "uc.qbox.me" // real uc
-                )
-            );
-            list(, $err) = $conf->getRsHostV2($this->accessKey, $this->bucketName);
-            $this->assertNull($err);
         }
     }
 }

@@ -31,24 +31,23 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  * The response provides a facade to manipulate HttpResponses.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
+ *
+ * @internal
  */
-final class Response
+class Response
 {
     /**
      * @var ResponseInterface
      */
     private $httpResponse;
 
-    /**
-     * @var HttpClientInterface
-     */
     private $httpClient;
 
     /**
      * A Result can be resolved many times. This variable contains the last resolve result.
      * Null means that the result has never been resolved. Array contains material to create an exception.
      *
-     * @var bool|HttpException|NetworkException|(callable(): (HttpException|NetworkException))|null
+     * @var bool|HttpException|NetworkException|callable|null
      */
     private $resolveResult;
 
@@ -68,8 +67,6 @@ final class Response
 
     /**
      * A flag that indicated that an exception has been thrown to the user.
-     *
-     * @var bool
      */
     private $didThrow = false;
 
@@ -99,13 +96,10 @@ final class Response
     private $debug;
 
     /**
-     * @var array<string, class-string<HttpException>>
+     * @var array<string, string>
      */
     private $exceptionMapping;
 
-    /**
-     * @param array<string, class-string<HttpException>> $exceptionMapping
-     */
     public function __construct(ResponseInterface $response, HttpClientInterface $httpClient, LoggerInterface $logger, ?AwsErrorFactoryInterface $awsErrorFactory = null, ?EndpointCache $endpointCache = null, ?Request $request = null, bool $debug = false, array $exceptionMapping = [])
     {
         $this->httpResponse = $response;
@@ -309,8 +303,6 @@ final class Response
     }
 
     /**
-     * @return array<string, list<string>>
-     *
      * @throws NetworkException
      * @throws HttpException
      */
@@ -337,8 +329,6 @@ final class Response
     }
 
     /**
-     * @return array<string, mixed>
-     *
      * @throws NetworkException
      * @throws UnparsableResponse
      * @throws HttpException
@@ -426,7 +416,9 @@ final class Response
             }
 
             $httpResponse = $this->httpResponse;
+            /** @psalm-suppress MoreSpecificReturnType */
             $this->resolveResult = static function () use ($exceptionClass, $httpResponse, $awsError): HttpException {
+                /** @psalm-suppress LessSpecificReturnStatement */
                 return new $exceptionClass($httpResponse, $awsError);
             };
 
@@ -443,6 +435,7 @@ final class Response
         }
 
         if (\is_callable($this->resolveResult)) {
+            /** @psalm-suppress PropertyTypeCoercion */
             $this->resolveResult = ($this->resolveResult)();
         }
 

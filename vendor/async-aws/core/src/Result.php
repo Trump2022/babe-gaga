@@ -25,14 +25,8 @@ class Result
      */
     protected $input;
 
-    /**
-     * @var bool
-     */
     private $initialized = false;
 
-    /**
-     * @var Response
-     */
     private $response;
 
     /**
@@ -40,7 +34,7 @@ class Result
      */
     private $prefetchResults = [];
 
-    public function __construct(Response $response, ?AbstractApi $awsClient = null, ?object $request = null)
+    public function __construct(Response $response, ?AbstractApi $awsClient = null, $request = null)
     {
         $this->response = $response;
         $this->awsClient = $awsClient;
@@ -49,8 +43,8 @@ class Result
 
     public function __destruct()
     {
-        while (!empty($this->prefetchResults)) {
-            array_shift($this->prefetchResults)->cancel();
+        while (!empty($this->prefetchResponses)) {
+            array_shift($this->prefetchResponses)->cancel();
         }
     }
 

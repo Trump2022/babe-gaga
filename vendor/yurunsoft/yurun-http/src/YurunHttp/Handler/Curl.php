@@ -13,13 +13,11 @@ use Yurun\Util\YurunHttp\Http\Response;
 use Yurun\Util\YurunHttp\Stream\MemoryStream;
 use Yurun\Util\YurunHttp\Traits\TCookieManager;
 use Yurun\Util\YurunHttp\Traits\THandler;
-use Yurun\Util\YurunHttp\Traits\TLogger;
 
 class Curl implements IHandler
 {
     use TCookieManager;
     use THandler;
-    use TLogger;
 
     /**
      * 请求结果.
@@ -31,7 +29,7 @@ class Curl implements IHandler
     /**
      * curl 句柄.
      *
-     * @var resource|\CurlHandle|null
+     * @var resource|null
      */
     private $handler;
 
@@ -55,13 +53,6 @@ class Curl implements IHandler
      * @var bool
      */
     private $poolIsEnabled = false;
-
-    /**
-     * 配置选项.
-     *
-     * @var array
-     */
-    private $options = [];
 
     /**
      * 代理认证方式.
@@ -92,12 +83,8 @@ class Curl implements IHandler
      */
     private static $defaultUA;
 
-    /**
-     * @param array $options
-     */
-    public function __construct($options = [])
+    public function __construct()
     {
-        $this->options = $options;
         if (null === static::$defaultUA)
         {
             $version = curl_version();
@@ -117,6 +104,7 @@ class Curl implements IHandler
         {
             if ($this->poolIsEnabled)
             {
+                curl_reset($this->handler);
                 CurlHttpConnectionManager::getInstance()->release($this->poolKey, $this->handler);
             }
             else
@@ -146,17 +134,12 @@ class Curl implements IHandler
             $this->request = $request;
             $request = &$this->request;
             $handler = &$this->handler;
-            if ($handler)
-            {
-                curl_reset($handler);
-            }
-            else
+            if (!$handler)
             {
                 if ($poolIsEnabled)
                 {
                     $this->poolKey = $poolKey = ConnectionPool::getKey($request->getUri());
                     $handler = $httpConnectionManager->getConnection($poolKey);
-                    curl_reset($handler);
                 }
                 else
                 {
@@ -180,9 +163,6 @@ class Curl implements IHandler
             $isLocation = false;
             $statusCode = 0;
             $redirectCount = 0;
-            $retry = $request->getAttribute(Attributes::RETRY, 0);
-            $retryCallback = $request->getAttribute(Attributes::RETRY_CALLBACK);
-            $beginTime = microtime(true);
             do
             {
                 // 请求方法
@@ -203,6 +183,7 @@ class Curl implements IHandler
                     $bodyContent = false;
                 }
                 $this->buildCurlHandlerEx($request, $handler, $uri, $method, $bodyContent);
+                $retry = $request->getAttribute(Attributes::RETRY, 0);
                 $result = null;
                 for ($i = 0; $i <= $retry; ++$i)
                 {
@@ -210,21 +191,11 @@ class Curl implements IHandler
                     $curlResult = curl_exec($handler);
                     $this->result = $this->getResponse($request, $handler, $curlResult, $receiveHeaders);
                     $result = &$this->result;
-                    if ($retryCallback)
+                    $statusCode = $result->getStatusCode();
+                    // 状态码为5XX或者0才需要重试
+                    if (!(0 === $statusCode || (5 === (int) ($statusCode / 100))))
                     {
-                        if ($retryCallback($request, $result, $i))
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        $statusCode = $result->getStatusCode();
-                        // 状态码为5XX或者0才需要重试
-                        if (!(0 === $statusCode || (5 === (int) ($statusCode / 100))))
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
                 if ($request->getAttribute(Attributes::FOLLOW_LOCATION, true) && ($statusCode >= 300 && $statusCode < 400) && $result && '' !== ($location = $result->getHeaderLine('location')))
@@ -248,10 +219,6 @@ class Curl implements IHandler
                                         ->withError(sprintf('Maximum (%s) redirects followed', $maxRedirects));
                     }
                 }
-                $result = $result->withTotalTime(microtime(true) - $beginTime);
-                $this->logRequest($request, $result);
-                $this->cookieManager->gc();
-                $this->saveCookieJar();
                 break;
             } while (true);
             // 关闭保存至文件的句柄
@@ -265,6 +232,7 @@ class Curl implements IHandler
         {
             if ($this->handler)
             {
+                curl_reset($this->handler);
                 if ($poolIsEnabled)
                 {
                     // @phpstan-ignore-next-line
@@ -279,30 +247,24 @@ class Curl implements IHandler
      * 构建基础 Curl Handler.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param resource|\CurlHandle               $handler
+     * @param resource                           $handler
      * @param array|null                         $headers
      * @param resource|null                      $saveFileFp
      *
      * @return void
      */
-    private function buildCurlHandlerBase(&$request, $handler, &$headers = null, &$saveFileFp = null)
+    public function buildCurlHandlerBase(&$request, $handler, &$headers = null, &$saveFileFp = null)
     {
-        $options = $request->getAttribute(Attributes::OPTIONS, []);
-        // 返回内容
-        if (!isset($options[\CURLOPT_RETURNTRANSFER]))
-        {
-            $options[\CURLOPT_RETURNTRANSFER] = true;
-        }
-        // 允许复用连接
-        if (!isset($options[\CURLOPT_FORBID_REUSE]))
-        {
-            $options[\CURLOPT_FORBID_REUSE] = false;
-        }
+        $options = [
+            // 返回内容
+            \CURLOPT_RETURNTRANSFER  => true,
+            // 保存cookie
+            \CURLOPT_COOKIEJAR       => 'php://memory',
+            // 允许复用连接
+            \CURLOPT_FORBID_REUSE    => false,
+        ];
         // 自动重定向
-        if (!isset($options[\CURLOPT_MAXREDIRS]))
-        {
-            $options[\CURLOPT_MAXREDIRS] = $request->getAttribute(Attributes::MAX_REDIRECTS, 10);
-        }
+        $options[\CURLOPT_MAXREDIRS] = $request->getAttribute(Attributes::MAX_REDIRECTS, 10);
 
         // 自动解压缩支持
         $acceptEncoding = $request->getHeaderLine('Accept-Encoding');
@@ -314,26 +276,27 @@ class Curl implements IHandler
         {
             $options[\CURLOPT_ENCODING] = '';
         }
-        $this->parseOptions($request, $options, $headers, $saveFileFp);
-        $this->parseSSL($request, $options);
-        $this->parseProxy($request, $options);
-        $this->parseHeaders($request, $options);
-        $this->parseNetwork($request, $options);
         curl_setopt_array($handler, $options);
+        $this->parseSSL($request, $handler);
+        $this->parseOptions($request, $handler, $headers, $saveFileFp);
+        $this->parseProxy($request, $handler);
+        $this->parseHeaders($request, $handler);
+        $this->parseCookies($request, $handler);
+        $this->parseNetwork($request, $handler);
     }
 
     /**
      * 构建扩展 Curl Handler.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param resource|\CurlHandle               $handler
+     * @param resource                           $handler
      * @param UriInterface|null                  $uri
      * @param string|null                        $method
      * @param string|null                        $body
      *
      * @return void
      */
-    private function buildCurlHandlerEx(&$request, $handler, $uri = null, $method = null, $body = null)
+    public function buildCurlHandlerEx(&$request, $handler, $uri = null, $method = null, $body = null)
     {
         if (null === $uri)
         {
@@ -380,7 +343,6 @@ class Curl implements IHandler
         {
             $requestOptions[\CURLOPT_NOBODY] = true;
         }
-        $this->parseCookies($request, $requestOptions);
         curl_setopt_array($handler, $requestOptions);
     }
 
@@ -398,7 +360,7 @@ class Curl implements IHandler
      * 获取响应对象
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param resource|\CurlHandle               $handler
+     * @param resource                           $handler
      * @param string|bool                        $body
      * @param array                              $receiveHeaders
      *
@@ -416,7 +378,8 @@ class Curl implements IHandler
         $result = new Response($body, curl_getinfo($handler, \CURLINFO_HTTP_CODE));
 
         // headers
-        $headers = $this->parseHeaderOneRequest($receiveHeaders);
+        $rawHeaders = implode('', $receiveHeaders);
+        $headers = $this->parseHeaderOneRequest($rawHeaders);
         foreach ($headers as $name => $value)
         {
             $result = $result->withAddedHeader($name, $value);
@@ -424,10 +387,11 @@ class Curl implements IHandler
 
         // cookies
         $cookies = [];
+        $count = preg_match_all('/([^\r\n]+)/i', implode(\PHP_EOL, $result->getHeader('set-cookie')), $matches);
         $cookieManager = $this->cookieManager;
-        foreach ($result->getHeader('set-cookie') as $content)
+        for ($i = 0; $i < $count; ++$i)
         {
-            $cookieItem = $cookieManager->addSetCookie($content);
+            $cookieItem = $cookieManager->addSetCookie($matches[1][$i]);
             $cookies[$cookieItem->name] = (array) $cookieItem;
         }
 
@@ -446,18 +410,19 @@ class Curl implements IHandler
     /**
      * parseHeaderOneRequest.
      *
-     * @param string[] $headers
+     * @param string $piece
      *
      * @return array
      */
-    private function parseHeaderOneRequest($headers)
+    private function parseHeaderOneRequest($piece)
     {
         $tmpHeaders = [];
-        $count = \count($headers);
+        $lines = explode("\r\n", $piece);
+        $linesCount = \count($lines);
         //从1开始，第0行包含了协议信息和状态信息，排除该行
-        for ($i = 1; $i < $count; ++$i)
+        for ($i = 1; $i < $linesCount; ++$i)
         {
-            $line = trim($headers[$i]);
+            $line = trim($lines[$i]);
             if (empty($line) || false == strstr($line, ':'))
             {
                 continue;
@@ -493,36 +458,44 @@ class Curl implements IHandler
      * 处理加密访问.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param array                              $options
+     * @param resource                           $handler
      *
      * @return void
      */
-    private function parseSSL(&$request, &$options)
+    private function parseSSL(&$request, $handler)
     {
         if ($request->getAttribute(Attributes::IS_VERIFY_CA, false))
         {
-            $options[\CURLOPT_SSL_VERIFYPEER] = true;
-            $options[\CURLOPT_CAINFO] = $request->getAttribute(Attributes::CA_CERT);
-            $options[\CURLOPT_SSL_VERIFYHOST] = 2;
+            curl_setopt_array($handler, [
+                \CURLOPT_SSL_VERIFYPEER    => true,
+                \CURLOPT_CAINFO            => $request->getAttribute(Attributes::CA_CERT),
+                \CURLOPT_SSL_VERIFYHOST    => 2,
+            ]);
         }
         else
         {
-            $options[\CURLOPT_SSL_VERIFYPEER] = false;
-            $options[\CURLOPT_SSL_VERIFYHOST] = 0;
+            curl_setopt_array($handler, [
+                \CURLOPT_SSL_VERIFYPEER    => false,
+                \CURLOPT_SSL_VERIFYHOST    => 0,
+            ]);
         }
         $certPath = $request->getAttribute(Attributes::CERT_PATH, '');
         if ('' !== $certPath)
         {
-            $options[\CURLOPT_SSLCERT] = $certPath;
-            $options[\CURLOPT_SSLCERTPASSWD] = $request->getAttribute(Attributes::CERT_PASSWORD);
-            $options[\CURLOPT_SSLCERTTYPE] = $request->getAttribute(Attributes::CERT_TYPE, 'pem');
+            curl_setopt_array($handler, [
+                \CURLOPT_SSLCERT         => $certPath,
+                \CURLOPT_SSLCERTPASSWD   => $request->getAttribute(Attributes::CERT_PASSWORD),
+                \CURLOPT_SSLCERTTYPE     => $request->getAttribute(Attributes::CERT_TYPE, 'pem'),
+            ]);
         }
         $keyPath = $request->getAttribute(Attributes::KEY_PATH, '');
         if ('' !== $keyPath)
         {
-            $options[\CURLOPT_SSLKEY] = $keyPath;
-            $options[\CURLOPT_SSLKEYPASSWD] = $request->getAttribute(Attributes::KEY_PASSWORD);
-            $options[\CURLOPT_SSLKEYTYPE] = $request->getAttribute(Attributes::KEY_TYPE, 'pem');
+            curl_setopt_array($handler, [
+                \CURLOPT_SSLKEY          => $keyPath,
+                \CURLOPT_SSLKEYPASSWD    => $request->getAttribute(Attributes::KEY_PASSWORD),
+                \CURLOPT_SSLKEYTYPE      => $request->getAttribute(Attributes::KEY_TYPE, 'pem'),
+            ]);
         }
     }
 
@@ -530,14 +503,15 @@ class Curl implements IHandler
      * 处理设置项.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param array                              $options
+     * @param resource                           $handler
      * @param array                              $headers
      * @param resource|null                      $saveFileFp
      *
      * @return void
      */
-    private function parseOptions(&$request, &$options, &$headers = null, &$saveFileFp = null)
+    private function parseOptions(&$request, $handler, &$headers = null, &$saveFileFp = null)
     {
+        $options = $request->getAttribute(Attributes::OPTIONS, []);
         if (isset($options[\CURLOPT_HEADERFUNCTION]))
         {
             $headerCallable = $options[\CURLOPT_HEADERFUNCTION];
@@ -556,6 +530,7 @@ class Curl implements IHandler
 
             return \strlen($header);
         };
+        curl_setopt_array($handler, $options);
         // 请求结果保存为文件
         if (null !== ($saveFilePath = $request->getAttribute(Attributes::SAVE_FILE_PATH)))
         {
@@ -566,9 +541,11 @@ class Curl implements IHandler
                 $saveFilePath .= basename($request->getUri()->__toString());
             }
             $saveFileFp = fopen($saveFilePath, $request->getAttribute(Attributes::SAVE_FILE_MODE, 'w+'));
-            $options[\CURLOPT_HEADER] = false;
-            $options[\CURLOPT_RETURNTRANSFER] = false;
-            $options[\CURLOPT_FILE] = $saveFileFp;
+            curl_setopt_array($handler, [
+                \CURLOPT_HEADER          => false,
+                \CURLOPT_RETURNTRANSFER  => false,
+                \CURLOPT_FILE            => $saveFileFp,
+            ]);
         }
     }
 
@@ -576,20 +553,22 @@ class Curl implements IHandler
      * 处理代理.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param array                              $options
+     * @param resource                           $handler
      *
      * @return void
      */
-    private function parseProxy(&$request, &$options)
+    private function parseProxy(&$request, $handler)
     {
         if ($request->getAttribute(Attributes::USE_PROXY, false))
         {
             $type = $request->getAttribute(Attributes::PROXY_TYPE, 'http');
-            $options[\CURLOPT_PROXYAUTH] = self::$proxyAuths[$request->getAttribute(Attributes::PROXY_AUTH, 'basic')];
-            $options[\CURLOPT_PROXY] = $request->getAttribute(Attributes::PROXY_SERVER);
-            $options[\CURLOPT_PROXYPORT] = $request->getAttribute(Attributes::PROXY_PORT);
-            $options[\CURLOPT_PROXYUSERPWD] = $request->getAttribute(Attributes::PROXY_USERNAME, '') . ':' . $request->getAttribute(Attributes::PROXY_PASSWORD, '');
-            $options[\CURLOPT_PROXYTYPE] = 'socks5' === $type ? (\defined('CURLPROXY_SOCKS5_HOSTNAME') ? \CURLPROXY_SOCKS5_HOSTNAME : self::$proxyType[$type]) : self::$proxyType[$type];
+            curl_setopt_array($handler, [
+                \CURLOPT_PROXYAUTH    => self::$proxyAuths[$request->getAttribute(Attributes::PROXY_AUTH, 'basic')],
+                \CURLOPT_PROXY        => $request->getAttribute(Attributes::PROXY_SERVER),
+                \CURLOPT_PROXYPORT    => $request->getAttribute(Attributes::PROXY_PORT),
+                \CURLOPT_PROXYUSERPWD => $request->getAttribute(Attributes::PROXY_USERNAME, '') . ':' . $request->getAttribute(Attributes::PROXY_PASSWORD, ''),
+                \CURLOPT_PROXYTYPE    => 'socks5' === $type ? (\defined('CURLPROXY_SOCKS5_HOSTNAME') ? \CURLPROXY_SOCKS5_HOSTNAME : self::$proxyType[$type]) : self::$proxyType[$type],
+            ]);
         }
     }
 
@@ -597,21 +576,21 @@ class Curl implements IHandler
      * 处理headers.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param array                              $options
+     * @param resource                           $handler
      *
      * @return void
      */
-    private function parseHeaders(&$request, &$options)
+    private function parseHeaders(&$request, $handler)
     {
         if (!$request->hasHeader('User-Agent'))
         {
             $request = $request->withHeader('User-Agent', $request->getAttribute(Attributes::USER_AGENT, static::$defaultUA));
         }
-        if (!$request->hasHeader('Connection') && $request->getProtocolVersion() >= 1.1)
+        if (!$request->hasHeader('Connection'))
         {
             $request = $request->withHeader('Connection', 'Keep-Alive')->withHeader('Keep-Alive', '300');
         }
-        $options[\CURLOPT_HTTPHEADER] = $this->parseHeadersFormat($request);
+        curl_setopt($handler, \CURLOPT_HTTPHEADER, $this->parseHeadersFormat($request));
     }
 
     /**
@@ -636,11 +615,11 @@ class Curl implements IHandler
      * 处理cookie.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param array                              $options
+     * @param resource                           $handler
      *
      * @return void
      */
-    private function parseCookies(&$request, &$options)
+    private function parseCookies(&$request, $handler)
     {
         $cookieManager = $this->cookieManager;
         foreach ($request->getCookieParams() as $name => $value)
@@ -648,21 +627,18 @@ class Curl implements IHandler
             $cookieManager->setCookie($name, $value);
         }
         $cookie = $cookieManager->getRequestCookieString($request->getUri());
-        if ('' !== $cookie)
-        {
-            $options[\CURLOPT_COOKIE] = $cookie;
-        }
+        curl_setopt($handler, \CURLOPT_COOKIE, $cookie);
     }
 
     /**
      * 处理网络相关.
      *
      * @param \Yurun\Util\YurunHttp\Http\Request $request
-     * @param array                              $options
+     * @param resource                           $handler
      *
      * @return void
      */
-    private function parseNetwork(&$request, &$options)
+    private function parseNetwork(&$request, $handler)
     {
         // 用户名密码处理
         $username = $request->getAttribute(Attributes::USERNAME);
@@ -672,21 +648,20 @@ class Curl implements IHandler
         }
         else
         {
-            $userPwd = null;
+            $userPwd = '';
         }
-        // 连接超时
-        $options[\CURLOPT_CONNECTTIMEOUT_MS] = $request->getAttribute(Attributes::CONNECT_TIMEOUT, 30000);
-        // 总超时
-        $options[\CURLOPT_TIMEOUT_MS] = $request->getAttribute(Attributes::TIMEOUT, 0);
-        // 下载限速
-        $options[\CURLOPT_MAX_RECV_SPEED_LARGE] = $request->getAttribute(Attributes::DOWNLOAD_SPEED);
-        // 上传限速
-        $options[\CURLOPT_MAX_SEND_SPEED_LARGE] = $request->getAttribute(Attributes::UPLOAD_SPEED);
-        if (null !== $userPwd)
-        {
+        curl_setopt_array($handler, [
+            // 连接超时
+            \CURLOPT_CONNECTTIMEOUT_MS       => $request->getAttribute(Attributes::CONNECT_TIMEOUT, 30000),
+            // 总超时
+            \CURLOPT_TIMEOUT_MS              => $request->getAttribute(Attributes::TIMEOUT, 0),
+            // 下载限速
+            \CURLOPT_MAX_RECV_SPEED_LARGE    => $request->getAttribute(Attributes::DOWNLOAD_SPEED),
+            // 上传限速
+            \CURLOPT_MAX_SEND_SPEED_LARGE    => $request->getAttribute(Attributes::UPLOAD_SPEED),
             // 连接中用到的用户名和密码
-            $options[\CURLOPT_USERPWD] = $userPwd;
-        }
+            \CURLOPT_USERPWD                 => $userPwd,
+        ]);
     }
 
     /**
@@ -795,12 +770,8 @@ class Curl implements IHandler
                                                     ->withError(sprintf('Maximum (%s) redirects followed', $maxRedirects));
                     }
                 }
-                $response = $response->withTotalTime(microtime(true) - $beginTime);
-                $this->logRequest($request, $response);
                 $result[$k] = $response;
             }
-            $this->cookieManager->gc();
-            $this->saveCookieJar();
         }
         finally
         {

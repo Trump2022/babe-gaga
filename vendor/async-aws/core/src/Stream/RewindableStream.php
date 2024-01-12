@@ -12,16 +12,15 @@ namespace AsyncAws\Core\Stream;
  * - hash
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
+ *
+ * @internal
  */
 final class RewindableStream implements RequestStream
 {
-    /**
-     * @var RequestStream
-     */
     private $content;
 
     /**
-     * @var RequestStream|null
+     * @var RequestStream
      */
     private $fallback;
 

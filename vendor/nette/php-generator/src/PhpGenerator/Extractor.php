@@ -62,7 +62,8 @@ final class Extractor
 	{
 		$nodeFinder = new NodeFinder;
 		$classNode = $nodeFinder->findFirst($this->statements, function (Node $node) use ($className) {
-			return $node instanceof Node\Stmt\ClassLike && $node->namespacedName->toString() === $className;
+			return ($node instanceof Node\Stmt\Class_ || $node instanceof Node\Stmt\Trait_)
+				&& $node->namespacedName->toString() === $className;
 		});
 
 		$res = [];
@@ -99,7 +100,7 @@ final class Extractor
 
 	private function prepareReplacements(array $statements): array
 	{
-		$start = $this->getNodeStartPos($statements[0]);
+		$start = $statements[0]->getStartFilePos();
 		$replacements = [];
 		(new NodeFinder)->find($statements, function (Node $node) use (&$replacements, $start) {
 			if ($node instanceof Node\Name\FullyQualified) {
@@ -430,15 +431,7 @@ final class Extractor
 
 	private function getNodeContents(Node ...$nodes): string
 	{
-		$start = $this->getNodeStartPos($nodes[0]);
+		$start = $nodes[0]->getStartFilePos();
 		return substr($this->code, $start, end($nodes)->getEndFilePos() - $start + 1);
-	}
-
-
-	private function getNodeStartPos(Node $node): int
-	{
-		return ($comments = $node->getComments())
-			? $comments[0]->getStartFilePos()
-			: $node->getStartFilePos();
 	}
 }

@@ -6,6 +6,8 @@ namespace AsyncAws\Core;
  * Representation of a AWS Request.
  *
  * @author Jérémy Derussé <jeremy@derusse.com>
+ *
+ * @internal
  */
 abstract class Input
 {
@@ -15,7 +17,10 @@ abstract class Input
     public $region;
 
     /**
-     * @param array{'@region'?: ?string,...} $input
+     * @param array{
+     *
+     *   @region?: ?string,
+     * } $input
      */
     protected function __construct(array $input)
     {

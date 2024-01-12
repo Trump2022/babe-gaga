@@ -79,7 +79,7 @@ final class HttplugWaitLoop
 
                     if ([, $promise] = $this->promisePool[$response] ?? null) {
                         unset($this->promisePool[$response]);
-                        $promise->resolve(self::createPsr7Response($this->responseFactory, $this->streamFactory, $this->client, $response, true));
+                        $promise->resolve($this->createPsr7Response($response, true));
                     }
                 } catch (\Exception $e) {
                     if ([$request, $promise] = $this->promisePool[$response] ?? null) {
@@ -114,17 +114,9 @@ final class HttplugWaitLoop
         return $count;
     }
 
-    public static function createPsr7Response(ResponseFactoryInterface $responseFactory, StreamFactoryInterface $streamFactory, HttpClientInterface $client, ResponseInterface $response, bool $buffer): Psr7ResponseInterface
+    public function createPsr7Response(ResponseInterface $response, bool $buffer = false): Psr7ResponseInterface
     {
-        $responseParameters = [$response->getStatusCode()];
-
-        foreach ($response->getInfo('response_headers') as $h) {
-            if (11 <= \strlen($h) && '/' === $h[4] && preg_match('#^HTTP/\d+(?:\.\d+)? (?:\d\d\d) (.+)#', $h, $m)) {
-                $responseParameters[1] = $m[1];
-            }
-        }
-
-        $psrResponse = $responseFactory->createResponse(...$responseParameters);
+        $psrResponse = $this->responseFactory->createResponse($response->getStatusCode());
 
         foreach ($response->getHeaders(false) as $name => $values) {
             foreach ($values as $value) {
@@ -137,11 +129,11 @@ final class HttplugWaitLoop
         }
 
         if ($response instanceof StreamableInterface) {
-            $body = $streamFactory->createStreamFromResource($response->toStream(false));
+            $body = $this->streamFactory->createStreamFromResource($response->toStream(false));
         } elseif (!$buffer) {
-            $body = $streamFactory->createStreamFromResource(StreamWrapper::createResource($response, $client));
+            $body = $this->streamFactory->createStreamFromResource(StreamWrapper::createResource($response, $this->client));
         } else {
-            $body = $streamFactory->createStream($response->getContent(false));
+            $body = $this->streamFactory->createStream($response->getContent(false));
         }
 
         if ($body->isSeekable()) {

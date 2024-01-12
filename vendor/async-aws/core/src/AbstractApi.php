@@ -10,7 +10,6 @@ use AsyncAws\Core\Credentials\CacheProvider;
 use AsyncAws\Core\Credentials\ChainProvider;
 use AsyncAws\Core\Credentials\CredentialProvider;
 use AsyncAws\Core\EndpointDiscovery\EndpointCache;
-use AsyncAws\Core\EndpointDiscovery\EndpointInterface;
 use AsyncAws\Core\Exception\InvalidArgument;
 use AsyncAws\Core\Exception\LogicException;
 use AsyncAws\Core\Exception\RuntimeException;
@@ -48,7 +47,7 @@ abstract class AbstractApi
     private $credentialProvider;
 
     /**
-     * @var array<string, Signer>
+     * @var Signer[]
      */
     private $signers;
 
@@ -68,7 +67,7 @@ abstract class AbstractApi
     private $endpointCache;
 
     /**
-     * @param Configuration|array<Configuration::OPTION_*, string|null> $configuration
+     * @param Configuration|array $configuration
      */
     public function __construct($configuration = [], ?CredentialProvider $credentialProvider = null, ?HttpClientInterface $httpClient = null, ?LoggerInterface $logger = null)
     {
@@ -152,7 +151,7 @@ abstract class AbstractApi
             $request->setHeader('content-length', (string) $length);
         }
 
-        // Some servers (like testing Docker Images) does not support `Transfer-Encoding: chunked` requests.
+        // Some servers (like testing Docker Images) does not supports `Transfer-Encoding: chunked` requests.
         // The body is converted into string to prevent curl using `Transfer-Encoding: chunked` unless it really has to.
         if (($requestBody = $request->getBody()) instanceof StringStream) {
             $requestBody = $requestBody->stringify();
@@ -179,7 +178,7 @@ abstract class AbstractApi
     }
 
     /**
-     * @return array<string, callable(string, string): Signer>
+     * @return callable[]
      */
     protected function getSignerFactories(): array
     {
@@ -230,12 +229,13 @@ abstract class AbstractApi
     /**
      * Build the endpoint full uri.
      *
-     * @param string                $uri    or path
-     * @param array<string, string> $query  parameters that should go in the query string
-     * @param ?string               $region region provided by the user in the `@region` parameter of the Input
+     * @param string  $uri    or path
+     * @param array   $query  parameters that should go in the query string
+     * @param ?string $region region provided by the user in the `@region` parameter of the Input
      */
     protected function getEndpoint(string $uri, array $query, ?string $region): string
     {
+        /** @var string $region */
         $region = $region ?? ($this->configuration->isDefault('region') ? null : $this->configuration->get('region'));
         if (!$this->configuration->isDefault('endpoint')) {
             /** @var string $endpoint */
@@ -263,19 +263,11 @@ abstract class AbstractApi
         return $endpoint . (false === strpos($endpoint, '?') ? '?' : '&') . http_build_query($query, '', '&', \PHP_QUERY_RFC3986);
     }
 
-    /**
-     * @return EndpointInterface[]
-     */
     protected function discoverEndpoints(?string $region): array
     {
         throw new LogicException(sprintf('The Client "%s" must implement the "%s" method.', \get_class($this), 'discoverEndpoints'));
     }
 
-    /**
-     * @param array<string, string> $query
-     *
-     * @return string
-     */
     private function getDiscoveredEndpoint(string $uri, array $query, ?string $region, bool $usesEndpointDiscovery, bool $requiresEndpointDiscovery)
     {
         if (!$this->configuration->isDefault('endpoint')) {
@@ -322,7 +314,7 @@ abstract class AbstractApi
     /**
      * @param ?string $region region provided by the user in the `@region` parameter of the Input
      */
-    private function getSigner(?string $region): Signer
+    private function getSigner(?string $region)
     {
         /** @var string $region */
         $region = $region ?? ($this->configuration->isDefault('region') ? null : $this->configuration->get('region'));

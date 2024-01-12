@@ -10,7 +10,6 @@ use think\console\Command;
 use think\helper\Arr;
 use think\swoole\contract\rpc\ParserInterface;
 use think\swoole\rpc\client\Gateway;
-use think\swoole\rpc\client\Service;
 use think\swoole\rpc\JsonParser;
 use function Swoole\Coroutine\run;
 
@@ -19,7 +18,7 @@ class RpcInterface extends Command
     public function configure()
     {
         $this->setName('rpc:interface')
-            ->setDescription('Generate Rpc Service Interfaces');
+             ->setDescription('Generate Rpc Service Interfaces');
     }
 
     public function handle()
@@ -38,13 +37,11 @@ class RpcInterface extends Command
                 /** @var ParserInterface $parser */
                 $parser = new $parserClass;
 
-                $gateway = new Gateway($config, $parser, Arr::get($config, 'tries', 2));
+                $gateway = new Gateway($config, $parser);
 
                 $result = $gateway->getServices();
 
-                $namespace = $file->addNamespace("rpc\\contract\\{$name}");
-
-                $namespace->addUse(Service::class);
+                $namespace = $file->addNamespace("rpc\\contract\\${name}");
 
                 foreach ($result as $interface => $methods) {
 
@@ -52,20 +49,18 @@ class RpcInterface extends Command
 
                     $class = $namespace->addInterface($interface);
 
-                    $class->addExtend(Service::class);
-
                     foreach ($methods as $methodName => ['parameters' => $parameters, 'returnType' => $returnType, 'comment' => $comment]) {
                         $method = $class->addMethod($methodName)
-                            ->setVisibility(ClassType::VISIBILITY_PUBLIC)
-                            ->setComment(Helpers::unformatDocComment($comment))
-                            ->setReturnType($returnType);
+                                        ->setVisibility(ClassType::VISIBILITY_PUBLIC)
+                                        ->setComment(Helpers::unformatDocComment($comment))
+                                        ->setReturnType($returnType);
 
                         foreach ($parameters as $parameter) {
                             if ($parameter['type'] && (class_exists($parameter['type']) || interface_exists($parameter['type']))) {
                                 $namespace->addUse($parameter['type']);
                             }
                             $param = $method->addParameter($parameter['name'])
-                                ->setType($parameter['type']);
+                                            ->setType($parameter['type']);
 
                             if (array_key_exists('default', $parameter)) {
                                 $param->setDefaultValue($parameter['default']);

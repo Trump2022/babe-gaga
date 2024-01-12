@@ -2,20 +2,18 @@
 
 namespace think\swoole\concerns;
 
-use Swoole\Coroutine;
 use Swoole\Coroutine\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Status;
-use think\App;
+use think\Container;
 use think\Cookie;
 use think\Event;
 use think\exception\Handle;
 use think\helper\Arr;
 use think\helper\Str;
 use think\Http;
-use think\swoole\App as SwooleApp;
-use think\swoole\Http as SwooleHttp;
+use think\swoole\App;
 use think\swoole\response\File as FileResponse;
 use Throwable;
 use function substr;
@@ -24,16 +22,14 @@ use function substr;
  * Trait InteractsWithHttp
  * @package think\swoole\concerns
  * @property App $app
- * @property App $container
+ * @property Container $container
  */
 trait InteractsWithHttp
 {
-    use InteractsWithWebsocket, ModifyProperty;
+    use InteractsWithWebsocket;
 
     public function createHttpServer()
     {
-        $this->preloadHttp();
-
         $host    = $this->getConfig('http.host');
         $port    = $this->getConfig('http.port');
         $options = $this->getConfig('http.options', []);
@@ -52,43 +48,11 @@ trait InteractsWithHttp
         $server->start();
     }
 
-    protected function preloadHttp()
-    {
-        $http = $this->app->http;
-        $this->app->invokeMethod([$http, 'loadMiddleware'], [], true);
-
-        if ($this->app->config->get('app.with_route', true)) {
-            $this->app->invokeMethod([$http, 'loadRoutes'], [], true);
-            $route = clone $this->app->route;
-            $this->modifyProperty($route, null);
-            unset($this->app->route);
-
-            $this->app->resolving(SwooleHttp::class, function ($http, App $app) use ($route) {
-                $newRoute = clone $route;
-                $this->modifyProperty($newRoute, $app);
-                $app->instance('route', $newRoute);
-            });
-        }
-
-        $middleware = clone $this->app->middleware;
-        $this->modifyProperty($middleware, null);
-        unset($this->app->middleware);
-
-        $this->app->resolving(SwooleHttp::class, function ($http, App $app) use ($middleware) {
-            $newMiddleware = clone $middleware;
-            $this->modifyProperty($newMiddleware, $app);
-            $app->instance('middleware', $newMiddleware);
-        });
-
-        unset($this->app->http);
-        $this->app->bind(Http::class, SwooleHttp::class);
-    }
-
     protected function isWebsocketRequest(Request $req)
     {
         $header = $req->header;
-        return strcasecmp(Arr::get($header, 'connection', ''), 'upgrade') === 0 &&
-            strcasecmp(Arr::get($header, 'upgrade', ''), 'websocket') === 0;
+        return strcasecmp(Arr::get($header, 'connection'), 'upgrade') === 0 &&
+            strcasecmp(Arr::get($header, 'upgrade'), 'websocket') === 0;
     }
 
     protected function prepareHttp()
@@ -115,23 +79,21 @@ trait InteractsWithHttp
      */
     public function onRequest($req, $res)
     {
-        Coroutine::create(function () use ($req, $res) {
-            $this->runInSandbox(function (Http $http, Event $event, SwooleApp $app) use ($req, $res) {
-                $app->setInConsole(false);
+        $this->runWithBarrier([$this, 'runInSandbox'], function (Http $http, Event $event, App $app) use ($req, $res) {
+            $app->setInConsole(false);
 
-                $request = $this->prepareRequest($req);
+            $request = $this->prepareRequest($req);
 
-                try {
-                    $response = $this->handleRequest($http, $request);
-                } catch (Throwable $e) {
-                    $handle = $this->app->make(Handle::class);
-                    $handle->report($e);
-                    $response = $handle->render($request, $e);
-                }
+            try {
+                $response = $this->handleRequest($http, $request);
+            } catch (Throwable $e) {
+                $response = $this->app
+                    ->make(Handle::class)
+                    ->render($request, $e);
+            }
 
-                $this->setCookie($res, $app->cookie);
-                $this->sendResponse($res, $request, $response);
-            });
+            $this->setCookie($res, $app->cookie);
+            $this->sendResponse($res, $request, $response);
         });
     }
 
@@ -180,33 +142,11 @@ trait InteractsWithHttp
             ->withGet($req->get ?: [])
             ->withPost($req->post ?: [])
             ->withCookie($req->cookie ?: [])
-            ->withFiles($this->getFiles($req))
+            ->withFiles($req->files ?: [])
             ->withInput($req->rawContent())
             ->setBaseUrl($req->server['request_uri'])
             ->setUrl($req->server['request_uri'] . (!empty($req->server['query_string']) ? '?' . $req->server['query_string'] : ''))
             ->setPathinfo(ltrim($req->server['path_info'], '/'));
-    }
-
-    protected function getFiles(Request $req)
-    {
-        if (empty($req->files)) {
-            return [];
-        }
-
-        return array_map(function ($file) {
-            if (!Arr::isAssoc($file)) {
-                $files = [];
-                foreach ($file as $f) {
-                    $files['name'][]     = $f['name'];
-                    $files['type'][]     = $f['type'];
-                    $files['tmp_name'][] = $f['tmp_name'];
-                    $files['error'][]    = $f['error'];
-                    $files['size'][]     = $f['size'];
-                }
-                return $files;
-            }
-            return $file;
-        }, $req->files);
     }
 
     protected function setCookie(Response $res, Cookie $cookie)
@@ -243,21 +183,15 @@ trait InteractsWithHttp
 
     protected function sendFile(Response $res, \think\Request $request, FileResponse $response)
     {
-        $ifNoneMatch = $request->header('If-None-Match');
-        $ifRange     = $request->header('If-Range');
-
-        $code         = $response->getCode();
-        $file         = $response->getFile();
-        $eTag         = $response->getHeader('ETag');
-        $lastModified = $response->getHeader('Last-Modified');
-
+        $code     = $response->getCode();
+        $ifRange  = $request->header('If-Range');
+        $file     = $response->getFile();
         $fileSize = $file->getSize();
-        $offset   = 0;
-        $length   = -1;
 
-        if ($ifNoneMatch == $eTag) {
-            $code = 304;
-        } elseif (!$ifRange || $ifRange === $eTag || $ifRange === $lastModified) {
+        $offset = 0;
+        $maxlen = -1;
+
+        if (!$ifRange || $ifRange === $response->getHeader('ETag') || $ifRange === $response->getHeader('Last-Modified')) {
             $range = $request->header('Range', '');
             if (Str::startsWith($range, 'bytes=')) {
                 [$start, $end] = explode('-', substr($range, 6), 2) + [0];
@@ -279,7 +213,7 @@ trait InteractsWithHttp
                             'Content-Range' => sprintf('bytes */%s', $fileSize),
                         ]);
                     } elseif ($end - $start < $fileSize - 1) {
-                        $length = $end < $fileSize ? $end - $start + 1 : -1;
+                        $maxlen = $end < $fileSize ? $end - $start + 1 : -1;
                         $offset = $start;
                         $code   = 206;
                         $response->header([
@@ -294,8 +228,8 @@ trait InteractsWithHttp
         $this->setStatus($res, $code);
         $this->setHeader($res, $response->getHeader());
 
-        if ($code >= 200 && $code < 300 && $length !== 0) {
-            $res->sendfile($file->getPathname(), $offset, $length);
+        if ($code >= 200 && $code < 300 && $maxlen !== 0) {
+            $res->sendfile($file->getPathname(), $offset, $maxlen);
         } else {
             $res->end();
         }

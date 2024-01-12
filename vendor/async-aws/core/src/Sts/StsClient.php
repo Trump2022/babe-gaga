@@ -20,7 +20,6 @@ use AsyncAws\Core\Sts\Result\AssumeRoleResponse;
 use AsyncAws\Core\Sts\Result\AssumeRoleWithWebIdentityResponse;
 use AsyncAws\Core\Sts\Result\GetCallerIdentityResponse;
 use AsyncAws\Core\Sts\ValueObject\PolicyDescriptorType;
-use AsyncAws\Core\Sts\ValueObject\ProvidedContext;
 use AsyncAws\Core\Sts\ValueObject\Tag;
 
 class StsClient extends AbstractApi
@@ -113,17 +112,17 @@ class StsClient extends AbstractApi
      * @param array{
      *   RoleArn: string,
      *   RoleSessionName: string,
-     *   PolicyArns?: null|array<PolicyDescriptorType|array>,
-     *   Policy?: null|string,
-     *   DurationSeconds?: null|int,
-     *   Tags?: null|array<Tag|array>,
-     *   TransitiveTagKeys?: null|string[],
-     *   ExternalId?: null|string,
-     *   SerialNumber?: null|string,
-     *   TokenCode?: null|string,
-     *   SourceIdentity?: null|string,
-     *   ProvidedContexts?: null|array<ProvidedContext|array>,
-     *   '@region'?: string|null,
+     *   PolicyArns?: PolicyDescriptorType[],
+     *   Policy?: string,
+     *   DurationSeconds?: int,
+     *   Tags?: Tag[],
+     *   TransitiveTagKeys?: string[],
+     *   ExternalId?: string,
+     *   SerialNumber?: string,
+     *   TokenCode?: string,
+     *   SourceIdentity?: string,
+     *
+     *   @region?: string,
      * }|AssumeRoleRequest $input
      *
      * @throws MalformedPolicyDocumentException
@@ -274,11 +273,12 @@ class StsClient extends AbstractApi
      *   RoleArn: string,
      *   RoleSessionName: string,
      *   WebIdentityToken: string,
-     *   ProviderId?: null|string,
-     *   PolicyArns?: null|array<PolicyDescriptorType|array>,
-     *   Policy?: null|string,
-     *   DurationSeconds?: null|int,
-     *   '@region'?: string|null,
+     *   ProviderId?: string,
+     *   PolicyArns?: PolicyDescriptorType[],
+     *   Policy?: string,
+     *   DurationSeconds?: int,
+     *
+     *   @region?: string,
      * }|AssumeRoleWithWebIdentityRequest $input
      *
      * @throws MalformedPolicyDocumentException
@@ -319,7 +319,8 @@ class StsClient extends AbstractApi
      * @see https://docs.aws.amazon.com/aws-sdk-php/v3/api/api-sts-2011-06-15.html#getcalleridentity
      *
      * @param array{
-     *   '@region'?: string|null,
+     *
+     *   @region?: string,
      * }|GetCallerIdentityRequest $input
      */
     public function getCallerIdentity($input = []): GetCallerIdentityResponse
