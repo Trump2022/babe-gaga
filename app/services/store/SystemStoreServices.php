@@ -57,12 +57,13 @@ class SystemStoreServices extends BaseServices
     /**
      * 获取单个门店信息
      * @param int $id
+     * @param string $field
      * @return array|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getStoreInfo(int $id, $field)
+    public function getStoreInfo(int $id, string $field = "*")
     {
         $storeInfo = $this->dao->getOne(['id' => $id, 'is_del' => 0], $field);
         if (!$storeInfo) {
