@@ -50,7 +50,7 @@ class SpuServices extends BaseServices
                     ];
                     break;
                 case 1:
-                    $_make = app()->make(StoreSeckillActiveRepository::class);
+                    $_make = app()->make(StoreSeckillActiveServices::class);
                     $res = $_make->getSearch(['product_id' => $id])->find();
                     $where = [
                         'activity_id' => $res['seckill_active_id'],
@@ -59,7 +59,7 @@ class SpuServices extends BaseServices
                     ];
                     break;
                 case 2:
-                    $_make = app()->make(ProductPresellRepository::class);
+                    $_make = app()->make(ProductPresellServices::class);
                     $res = $_make->getWhere([$_make->getPk() => $id]);
                     $where = [
                         'activity_id' => $id,
@@ -68,7 +68,7 @@ class SpuServices extends BaseServices
                     ];
                     break;
                 case 3:
-                    $_make = app()->make(ProductAssistRepository::class);
+                    $_make = app()->make(ProductAssistServices::class);
                     $res = $_make->getWhere([$_make->getPk() => $id]);
                     $where = [
                         'activity_id' => $id,
@@ -77,7 +77,7 @@ class SpuServices extends BaseServices
                     ];
                     break;
                 case 4:
-                    $_make = app()->make(ProductGroupRepository::class);
+                    $_make = app()->make(ProductGroupServices::class);
                     $where[$_make->getPk()] = $id;
                     $res = $_make->getWhere([$_make->getPk() => $id]);
                     $where = [

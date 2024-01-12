@@ -20,6 +20,7 @@ use app\services\store\product\SpuServices;
 use app\services\user\UserServices;
 use crmeb\basic\BaseModel;
 use crmeb\services\QrcodeService;
+use app\services\store\order\StoreOrderProductServices;
 use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
 use FormBuilder\Form;
@@ -419,8 +420,20 @@ class CommunityServices extends BaseServices
         return $data;
     }
 
-    public function getSpuByOrder($id)
+    /**
+     * @param $id
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 17:52
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getSpuByOrder($id): array
     {
+        $data = [];
         $where = app()->make(StoreOrderProductServices::class)->selectWhere(['order_id' => $id]);
         if (!$where) throw new  ValidateException('商品已下架');
 
@@ -637,6 +650,19 @@ class CommunityServices extends BaseServices
         return $result;
     }
 
+    /**
+     * @param $id
+     * @param $type
+     * @param $user
+     * @return bool|mixed|string
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 18:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
     public function qrcode($id, $type,$user)
     {
         $res = $this->dao->search(['is_type' => self::COMMUNIT_TYPE_VIDEO,'community_id' => $id, 'status' => 1, 'is_show' => 1])->find();

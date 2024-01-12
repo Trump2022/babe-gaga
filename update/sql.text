@@ -114,7 +114,7 @@ CREATE TABLE `gaga_user_history` (
 
 ALTER TABLE `gaga_user` ADD   `count_fans` int unsigned DEFAULT '0' COMMENT '用户粉丝数' AFTER `count_start`;
 
-CREATE TABLE `eb_store_order_product` (
+CREATE TABLE `gaga_store_order_product` (
   `order_product_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '订单产品 id',
   `order_id` int unsigned NOT NULL COMMENT '订单id',
   `uid` int unsigned NOT NULL DEFAULT '0' COMMENT '用户 id',

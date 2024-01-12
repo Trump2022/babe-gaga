@@ -22,6 +22,7 @@ use app\services\system\RelevanceServices;
 use app\services\user\UserRelationsServices;
 use app\services\user\UserHistoryServices;
 use app\services\user\UserServices;
+use app\services\store\order\StoreOrderProductServices;
 use app\validate\api\CommunityValidate;
 //use crmeb\services\MiniProgramService;
 use crmeb\services\wechat\MiniProgram;
@@ -478,41 +479,56 @@ class CommunityController
     }
 
     /**
+     * 已购商品
+     * @param Request $request
+     * @return Json
+     * @author Qinii
+     * @day 10/28/21
+     */
+    public function payList(Request $request): Json
+    {
+        $keyword = $request->param('keyword');
+        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $request->uid());
+        return app('json')->success($data);
+    }
+
+    /**
+     * @param Request $request
      * @param $id
      * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
-     * @date : 2024/1/12 17:20
+     * @date : 2024/1/12 18:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function qrcode(Request $request, $id): Response
+    {
+        $id = (int) $id;
+        $type = $request->param('type');
+        $url = $this->services->qrcode($id, $type, $request->user());
+        if ( ! $url) return app('json')->fail('二维码生成失败');
+        return app('json')->success(compact('url'));
+    }
+
+    /**
+     * ToDo
+     *
+     * @param $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 17:52
      * @author: QSW
      * @email: qsw2012@outlook.com
      */
     public function getSpuByOrder($id): Response
     {
         $data = $this->services->getSpuByOrder($id);
-        return app('json')->success($data);
-    }
-
-    public function qrcode(Request $request, $id)
-    {
-        $id = (int) $id;
-        $type = $request->param('type');
-        if ($request->isLogin())
-        {
-            $url = $this->services->qrcode($id, $type, $request->user());
-        }
-        if (!$url) return app('json')->fail('二维码生成失败');
-        return app('json')->success(compact('url'));
-    }
-
-    /**
-     * TODO 已购商品
-     * @return Json
-     * @author Qinii
-     * @day 10/28/21
-     */
-    public function payList(Request $request)
-    {
-        $keyword = $request->param('keyword');
-        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $this->user->uid);
         return app('json')->success($data);
     }
 }
