@@ -95,10 +95,13 @@ class StoreOrderCartInfoDao extends BaseDao
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getExpireCartInfoList(int $writeTime = 0)
+    public function getExpireCartInfoList(int $writeTime = 0, $whereRaw = '')
     {
         $list = $this->getModel()->where(['is_writeoff' => 0, 'is_expire_sms' => 0])->where('write_start', '>', 0)->where('write_end', '>', 0)
             ->where('write_end', '<', $writeTime)
+            ->when($whereRaw, function($query) use ($whereRaw) {
+                $query->whereRaw($whereRaw);
+            })
             ->field('id,oid,product_id,write_times,write_surplus_times,write_start,write_end,cart_info')->select();
         $list = count($list) > 0 ? $list->toArray() : [];
         return $list;

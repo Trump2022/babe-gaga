@@ -13,6 +13,7 @@ namespace app\services\order;
 
 use app\dao\order\StoreOrderCartInfoDao;
 use app\services\BaseServices;
+use app\services\user\UserServices;
 use crmeb\services\CacheService;
 use crmeb\services\SystemConfigService;
 use crmeb\traits\OptionTrait;
@@ -377,6 +378,38 @@ class StoreOrderCartInfoServices extends BaseServices
                 $data['phone'] = $order['user_phone'];
                 event('notice.notice', [$data, 'expiration_reminder']);
                 $this->dao->update($item['id'], ['is_expire_sms' => 1]);
+            }
+        }
+        return true;
+    }
+
+    /** 课程商品核销完返佣任务失败
+     * @return bool
+     */
+    public function courseVerificationRebate()
+    {
+        /** @var StoreOrderServices $orderServices */
+        $orderServices = app()->make(StoreOrderServices::class);
+
+        // 过期且已激活使用
+        $whereRaw = 'write_end < ' . time() . ' AND write_surplus_times < write_times';
+        $expireList = $this->dao->getExpireCartInfoList(time(), $whereRaw);
+        if ($expireList) {
+            //返佣
+            /** @var StoreOrderTakeServices $storeOrderTakeServices */
+            $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
+            /** @var UserServices $userServices */
+            $userServices = app()->make(UserServices::class);
+
+            foreach ($expireList as $key => $item) {
+                //返佣
+                $orderInfo = $orderServices->get($item['oid']);
+                if (!$orderInfo) {
+                    continue;
+                }
+                $userInfo = $userServices->get($orderInfo['uid']);
+                $storeOrderTakeServices->backOrderBrokerage($orderInfo, $userInfo);
+
             }
         }
         return true;

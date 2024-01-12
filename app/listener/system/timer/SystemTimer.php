@@ -345,6 +345,19 @@ class SystemTimer extends Cron implements ListenerInterface
                     ]);
                 }
                 break;
+            case 'course_verification_rebate' : // 课程商品核销完返佣
+                /** @var StoreOrderCartInfoServices $service */
+                $service = app()->make(StoreOrderCartInfoServices::class);
+                try {
+                    return $service->courseVerificationRebate();
+                } catch (\Throwable $e) {
+                    response_log_write([
+                        'message' => '课程商品核销完返佣任务失败:' . $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine()
+                    ]);
+                }
+                break;
         }
     }
 }

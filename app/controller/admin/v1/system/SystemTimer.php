@@ -60,7 +60,8 @@ class SystemTimer extends AuthController
             'rebate_points_orders' => '未支付gaga币订单退gaga币',
             'code_not_operating' => '桌码长期未操作取消桌码记录',
             'collate_not_operating' => '拼单长期未操作取消拼单记录',
-            'reminder_unverified_remind' => '次卡商品未核销短信提醒'
+            'reminder_unverified_remind' => '次卡商品未核销短信提醒',
+            'course_verification_rebate' => '课程商品核销完返佣'
         ];
         return $this->success($data);
     }

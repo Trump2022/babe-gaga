@@ -423,22 +423,21 @@ class WriteOffOrderServices extends BaseServices
                 } else {
                     //整单核销
 
-                    if($cartData['write_surplus_times'] < $cartData['write_times']){
+                    if($cartData['write_surplus_times'] > 0){
                         //修改原来订单商品信息
                         //核销减1
                         $cartInfoServices->decUpdate(['oid' => $orderInfo['id']], 'write_surplus_times');
 
-                        //修改核销次数，核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
+                        //核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
                         /** @var UserServices $userServices */
                         $userServices = app()->make(UserServices::class);
                         $userInfo = $userServices->get((int)$orderInfo['uid']);
 
-                        $write_times = $cartData['write_times'];
-                        $write_surplus_times = $cartData['write_surplus_times'] + 1;
-                        if($write_times == $write_surplus_times){
+                        $write_surplus_times = $cartData['write_surplus_times'] - 1;
+                        if($write_surplus_times == 0){
                             //核销完成
                             $cartData['is_writeoff'] = 1;
-                            $cartData['write_surplus_times'] = $write_surplus_times;
+                            $cartData['writeoff_time'] = time();
                             $cartInfoServices->update(['oid' => $orderInfo['id']], $cartData);
 
                             //返佣
