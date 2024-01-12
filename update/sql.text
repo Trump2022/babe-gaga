@@ -147,3 +147,6 @@ CREATE TABLE `gaga_store_order_product` (
   KEY `oid` (`order_id`) USING BTREE,
   KEY `uid` (`uid`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='订单购物详情表';
+
+ALTER TABLE `gaga_store_order_cart_info` ADD `active_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活时效开始时间' AFTER `add_time`, ADD `active_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活时效结束时间' AFTER `active_start`;
+ALTER TABLE `gaga_store_order_cart_info` ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '使用时效天数(课程订单)' AFTER `write_times`;
