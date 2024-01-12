@@ -100,7 +100,7 @@ CREATE TABLE `gaga_user_relations` (
   `type` tinyint NOT NULL DEFAULT '0' COMMENT '关联类型(0 普通商品、1秒杀2、预售3、助力4、拼团、10 = 店铺、12=购买过)',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   UNIQUE KEY `uid` (`type`,`type_id`,`uid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='用户记录表'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='用户记录表';
 
 CREATE TABLE `gaga_user_history` (
   `user_history_id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -110,4 +110,40 @@ CREATE TABLE `gaga_user_history` (
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` int DEFAULT NULL,
   PRIMARY KEY (`user_history_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COMMENT='浏览记录表'
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COMMENT='浏览记录表';
+
+ALTER TABLE `gaga_user` ADD   `count_fans` int unsigned DEFAULT '0' COMMENT '用户粉丝数' AFTER `count_start`;
+
+CREATE TABLE `eb_store_order_product` (
+  `order_product_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '订单产品 id',
+  `order_id` int unsigned NOT NULL COMMENT '订单id',
+  `uid` int unsigned NOT NULL DEFAULT '0' COMMENT '用户 id',
+  `cart_id` int unsigned NOT NULL DEFAULT '0' COMMENT '购物车id',
+  `product_id` int unsigned NOT NULL DEFAULT '0' COMMENT '商品ID',
+  `extension_one` decimal(8,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '一级佣金',
+  `extension_two` decimal(8,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '二级佣金',
+  `integral` int unsigned DEFAULT '0' COMMENT '使用积分(单数)',
+  `integral_price` decimal(10,2) unsigned DEFAULT '0.00' COMMENT '积分抵扣金额',
+  `integral_total` int unsigned DEFAULT '0' COMMENT '使用积分(总数)',
+  `coupon_price` decimal(8,2) unsigned DEFAULT '0.00' COMMENT '优惠金额',
+  `platform_coupon_price` decimal(8,2) unsigned DEFAULT '0.00' COMMENT '平台优惠金额',
+  `svip_discount` decimal(8,2) unsigned DEFAULT '0.00' COMMENT 'svip优惠金额',
+  `postage_price` decimal(8,2) unsigned DEFAULT '0.00' COMMENT '运费',
+  `product_sku` char(12) NOT NULL COMMENT '商品 sku',
+  `is_refund` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '是否退款 0:未退款 1:退款中 2:部分退款 3=全退',
+  `product_num` int unsigned NOT NULL DEFAULT '0' COMMENT '购买数量',
+  `product_type` int NOT NULL DEFAULT '0' COMMENT '0.普通商品 1.秒杀商品,2.预售商品',
+  `activity_id` int unsigned NOT NULL DEFAULT '0' COMMENT '活动关联 id',
+  `refund_num` int unsigned NOT NULL DEFAULT '0' COMMENT '可申请退货数量',
+  `is_reply` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '是否评价',
+  `cost` decimal(10,2) unsigned NOT NULL COMMENT '商品成本价',
+  `product_price` decimal(10,2) unsigned NOT NULL COMMENT '商品金额',
+  `total_price` decimal(10,2) unsigned NOT NULL COMMENT '商品售价',
+  `cart_info` text NOT NULL COMMENT '购买东西的详细信息',
+  `refund_switch` tinyint unsigned DEFAULT '1' COMMENT '是否支持退款',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`order_product_id`) USING BTREE,
+  KEY `product_id` (`product_id`) USING BTREE,
+  KEY `oid` (`order_id`) USING BTREE,
+  KEY `uid` (`uid`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='订单购物详情表';

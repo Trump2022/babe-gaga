@@ -14,6 +14,7 @@ namespace app\dao;
 use crmeb\basic\BaseAuth;
 use crmeb\basic\BaseModel;
 use crmeb\traits\dao\CacheDaoTrait;
+use think\Collection;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -161,6 +162,21 @@ abstract class BaseDao
         }else{
             return ($this->getModel())::withSearch($keyArray, $whereArr);
         }
+    }
+
+    /**
+     * @param array $where
+     * @param string $field
+     * @return Collection
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author xaboy
+     * @day 2020/6/1
+     */
+    public function selectWhere(array $where, string $field = '*'): Collection
+    {
+        return ($this->getModel())::getInstance()->where($where)->field($field)->select();
     }
 
     /**

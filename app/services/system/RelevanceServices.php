@@ -16,6 +16,9 @@ namespace app\services\system;
 
 use app\dao\system\RelevanceDao;
 use app\services\BaseServices;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Db;
 
@@ -149,14 +152,18 @@ class RelevanceServices extends BaseServices
     }
 
     /**
-     * TODO 关注我的人
+     * 关注我的人
      * @param int $uid
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/28/21
      */
-    public function getUserFans(int $uid, int $page, int $limit)
+    public function getUserFans(int $uid): array
     {
+        [$page, $limit] = $this->getPageValue();
         $query = $this->dao->getSearch([
             'right_id' => $uid,
             'type'    => self::TYPE_COMMUNITY_FANS,
@@ -180,14 +187,18 @@ class RelevanceServices extends BaseServices
     }
 
     /**
-     * TODO 我关注的人
-     * @param $uid
+     * 我关注的人
+     * @param int $uid
      * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/28/21
      */
-    public function getUserFocus(int $uid, int $page, int $limit)
+    public function getUserFocus(int $uid): array
     {
+        [$page, $limit] = $this->getPageValue();
         $query = $this->dao->getSearch([
             'left_id' => $uid,
             'type'    => self::TYPE_COMMUNITY_FANS,
@@ -218,8 +229,9 @@ class RelevanceServices extends BaseServices
      * @author Qinii
      * @day 10/28/21
      */
-    public function getUserStartCommunity(array $where, int $page, int $limit)
+    public function getUserStartCommunity(array $where)
     {
+        [$page, $limit] = $this->getPageValue();
         $query = $this->dao->joinUser($where)->with([
             'community'=> function($query) use($where){
                 $query->with([

@@ -11,6 +11,8 @@
 
 namespace app\model\system;
 
+use app\model\user\User;
+use app\model\community\Community;
 use app\model\store\product\Spu;
 use crmeb\basic\BaseModel;
 use crmeb\traits\ModelTrait;
@@ -52,5 +54,42 @@ class Relevance extends BaseModel
     public function spu(): HasOne
     {
         return $this->hasOne(Spu::class, 'spu_id', 'right_id');
+    }
+
+    /**
+     * @return HasOne
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 16:43
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function community(): HasOne
+    {
+        return $this->hasOne(Community::class,'community_id','right_id')
+            ->bind(['community_id','title','image','start','uid','create_time','count_start','author','is_type']);
+    }
+
+    /**
+     * @return HasOne
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 17:10
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function fans(): HasOne
+    {
+        return $this->hasOne(User::class,'uid','left_id');
+    }
+
+    /**
+     * @return HasOne
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 17:10
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function focus(): HasOne
+    {
+        return $this->hasOne(User::class,'uid','right_id');
     }
 }
