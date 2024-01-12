@@ -19,6 +19,8 @@ use app\services\system\config\SystemConfigServices;
 use app\services\system\RelevanceServices;
 //use app\common\repositories\user\UserHistoryRepository;
 //use app\common\repositories\user\UserRelationRepository;
+use app\services\user\UserRelationsServices;
+use app\services\user\UserHistoryServices;
 use app\services\user\UserServices;
 use app\validate\api\CommunityValidate;
 //use crmeb\services\MiniProgramService;
@@ -321,6 +323,53 @@ class CommunityController
         return app('json')->success($data);
     }
 
+    /**
+     * 收藏商品
+     * @param Request $request
+     * @return Json
+     * @author Qinii
+     * @day 10/28/21
+     */
+    public function relationList(Request $request): Json
+    {
+        $keyword = $request->param('keyword');
+        $data = app()->make(UserRelationsServices::class)->getUserProductToCommunity($keyword, $request->uid());
+        return app('json')->success($data);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 16:13
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function historyList(Request $request): Response
+    {
+        $where['keyword'] = $request->param('keyword');
+        $where['uid'] = $request->uid();
+        $where['type'] = 1;
+        $data = app()->make(UserHistoryServices::class)->historyLst($where);
+        return app('json')->success($data);
+    }
+
+    /**
+     * TODO 已购商品
+     * @return Json
+     * @author Qinii
+     * @day 10/28/21
+     */
+    public function payList(Request $request)
+    {
+        $keyword = $request->param('keyword');
+        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $this->user->uid);
+        return app('json')->success($data);
+    }
+
 
     /**
      * TODO 我赞过的文章
@@ -337,44 +386,6 @@ class CommunityController
         return app('json')->success($data);
     }
 
-
-    /**
-     * TODO 已购商品
-     * @return Json
-     * @author Qinii
-     * @day 10/28/21
-     */
-    public function payList()
-    {
-        [$page, $limit] = $this->getPage();
-        $keyword = $this->request->param('keyword');
-        $data = app()->make(StoreOrderProductRepository::class)->getUserPayProduct($keyword, $this->user->uid, $page, $limit);
-        return app('json')->success($data);
-    }
-
-    /**
-     * TODO 收藏商品
-     * @return Json
-     * @author Qinii
-     * @day 10/28/21
-     */
-    public function relationList()
-    {
-        [$page, $limit] = $this->getPage();
-        $keyword = $this->request->param('keyword');
-        $data = app()->make(UserRelationRepository::class)->getUserProductToCommunity($keyword, $this->user->uid, $page, $limit);
-        return app('json')->success($data);
-    }
-
-    public function historyList()
-    {
-        [$page, $limit] = $this->getPage();
-        $where['keyword'] = $this->request->param('keyword');
-        $where['uid'] = $this->request->userInfo()->uid;
-        $where['type'] = 1;
-        $data = app()->make(UserHistoryRepository::class)->historyLst($where, $page,$limit);
-        return app('json')->success($data);
-    }
 
 
     /**

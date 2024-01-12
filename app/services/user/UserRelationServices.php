@@ -261,5 +261,4 @@ class UserRelationServices extends BaseServices
 
         return true;
     }
-
 }

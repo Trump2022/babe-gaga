@@ -426,9 +426,9 @@ Route::group('api', function () {
             //分类&话题
             Route::get('/category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
-            Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
-            Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');
-            Route::get('hist_product/lst', 'v1.community.CommunityController/historyList');
+            //Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
+
+
             Route::post('fans/:id', 'v1.community.CommunityController/setFocus');
             Route::get('fans/lst', 'v1.community.CommunityController/getUserFans');
             Route::get('focus/lst', 'v1.community.CommunityController/getUserFocus');
@@ -487,6 +487,12 @@ Route::group('api', function () {
 
             //评论点赞
             Route::post('/reply/start/:id', 'v1.community.CommunityReplyController/start')->name('apiCommunityReplyStart');
+
+            //收藏商品
+            Route::get('/rela_product/lst', 'v1.community.CommunityController/relationList');
+
+            //浏览历史记录
+            Route::get('/hist_product/lst', 'v1.community.CommunityController/historyList');
 
         })->middleware(AuthTokenMiddleware::class, true);
 

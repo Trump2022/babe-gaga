@@ -15,6 +15,7 @@ use app\model\product\product\StoreProduct;
 use crmeb\traits\ModelTrait;
 use crmeb\basic\BaseModel;
 use think\Model;
+use think\model\relation\HasOne;
 
 /**
  *  用户点赞、收藏、分享（商品、短视频）model
@@ -26,6 +27,12 @@ class UserRelation extends BaseModel
     use ModelTrait;
 
     /**
+     * 数据表主键
+     * @var string
+     */
+    protected $pk = 'id';
+
+    /**
      * 模型名称
      * @var string
      */
@@ -33,7 +40,7 @@ class UserRelation extends BaseModel
 
 	/**
 	* 关联商品
-	* @return \think\model\relation\HasOne
+	* @return HasOne
 	*/
     public function product()
     {
@@ -42,12 +49,13 @@ class UserRelation extends BaseModel
 
 	/**
 	* 关联视频
-	* @return \think\model\relation\HasOne
+	* @return HasOne
 	*/
 	public function video()
 	{
 		return $this->hasOne(Video::class, 'id', 'relation_id');
 	}
+
 
     /**
      * 用户搜索器
