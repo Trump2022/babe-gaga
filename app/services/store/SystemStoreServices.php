@@ -62,9 +62,9 @@ class SystemStoreServices extends BaseServices
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getStoreInfo(int $id)
+    public function getStoreInfo(int $id, $field)
     {
-        $storeInfo = $this->dao->getOne(['id' => $id, 'is_del' => 0]);
+        $storeInfo = $this->dao->getOne(['id' => $id, 'is_del' => 0], $field);
         if (!$storeInfo) {
             throw new ValidateException('获取门店信息失败');
         }

@@ -107,10 +107,15 @@ class StoreController
     public function getStoreInfo(Request $request)
     {
         $data = $request->getMore([
-            ['id', 0]
+            ['id', 0],
+            ['latitude', ''],
+            ['longitude', '']
         ]);
         $id = $data['id'];
-        $storeInfo = $this->services->getStoreInfo($id);
+        $latitude = $data['latitude'];
+        $longitude = $data['longitude'];
+        $field = "*, (round(6378137 * 2 * asin(sqrt(pow(sin(((latitude * pi()) / 180 - ({$latitude} * pi()) / 180) / 2), 2) + cos(({$latitude} * pi()) / 180) * cos((latitude * pi()) / 180) * pow(sin(((longitude * pi()) / 180 - ({$longitude} * pi()) / 180) / 2), 2))))) AS distance";
+        $storeInfo = $this->services->getStoreInfo($id, $field);
 
         return app('json')->success($storeInfo);
     }
