@@ -13,3 +13,4 @@ public/static/
 help/docker-compose/mysql/data/
 help/docker-compose/redis/data/
 /update/sh
+/vendor
