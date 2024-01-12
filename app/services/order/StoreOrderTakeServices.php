@@ -148,10 +148,14 @@ class StoreOrderTakeServices extends BaseServices
                 //赠送gaga币
                 $res1 = $this->gainUserIntegral($order, $userInfo, $storeTitle);
                 //返佣
-                $res2 = $this->backOrderBrokerage($order, $userInfo);
+                //次卡商品不直接返佣（修改为全部核销或者核销后使用时间到期才返佣）
+                if($order['product_type'] != 4){
+                    $this->backOrderBrokerage($order, $userInfo);
+                }
+
                 //经验
                 $res3 = $this->gainUserExp($order, $userInfo);
-                if (!($res1 && $res2 && $res3)) {
+                if (!($res1 && $res3)) {
                     throw new ValidateException('收货失败!');
                 }
                 return true;
@@ -241,6 +245,7 @@ class StoreOrderTakeServices extends BaseServices
         if (!isset($orderInfo['type']) || in_array($orderInfo['type'], [1, 2, 3, 5, 8])) {
             return true;
         }
+
         //绑定失效
         if (isset($orderInfo['spread_uid']) && $orderInfo['spread_uid'] == -1) {
             return true;
