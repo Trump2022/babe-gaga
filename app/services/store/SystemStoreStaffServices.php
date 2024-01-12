@@ -57,7 +57,7 @@ class SystemStoreStaffServices extends BaseServices
      */
     public function getOrdAdmin(string $field = 'real_name,id', int $storeId = 0, int $level = 0)
     {
-        return $this->dao->getWhere()->when('store_id', $storeId)->where('level', '>=', $level)->field($field)->select()->toArray();
+        return $this->dao->getModel()->when('store_id', $storeId)->where('level', '>=', $level)->field($field)->select()->toArray();
     }
 
 	/**
@@ -71,7 +71,7 @@ class SystemStoreStaffServices extends BaseServices
 	 */
 	public function getCustomerList(int $store_id, string $field = '*')
 	{
-		return $this->dao->getWhere()->where('store_id', $store_id)->where('status', 1)->where('is_del', 0)->where('is_customer', 1)->field($field)->select()->toArray();
+		return $this->dao->getModel()->where('store_id', $store_id)->where('status', 1)->where('is_del', 0)->where('is_customer', 1)->field($field)->select()->toArray();
 	}
 
     /**

@@ -13,6 +13,10 @@ namespace app\dao\user;
 
 use app\dao\BaseDao;
 use app\model\user\UserRelation;
+use think\db\BaseQuery;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * Class UserRelationDao
@@ -36,9 +40,9 @@ class UserRelationDao extends BaseDao
      * @param int $page
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getList(array $where, string $field = '*', array $with = [], int $page = 0, int $limit = 0)
     {
@@ -64,9 +68,9 @@ class UserRelationDao extends BaseDao
      * @param int $page
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function relationCount(array $where)
     {

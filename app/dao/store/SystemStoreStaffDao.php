@@ -34,9 +34,9 @@ class SystemStoreStaffDao extends BaseDao
     /**
      * @return \crmeb\basic\BaseModel
      */
-    public function getWhere()
+    public function getModel()
     {
-        return $this->getModel();
+        return parent::getModel();
     }
 
     /**

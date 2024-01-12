@@ -90,3 +90,24 @@ INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_tit
 
 ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员成长值' AFTER `integral`;
 ALTER TABLE `gaga_user` ADD `member_level` int unsigned DEFAULT '0' COMMENT '免费会员等级' AFTER `integral`;
+
+
+
+
+CREATE TABLE `gaga_user_relations` (
+  `uid` int unsigned NOT NULL COMMENT '用户ID',
+  `type_id` int unsigned NOT NULL COMMENT '类型的 id',
+  `type` tinyint NOT NULL DEFAULT '0' COMMENT '关联类型(0 普通商品、1秒杀2、预售3、助力4、拼团、10 = 店铺、12=购买过)',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
+  UNIQUE KEY `uid` (`type`,`type_id`,`uid`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='用户记录表'
+
+CREATE TABLE `gaga_user_history` (
+  `user_history_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `res_id` int unsigned DEFAULT NULL COMMENT '历史记录对象的ID',
+  `res_type` int DEFAULT NULL COMMENT '历史记录类型',
+  `uid` int DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` int DEFAULT NULL,
+  PRIMARY KEY (`user_history_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COMMENT='浏览记录表'
