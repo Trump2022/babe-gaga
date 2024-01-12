@@ -1120,6 +1120,7 @@ class StoreProductServices extends BaseServices
                 unset($data['sales']);
                 $res = $this->dao->update($id, $data);
                 if (!$res) throw new AdminException('修改失败');
+                $this->dao->cacheTag((string)$id)->clear();//清除缓存
                 // 修改优惠套餐商品的运费模版id
                 $storeDiscountProduct->update(['product_id' => $id], ['temp_id' => $data['temp_id']]);
                 if (!empty($coupon_ids)) {
