@@ -17,11 +17,13 @@ use app\services\BaseServices;
 use app\services\user\UserBrokerageServices;
 use app\services\system\RelevanceServices;
 use app\services\store\product\SpuServices;
+use app\services\user\UserServices;
 use crmeb\basic\BaseModel;
 use crmeb\services\QrcodeService;
 use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
 use FormBuilder\Form;
+use think\db\BaseQuery;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -135,7 +137,7 @@ class CommunityServices extends BaseServices
 
     /**
      * @param int $id
-     * @return array|BaseModel|mixed|\think\db\BaseQuery|Model|null
+     * @return array|BaseModel|mixed|BaseQuery|Model|null
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
@@ -313,8 +315,22 @@ class CommunityServices extends BaseServices
         return $info;
     }
 
-    public function getApiVideoList(array $where, int $page, int $limit, $userInfo, $type = 0)
+    /**
+     * @param array $where
+     * @param $userInfo
+     * @param int $type
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 16:14
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getApiVideoList(array $where, $userInfo, int $type = 0): array
     {
+        [$page, $limit] = $this->getPageValue();
         $where['is_type'] = self::COMMUNIT_TYPE_VIDEO;
         $first = $this->getFirst($where['community_id'],$userInfo);
 
@@ -322,7 +338,7 @@ class CommunityServices extends BaseServices
             $where['uid'] = $userInfo->uid;
             $where['community_ids'] = $this->dao->joinUser($where)->column('community_id');
         } else { // 条件视频
-            if (!isset($where['uid']) && $first) $where['topic_id'] = $first['topic_id'];
+            if ( ! isset($where['uid']) && $first) $where['topic_id'] = $first['topic_id'];
         }
         if ($first) {
             $where['not_id'] = $where['community_id'];
@@ -330,10 +346,10 @@ class CommunityServices extends BaseServices
         }
 
         unset($where['community_id']);
-        $data = $this->getApiList($where, $page, $limit, $userInfo);
+        $data = $this->getApiList($where, $userInfo);
         if (empty($data['list']) && isset($where['topic_id'])) {
             unset($where['topic_id']);
-            $data = $this->getApiList($where, $page, $limit, $userInfo);
+            $data = $this->getApiList($where, $userInfo);
         }
 
         if ($first && !$data['list']->isEmpty()) {
@@ -343,16 +359,18 @@ class CommunityServices extends BaseServices
         return $data;
     }
 
-
     /**
-     * TODO 移动端详情展示
+     * 移动端详情展示
+     *
      * @param int $id
      * @param $user
-     * @return array|Model|null
+     * @return array|BaseModel|mixed|BaseQuery|Model|null
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/27/21
      */
-
     public function show(int $id, $user)
     {
         $where = self::IS_SHOW_WHERE;
@@ -386,7 +404,8 @@ class CommunityServices extends BaseServices
                 },
             ])->hidden(['is_del'])->find();
 
-        if (!$data) throw new ValidateException('内容不存在，可能已被删除了哦～');
+        if ( ! $data) throw new ValidateException('内容不存在，可能已被删除了哦～');
+        $data = $data->toArray();
 
         $data['is_author'] = $is_author;
         $is_fans = 0;
@@ -434,8 +453,12 @@ class CommunityServices extends BaseServices
     }
 
     /**
-     * TODO 创建
+     * 创建
      * @param array $data
+     * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
@@ -456,9 +479,13 @@ class CommunityServices extends BaseServices
     }
 
     /**
-     * TODO 编辑
+     * 编辑
      * @param int $id
      * @param array $data
+     * @return void
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
@@ -500,14 +527,17 @@ class CommunityServices extends BaseServices
     }
 
     /**
-     * TODO 获取某用户信息
+     * 获取某用户信息
      * @param int $uid
-     * @param null $self
-     * @return mixed
+     * @param $self
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/29/21
      */
-    public function getUserInfo(int $uid, $self = null)
+    public function getUserInfo(int $uid, $self = null): array
     {
         $RelevanceServices = app()->make(RelevanceServices::class);
         $data['focus'] = $RelevanceServices->getFieldCount('left_id', $uid,RelevanceServices::TYPE_COMMUNITY_FANS);
@@ -518,7 +548,7 @@ class CommunityServices extends BaseServices
             $user = $self;
             $is_self = true;
         } else {
-            $user = app()->make(UserRepository::class)->get($uid);
+            $user = app()->make(UserServices::class)->get($uid);
             $is_start = $RelevanceServices->checkHas($self->uid, $uid, RelevanceServices::TYPE_COMMUNITY_FANS) > 0;
         }
         $data['start'] = $user->count_start;
@@ -526,7 +556,7 @@ class CommunityServices extends BaseServices
         $data['avatar'] = $user->avatar;
         $data['nickname'] = $user->nickname;
         $data['is_start'] = $is_start;
-        $data['member_icon'] = systemConfig('member_status') ? ($user->member->brokerage_icon ?? '')  : '';
+        $data['member_icon'] = sys_config('member_status') ? ($user->member->brokerage_icon ?? '')  : '';
         $data['is_self'] = $is_self;
         $data['fans'] = $user->count_fans;
 

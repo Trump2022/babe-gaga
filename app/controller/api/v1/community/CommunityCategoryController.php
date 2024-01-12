@@ -21,6 +21,13 @@ use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\Response;
 
+/**
+ * Class CommunityCategoryController
+ * @packge app\controller\api\v1\community
+ * @date : 2024/1/11 18:17
+ * @author: QSW
+ * @email: qsw2012@outlook.com
+ */
 class CommunityCategoryController
 {
     protected ?CommunityCategoryServices $services = NUll;

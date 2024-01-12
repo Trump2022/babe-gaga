@@ -634,10 +634,15 @@ class StoreProductServices extends BaseServices
                         case 3://虚拟商品
                             break;
                         case 4://次卡商品
-                            $sukValue[$suk]['write_times'] = 1;//核销次数
-                            $sukValue[$suk]['write_valid'] = 1;//核销时效类型
-                            $sukValue[$suk]['days'] = 0;//购买后：N天有效
-                            $sukValue[$suk]['section_time'] = [];//[核销开始时间,核销结束时间]
+                            if ($is_class) {
+                                $sukValue[$suk]['write_times'] = 1;//使用次数
+                                $sukValue[$suk]['days'] = 0;//激活后：N天有效
+                            } else {
+                                $sukValue[$suk]['write_times'] = 1;//核销次数
+                                $sukValue[$suk]['write_valid'] = 1;//核销时效类型
+                                $sukValue[$suk]['days'] = 0;//购买后：N天有效
+                                $sukValue[$suk]['section_time'] = [];//[核销开始时间,核销结束时间]
+                            }
                             break;
                     }
                 }
@@ -664,10 +669,15 @@ class StoreProductServices extends BaseServices
                     case 3://虚拟商品
                         break;
                     case 4://次卡商品
-                        $sukValue[$suk]['write_times'] = 1;//核销次数
-                        $sukValue[$suk]['write_valid'] = 1;//核销时效类型
-                        $sukValue[$suk]['days'] = 0;//购买后：N天有效
-                        $sukValue[$suk]['section_time'] = [];//[核销开始时间,核销结束时间]
+                        if ( ! $is_class) {
+                            $sukValue[$suk]['write_times'] = 1;//使用次数
+                            $sukValue[$suk]['days'] = 0;//激活后：N天有效
+                        } else {
+                            $sukValue[$suk]['write_times'] = 1;//核销次数
+                            $sukValue[$suk]['write_valid'] = 1;//核销时效类型
+                            $sukValue[$suk]['days'] = 0;//购买后：N天有效
+                            $sukValue[$suk]['section_time'] = [];//[核销开始时间,核销结束时间]
+                        }
                         break;
                 }
             }
@@ -718,12 +728,17 @@ class StoreProductServices extends BaseServices
                     case 3://虚拟商品
                         break;
                     case 4://次卡商品
-                        $valueNew[$count]['write_times'] = intval($sukValue[$suk]['write_times'] ?? 1);//核销次数
-                        $valueNew[$count]['write_valid'] = intval($sukValue[$suk]['write_valid'] ?? 1);//核销时效类型
-                        $valueNew[$count]['days'] = intval($sukValue[$suk]['write_days'] ?? $sukValue[$suk]['days'] ?? 0);//购买后：N天有效
-                        $start = $sukValue[$suk]['write_start'] ?? '';
-                        $end = $sukValue[$suk]['write_end'] ?? '';
-                        $valueNew[$count]['section_time'] = [$start ? date('Y-m-d', $start) : '', $end ? date('Y-m-d', $end) : ''];//[核销开始时间,核销结束时间]
+                        if ($is_class) {
+                            $valueNew[$count]['write_times'] = intval($sukValue[$suk]['write_times'] ?? 1);//使用次数
+                            $valueNew[$count]['days'] = intval($sukValue[$suk]['write_days'] ?? $sukValue[$suk]['days'] ?? 0);//激活后：N天有效
+                        } else {
+                            $valueNew[$count]['write_times'] = intval($sukValue[$suk]['write_times'] ?? 1);//核销次数
+                            $valueNew[$count]['write_valid'] = intval($sukValue[$suk]['write_valid'] ?? 1);//核销时效类型
+                            $valueNew[$count]['days'] = intval($sukValue[$suk]['write_days'] ?? $sukValue[$suk]['days'] ?? 0);//购买后：N天有效
+                            $start = $sukValue[$suk]['write_start'] ?? '';
+                            $end = $sukValue[$suk]['write_end'] ?? '';
+                            $valueNew[$count]['section_time'] = [$start ? date('Y-m-d', $start) : '', $end ? date('Y-m-d', $end) : ''];//[核销开始时间,核销结束时间]
+                        }
                         break;
                 }
                 $count++;
@@ -742,8 +757,8 @@ class StoreProductServices extends BaseServices
         $header[] = ['title' => '库存', 'slot' => 'stock', 'align' => 'center', 'minWidth' => 140];
         if ($is_class) {
             $product_type = 3;
-            $header[] = ['title' => '使用次数(次)', 'slot' => 'bar_code', 'align' => 'center', 'minWidth' => 100];
-            $header[] = ['title' => '使用时效(天)', 'slot' => 'code', 'align' => 'center', 'minWidth' => 100];
+            $header[] = ['title' => '使用次数(次)', 'slot' => 'write_times', 'align' => 'center', 'minWidth' => 100];
+            $header[] = ['title' => '使用时效(天)', 'slot' => 'days', 'align' => 'center', 'minWidth' => 100];
             $header[] = ['title' => '限购数量', 'slot' => 'quota', 'align' => 'center', 'minWidth' => 80];
         } else {
             $header[] = ['title' => '商品条形码', 'slot' => 'bar_code', 'align' => 'center', 'minWidth' => 140];
@@ -798,7 +813,7 @@ class StoreProductServices extends BaseServices
         $str = '商品';
         if ($is_class) { //课程默认虚拟商品
             $str = '课程';
-            $data['product_type'] = 3;
+            $data['product_type'] = 4;
         }
         if (count($data['cate_id']) < 1) throw new AdminException('请选择'.$str.'分类');
         if (!$data['store_name']) throw new AdminException('请输入'.$str.'名称');
@@ -990,19 +1005,20 @@ class StoreProductServices extends BaseServices
             }
 
             if ($is_class) {
-                if (!isset($item['bar_code'])) {
+                if (!isset($item['write_times'])) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】使用次数');
                 }
-                if (!preg_match("/^\d{1,}$/", $item['bar_code']) || $item['bar_code'] <= 0) {
+                if (!preg_match("/^\d{1,}$/", $item['write_times']) || $item['write_times'] <= 0) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】大于0的正确格式使用次数');
                 }
-                if (!isset($item['code'])) {
+                if (!isset($item['days'])) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】使用时效天数');
                 }
-                if (!preg_match("/^\d{1,}$/", $item['code']) || $item['code'] <= 0) {
+                if (!preg_match("/^\d{1,}$/", $item['days']) || $item['days'] <= 0) {
                     throw new AdminException('请输入【' . ($item['values'] ?? '默认') . '】大于0的正确格式使用时效天数');
                 }
 
+                $item['write_valid'] = 2;
                 $item['quota'] = $item['quota'] ?? 0;
             } else {
                 //验证次卡商品数据
@@ -1378,8 +1394,8 @@ class StoreProductServices extends BaseServices
         $header[] = ['title' => '库存', 'key' => 'stock', 'align' => 'center', 'minWidth' => 80];
 
         if ($productInfo['is_class']) {
-            $header[] = ['title' => '使用次数(次)', 'key' => 'bar_code', 'align' => 'center', 'minWidth' => 80];
-            $header[] = ['title' => '使用时效(天)', 'key' => 'code', 'align' => 'center', 'minWidth' => 80];
+            $header[] = ['title' => '使用次数(次)', 'key' => 'write_times', 'align' => 'center', 'minWidth' => 80];
+            $header[] = ['title' => '使用时效(天)', 'key' => 'days', 'align' => 'center', 'minWidth' => 80];
             if ($type == 2) {
                 $header[] = ['title' => '限购数量', 'slot' => 'quota', 'align' => 'center', 'minWidth' => 80];
             } else if ($type == 4) {
@@ -1446,6 +1462,9 @@ class StoreProductServices extends BaseServices
                 throw new ValidateException('商品不存在');
             } else {
                 $storeInfo = $storeInfo->toArray();
+            }
+            if ($storeInfo['is_class']) {
+                $storeInfo['section_time'] = [($storeInfo['write_start'] ?? '') ? date('Y-m-d', $storeInfo['write_start'] ?? '') : '', ($storeInfo['write_end'] ?? '') ? date('Y-m-d', $storeInfo['write_end'] ?? '') : ''];//[激活开始时间,激活结束时间]
             }
             return $storeInfo;
         }, 600);
@@ -1948,6 +1967,9 @@ class StoreProductServices extends BaseServices
         $storeInfo = $this->getCacheProductInfo($id);
         if (!$storeInfo) {
             throw new ValidateException('商品不存在');
+        }
+        if ($storeInfo['is_class']) {
+            $storeInfo['section_time'] = [($storeInfo['write_start'] ?? '') ? date('Y-m-d', $storeInfo['write_start'] ?? '') : '', ($storeInfo['write_end'] ?? '') ? date('Y-m-d', $storeInfo['write_end'] ?? '') : ''];//[激活开始时间,激活结束时间]
         }
         $storeInfo['description'] = $storeInfo['description'] ?: '';
         /** @var DiyServices $diyServices */

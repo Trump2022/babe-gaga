@@ -24,7 +24,9 @@ use EasyWeChat\MiniProgram\Application;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
+use think\exception\ValidateException;
 use think\facade\Cache;
+use think\facade\Route;
 use think\Response;
 use Yurun\Util\Swoole\Guzzle\SwooleHandler;
 use crmeb\services\wechat\live\ServiceProvider as LiveServiceProvider;
@@ -45,6 +47,7 @@ use crmeb\services\wechat\orderShipping\ServiceProvider as OrderShippingServiceP
  */
 class MiniProgram extends BaseApplication
 {
+    protected $service;
 
     /**
      * @var MiniProgramConfig
@@ -90,8 +93,8 @@ class MiniProgram extends BaseApplication
             $this->application['guzzle_handler'] = SwooleHandler::class;
             $this->application->rebind('request', new Request($request->get(), $request->post(), [], [], [], $request->server(), $request->getContent()));
             $this->application->register(new LiveServiceProvider());
-			$this->application->register(new OrderShippingServiceProvider());
-			$this->application->rebind('cache', new RedisAdapter(Cache::store('redis')->handler()));
+            $this->application->register(new OrderShippingServiceProvider());
+            $this->application->rebind('cache', new RedisAdapter(Cache::store('redis')->handler()));
         }
         return $this->application;
     }
@@ -642,6 +645,4 @@ class MiniProgram extends BaseApplication
 	{
 		return self::orderShippingService()->setMesJumpPathAndCheck($path);
 	}
-
-
 }

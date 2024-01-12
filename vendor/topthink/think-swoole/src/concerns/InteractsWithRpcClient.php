@@ -33,22 +33,24 @@ trait InteractsWithRpcClient
     {
         //引入rpc接口文件
         if (file_exists($rpc = $this->container->getBasePath() . 'rpc.php')) {
-            /** @noinspection PhpIncludeInspection */
+
             $rpcServices = (array) include $rpc;
 
             //绑定rpc接口
             try {
                 foreach ($rpcServices as $name => $abstracts) {
                     $parserClass = $this->getConfig("rpc.client.{$name}.parser", JsonParser::class);
-                    $parser      = $this->getApplication()->make($parserClass);
-                    $gateway     = new Gateway($this->createRpcConnector($name), $parser);
+                    $tries       = $this->getConfig("rpc.client.{$name}.tries", 2);
                     $middleware  = $this->getConfig("rpc.client.{$name}.middleware", []);
+
+                    $parser  = $this->getApplication()->make($parserClass);
+                    $gateway = new Gateway($this->createRpcConnector($name), $parser, $tries);
 
                     foreach ($abstracts as $abstract) {
                         $this->getApplication()
-                             ->bind($abstract, function (App $app) use ($middleware, $gateway, $name, $abstract) {
-                                 return $app->invokeClass(Proxy::getClassName($name, $abstract), [$gateway, $middleware]);
-                             });
+                            ->bind($abstract, function (App $app) use ($middleware, $gateway, $name, $abstract) {
+                                return $app->invokeClass(Proxy::getClassName($name, $abstract), [$gateway, $middleware]);
+                            });
                     }
                 }
             } catch (Throwable $e) {

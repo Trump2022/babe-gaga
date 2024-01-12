@@ -37,7 +37,7 @@ final class AssumeRoleWithWebIdentityRequest extends Input
     /**
      * The OAuth 2.0 access token or OpenID Connect ID token that is provided by the identity provider. Your application
      * must get this token by authenticating the user who is using your application with a web identity provider before the
-     * application makes an `AssumeRoleWithWebIdentity` call.
+     * application makes an `AssumeRoleWithWebIdentity` call. Only tokens with RSA algorithms (RS256) are supported.
      *
      * @required
      *
@@ -134,12 +134,11 @@ final class AssumeRoleWithWebIdentityRequest extends Input
      *   RoleArn?: string,
      *   RoleSessionName?: string,
      *   WebIdentityToken?: string,
-     *   ProviderId?: string,
-     *   PolicyArns?: PolicyDescriptorType[],
-     *   Policy?: string,
-     *   DurationSeconds?: int,
-     *
-     *   @region?: string,
+     *   ProviderId?: null|string,
+     *   PolicyArns?: null|array<PolicyDescriptorType|array>,
+     *   Policy?: null|string,
+     *   DurationSeconds?: null|int,
+     *   '@region'?: string|null,
      * } $input
      */
     public function __construct(array $input = [])
@@ -154,6 +153,18 @@ final class AssumeRoleWithWebIdentityRequest extends Input
         parent::__construct($input);
     }
 
+    /**
+     * @param array{
+     *   RoleArn?: string,
+     *   RoleSessionName?: string,
+     *   WebIdentityToken?: string,
+     *   ProviderId?: null|string,
+     *   PolicyArns?: null|array<PolicyDescriptorType|array>,
+     *   Policy?: null|string,
+     *   DurationSeconds?: null|int,
+     *   '@region'?: string|null,
+     * }|AssumeRoleWithWebIdentityRequest $input
+     */
     public static function create($input): self
     {
         return $input instanceof self ? $input : new self($input);

@@ -3,13 +3,13 @@
 namespace think\swoole\concerns;
 
 use Swoole\Constant;
-use Swoole\Coroutine;
-use Swoole\Event;
 use Swoole\Process;
 use Swoole\Process\Pool;
 use Swoole\Runtime;
 use think\App;
-use think\swoole\FileWatcher;
+use think\swoole\coroutine\Barrier;
+use think\swoole\Ipc;
+use think\swoole\Watcher;
 
 /**
  * Trait InteractsWithServer
@@ -28,6 +28,9 @@ trait InteractsWithServer
 
     /** @var Pool */
     protected $pool;
+
+    /** @var Ipc */
+    protected $ipc;
 
     public function addBatchWorker(int $workerNum, callable $func, $name = null)
     {
@@ -59,7 +62,12 @@ trait InteractsWithServer
             $this->addHotUpdateProcess();
         }
 
-        $pool = new Pool(count($this->startFuncMap), SWOOLE_IPC_UNIXSOCK, 0, true);
+        $workerNum = count($this->startFuncMap);
+
+        //启动消息监听
+        $this->prepareIpc($workerNum);
+
+        $pool = new Pool($workerNum, $this->ipc->getType(), 0, true);
 
         $pool->on(Constant::EVENT_WORKER_START, function ($pool, $workerId) use ($envName) {
 
@@ -78,18 +86,10 @@ trait InteractsWithServer
                 $this->pool->getProcess()->exit();
             });
 
-            /** @var Coroutine\Socket $socket */
-            $socket = $this->pool->getProcess()->exportSocket();
-
-            //启动消息监听
-            Event::add($socket, function (Coroutine\Socket $socket) {
-                $recv    = $socket->recv();
-                $message = unserialize($recv);
-                $this->triggerEvent('message', $message);
-            });
-
             $this->clearCache();
             $this->prepareApplication($envName);
+
+            $this->ipc->listenMessage($workerId);
 
             $this->triggerEvent(Constant::EVENT_WORKER_START);
 
@@ -104,30 +104,29 @@ trait InteractsWithServer
         return $this->workerId;
     }
 
+    /**
+     * 获取当前工作进程池对象
+     * @return Pool
+     */
+    public function getPool()
+    {
+        return $this->pool;
+    }
+
     public function sendMessage($workerId, $message)
     {
-        if ($workerId === $this->workerId) {
-            $this->triggerEvent('message', $message);
-        } else {
-            /** @var Process $process */
-            $process = $this->pool->getProcess($workerId);
-            $socket  = $process->exportSocket();
-            $socket->send(serialize($message));
-        }
+        $this->ipc->sendMessage($workerId, $message);
+    }
+
+    protected function prepareIpc($workerNum)
+    {
+        $this->ipc = $this->container->make(Ipc::class);
+        $this->ipc->prepare($workerNum);
     }
 
     public function runWithBarrier(callable $func, ...$params)
     {
-        $channel = new Coroutine\Channel(1);
-
-        Coroutine::create(function (...$params) use ($channel, $func) {
-
-            call_user_func_array($func, $params);
-
-            $channel->close();
-        }, ...$params);
-
-        $channel->pop();
+        Barrier::run($func, ...$params);
     }
 
     /**
@@ -136,11 +135,8 @@ trait InteractsWithServer
     protected function addHotUpdateProcess()
     {
         $this->addWorker(function (Process\Pool $pool) {
-            $watcher = new FileWatcher(
-                $this->getConfig('hot_update.include', []),
-                $this->getConfig('hot_update.exclude', []),
-                $this->getConfig('hot_update.name', [])
-            );
+
+            $watcher = $this->container->make(Watcher::class);
 
             $watcher->watch(function () use ($pool) {
                 Process::kill($pool->master_pid, SIGUSR1);
