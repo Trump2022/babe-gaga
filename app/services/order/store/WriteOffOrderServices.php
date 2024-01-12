@@ -420,11 +420,33 @@ class WriteOffOrderServices extends BaseServices
                         //修改原来订单商品信息
                         $cartInfoServices->update(['oid' => $orderInfo['id'], 'cart_id' => $cart['cart_id']], $cartData);
                     }
-                } else {//整单核销
-                    //修改原来订单商品信息
-                    $cartData['is_writeoff'] = 1;
-                    $cartData['write_surplus_times'] = 0;
-                    $cartInfoServices->update(['oid' => $orderInfo['id']], $cartData);
+                } else {
+                    //整单核销
+
+                    if($cartData['write_surplus_times'] < $cartData['write_times']){
+                        //修改原来订单商品信息
+                        //核销减1
+                        $cartInfoServices->decUpdate(['oid' => $orderInfo['id']], 'write_surplus_times');
+
+                        //修改核销次数，核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
+                        /** @var UserServices $userServices */
+                        $userServices = app()->make(UserServices::class);
+                        $userInfo = $userServices->get((int)$orderInfo['uid']);
+
+                        $write_times = $cartData['write_times'];
+                        $write_surplus_times = $cartData['write_surplus_times'] + 1;
+                        if($write_times == $write_surplus_times){
+                            //核销完成
+                            $cartData['is_writeoff'] = 1;
+                            $cartData['write_surplus_times'] = $write_surplus_times;
+                            $cartInfoServices->update(['oid' => $orderInfo['id']], $cartData);
+
+                            //返佣
+                            /** @var StoreOrderTakeServices $storeOrderTakeServices */
+                            $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
+                            $storeOrderTakeServices->backOrderBrokerage($orderInfo, $userInfo);
+                        }
+                    }
                 }
                 if (!$cartInfoServices->count(['oid' => (int)$orderInfo['id'], 'is_writeoff' => 0])) {//全部核销
                     if ($orderInfo['type'] == 8) {
