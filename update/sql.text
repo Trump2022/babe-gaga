@@ -79,12 +79,12 @@ INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_tit
 
  INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`)
  VALUES
- (520, 92, 0, 0, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
- (521, 92, 0, 0, 0, '下单可获得成长值', 'member_pay_num', 'number', '', '0', 'min:0,precision:0'),
- (522, 92, 0, 0, 0, '签到可获得成长值', 'member_sign_num', 'number', '', '0', 'min:0,precision:0'),
- (523, 92, 0, 0, 0, '评价可获得成长值', 'member_reply_num', 'number', '', '0', 'min:0,precision:0'),
- (524, 92, 0, 0, 0, '邀请可获得成长值', 'member_share_num', 'number', '', '0', 'min:0,precision:0'),
- (525, 92, 0, 0, 0, '种草图文可获得成长值', 'member_community_num', 'number', '', '0', 'min:0,precision:0'),
+ (520, 92, 0, 1, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
+ (521, 92, 0, 1, 0, '下单可获得成长值', 'member_pay_num', 'number', '', '0', 'min:0,precision:0'),
+ (522, 92, 0, 1, 0, '签到可获得成长值', 'member_sign_num', 'number', '', '0', 'min:0,precision:0'),
+ (523, 92, 0, 1, 0, '评价可获得成长值', 'member_reply_num', 'number', '', '0', 'min:0,precision:0'),
+ (524, 92, 0, 1, 0, '邀请可获得成长值', 'member_share_num', 'number', '', '0', 'min:0,precision:0'),
+ (525, 92, 0, 1, 0, '种草图文可获得成长值', 'member_community_num', 'number', '', '0', 'min:0,precision:0'),
  (526, 92, 0, 0, 0, '会员权益开关', 'member_interests_status', 'radio', '0=>开启\n1=>关闭', '0', 'required:true');
 
 
