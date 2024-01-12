@@ -1436,7 +1436,7 @@ WSS;
      * @param int $type 0 正常结构 1：只返回key value
      * @return array
      */
-    public function getConfigAllField(array $configName = [], int $storeId = 0, int $type = 0)
+    public function getConfigAllField(array $configName = [], int $storeId = 0, int $type = 0): array
     {
         $list = $this->dao->getConfigAllField($configName, $storeId, ['info', 'type', 'value', 'desc', 'parameter']);
         foreach ($list as &$item) {

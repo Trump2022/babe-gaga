@@ -217,4 +217,31 @@ class Request extends \think\Request
         }
         return $ip;
     }
+
+    /**
+     * @param array $names
+     * @param mixed $filter
+     * @return array
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/11 11:30
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function params(array $names, $filter = ''): array
+    {
+        $data = [];
+        $flag = false;
+        if ($filter === true) {
+            $filter = '';
+            $flag = true;
+        }
+        foreach ($names as $name) {
+            if (!is_array($name))
+                $data[$name] = $this->param($name, '', $filter);
+            else
+                $data[$name[0]] = $this->param($name[0], $name[1], $filter);
+        }
+
+        return $flag ? array_values($data) : $data;
+    }
 }

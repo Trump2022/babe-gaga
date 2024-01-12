@@ -174,8 +174,7 @@ Route::group('api', function () {
 
 		//需要授权接口
 		Route::group(function () {
-            //社区
-            Route::get('/community', 'v1.diy.Diy/community');
+
 		})->middleware(AuthTokenMiddleware::class, true);
 
 	})->middleware(StationOpenMiddleware::class);
@@ -421,51 +420,77 @@ Route::group('api', function () {
     })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true);
 
     Route::group('community', function () {
-        //分类&话题
-        Route::get('category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
-        //社区文章列表
-        Route::get('/lst', 'v1.community.CommunityController/lst')->name('apiCommunityList');
+        //无需登录接口
+        Route::group(function () {
+            //分类&话题
+            Route::get('/category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
-        //
-        Route::get('/video_lst', 'v1.community.CommunityController/videoShow');
+            Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
+            Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');
+            Route::get('hist_product/lst', 'v1.community.CommunityController/historyList');
+            Route::post('fans/:id', 'v1.community.CommunityController/setFocus');
+            Route::get('fans/lst', 'v1.community.CommunityController/getUserFans');
+            Route::get('focus/lst', 'v1.community.CommunityController/getUserFocus');
+            Route::post('start/:id', 'v1.community.CommunityController/startCommunity');
+            Route::get('start/lst', 'v1.community.CommunityController/getUserStartCommunity');
+            Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
+            Route::get('qrcode/:id', 'v1.community.CommunityController/qrcode');
+        });
 
-        //详情
-        Route::get('/show/:id', 'v1.community.CommunityController/show');
-        //用户页
-        Route::get('/user/info/:id', 'v1.community.CommunityController/userInfo');
-        //用户的文章
-        Route::get('/user/community/:id', 'v1.community.CommunityController/userCommunitylst');
-        //用户的视频
-        Route::get('/user/community_video/:id', 'v1.community.CommunityController/userCommunityVideolst');
+        //未授权接口---不会抛异常
+        Route::group(function () {
 
-        Route::get('/focuslst', 'v1.community.CommunityController/focuslst');
+            //社区文章列表
+            Route::get('/lst', 'v1.community.CommunityController/lst')->name('apiCommunityList');
 
-        Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst');
-        Route::post('reply/create/:id', 'v1.community.CommunityReplyController/create');
-        Route::post('reply/start/:id', 'v1.community.CommunityReplyController/start');
+            //视频列表
+            Route::get('/video_lst', 'v1.community.CommunityController/videoShow')->name('apiCommunityVideoShow');
 
-        Route::post('/create', 'v1.community.CommunityController/create');
-        Route::post('/update/:id', 'v1.community.CommunityController/update');
-        Route::post('/delete/:id', 'v1.community.CommunityController/delete');
-        Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
-        Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');
-        Route::get('hist_product/lst', 'v1.community.CommunityController/historyList');
+            //详情
+            Route::get('/show/:id', 'v1.community.CommunityController/show')->name('apiCommunityShow');
 
-        Route::post('fans/:id', 'v1.community.CommunityController/setFocus');
-        Route::get('fans/lst', 'v1.community.CommunityController/getUserFans');
-        Route::get('focus/lst', 'v1.community.CommunityController/getUserFocus');
+            //关注的人的文章
+            Route::get('/focus_list', 'v1.community.CommunityController/focusList')->name('apiCommunityFocusList');
 
-        Route::post('start/:id', 'v1.community.CommunityController/startCommunity');
-        Route::get('start/lst', 'v1.community.CommunityController/getUserStartCommunity');
+            //用户的文章
+            Route::get('/user/community/:id', 'v1.community.CommunityController/userCommunityList')->name('apiUserCommunityList');
 
+            //用户的视频
+            Route::get('/user/community_video/:id', 'v1.community.CommunityController/userCommunityVideoList')->name('apiUserCommunityVideoList');
 
+            //用户页
+            Route::get('/user/info/:id', 'v1.community.CommunityController/userInfo')->name('apiCommunityUserInfo');
 
-        Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
-        Route::get('qrcode/:id', 'v1.community.CommunityController/qrcode');
+            //回复列表
+            Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst')->name('apiCommunityReplyList');
 
+        })->middleware(AuthTokenMiddleware::class, false);
 
-    })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, false);
+        //需要授权接口
+        Route::group(function () {
+
+            //创建
+            Route::post('/create', 'v1.community.CommunityController/create')->name('apiCommunityCreate');
+
+            //更新
+            Route::post('/update/:id', 'v1.community.CommunityController/update')->name('apiCommunityUpdate');
+
+            //删除
+            Route::post('/delete/:id', 'v1.community.CommunityController/delete')->name('apiCommunityDelete');
+
+            //评论
+            Route::post('/reply/create/:id', 'v1.community.CommunityReplyController/create')->name('apiCommunityReplyCreate');
+
+            //删除评论
+            Route::post('/reply/delete/:id', 'v1.community.CommunityReplyController/delete')->name('apiCommunityReplyDelete');
+
+            //评论点赞
+            Route::post('/reply/start/:id', 'v1.community.CommunityReplyController/start')->name('apiCommunityReplyStart');
+
+        })->middleware(AuthTokenMiddleware::class, true);
+
+    })->middleware(StationOpenMiddleware::class);
 
     /**
      * v1.1 版本路由

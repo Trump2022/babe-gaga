@@ -76,6 +76,14 @@ if (!function_exists('sys_config')) {
     }
 }
 
+if (!function_exists('system_config')) {
+    function system_config(array $key = []): array
+    {
+        return SystemConfigService::more($key);
+    }
+}
+
+
 if (!function_exists('store_config')) {
 
     /**

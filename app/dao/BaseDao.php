@@ -130,6 +130,24 @@ abstract class BaseDao
         })->field($field ?? ['*'])->find();
     }
 
+    /**
+     * @param array $where
+     * @param string $field
+     * @param array $with
+     * @return array|Model|null
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @author xaboy
+     * @day 2020/6/1
+     */
+    public function getWhere(array $where, string $field = '*', array $with = [])
+    {
+        return ($this->getModel())::getInstance()->where($where)->when($with, function ($query) use ($with) {
+            $query->with($with);
+        })->field($field)->find();
+    }
+
     public function getSearch(array $where)
     {
         foreach ($where as $key => $item) {
@@ -143,6 +161,17 @@ abstract class BaseDao
         }else{
             return ($this->getModel())::withSearch($keyArray, $whereArr);
         }
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     * @author xaboy
+     * @day 2020-03-27
+     */
+    public function exists(int $id)
+    {
+        return $this->fieldExists($this->getPk(), $id);
     }
 
     public function fieldExists($field, $value, ?int $except = null): bool
@@ -168,10 +197,43 @@ abstract class BaseDao
     }
 
     /**
+     * 自增
+     * @param int $id
+     * @param string $field
+     * @param int $num
+     * @return mixed
+     * @author Qinii
+     * @day 1/11/21
+     */
+    public function incField(int $id, string $field , int $num = 1)
+    {
+        return ($this->getModel()::getDB())->where($this->getPk(),$id)->inc($field,$num)->update();
+    }
+
+    /**
+     * 自减
+     * @param int $id
+     * @param string $field
+     * @param int $num
+     * @return mixed
+     * @author Qinii
+     * @day 1/11/21
+     */
+    public function decField(int $id, string $field , int $num = 1)
+    {
+        return ($this->getModel()::getDB())
+            ->where($this->getPk(),$id)
+            ->where($field, '>=' ,$num)
+            ->dec($field,$num)->update();
+    }
+
+    /**
      * 查询一条数据是否存在
+     *
      * @param $map
      * @param string $field
-     * @return bool 是否存在
+     * @return bool
+     * @throws DbException
      */
     public function be($map, string $field = '')
     {

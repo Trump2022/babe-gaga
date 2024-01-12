@@ -50,20 +50,17 @@ class CommunityReply extends AuthController
             ['community_id', 0],
             ['pid', 0],
         ]);
-        return app('json')->success('ok', $this->services->getList($where));
+        return app('json')->success($this->services->getList($where));
     }
 
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @author Qinii
      */
     public function delete($id): Response
     {
-        if (!$this->services->get($id))  return app('json')->fail('数据不存在');
+        if (!$this->services->exists($id))  return app('json')->fail('数据不存在');
         $this->services->update($id, ['is_del' => 1]);
         return app('json')->success('删除成功');
     }
@@ -81,16 +78,13 @@ class CommunityReply extends AuthController
      */
     public function statusForm($id): Response
     {
-        if (!$this->services->get($id)) return app('json')->fail('数据不存在');
+        if (!$this->services->exists($id)) return app('json')->fail('数据不存在');
         return app('json')->success(formToData($this->services->statusForm($id)));
     }
 
     /**
      * @param $id
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 11:22
      * @author: QSW
@@ -104,7 +98,7 @@ class CommunityReply extends AuthController
         ]);
         if ( ! in_array($data['status'], [1, -1]))  return app('json')->fail('审核类型错误');
         if ($data['status'] == -1 && empty($data['refusal'])) return app('json')->fail('请填写拒绝理由');
-        if (!$this->services->get($id))  return app('json')->fail('数据不存在');
+        if (!$this->services->exists($id))  return app('json')->fail('数据不存在');
         $this->services->update($id, $data);
         return app('json')->success('审核成功');
     }
