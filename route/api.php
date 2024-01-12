@@ -428,13 +428,6 @@ Route::group('api', function () {
 
             //Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
 
-
-            Route::post('fans/:id', 'v1.community.CommunityController/setFocus');
-            Route::get('fans/lst', 'v1.community.CommunityController/getUserFans');
-            Route::get('focus/lst', 'v1.community.CommunityController/getUserFocus');
-            Route::post('start/:id', 'v1.community.CommunityController/startCommunity');
-            Route::get('start/lst', 'v1.community.CommunityController/getUserStartCommunity');
-            Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
             Route::get('qrcode/:id', 'v1.community.CommunityController/qrcode');
         });
 
@@ -465,6 +458,7 @@ Route::group('api', function () {
             //回复列表
             Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst')->name('apiCommunityReplyList');
 
+
         })->middleware(AuthTokenMiddleware::class, false);
 
         //需要授权接口
@@ -494,6 +488,22 @@ Route::group('api', function () {
             //浏览历史记录
             Route::get('/hist_product/lst', 'v1.community.CommunityController/historyList');
 
+            //我点赞过的文章
+            Route::get('/start/lst', 'v1.community.CommunityController/getUserStartCommunity');
+
+            //文章点赞/取消
+            Route::post('/start/:id', 'v1.community.CommunityController/startCommunity');
+
+            //用户关注/取消
+            Route::post('/fans/:id', 'v1.community.CommunityController/setFocus');
+
+            //我的粉丝
+            Route::get('/fans/lst', 'v1.community.CommunityController/getUserFans');
+
+            //我的关注
+            Route::get('/focus/lst', 'v1.community.CommunityController/getUserFocus');
+
+            Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
         })->middleware(AuthTokenMiddleware::class, true);
 
     })->middleware(StationOpenMiddleware::class);

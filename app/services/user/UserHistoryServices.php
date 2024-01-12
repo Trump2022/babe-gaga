@@ -18,7 +18,7 @@ use think\db\exception\ModelNotFoundException;
  */
 class UserHistoryServices extends BaseServices
 {
-    protected $dao;
+//    protected $dao;
 
     /**
      * UserHistoryServices constructor.

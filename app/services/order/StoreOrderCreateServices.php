@@ -144,6 +144,10 @@ class StoreOrderCreateServices extends BaseServices
         $cartIds = [];
         $totalNum = 0;
         $gainIntegral = 0;
+        $is_class = 0;
+        if (isset($cartInfo[0]['productInfo']['is_class'])) {
+            $is_class = $cartInfo[0]['productInfo']['is_class'];
+        }
         foreach ($cartInfo as $cart) {
             $cartIds[] = $cart['id'];
             $totalNum += $cart['cart_num'];
@@ -188,6 +192,7 @@ class StoreOrderCreateServices extends BaseServices
         $orderInfo = [
             'uid' => $uid,
             'type' => $type,
+            'is_class' => $is_class, 
             'order_id' => $this->getNewOrderId(),
             'real_name' => $addressInfo['real_name'],
             'user_phone' => $addressInfo['phone'],

@@ -35,7 +35,7 @@ class UserHistoryDao extends BaseDao
         }
     }
 
-    public function search(?int $uid, int $type)
+    public function _search(?int $uid, int $type)
     {
         $query = ($this->getModel()::getDB())->when($uid, function ($query) use ($uid) {
             $query->where('uid', $uid);

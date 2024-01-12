@@ -116,25 +116,47 @@ class OrderPayHandelJob extends BaseJobs
 					foreach ($cartInfoList as $cart_id => $cartInfo) {
 						$info = $cartInfo['cart_info'] ?? [];
 						$attrInfo =  $info['productInfo']['attrInfo'] ?? [];
-						$data = ['write_start' => 0, 'write_end' => 0];
-						if ($attrInfo) {
-							switch ($attrInfo['write_valid'] ?? 1) {
-								case 1://永久
-									break;
-								case 2://购买后n天
-									if (isset($attrInfo['write_days']) && $attrInfo['write_days']) {
-										$data['write_start'] = time();
-										$data['write_end'] = bcadd((string)$data['write_start'], (string)bcmul((string)$attrInfo['write_days'], '86400'));
-									}
-									break;
-								case 3://具体时间段
-									if ((isset($attrInfo['write_start']) && $attrInfo['write_start']) || (isset($attrInfo['write_end']) && $attrInfo['write_end'])) {
-										$data['write_start'] = $attrInfo['write_start'] ?? 0;
-										$data['write_end'] = $attrInfo['write_end'] ?? 0;
-									}
-									break;
-							}
-						}
+                        $product = $info['productInfo'];
+                        if ($orderInfo['is_class']) {
+                            $data = ['active_start' => 0, 'active_end' => 0];
+                            switch ($product['write_valid'] ?? 1) {
+                                case 1://永久
+                                    break;
+                                case 2://购买后n天
+                                    if (isset($product['write_days']) && $product['write_days']) {
+                                        $data['active_start'] = time();
+                                        $data['active_end'] = bcadd((string)$data['active_start'], (string)bcmul((string)$product['write_days'], '86400'));
+                                    }
+                                    break;
+                                case 3://具体时间段
+                                    if ((isset($product['write_start']) && $product['write_start']) || (isset($product['write_end']) && $product['write_end'])) {
+                                        $data['active_start'] = $product['write_start'] ?? 0;
+                                        $data['active_end'] = $product['write_end'] ?? 0;
+                                    }
+                                    break;
+                            }
+                        } else {
+                            $data = ['write_start' => 0, 'write_end' => 0];
+                            if ($attrInfo) {
+                                switch ($attrInfo['write_valid'] ?? 1) {
+                                    case 1://永久
+                                        break;
+                                    case 2://购买后n天
+                                        if (isset($attrInfo['write_days']) && $attrInfo['write_days']) {
+                                            $data['write_start'] = time();
+                                            $data['write_end'] = bcadd((string)$data['write_start'], (string)bcmul((string)$attrInfo['write_days'], '86400'));
+                                        }
+                                        break;
+                                    case 3://具体时间段
+                                        if ((isset($attrInfo['write_start']) && $attrInfo['write_start']) || (isset($attrInfo['write_end']) && $attrInfo['write_end'])) {
+                                            $data['write_start'] = $attrInfo['write_start'] ?? 0;
+                                            $data['write_end'] = $attrInfo['write_end'] ?? 0;
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+						
 						$services->update(['oid' => $orderInfo['id'], 'cart_id' => $cart_id], $data);
 					}
 					break;

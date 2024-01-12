@@ -419,9 +419,9 @@ class CommunityServices extends BaseServices
         return $data;
     }
 
-    public function getSpuByOrder($id, $uid)
+    public function getSpuByOrder($id)
     {
-        $where = app()->make(StoreProduct::class)->selectWhere(['order_id' => $id]);
+        $where = app()->make(StoreOrderProductServices::class)->selectWhere(['order_id' => $id]);
         if (!$where) throw new  ValidateException('商品已下架');
 
         $make = app()->make(SpuServices::class);
@@ -563,6 +563,16 @@ class CommunityServices extends BaseServices
         return $data;
     }
 
+    /**
+     * @param int $id
+     * @param int $uid
+     * @param int $status
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 16:54
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
     public function setFocus(int $id, int  $uid,int $status)
     {
         $make = app()->make(RelevanceServices::class);
@@ -570,17 +580,27 @@ class CommunityServices extends BaseServices
         if ($status) {
             if ($check)  throw new ValidateException('您已经关注过他了～');
             $make->create($uid, $id,RelevanceServices::TYPE_COMMUNITY_FANS,true);
-            app()->make(UserRepository::class)->incField($id, 'count_fans', 1);
+            app()->make(UserServices::class)->incField($id, 'count_fans', 1);
         } else {
             if (!$check) throw new ValidateException('您还未关注他哦～');
             $make->destory($uid, $id,RelevanceServices::TYPE_COMMUNITY_FANS);
-            app()->make(UserRepository::class)->decField($id, 'count_fans', 1);
+            app()->make(UserServices::class)->decField($id, 'count_fans', 1);
         }
-        return ;
     }
 
-
-
+    /**
+     * @param int $id
+     * @param $userInfo
+     * @param int $status
+     * @return void
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 16:54
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
     public function setCommunityStart(int $id, $userInfo, int $status)
     {
         $make = app()->make(RelevanceServices::class);

@@ -14,6 +14,11 @@ namespace app\dao\user;
 
 use app\dao\BaseDao;
 use app\model\user\User;
+use crmeb\basic\BaseModel;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\Model;
 
 /**
  * 用户
@@ -22,7 +27,9 @@ use app\model\user\User;
  */
 class UserDao extends BaseDao
 {
-
+    /**
+     * @return string
+     */
     protected function setModel(): string
     {
         return User::class;
@@ -30,7 +37,7 @@ class UserDao extends BaseDao
 
 	/**
 	* @param array $where
-	* @return \crmeb\basic\BaseModel|mixed|\think\Model
+	* @return BaseModel|mixed|Model
 	*/
 	public function search(array $where = [])
 	{
@@ -53,16 +60,18 @@ class UserDao extends BaseDao
      * 是否存在
      * @param int $uid
      * @return bool
+     * @throws DbException
      */
     public function exist(int $uid)
     {
         return !!$this->getModel()->where('uid', $uid)->count();
     }
 
-	/**
-	* @param array $where
-	* @return mixed
-	 */
+    /**
+     * @param array $where
+     * @param array $time
+     * @return mixed
+     */
     public function getWithTrashedCount(array $where = [], array $time = [])
     {
         return $this->getModel()->withTrashed()->where($where)->whereTime('add_time', 'between', $time)->count();
@@ -86,9 +95,9 @@ class UserDao extends BaseDao
      * @param int $page
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getList(array $where, string $field = '*', int $page = 0, int $limit = 0): array
     {
@@ -124,8 +133,10 @@ class UserDao extends BaseDao
 
     /**
      * 某个字段累加某个数值
+     * @param int $uid
      * @param string $field
      * @param int $num
+     * @return mixed
      */
     public function incField(int $uid, string $field, int $num = 1)
     {
@@ -136,9 +147,9 @@ class UserDao extends BaseDao
     /**
      * @param $uid
      * @return \think\Collection
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getUserLabel($uid, $field = '*')
     {
@@ -152,9 +163,9 @@ class UserDao extends BaseDao
      * @param int $page
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAgentUserList(array $where, string $field = '*', int $page = 0, int $limit = 0)
     {
@@ -184,9 +195,9 @@ class UserDao extends BaseDao
      * @param int $page
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getSairList(array $where, string $field = '*', int $page = 0, int $limit = 0)
     {
@@ -335,9 +346,9 @@ class UserDao extends BaseDao
     /**
      * @param array $where
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getUserInfoList(array $where, $field = "*"): array
     {

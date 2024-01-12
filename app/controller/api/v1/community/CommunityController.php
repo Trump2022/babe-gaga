@@ -358,50 +358,39 @@ class CommunityController
     }
 
     /**
-     * TODO 已购商品
-     * @return Json
-     * @author Qinii
-     * @day 10/28/21
+     * 我赞过的文章
+     *
+     * @param Request $request
+     * @param RelevanceServices $RelevanceServices
+     * @return Response
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 16:33
+     * @author: QSW
+     * @email: qsw2012@outlook.com
      */
-    public function payList(Request $request)
+    public function getUserStartCommunity(Request $request, RelevanceServices $RelevanceServices): Response
     {
-        $keyword = $request->param('keyword');
-        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $this->user->uid);
+        $where['uid'] = $request->uid();
+        $data = $RelevanceServices->getUserStartCommunity($where);
         return app('json')->success($data);
     }
 
-
     /**
-     * TODO 我赞过的文章
-     * @param RelevanceRepository $relevanceRepository
-     * @return Json
-     * @author Qinii
-     * @day 10/28/21
-     */
-    public function getUserStartCommunity(RelevanceRepository $relevanceRepository)
-    {
-        [$page, $limit] = $this->getPage();
-        $where['uid'] = $this->user->uid;
-        $data = $relevanceRepository->getUserStartCommunity($where,$page, $limit);
-        return app('json')->success($data);
-    }
-
-
-
-    /**
-     * TODO 文章点赞/取消
+     * 文章点赞/取消
+     *
+     * @param Request $request
      * @param $id
-     * @param RelevanceRepository $relevanceRepository
-     * @return Json
-     * @author Qinii
-     * @day 10/28/21
+     * @return Response
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 16:46
+     * @author: QSW
+     * @email: qsw2012@outlook.com
      */
-    public function startCommunity($id)
+    public function startCommunity(Request $request, $id): Response
     {
-        $status = $this->request->param('status') == 1 ? 1 :0;
-        if (!$this->repository->exists($id))
-            return app('json')->fail('内容不存在');
-        $this->repository->setCommunityStart($id, $this->user, $status);
+        $status = $request->param('status') == 1 ? 1 :0;
+        if ( ! $this->services->exists($id)) return app('json')->fail('内容不存在');
+        $this->services->setCommunityStart($id, $this->user, $status);
         if ($status) {
             return app('json')->success('点赞成功');
         } else {
@@ -410,23 +399,24 @@ class CommunityController
     }
 
     /**
-     * TODO 用户关注/取消
+     * 用户关注/取消
+     *
+     * @param Request $request
      * @param $id
-     * @param RelevanceRepository $relevanceRepository
-     * @return Json
+     * @return Response
      * @author Qinii
      * @day 10/28/21
      */
-    public function setFocus($id)
+    public function setFocus(Request $request, $id): Response
     {
         $id  = (int)$id;
-        $status  = $this->request->param('status') == 1 ? 1 :0;
+        $status  = $request->param('status') == 1 ? 1 :0;
         if ($this->user->uid == $id)
             return app('json')->fail('请勿关注自己');
-        $make = app()->make(UserRepository::class);
-        if (!$user = $make->get($id)) return app('json')->fail('未查询到该用户');
+        $make = app()->make(UserServices::class);
+        if ( ! $make->exists($id)) return app('json')->fail('未查询到该用户');
 
-        $this->repository->setFocus($id, $this->user->uid, $status);
+        $this->services->setFocus($id, $this->user->uid, $status);
 
         if ($status) {
             return app('json')->success('关注成功');
@@ -436,30 +426,37 @@ class CommunityController
     }
 
     /**
-     * TODO 我的粉丝
-     * @param RelevanceRepository $relevanceRepository
+     * 我的粉丝
+     *
+     * @param Request $request
+     * @param RelevanceServices $RelevanceServices
      * @return Json
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/28/21
      */
-    public function getUserFans(RelevanceRepository $relevanceRepository)
+    public function getUserFans(Request $request, RelevanceServices $RelevanceServices): Json
     {
-        [$page, $limit] = $this->getPage();
-        $fans = $relevanceRepository->getUserFans($this->user->uid, $page, $limit);
+        $fans = $RelevanceServices->getUserFans($request->uid());
         return app('json')->success($fans);
     }
 
     /**
-     * TODO 我的关注
-     * @param RelevanceRepository $relevanceRepository
-     * @return Json
+     * 我的关注
+     * @param Request $request
+     * @param RelevanceServices $RelevanceServices
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author Qinii
      * @day 10/28/21
      */
-    public function getUserFocus(RelevanceRepository $relevanceRepository)
+    public function getUserFocus(Request $request, RelevanceServices $RelevanceServices): Response
     {
-        [$page, $limit] = $this->getPage();
-        $start = $relevanceRepository->getUserFocus($this->user->uid, $page, $limit);
+        $start = $RelevanceServices->getUserFocus($request->uid());
         return app('json')->success($start);
     }
 
@@ -480,20 +477,42 @@ class CommunityController
         return app('json')->success($data);
     }
 
-    public function getSpuByOrder($id)
+    /**
+     * @param $id
+     * @return Response
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 17:20
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getSpuByOrder($id): Response
     {
-        $data = $this->repository->getSpuByOrder($id,7233);
+        $data = $this->services->getSpuByOrder($id);
         return app('json')->success($data);
     }
 
-    public function qrcode($id)
+    public function qrcode(Request $request, $id)
     {
-        $id = (int)$id;
-        $type = $this->request->param('type');
-        if ($this->request->isLogin()) {
-            $url = $this->repository->qrcode($id, $type, $this->request->userInfo());
+        $id = (int) $id;
+        $type = $request->param('type');
+        if ($request->isLogin())
+        {
+            $url = $this->services->qrcode($id, $type, $request->user());
         }
         if (!$url) return app('json')->fail('二维码生成失败');
         return app('json')->success(compact('url'));
+    }
+
+    /**
+     * TODO 已购商品
+     * @return Json
+     * @author Qinii
+     * @day 10/28/21
+     */
+    public function payList(Request $request)
+    {
+        $keyword = $request->param('keyword');
+        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $this->user->uid);
+        return app('json')->success($data);
     }
 }
