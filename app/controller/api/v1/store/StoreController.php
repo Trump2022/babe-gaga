@@ -96,6 +96,25 @@ class StoreController
 		return app('json')->success($storeList);
 	}
 
+    /**
+     * 获取门店详情
+     * @param Request $request
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function getStoreInfo(Request $request)
+    {
+        $data = $request->getMore([
+            ['id', 0]
+        ]);
+        $id = $data['id'];
+        $storeInfo = $this->services->getStoreInfo($id);
+
+        return app('json')->success($storeInfo);
+    }
+
 	/**
  	* 获取门店客服列表
 	* @param SystemStoreStaffServices $staffServices

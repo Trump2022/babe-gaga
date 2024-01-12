@@ -787,6 +787,7 @@ Route::group('api', function () {
 		//未授权接口---不会抛异常
         Route::group(function () {
 			Route::get('list', 'v1.store.StoreController/getStoreList')->name('storeList');//门店列表
+			Route::get('info/:id', 'v1.store.StoreController/getStoreInfo')->name('storeInfo');//门店详情
 
 			Route::get('customer/list/:store_id', 'v1.store.StoreController/getCustomerList')->name('customerList');//客服列表
 			Route::get('customer/info/:id', 'v1.store.StoreController/getCustomerInfo')->name('customerInfo');//客服详情
