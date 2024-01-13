@@ -97,6 +97,8 @@ class SystemMenus extends AuthController
         $data['is_show'] = $data['auth_type'] == 2 ? 1 : $data['is_show'];
         if ($this->services->save($data)) {
 			CacheService::redisHandler('system_menus')->clear();
+            $cahcheKey = md5('admin_common_menu_list');
+            CacheService::clearToken($cahcheKey);
             return $this->success('添加成功');
         } else {
             return $this->fail('添加失败');
@@ -127,6 +129,8 @@ class SystemMenus extends AuthController
         if (!$id) {
             return $this->fail('缺少修改参数');
         }
+        $cahcheKey = md5('admin_common_menu_list');
+        CacheService::clearToken($cahcheKey);
         return $this->success($this->services->updateMenus((int)$id));
     }
 
@@ -167,6 +171,8 @@ class SystemMenus extends AuthController
         $data['is_show'] = $data['auth_type'] == 2 ? 1 : $data['is_show'];
         if ($this->services->update($id, $data)) {
 			CacheService::redisHandler('system_menus')->clear();
+            $cahcheKey = md5('admin_common_menu_list');
+            CacheService::clearToken($cahcheKey);
 			return $this->success('修改成功');
 		} else
             return $this->fail('修改失败');
@@ -187,6 +193,8 @@ class SystemMenus extends AuthController
 			CacheService::redisHandler('system_menus')->clear();
             return $this->fail('删除失败,请稍候再试!');
         } else {
+            $cahcheKey = md5('admin_common_menu_list');
+            CacheService::clearToken($cahcheKey);
             return $this->success('删除成功!');
         }
     }

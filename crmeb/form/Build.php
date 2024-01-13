@@ -20,6 +20,7 @@ use crmeb\form\components\Input;
 use crmeb\form\components\InputNumber;
 use crmeb\form\components\Map;
 use crmeb\form\components\Radio;
+use crmeb\form\components\Checkbox;
 use crmeb\form\components\Select;
 use crmeb\form\components\Switchs;
 use crmeb\form\components\Tabs;
@@ -38,6 +39,7 @@ use crmeb\form\components\UploadImage;
  * @method UploadFrame uploadFrame(string $field, string $title, $value = null)
  * @method UploadImage uploadImage(string $field, string $title, $value = null)
  * @method Radio radio(string $field, string $title, $value = null)
+ * @method Checkbox checkbox(string $field, string $title, $value = null)
  * @method Switchs switch (string $field, string $title, $value = null)
  * @method Alert alert (string $title, string $type = '', bool $closable = false, bool $showIcon = false)
  * @method DiyTable diyTable(string $field, string $title, array $value = [], array $options = [])
@@ -61,6 +63,7 @@ class Build
         'uploadFrame' => UploadFrame::class,
         'uploadImage' => UploadImage::class,
         'radio' => Radio::class,
+        'checkbox' => Checkbox::class,
         'switch' => Switchs::class,
         'alert' => Alert::class,
         'diyTable' => DiyTable::class,
