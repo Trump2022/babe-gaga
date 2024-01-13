@@ -13,6 +13,8 @@
 namespace app\dao\community;
 
 
+use app\model\system\Relevance;
+use app\services\system\RelevanceServices;
 use app\dao\BaseDao;
 use app\model\community\Community;
 
@@ -82,6 +84,12 @@ class CommunityDao extends BaseDao
             })
             ->when(isset($where['category_id']) && $where['category_id'] !==  '', function ($query) use($where) {
                 $query->where('Community.category_id',$where['category_id']);
+            })
+            ->when(isset($where['spu_id']) && $where['spu_id'] !==  '', function ($query) use($where) {
+                $id = Relevance::where('right_id', $where['spu_id'])
+                    ->where('type',RelevanceServices::TYPE_COMMUNITY_PRODUCT)
+                    ->column('left_id');
+                $query->where('community_id','in', $id);
             });
 
         $order = 'Community.create_time DESC';
