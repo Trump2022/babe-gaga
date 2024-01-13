@@ -74,9 +74,9 @@ class CommunityTopicServices extends BaseServices
     {
         $formData = [];
         if ( ! $id) {
-            $url = '/adminapi/community/topic/create';
+            $url = '/community/topic/create';
         } else {
-            $url = '/adminapi/community/topic/update/'.$id;
+            $url = '/community/topic/update/'.$id;
             $formData = $this->dao->get($id)->toArray();
         }
         $form = Elm::createForm(Route::buildUrl($url)->build());

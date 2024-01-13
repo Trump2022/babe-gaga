@@ -175,7 +175,7 @@ class CommunityServices extends BaseServices
      */
     public function showForm($id): Form
     {
-        $url = '/adminapi/community/community/status/'.$id;
+        $url = '/community/community/status/'.$id;
         $form = Elm::createForm(Route::buildUrl($url)->build());
         $data = $this->dao->get($id);
         if (!$data) throw new ValidateException('数据不存在');
@@ -199,7 +199,7 @@ class CommunityServices extends BaseServices
      */
     public function form($id)
     {
-        $url = '/adminapi/community/community/update/'.$id;
+        $url = '/community/community/update/'.$id;
         $form = Elm::createForm(Route::buildUrl($url)->build());
         $data = $this->dao->get($id);
         if (!$data) throw new ValidateException('数据不存在');
