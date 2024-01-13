@@ -118,6 +118,7 @@ class PublicController extends BaseController
     public function getSiteConfig()
     {
         $data['record_No'] = sys_config('record_No');
+        $data['community_reply_status'] = sys_config('community_reply_status');
         return app('json')->success($data);
     }
 

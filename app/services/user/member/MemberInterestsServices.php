@@ -2,7 +2,7 @@
 
 namespace app\services\user\member;
 
-use app\dao\user\UserBrokerageDao;
+use app\dao\user\UserBrokeragesDao;
 use app\dao\user\member\MemberInterestsDao;
 use app\services\BaseServices;
 
@@ -12,7 +12,7 @@ use app\services\BaseServices;
  * @date : 2024/1/9 15:11
  * @author: QSW
  * @email: qsw2012@outlook.com
- * @mixin UserBrokerageDao
+ * @mixin UserBrokeragesDao
  */
 class MemberInterestsServices extends BaseServices
 {

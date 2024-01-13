@@ -150,3 +150,40 @@ CREATE TABLE `gaga_store_order_product` (
 
 ALTER TABLE `gaga_store_order_cart_info` ADD `active_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活时效开始时间' AFTER `add_time`, ADD `active_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活时效结束时间' AFTER `active_start`;
 ALTER TABLE `gaga_store_order_cart_info` ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '使用时效天数(课程订单)' AFTER `write_times`;
+
+CREATE TABLE `gaga_user_brokerages` (
+  `user_brokerage_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `brokerage_level` tinyint unsigned NOT NULL COMMENT '等级',
+  `brokerage_name` varchar(32) NOT NULL COMMENT 'vip 名称',
+  `brokerage_icon` varchar(128) NOT NULL COMMENT 'vip 图标',
+  `brokerage_rule` varchar(1500) NOT NULL COMMENT '升级规则',
+  `user_num` int unsigned NOT NULL DEFAULT '0' COMMENT 'vip 人数',
+  `extension_one` decimal(8,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '一级佣金',
+  `extension_two` decimal(8,2) unsigned NOT NULL COMMENT '二级佣金',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '默认0分销会员等级，1 免费会员等级',
+  PRIMARY KEY (`user_brokerage_id`) USING BTREE,
+  UNIQUE KEY `vip_level` (`brokerage_level`,`type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `gaga_member_interests` (
+  `interests_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL COMMENT '名称',
+  `info` varchar(200) DEFAULT NULL COMMENT '介绍',
+  `brokerage_level` tinyint unsigned DEFAULT NULL COMMENT '关联等级',
+  `pic` varchar(128) DEFAULT NULL COMMENT '图标',
+  `type` tinyint DEFAULT '0' COMMENT '类型1.免费会员 2.付费会员',
+  `link` varchar(500) DEFAULT NULL COMMENT '跳转 链接',
+  `has_type` int DEFAULT NULL COMMENT '特权类型',
+  `value` varchar(500) DEFAULT NULL COMMENT '特权值',
+  `on_pic` varchar(128) DEFAULT NULL,
+  `status` tinyint DEFAULT NULL,
+  PRIMARY KEY (`interests_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4
+
+
+
+ALTER TABLE `gaga_user_sign` ADD `integral` int NOT NULL DEFAULT '0' COMMENT '剩余积分' AFTER `balance`;
+ALTER TABLE `gaga_user_sign` ADD `sign_num` int unsigned NOT NULL DEFAULT '0' COMMENT '连续签到天数' AFTER `integral`;
+ALTER TABLE `gaga_user_sign` ADD `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间' AFTER `add_time`;

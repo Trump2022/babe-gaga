@@ -11,7 +11,7 @@
 
 namespace app\model\user;
 
-use app\model\user\UserBrokerage;
+use app\model\user\UserBrokerages;
 use app\model\agent\AgentLevel;
 use app\model\order\StoreOrder;
 use app\model\user\level\SystemUserLevel;
@@ -465,6 +465,6 @@ class User extends BaseModel
 
     public function member()
     {
-        return $this->hasOne(UserBrokerage::class, 'brokerage_level', 'member_level')->where('type',1);
+        return $this->hasOne(UserBrokerages::class, 'brokerage_level', 'member_level')->where('type',1);
     }
 }

@@ -14,7 +14,7 @@ namespace app\services\community;
 
 use app\dao\community\CommunityDao;
 use app\services\BaseServices;
-use app\services\user\UserBrokerageServices;
+use app\services\user\UserBrokeragesServices;
 use app\services\system\RelevanceServices;
 use app\services\store\product\SpuServices;
 use app\services\user\UserServices;
@@ -82,8 +82,8 @@ class CommunityServices extends BaseServices
         Db::transaction(function () use($ret,$id, $data) {
 
             if ($data['status'] == 1) {
-                //$make = app()->make(UserBrokerageServices::class);
-//                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+                $make = app()->make(UserBrokeragesServices::class);
+                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
             }
             $data['status_time'] = date('Y-m-d H:i;s', time());
             $this->dao->update($id, $data);
