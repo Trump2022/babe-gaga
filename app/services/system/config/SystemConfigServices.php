@@ -2216,6 +2216,10 @@ WSS;
             'video_func_status', 'product_video_status',
 //            'h5_avatar', 'store_user_mobile'
             'wechat_share_img', 'wechat_share_title', 'wechat_share_synopsis', 'product_poster_title',
+
+            'community_status', 'community_audit', 'community_auth', 'community_reply_status',
+            'community_reply_auth', 'community_reply_audit',
+            'community_app_switch', 'community_video_audit',
         ]);
 
         $system = [];
@@ -2225,6 +2229,10 @@ WSS;
         $setting = [];
         foreach (['site_logo', 'site_logo_square', 'login_logo', 'admin_login_slide', 'start_login_logo'] as $key) {
             $setting[] = Build::uploadFrame($key, $data[$key]['info'], $data[$key]['value'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html')->info($data[$key]['desc'])->maxNum($key === 'admin_login_slide' ? 5 : 1);
+        }
+        $communitySetting = [];
+        foreach (['community_status', 'community_audit', 'community_auth', 'community_reply_status', 'community_reply_auth', 'community_reply_audit', 'community_app_switch', 'community_video_audit'] as $key) {
+            $communitySetting[] = Build::uploadFrame($key, $data[$key]['info'], $data[$key]['value'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html')->info($data[$key]['desc'])->maxNum($key === 'admin_login_slide' ? 5 : 1);
         }
         $build->rule([
             Build::tabs()->option('系统信息', [
@@ -2244,6 +2252,16 @@ WSS;
                     Build::input('wechat_share_title', $data['wechat_share_title']['info'], $data['wechat_share_title']['value'])->info($data['wechat_share_title']['desc']),
                     Build::input('wechat_share_synopsis', $data['wechat_share_synopsis']['info'], $data['wechat_share_synopsis']['value'])->type('textarea')->info($data['wechat_share_synopsis']['desc']),
                     Build::input('product_poster_title', $data['product_poster_title']['info'], $data['product_poster_title']['value'])->maxlength(25)->info($data['product_poster_title']['desc']),
+                ])
+                ->option('社区配置', [
+                    Build::switch('community_status', $data['community_status']['info'], (int)$data['community_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['community_status']['desc']),
+                    Build::switch('community_audit', $data['community_audit']['info'], (int)$data['community_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_audit']['desc']),
+                    Build::switch('community_video_audit', $data['community_video_audit']['info'], (int)$data['community_video_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_video_audit']['desc']),
+                    Build::switch('community_app_switch', $data['community_app_switch']['info'], (int)$data['community_app_switch']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_video_audit']['desc']),
+                    Build::switch('community_auth', $data['community_auth']['info'], (int)$data['community_auth']['value'])->trueValue('绑定手机号用户', 1)->falseValue('全部用户', 0)->info($data['community_auth']['desc']),
+                    Build::switch('community_reply_status', $data['community_reply_status']['info'], (int)$data['community_reply_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['community_reply_status']['desc']),
+                    Build::switch('community_reply_auth', $data['community_reply_auth']['info'], (int)$data['community_reply_auth']['value'])->trueValue('绑定手机号用户', 1)->falseValue('全部用户', 0)->info($data['community_reply_auth']['desc']),
+                    Build::switch('community_reply_audit', $data['community_reply_audit']['info'], (int)$data['community_reply_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_reply_audit']['desc']),
                 ]),
 //                ->option('APP微信开放平台', [
 //                    Build::alert('小程序、公众号、PC端登录、APP微信登录或企业微信用户同步必须配置微信开放平台，申请微信开放平台地址：https://open.weixin.qq.com', 'warning')->showIcon(true),
