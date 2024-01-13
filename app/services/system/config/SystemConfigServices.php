@@ -2259,9 +2259,9 @@ WSS;
                     Build::switch('community_video_audit', $data['community_video_audit']['info'], (int)$data['community_video_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_video_audit']['desc']),
                     Build::checkbox('community_app_switch', $data['community_app_switch']['info'], $data['community_app_switch']['value'])->info($data['community_app_switch']['desc'])->options($this->getOptions($data['community_app_switch']['parameter'])),
 
-                    Build::switch('community_auth', $data['community_auth']['info'], (int)$data['community_auth']['value'])->trueValue('绑定手机号用户', 1)->falseValue('全部用户', 0)->info($data['community_auth']['desc']),
+                    Build::radio('community_auth', $data['community_auth']['info'], (int)$data['community_auth']['value'])->info($data['community_auth']['desc'])->options($this->getOptions($data['community_auth']['parameter'])),
                     Build::switch('community_reply_status', $data['community_reply_status']['info'], (int)$data['community_reply_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['community_reply_status']['desc']),
-                    Build::switch('community_reply_auth', $data['community_reply_auth']['info'], (int)$data['community_reply_auth']['value'])->trueValue('绑定手机号用户', 1)->falseValue('全部用户', 0)->info($data['community_reply_auth']['desc']),
+                    Build::radio('community_reply_auth', $data['community_reply_auth']['info'], (int)$data['community_reply_auth']['value'])->info($data['community_reply_auth']['desc'])->options($this->getOptions($data['community_reply_auth']['parameter'])),
                     Build::switch('community_reply_audit', $data['community_reply_audit']['info'], (int)$data['community_reply_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_reply_audit']['desc']),
                 ]),
 //                ->option('APP微信开放平台', [
