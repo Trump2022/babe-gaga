@@ -204,6 +204,8 @@ class SystemMenus extends AuthController
         [$show] = $this->request->postMore([['is_show', 0]], true);
         if ($this->services->update($id, ['is_show' => $show])) {
 			CacheService::redisHandler('system_menus')->clear();
+            $cahcheKey = md5('admin_common_menu_list');
+            CacheService::redisHandler($cahcheKey)->clear();
             return $this->success('修改成功');
         } else {
             return $this->fail('修改失败');
