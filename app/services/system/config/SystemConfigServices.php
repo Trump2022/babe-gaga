@@ -2220,6 +2220,8 @@ WSS;
             'community_status', 'community_audit', 'community_auth', 'community_reply_status',
             'community_reply_auth', 'community_reply_audit',
             'community_app_switch', 'community_video_audit',
+
+            'member_status','member_pay_num','member_sign_num','member_reply_num','member_share_num','member_community_num','member_interests_status',
         ]);
 
         $system = [];
@@ -2230,20 +2232,14 @@ WSS;
         foreach (['site_logo', 'site_logo_square', 'login_logo', 'admin_login_slide', 'start_login_logo'] as $key) {
             $setting[] = Build::uploadFrame($key, $data[$key]['info'], $data[$key]['value'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html')->info($data[$key]['desc'])->maxNum($key === 'admin_login_slide' ? 5 : 1);
         }
-        $communitySetting = [];
-        foreach (['community_status', 'community_audit', 'community_auth', 'community_reply_status', 'community_reply_auth', 'community_reply_audit', 'community_app_switch', 'community_video_audit'] as $key) {
-            $communitySetting[] = Build::uploadFrame($key, $data[$key]['info'], $data[$key]['value'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html')->info($data[$key]['desc'])->maxNum($key === 'admin_login_slide' ? 5 : 1);
-        }
+
         $build->rule([
             Build::tabs()->option('系统信息', [
                 Build::switch('station_open', $data['station_open']['info'], (int)$data['station_open']['value'])->control(1, $system)->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['station_open']['desc']),
             ])->option('后台设置', $setting)
                 ->option('移动端设置', [
                     Build::uploadFrame('wap_login_logo', $data['wap_login_logo']['info'], $data['wap_login_logo']['value'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html')->info($data['wap_login_logo']['desc']),
-//                Build::uploadFrame('h5_avatar', $data['h5_avatar']['info'], $data['h5_avatar']['value'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html')->info($data['h5_avatar']['desc']),
-//                Build::radio('store_user_mobile', $data['store_user_mobile']['info'], $data['store_user_mobile']['value'])->options($this->getOptions($data['store_user_mobile']['parameter']))->info($data['store_user_mobile']['desc']),
                     Build::switch('navigation_open', $data['navigation_open']['info'], (int)$data['navigation_open']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['navigation_open']['desc']),
-//                Build::switch('store_func_status', $data['store_func_status']['info'], (int)$data['store_func_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['store_func_status']['desc']),
                     Build::switch('video_func_status', $data['video_func_status']['info'], (int)$data['video_func_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['video_func_status']['desc']),
                     Build::switch('product_video_status', $data['product_video_status']['info'], (int)$data['product_video_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['product_video_status']['desc']),
                 ])
@@ -2263,7 +2259,16 @@ WSS;
                     Build::switch('community_reply_status', $data['community_reply_status']['info'], (int)$data['community_reply_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['community_reply_status']['desc']),
                     Build::radio('community_reply_auth', $data['community_reply_auth']['info'], (int)$data['community_reply_auth']['value'])->info($data['community_reply_auth']['desc'])->options($this->getOptions($data['community_reply_auth']['parameter'])),
                     Build::switch('community_reply_audit', $data['community_reply_audit']['info'], (int)$data['community_reply_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_reply_audit']['desc']),
-                ]),
+                ])
+            ->option('会员配置', [
+                Build::switch('member_status', $data['member_status']['info'], (int)$data['member_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['member_status']['desc']),
+                Build::input('member_pay_num', $data['member_pay_num']['info'], (int)$data['member_pay_num']['value'])->info($data['member_pay_num']['desc']),
+                Build::input('member_sign_num', $data['member_sign_num']['info'], (int)$data['member_sign_num']['value'])->info($data['member_sign_num']['desc']),
+                Build::input('member_reply_num', $data['member_reply_num']['info'], (int)$data['member_reply_num']['value'])->info($data['member_reply_num']['desc']),
+                Build::input('member_share_num', $data['member_share_num']['info'], (int)$data['member_share_num']['value'])->info($data['member_share_num']['desc']),
+                Build::input('member_community_num', $data['member_community_num']['info'], (int)$data['member_community_num']['value'])->info($data['member_community_num']['desc']),
+                Build::radio('member_interests_status', $data['member_interests_status']['info'], (int)$data['member_interests_status']['value'])->options($this->getOptions($data['member_interests_status']['parameter'])),
+            ]),
 //                ->option('APP微信开放平台', [
 //                    Build::alert('小程序、公众号、PC端登录、APP微信登录或企业微信用户同步必须配置微信开放平台，申请微信开放平台地址：https://open.weixin.qq.com', 'warning')->showIcon(true),
 //                    Build::input('wechat_app_appid', $data['wechat_app_appid']['info'], $data['wechat_app_appid']['value'])->info($data['wechat_app_appid']['desc']),
