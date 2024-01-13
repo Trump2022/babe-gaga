@@ -276,8 +276,7 @@ class UserBillServices extends BaseServices
         $data['pm'] = $pm;
         $bill = $this->dao->create($data);
         if($category == 'now_money'){
-//            Queue::push(SendSmsJob::class,['tempId' => 'USER_BALANCE_CHANGE','id' => $bill->bill_id]);
-//            SmsJob::dispatch([$phone, $data, 'USER_BALANCE_CHANGE']);
+            SmsJob::dispatch([request()->user()->phone, $data, 'USER_BALANCE_CHANGE']);
         }
         return $bill;
     }
