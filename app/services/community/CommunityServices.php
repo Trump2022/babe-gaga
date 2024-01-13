@@ -82,8 +82,8 @@ class CommunityServices extends BaseServices
         Db::transaction(function () use($ret,$id, $data) {
 
             if ($data['status'] == 1) {
-                $make = app()->make(UserBrokerageServices::class);
-                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+                //$make = app()->make(UserBrokerageServices::class);
+//                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
             }
             $data['status_time'] = date('Y-m-d H:i;s', time());
             $this->dao->update($id, $data);
