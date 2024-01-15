@@ -609,7 +609,7 @@ class StoreProductServices extends BaseServices
             $suk = implode(',', $detail);
             $types = 1;
             if ($id) {
-                $sukValue = $storeProductAttrValueServices->getSkuArray(['product_id' => $id, 'type' => 0, 'suk' => $suk], 'unique,bar_code,code,cost,price,settle_price,ot_price,stock,image as pic,weight,volume,brokerage,brokerage_two,quota,vip_price,disk_info', 'suk');
+                $sukValue = $storeProductAttrValueServices->getSkuArray(['product_id' => $id, 'type' => 0, 'suk' => $suk], 'unique,bar_code,code,cost,price,settle_price,ot_price,stock,image as pic,weight,volume,brokerage,brokerage_two,quota,vip_price,disk_info,write_times,write_days', 'suk');
                 if (!$sukValue) {
                     if ($type == 0) $types = 0; //编辑商品时，将没有规格的数据不生成默认值
                     $sukValue[$suk]['pic'] = '';
@@ -624,6 +624,9 @@ class StoreProductServices extends BaseServices
                     $sukValue[$suk]['volume'] = 0;
                     $sukValue[$suk]['brokerage'] = 0;
                     $sukValue[$suk]['brokerage_two'] = 0;
+                    if ($is_class) {
+                        $sukValue[$suk]['quota'] = 0;
+                    }
                     switch ($product_type) {
                         case 1://卡密
                             $sukValue[$suk]['virtual_list'] = [];
@@ -659,6 +662,9 @@ class StoreProductServices extends BaseServices
                 $sukValue[$suk]['volume'] = 0;
                 $sukValue[$suk]['brokerage'] = 0;
                 $sukValue[$suk]['brokerage_two'] = 0;
+                if ($is_class) {
+                    $sukValue[$suk]['quota'] = 0;
+                }
                 switch ($product_type) {
                     case 1://卡密
                         $sukValue[$suk]['virtual_list'] = [];
@@ -669,7 +675,7 @@ class StoreProductServices extends BaseServices
                     case 3://虚拟商品
                         break;
                     case 4://次卡商品
-                        if ( ! $is_class) {
+                        if ($is_class) {
                             $sukValue[$suk]['write_times'] = 1;//使用次数
                             $sukValue[$suk]['days'] = 0;//激活后：N天有效
                         } else {
@@ -680,10 +686,6 @@ class StoreProductServices extends BaseServices
                         }
                         break;
                 }
-            }
-
-            if ($is_class) {
-                $sukValue[$suk]['quota'] = 0;
             }
 
             if ($types) { //编辑商品时，将没有规格的数据不生成默认值

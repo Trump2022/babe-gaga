@@ -261,6 +261,8 @@ Route::group('api', function () {
 
         //公共类
         Route::post('upload/image', 'v1.PublicController/upload_image')->name('uploadImage');//图片上传
+        Route::post('upload/video', 'v1.PublicController/upload_video')->name('uploadVideo');//视频上传
+
         //用户类 客服聊天记录
         Route::get('user/service/list', 'v1.user.StoreService/lst')->name('userServiceList');//客服列表
         Route::get('user/service/record', 'v1.user.StoreService/record')->name('userServiceRecord');//客服聊天记录
