@@ -66,6 +66,7 @@ class StoreProductController
             ['promotions_id', 0],
             [['collate_code_id', 'd'], 0], //拼单ID 、桌码ID
 			['store_label_id', ''],//商品标签
+            ['is_class', 0],
         ]);
         if ($where['selectId'] && (!$where['sid'] || !$where['cid'])) {
             if ($services->value(['id' => $where['selectId']], 'pid')) {
