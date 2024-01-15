@@ -284,6 +284,24 @@ class PublicController extends BaseController
         return app('json')->successful('图片上传成功!', ['name' => $res['name'], 'url' => $res['dir']]);
     }
 
+    public function uploadVideo(Request $request)
+    {
+        $file = $request->file('file');
+        if (!$file)
+            return app('json')->fail('请上传视频');
+        validate(["file|视频" => [
+            'fileSize' => config('upload.filesize'),
+            'fileExt' => 'mp4,mov',
+            'fileMime' => 'video/mp4,video/quicktime',
+        ]])->check(['file' => $file]);
+        $upload = UploadService::init();
+        $data = $upload->to('media')->validate([])->move('file');
+        if ($data === false) {
+            return app('json')->fail($upload->getError());
+        }
+        return app('json')->success(['src' => tidy_url($upload->getFileInfo()->filePath)]);
+    }
+
     /**
      * 物流公司
      * @return mixed
@@ -653,4 +671,23 @@ class PublicController extends BaseController
         return app('json')->successful($copyright);
 
 	}
+
+    /**
+     * @return mixed
+     * @author xaboy
+     * @day 2020/5/28
+     */
+    public function hotKeyword(Request $request)
+    {
+        $type = $request->param('type');
+        switch ($type) {
+            case 0:
+                $keyword = systemGroupData('hot_keyword');
+                break;
+            case 1:
+                $keyword = systemGroupData('community_hot_keyword');
+                break;
+        }
+        return app('json')->success($keyword);
+    }
 }

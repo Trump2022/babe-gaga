@@ -84,6 +84,24 @@ if (!function_exists('system_config')) {
 }
 
 
+if (!function_exists('systemGroupData')) {
+    /**
+     * 获取总后台组合数据配置
+     *
+     * @param string $key
+     * @param int|null $page
+     * @param int|null $limit
+     * @return array
+     * @author xaboy
+     * @day 2020/5/27
+     */
+    function systemGroupData(string $key, ?int $page = null, ?int $limit = 10)
+    {
+        $make = app()->make(\app\services\system\config\SystemGroupDataServices::class);
+        return $make->groupData($key, $page, $limit);
+    }
+}
+
 if (!function_exists('store_config')) {
 
     /**

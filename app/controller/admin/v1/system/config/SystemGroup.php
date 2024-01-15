@@ -116,7 +116,7 @@ class SystemGroup extends AuthController
         $type_list = [];
         foreach ($fields as $key => $v) {
             $type_list[$key]['name']['value'] = $v['name'];
-            $type_list[$key]['title']['value'] = $v['title'];
+            $type_list[$key]['title']['value'] = $v['title']?? '';
             $type_list[$key]['type']['value'] = $v['type'];
             $type_list[$key]['param']['value'] = $v['param'];
         }

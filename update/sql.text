@@ -187,3 +187,13 @@ CREATE TABLE `gaga_member_interests` (
 ALTER TABLE `gaga_user_sign` ADD `integral` int NOT NULL DEFAULT '0' COMMENT '剩余积分' AFTER `balance`;
 ALTER TABLE `gaga_user_sign` ADD `sign_num` int unsigned NOT NULL DEFAULT '0' COMMENT '连续签到天数' AFTER `integral`;
 ALTER TABLE `gaga_user_sign` ADD `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间' AFTER `add_time`;
+ALTER TABLE `gaga_system_menus` CHANGE `sort` `sort` INT NOT NULL DEFAULT '1' COMMENT '排序';
+
+
+INSERT INTO `gaga_system_group` (`id`, `cate_id`, `name`, `info`, `config_name`, `fields`) VALUES
+(70, 0, '热门搜索', '移动端搜索页热门搜索设置', 'hot_keyword', '[{\"name\":\"\\u5173\\u952e\\u5b57\",\"field\":\"keyword\",\"type\":\"input\",\"param\":\"\\u8bbe\\u7f6e\\u5173\\u952e\\u5b57\",\"props\":\"required = true\\nmaxlength = 20\"}]');
+
+
+INSERT INTO `gaga_system_group` (`id`, `cate_id`, `name`, `info`, `config_name`, `fields`) VALUES
+(71, 0, '社区热门搜索', '移动端社区搜索页热门搜索设置', 'community_hot_keyword', '[{\"name\":\"\\u5173\\u952e\\u8bcd\",\"field\":\"keyword\",\"type\":\"input\",\"param\":\"\",\"props\":\"required = true\\nmaxlength = 20\"}]');
+
