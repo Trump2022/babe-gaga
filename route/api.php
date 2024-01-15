@@ -42,6 +42,12 @@ Route::group('api', function () {
 
 		Route::get('get_open_adv', 'v1.PublicController/getOpenAdv')->name('getOpenAdv');//首页开屏广告
 
+        //热门搜索
+        Route::get('hot_keyword', 'v1.PublicController/hotKeyword')->append(['type'  => 0])->name('apiHotKeyword');
+
+        //社区热门搜索
+        Route::get('community/hot_keyword', 'v1.PublicController/hotKeyword')->append(['type'  => 1])->name('apiCommunityHotKeyword');
+
 	})->middleware(StationOpenMiddleware::class);
 
 	/**
@@ -255,6 +261,8 @@ Route::group('api', function () {
 
         //公共类
         Route::post('upload/image', 'v1.PublicController/upload_image')->name('uploadImage');//图片上传
+        Route::post('upload/video', 'v1.PublicController/upload_video')->name('uploadVideo');//视频上传
+
         //用户类 客服聊天记录
         Route::get('user/service/list', 'v1.user.StoreService/lst')->name('userServiceList');//客服列表
         Route::get('user/service/record', 'v1.user.StoreService/record')->name('userServiceRecord');//客服聊天记录
@@ -429,8 +437,6 @@ Route::group('api', function () {
 
 
             //Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
-
-
         });
 
         //未授权接口---不会抛异常

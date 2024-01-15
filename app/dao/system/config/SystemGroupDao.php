@@ -55,4 +55,16 @@ class SystemGroupDao extends BaseDao
     {
         return $this->value(['config_name' => $configName]);
     }
+
+
+    /**
+     * @param string $key
+     * @return mixed
+     * @author xaboy
+     * @day 2020/5/27
+     */
+    public function keyById(string $key)
+    {
+        return SystemGroup::getDB()->where('config_name', $key)->value('id');
+    }
 }

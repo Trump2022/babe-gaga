@@ -37,7 +37,8 @@ class CategoryController
             ['id', 0],
             ['is_class', 0],
         ]);
-        $category = $this->services->getCategory($where);
+        $lines = $request->get('lines', 0);
+        $category = $this->services->getCategory($where, $lines);
         return app('json')->success($category);
     }
 

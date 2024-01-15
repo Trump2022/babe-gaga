@@ -13,6 +13,9 @@ namespace app\dao\system\config;
 
 use app\dao\BaseDao;
 use app\model\system\config\SystemGroupData;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 组合数据
@@ -30,16 +33,41 @@ class SystemGroupDataDao extends BaseDao
         return SystemGroupData::class;
     }
 
+
+    /**
+     * @param $groupId
+     * @param int|null $page
+     * @param int|null $limit
+     * @return array
+     * @author xaboy
+     * @day 2020/5/27
+     */
+    public function getGroupData($groupId, ?int $page = null, ?int $limit = 10)
+    {
+        $query = SystemGroupData::getDB()
+            ->where('gid', $groupId)
+            ->where('status', 1)
+            ->order('sort DESC');
+
+        if (!is_null($page)) $query->page($page, $limit);
+        $groupData = [];
+        foreach ($query->column('value,gid', 'id') as $k => $v) {
+            $groupData[] = json_decode($v['value'], true) + ['id' => $k];
+        }
+        return $groupData;
+    }
+
     /**
      * 获取组合数据列表
      * @param array $where
      * @param int $page
      * @param int $limit
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getGroupDataList(array $where, int $page, int $limit)
+    public function getGroupDataList(array $where, int $page, int $limit): array
     {
         return $this->search($where)->when($page && $limit, function ($query) use ($page, $limit) {
             $query->page($page, $limit);
@@ -51,11 +79,11 @@ class SystemGroupDataDao extends BaseDao
      * @param int $gid
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getGroupDate(int $gid, int $limit = 0)
+    public function getGroupDate(int $gid, int $limit = 0): array
     {
         return $this->search(['gid' => $gid, 'status' => 1])->when($limit, function ($query) use ($limit) {
             $query->limit($limit);
@@ -88,9 +116,9 @@ class SystemGroupDataDao extends BaseDao
      * @param array $ids
      * @param string $field
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function idByGroupList(array $ids, string $field)
     {

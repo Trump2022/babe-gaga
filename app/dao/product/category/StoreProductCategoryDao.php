@@ -90,7 +90,7 @@ class StoreProductCategoryDao extends BaseDao
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getCategory($where)
+    public function getCategory($where, $limit = 0)
     {
         $pid = $where['pid'] ?? 0;
         $id = $where['id'] ?? 0;
@@ -101,6 +101,9 @@ class StoreProductCategoryDao extends BaseDao
                 ->when($is_class, function ($query) use ($is_class) {
                     $query->where('is_class', $is_class);
                 })
+                ->when($limit > 0, function ($query) use ($limit) {
+                    $query->limit($limit);
+                })
                 ->order('sort desc,id desc')
                 ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
                 ->select()->toArray();
@@ -109,6 +112,9 @@ class StoreProductCategoryDao extends BaseDao
                 ->where('pid', $pid)
                 ->when(isset($where['is_class']), function ($query) use ($is_class) {
                     $query->where('is_class', $is_class);
+                })
+                ->when($limit > 0, function ($query) use ($limit) {
+                    $query->limit($limit);
                 })
                 ->order('sort desc,id desc')
                 ->hidden(['add_time', 'is_show', 'sort', 'children.sort', 'children.add_time', 'children.pid', 'children.is_show'])
