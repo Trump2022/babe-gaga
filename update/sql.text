@@ -190,14 +190,10 @@ ALTER TABLE `gaga_user_sign` ADD `create_time` timestamp NOT NULL DEFAULT CURREN
 ALTER TABLE `gaga_system_menus` CHANGE `sort` `sort` INT NOT NULL DEFAULT '1' COMMENT '排序';
 
 
-INSERT INTO `gaga_system_group` (`id`, `cate_id`,`name`, `info`, `config_name`, `fields`) VALUES
+INSERT INTO `gaga_system_group` (`id`, `cate_id`, `name`, `info`, `config_name`, `fields`) VALUES
 (70, 0, '热门搜索', '移动端搜索页热门搜索设置', 'hot_keyword', '[{\"name\":\"\\u5173\\u952e\\u5b57\",\"field\":\"keyword\",\"type\":\"input\",\"param\":\"\\u8bbe\\u7f6e\\u5173\\u952e\\u5b57\",\"props\":\"required = true\\nmaxlength = 20\"}]');
 
-INSERT INTO `gaga_system_group_data` (`gid`, `value`, `sort`, `status`, `add_time`) VALUES
-(70, '{\"keyword\":\"\\u8fde\\u8863\\u88d9\"}', 8, 1, unix_timestamp(now())),
-(70, '{\"keyword\":\"\\u897f\\u88c5\"}', 9, 1, unix_timestamp(now())),
-(70, '{\"keyword\":\"\\u4e0a\\u8863\"}', 6, 1, unix_timestamp(now())),
-(70, '{\"keyword\":\"\\u624b\\u673a\"}', 5, 1, unix_timestamp(now())),
-(70, '{\"keyword\":\"\\u9ed1\\u9ca8\"}', 4, 1, unix_timestamp(now())),
-(70, '{\"keyword\":\"\\u5c0f\\u7231\\u540c\\u5b66\"}', 0, 1, unix_timestamp(now())),
-(70, '{\"keyword\":\"\\u591a\\u5546\\u6237\\u6d4b\\u8bd5\\u4ea7\\u54c1\"}', 9999, 1, unix_timestamp(now()));
+
+INSERT INTO `gaga_system_group` (`id`, `cate_id`, `name`, `info`, `config_name`, `fields`) VALUES
+(71, 0, '社区热门搜索', '移动端社区搜索页热门搜索设置', 'community_hot_keyword', '[{\"name\":\"\\u5173\\u952e\\u8bcd\",\"field\":\"keyword\",\"type\":\"input\",\"param\":\"\",\"props\":\"required = true\\nmaxlength = 20\"}]');
+

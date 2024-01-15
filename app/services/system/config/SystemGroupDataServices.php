@@ -139,9 +139,9 @@ class SystemGroupDataServices extends BaseServices
                 if ($group['config_name'] == 'order_details_images' && $index == 'order_status') {
                     $list[$key][$index] = ($param[$info['value']] ?? '') . '/' . $info['value'];
                 } else {
-                    if ($info['type'] == 'upload') {
+                    if (isset($info['type']) && $info['type'] == 'upload') {
                         $list[$key][$index] = [set_file_url($info['value'])];
-                    } elseif ($info['type'] == 'checkbox') {
+                    } elseif (isset($info['type']) && $info['type'] == 'checkbox') {
                         $list[$key][$index] = implode(",", $info["value"]);
                     } else {
                         $list[$key][$index] = $info['value'];
