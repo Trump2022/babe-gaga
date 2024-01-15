@@ -300,7 +300,7 @@ class StoreProductCategoryServices extends BaseServices
      * 前台分类列表
      * @return bool|mixed|null
      */
-    public function getCategory(array $where = [])
+    public function getCategory(array $where = [], $lines = 0)
     {
         [$page, $limit] = $this->getPageValue();
         if ($limit) {
@@ -308,7 +308,7 @@ class StoreProductCategoryServices extends BaseServices
                 return $this->dao->getALlByIndex($where, 'id,cate_name,pid,pic', $limit);
             });
         } else {
-            $list = $this->dao->getCategory($where);
+            $list = $this->dao->getCategory($where, $lines);
             if(!empty($list)){
                 /** @var StoreProductServices $storeProductServices */
                 $storeProductServices = app()->make(StoreProductServices::class);
