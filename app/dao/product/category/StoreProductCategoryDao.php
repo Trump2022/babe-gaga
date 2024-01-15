@@ -246,6 +246,7 @@ class StoreProductCategoryDao extends BaseDao
     {
         $pid = $where['pid'] ?? -1;
         $id = $where['id'] ?? -1;
+        $is_class = $where['is_class'] ?? -1;
         return $this->getModel()->where('is_show', 1)->field($field)
             ->when(in_array($pid, [0, -1]), function ($query) use ($pid) {
                 switch ($pid) {
@@ -266,6 +267,9 @@ class StoreProductCategoryDao extends BaseDao
                 $query->whereLike('id|cate_name', '%' . $where['name'] . '%');
             })->when($limit > 0, function ($query) use ($limit) {
                 $query->limit($limit);
-            })->order('sort DESC')->select()->toArray();
+            })->when($is_class > -1, function ($query) use ($is_class) {
+                $query->where('is_class', $is_class);
+            })
+            ->order('sort DESC')->select()->toArray();
     }
 }
