@@ -187,3 +187,4 @@ CREATE TABLE `gaga_member_interests` (
 ALTER TABLE `gaga_user_sign` ADD `integral` int NOT NULL DEFAULT '0' COMMENT '剩余积分' AFTER `balance`;
 ALTER TABLE `gaga_user_sign` ADD `sign_num` int unsigned NOT NULL DEFAULT '0' COMMENT '连续签到天数' AFTER `integral`;
 ALTER TABLE `gaga_user_sign` ADD `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间' AFTER `add_time`;
+ALTER TABLE `gaga_system_menus` CHANGE `sort` `sort` INT NOT NULL DEFAULT '1' COMMENT '排序';
