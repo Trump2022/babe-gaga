@@ -36,6 +36,7 @@ use crmeb\services\CacheService;
 use crmeb\services\UploadService;
 use crmeb\basic\BaseController;
 use Psr\SimpleCache\InvalidArgumentException;
+use think\Response;
 
 /**
  * 公共类
@@ -284,7 +285,17 @@ class PublicController extends BaseController
         return app('json')->successful('图片上传成功!', ['name' => $res['name'], 'url' => $res['dir']]);
     }
 
-    public function uploadVideo(Request $request)
+    /**
+     * @param Request $request
+     * @param SystemAttachmentServices $services
+     * @return Response
+     * @throws InvalidArgumentException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/15 17:04
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function upload_video(Request $request, SystemAttachmentServices $services): Response
     {
         $file = $request->file('file');
         if (!$file)
@@ -299,7 +310,17 @@ class PublicController extends BaseController
         if ($data === false) {
             return app('json')->fail($upload->getError());
         }
-        return app('json')->success(['src' => tidy_url($upload->getFileInfo()->filePath)]);
+        $res = $upload->getUploadInfo();
+        $services->attachmentAdd($res['name'], $res['size'], $res['type'], $res['dir'], $res['thumb_path'], 1, (int)sys_config('upload_type', 1), $res['time'], 3);
+        if (CacheService::has('start_uploads_' . $request->uid()))
+            $start_uploads = (int)CacheService::get('start_uploads_' . $request->uid());
+        else
+            $start_uploads = 0;
+        $start_uploads++;
+        CacheService::set('start_uploads_' . $request->uid(), $start_uploads, 86400);
+        $res['dir'] = path_to_url($res['dir']);
+        if (strpos($res['dir'], 'http') === false) $res['dir'] = sys_config('site_url') . $res['dir'];
+        return app('json')->successful('视频上传成功!', ['name' => $res['name'], 'url' => $res['dir']]);
     }
 
     /**
