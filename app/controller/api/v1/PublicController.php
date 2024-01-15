@@ -671,4 +671,23 @@ class PublicController extends BaseController
         return app('json')->successful($copyright);
 
 	}
+
+    /**
+     * @return mixed
+     * @author xaboy
+     * @day 2020/5/28
+     */
+    public function hotKeyword(Request $request)
+    {
+        $type = $request->param('type');
+        switch ($type) {
+            case 0:
+                $keyword = systemGroupData('hot_keyword');
+                break;
+            case 1:
+                $keyword = systemGroupData('community_hot_keyword');
+                break;
+        }
+        return app('json')->success($keyword);
+    }
 }

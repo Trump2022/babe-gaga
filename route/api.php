@@ -42,6 +42,12 @@ Route::group('api', function () {
 
 		Route::get('get_open_adv', 'v1.PublicController/getOpenAdv')->name('getOpenAdv');//首页开屏广告
 
+        //热门搜索
+        Route::get('hot_keyword', 'v1.PublicController/hotKeyword')->append(['type'  => 0])->name('apiHotKeyword');
+
+        //社区热门搜索
+        Route::get('community/hot_keyword', 'v1.PublicController/hotKeyword')->append(['type'  => 1])->name('apiCommunityHotKeyword');
+
 	})->middleware(StationOpenMiddleware::class);
 
 	/**
@@ -429,8 +435,6 @@ Route::group('api', function () {
 
 
             //Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
-
-
         });
 
         //未授权接口---不会抛异常

@@ -16,6 +16,9 @@ use app\services\BaseServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\FormBuilder as Form;
 use crmeb\traits\ServicesTrait;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
+use think\exception\DbException;
 
 /**
  * 组合数据数据集
@@ -40,9 +43,9 @@ class SystemGroupDataServices extends BaseServices
 	/**
 	 * @param int $id
 	 * @return mixed|string
-	 * @throws \think\db\exception\DataNotFoundException
+	 * @throws DataNotFoundException
 	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws ModelNotFoundException
 	 * @author 等风来
 	 * @email 136327134@qq.com
 	 * @date 2022/11/3
@@ -62,9 +65,9 @@ class SystemGroupDataServices extends BaseServices
      * @param string $configName
      * @param int $limit
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
+     * @throws DataNotFoundException
      * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function getConfigNameValue(string $configName, int $limit = 0)
     {
@@ -91,9 +94,9 @@ class SystemGroupDataServices extends BaseServices
      * 获取组合数据列表
      * @param array $where
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
+     * @throws DataNotFoundException
      * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function getGroupDataList(array $where)
     {
@@ -280,12 +283,27 @@ class SystemGroupDataServices extends BaseServices
     }
 
     /**
+     * @param string $key
+     * @param int|null $page
+     * @param int|null $limit
+     * @return array
+     * @author xaboy
+     * @day 2020/5/27
+     */
+    public function groupData(string $key, ?int $page = null, ?int $limit = 10)
+    {
+        $make = app()->make(SystemGroupServices::class);
+        $groupId = $make->keyById($key);
+        if (!$groupId) return [];
+        return $this->dao->getGroupData($groupId, $page, $limit);
+    }
+    /**
      * 根据id获取当前记录中的数据
      * @param $id
-     * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * @return array
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
+     * @throws \think\db\exception\DbException
      */
     public function getDateValue($id)
     {
