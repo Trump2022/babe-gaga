@@ -197,7 +197,7 @@ class StoreOrderController
         $uid = (int)$request->uid();
         if ($checkOrder = $this->services->getOne(['unique' => $key, 'uid' => $uid, 'is_del' => 0], 'id,order_id'))
             return app('json')->status('extend_order', '订单已创建，请点击查看完成支付', ['orderId' => $checkOrder['order_id'], 'key' => $key]);
-        [$addressId, $couponId, $payType, $useIntegral, $mark, $combinationId, $pinkId, $seckill_id, $collate_code_id, $bargainId, $newcomerId, $from, $shipping_type, $real_name, $phone, $storeId, $news, $invoice_id, $quitUrl, $discountId, $customForm] = $request->postMore([
+        [$addressId, $couponId, $payType, $useIntegral, $mark, $combinationId, $pinkId, $seckill_id, $collate_code_id, $bargainId, $newcomerId, $from, $shipping_type, $real_name, $phone, $storeId, $news, $invoice_id, $quitUrl, $discountId, $customForm, $orderInfos] = $request->postMore([
             [['addressId', 'd'], 0],
             [['couponId', 'd'], 0],
             ['payType', ''],
@@ -219,6 +219,7 @@ class StoreOrderController
             ['quitUrl', ''],
             [['discountId', 'd'], 0],
             ['custom_form', []],
+            ['order_info', []],
         ], true);
         $cartGroup = $this->services->getCacheOrderInfo($uid, $key);
         if (!$cartGroup) {
@@ -309,7 +310,7 @@ class StoreOrderController
         }
         try {
             $msg = '';
-            $order = $createServices->createOrder($uid, $key, $cartGroup, (int)$addressId, $payType, $addressInfo, $request->user()->toArray(), !!$useIntegral, $couponId, $mark, $pinkId, $isChannel, $shipping_type, $storeId, !!$news, $customForm, (int)$invoice_id, $from, (int)$collate_code_id);
+            $order = $createServices->createOrder($uid, $key, $cartGroup, (int)$addressId, $payType, $addressInfo, $request->user()->toArray(), !!$useIntegral, $couponId, $mark, $pinkId, $isChannel, $shipping_type, $storeId, !!$news, $customForm, (int)$invoice_id, $from, (int)$collate_code_id, $orderInfos);
         } catch (\Throwable $e) {
             $order = false;
             $msg = $e->getMessage();
@@ -780,8 +781,10 @@ class StoreOrderController
             }
 
             if ($order['is_class']) {
+                $orderData['used_times'] = $orderData['write_times'] - $orderData['write_surplus_times'];
+                $orderData['write_times_str'] = $orderData['used_times'].'/'.$orderData['write_times'].'次';
                 $orderData['active_time'] = '';
-                
+                $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
             }
         }
 		// 判断是否开启小程序订单管理

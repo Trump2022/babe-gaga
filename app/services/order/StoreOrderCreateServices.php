@@ -127,6 +127,7 @@ class StoreOrderCreateServices extends BaseServices
      * @param int $storeId
      * @param false $news
      * @param array $customForm
+     * @param array $orderInfos
      * @param int $invoice_id
      * @param string $from
      * @return mixed
@@ -134,7 +135,7 @@ class StoreOrderCreateServices extends BaseServices
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function createOrder(int $uid, string $key, array $cartGroup, int $addressId, string $payType, array $addressInfo, array $userInfo = [], bool $useIntegral = false, $couponId = 0, $mark = '', $pinkId = 0, $isChannel = 0, $shippingType = 1, $storeId = 0, $news = false, $customForm = [], int $invoice_id = 0, string $from = '', int $collate_code_id = 0)
+    public function createOrder(int $uid, string $key, array $cartGroup, int $addressId, string $payType, array $addressInfo, array $userInfo = [], bool $useIntegral = false, $couponId = 0, $mark = '', $pinkId = 0, $isChannel = 0, $shippingType = 1, $storeId = 0, $news = false, $customForm = [], int $invoice_id = 0, string $from = '', int $collate_code_id = 0, array $orderInfos = [])
     {
         /** @var StoreOrderComputedServices $computedServices */
         $computedServices = app()->make(StoreOrderComputedServices::class);
@@ -247,8 +248,50 @@ class StoreOrderCreateServices extends BaseServices
             }
         }
 
+        if ($is_class) {
+            if (empty($orderInfos)) {
+                throw new ValidateException('下单信息不能为空');
+            }
+
+            $tmp = [];
+            $tmp['user_name'] = isset($orderInfos['user_name']) ? trim($orderInfos['user_name']) : '';
+            $tmp['phone'] = isset($orderInfos['phone']) ? trim($orderInfos['phone']) : '';
+            $tmp['age'] = isset($orderInfos['age']) ? trim($orderInfos['age']) : '';
+            $tmp['sex'] = isset($orderInfos['sex']) ? trim($orderInfos['sex']) : '';
+            $tmp['store_id'] = isset($orderInfos['store_id']) ? trim($orderInfos['store_id']) : '';
+            $tmp['store_address'] = isset($orderInfos['store_address']) ? trim($orderInfos['store_address']) : '';
+            if (empty($tmp['user_name'])) {
+                throw new ValidateException('请填写下单信息的上课人姓名');
+            }
+
+            if (empty($tmp['phone'])) {
+                throw new ValidateException('请填写下单信息的上课人手机号码');
+            }
+
+            if (empty($tmp['age'])) {
+                throw new ValidateException('请填写下单信息的上课人年龄');
+            }
+            $tmp['age'] = abs((int)$tmp['age']);
+
+            if (empty($tmp['sex'])) {
+                throw new ValidateException('请选择下单信息的上课人性别');
+            }
+            $tmp['sex'] = in_array($tmp['sex'], [0, 1, 2]) ? (int)$tmp['sex'] : 0;
+
+            if (empty($tmp['store_id'])) {
+                throw new ValidateException('请选择下单信息的上课门店');
+            }
+            $tmp['store_id'] = (int)$tmp['store_id'];
+
+            if (empty($tmp['store_address'])) {
+                throw new ValidateException('请填写下单信息的上课门店地址');
+            }
+
+            $orderInfos = $tmp;
+        }
+
         $priceData['coupon_id'] = $couponId;
-        $order = $this->transaction(function () use ($cartIds, $couponId, $orderInfo, $cartInfo, $key, $userInfo, $useIntegral, $priceData, $type, $activity_id, $uid, $addressId, $promotions_give, $storeId) {
+        $order = $this->transaction(function () use ($cartIds, $couponId, $orderInfo, $cartInfo, $key, $userInfo, $useIntegral, $priceData, $type, $activity_id, $uid, $addressId, $promotions_give, $storeId, $orderInfos) {
             //创建订单
             $order = $this->dao->save($orderInfo);
             if ($couponId) {
@@ -264,7 +307,11 @@ class StoreOrderCreateServices extends BaseServices
             /** @var StoreOrderCartInfoServices $cartServices */
             $cartServices = app()->make(StoreOrderCartInfoServices::class);
             $cartServices->setCartInfo($order['id'], $cartInfo, (int)$uid, $promotions_give['promotions'] ?? []);
-
+            //记录课程订单的下单信息
+            if ($orderInfo['is_class']) {
+                app()->make(StoreOrderInfoServices::class)->saveOrderInfo($order['id'], $orderInfos);
+            }
+            
             return $order;
         });
 
