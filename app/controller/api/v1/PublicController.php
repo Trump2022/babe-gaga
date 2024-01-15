@@ -35,6 +35,7 @@ use app\Request;
 use crmeb\services\CacheService;
 use crmeb\services\UploadService;
 use crmeb\basic\BaseController;
+use Psr\SimpleCache\InvalidArgumentException;
 
 /**
  * 公共类
@@ -118,6 +119,9 @@ class PublicController extends BaseController
     public function getSiteConfig()
     {
         $data['record_No'] = sys_config('record_No');
+        $data['community_reply_status'] = sys_config('community_reply_status');
+        $data['community_app_switch'] = sys_config('community_app_switch');
+        $data['community_reply_auth'] = sys_config('community_reply_auth');
         return app('json')->success($data);
     }
 
@@ -251,8 +255,9 @@ class PublicController extends BaseController
     /**
      * 图片上传
      * @param Request $request
+     * @param SystemAttachmentServices $services
      * @return mixed
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function upload_image(Request $request, SystemAttachmentServices $services)
     {

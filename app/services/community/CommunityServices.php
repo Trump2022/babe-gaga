@@ -14,12 +14,13 @@ namespace app\services\community;
 
 use app\dao\community\CommunityDao;
 use app\services\BaseServices;
-use app\services\user\UserBrokerageServices;
+use app\services\user\UserBrokeragesServices;
 use app\services\system\RelevanceServices;
 use app\services\store\product\SpuServices;
 use app\services\user\UserServices;
 use crmeb\basic\BaseModel;
 use crmeb\services\QrcodeService;
+use app\services\store\order\StoreOrderProductServices;
 use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
 use FormBuilder\Form;
@@ -81,7 +82,7 @@ class CommunityServices extends BaseServices
         Db::transaction(function () use($ret,$id, $data) {
 
             if ($data['status'] == 1) {
-                $make = app()->make(UserBrokerageServices::class);
+                $make = app()->make(UserBrokeragesServices::class);
                 $make->incMemberValue($ret['uid'], 'member_community_num', $id);
             }
             $data['status_time'] = date('Y-m-d H:i;s', time());
@@ -174,7 +175,7 @@ class CommunityServices extends BaseServices
      */
     public function showForm($id): Form
     {
-        $url = '/adminapi/community/community/status/'.$id;
+        $url = '/community/community/status/'.$id;
         $form = Elm::createForm(Route::buildUrl($url)->build());
         $data = $this->dao->get($id);
         if (!$data) throw new ValidateException('数据不存在');
@@ -198,7 +199,7 @@ class CommunityServices extends BaseServices
      */
     public function form($id)
     {
-        $url = '/adminapi/community/community/update/'.$id;
+        $url = '/community/community/update/'.$id;
         $form = Elm::createForm(Route::buildUrl($url)->build());
         $data = $this->dao->get($id);
         if (!$data) throw new ValidateException('数据不存在');
@@ -419,8 +420,20 @@ class CommunityServices extends BaseServices
         return $data;
     }
 
-    public function getSpuByOrder($id)
+    /**
+     * @param $id
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 17:52
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getSpuByOrder($id): array
     {
+        $data = [];
         $where = app()->make(StoreOrderProductServices::class)->selectWhere(['order_id' => $id]);
         if (!$where) throw new  ValidateException('商品已下架');
 
@@ -637,6 +650,19 @@ class CommunityServices extends BaseServices
         return $result;
     }
 
+    /**
+     * @param $id
+     * @param $type
+     * @param $user
+     * @return bool|mixed|string
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/12 18:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
     public function qrcode($id, $type,$user)
     {
         $res = $this->dao->search(['is_type' => self::COMMUNIT_TYPE_VIDEO,'community_id' => $id, 'status' => 1, 'is_show' => 1])->find();

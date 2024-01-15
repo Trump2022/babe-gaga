@@ -52,9 +52,9 @@ class CommunityCategoryServices extends BaseServices
     {
         $formData = [];
         if ( ! $id) {
-            $url = '/adminapi/community/category/create';
+            $url = '/community/category/create';
         } else {
-            $url = '/adminapi/community/category/update/'.$id;
+            $url = '/community/category/update/'.$id;
             $formData = $this->dao->get($id)->toArray();
         }
         $form = Elm::createForm(Route::buildUrl($url)->build());

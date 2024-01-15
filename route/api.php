@@ -426,9 +426,11 @@ Route::group('api', function () {
             //分类&话题
             Route::get('/category/lst', 'v1.community.CommunityCategoryController/lst')->name('apiCommunityCategoryList');
 
-            //Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
 
-            Route::get('qrcode/:id', 'v1.community.CommunityController/qrcode');
+
+            //Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
+
+
         });
 
         //未授权接口---不会抛异常
@@ -458,7 +460,11 @@ Route::group('api', function () {
             //回复列表
             Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst')->name('apiCommunityReplyList');
 
+            //已购商品
+            Route::get('/pay_product/lst', 'v1.community.CommunityController/payList');
 
+            //获取二维码
+            Route::get('/qrcode/:id', 'v1.community.CommunityController/qrcode');
         })->middleware(AuthTokenMiddleware::class, false);
 
         //需要授权接口
@@ -503,7 +509,6 @@ Route::group('api', function () {
             //我的关注
             Route::get('/focus/lst', 'v1.community.CommunityController/getUserFocus');
 
-            Route::get('order/:id', 'v1.community.CommunityController/getSpuByOrder');
         })->middleware(AuthTokenMiddleware::class, true);
 
     })->middleware(StationOpenMiddleware::class);

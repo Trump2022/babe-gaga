@@ -169,6 +169,13 @@ class StoreOrderCartInfoServices extends BaseServices
     {
         $group = [];
         foreach ($cartInfo as $cart) {
+            $is_class = $cart['productInfo']['is_class'] ?? 0;
+            $write_days = 0;
+            if ($is_class) {
+                // 处理课程使用时效
+                $write_days = $cart['productInfo']['attrInfo']['write_days'] ?? 0;
+            }
+
             $group[] = [
                 'oid' => $oid,
                 'uid' => $uid,
@@ -187,7 +194,9 @@ class StoreOrderCartInfoServices extends BaseServices
                 'split_surplus_num' => $cart['cart_num'],
                 'write_times' => bcmul((string)$cart['cart_num'], (string)(max($cart['productInfo']['attrInfo']['write_times'] ?? 1, 1)), 0),
                 'write_surplus_times' => bcmul((string)$cart['cart_num'], (string)(max($cart['productInfo']['attrInfo']['write_times'] ?? 1, 1)), 0),
-                'unique' => md5($cart['id'] . '' . $oid)
+                'unique' => md5($cart['id'] . '' . $oid),
+                'write_days' => $write_days, 
+                'add_time' => time()
             ];
         }
         if ($promotions) {

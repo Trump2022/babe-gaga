@@ -14,6 +14,7 @@ namespace app\dao\other;
 
 use app\dao\BaseDao;
 use app\model\other\Cache;
+use think\db\exception\DbException;
 
 /**
  * Class CacheDao
@@ -37,5 +38,19 @@ class CacheDao extends BaseDao
     public function delectDeOverdueDbCache()
     {
         $this->getModel()->where('expire_time', '<>', 0)->where('expire_time', '<', time())->delete();
+    }
+
+    /**
+     * @param string $key
+     * @param $data
+     * @throws DbException
+     * @author xaboy
+     * @day 2020-04-24
+     */
+    public function keyUpdate(string $key, $data)
+    {
+        if (isset($data['result']))
+            $data['result'] = json_encode($data['result'], JSON_UNESCAPED_UNICODE);
+        Cache::getDB()->where('key', $key)->update($data);
     }
 }

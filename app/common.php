@@ -576,7 +576,7 @@ if (!function_exists('formatFileSize')) {
 if (!function_exists('formToData')) {
     function formToData($form): array
     {
-        $rule = $form->formRule();
+        $rules = $form->formRule();
         $action = $form->getAction();
         $method = $form->getMethod();
         $title = $form->getTitle();
@@ -590,7 +590,7 @@ if (!function_exists('formToData')) {
             $api = substr($api, strlen($merchant) + 1);
         }
         $api = str_replace('.html', '', $api);
-        return compact('rule', 'action', 'method', 'title', 'config', 'api');
+        return compact('rules', 'action', 'method', 'title', 'config', 'api');
     }
 }
 
@@ -619,6 +619,7 @@ if (!function_exists('getModelTime')) {
      * @param string $section
      * @param string $prefix
      * @param string $field
+     * @param string $time
      * @return mixed
      * @author xaboy
      * @day 2020-04-29

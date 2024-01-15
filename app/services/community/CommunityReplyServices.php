@@ -254,7 +254,7 @@ class CommunityReplyServices extends BaseServices
 
         if ($formData['status'] !== 0) throw new ValidateException('请勿重复审核');
 
-        $url = '/adminapi/community/reply/status/'.$id;
+        $url = '/community/reply/status/'.$id;
         $form = Elm::createForm(Route::buildUrl($url)->build());
 
         $form->setRule([

@@ -14,6 +14,7 @@ namespace app\services\other;
 
 use app\dao\other\CacheDao;
 use app\services\BaseServices;
+use think\db\exception\DbException;
 
 /**
  * Class CacheServices
@@ -26,6 +27,23 @@ class CacheServices extends BaseServices
     public function __construct(CacheDao $dao)
     {
         $this->dao = $dao;
+    }
+
+    /**
+     * @param string $key
+     * @param $result
+     * @param int $expire_time
+     * @throws DbException
+     * @author xaboy
+     * @day 2020-04-24
+     */
+    public function save(string $key, $result, int $expire_time = 0)
+    {
+        if (!$this->dao->fieldExists('key', $key)) {
+            $this->dao->create(compact('key', 'result', 'expire_time'));
+        } else {
+            $this->dao->keyUpdate($key, compact('result', 'expire_time'));
+        }
     }
 
     /**

@@ -65,27 +65,27 @@ INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_tit
 
 INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`)
 VALUES
-(512, 91, 0, 0, 10, '社区开启', 'community_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
-(513, 91, 0, 0, 9, '图文免审核', 'community_audit', 'radio', '0=>审核\n1=>免审核', '', 'required:true'),
-(514, 91, 0, 0, 0, '允许发帖用户', 'community_auth', 'radio', '0=>全部用户\n1=>绑定手机号用户', '', 'required:true'),
-(515, 91, 0, 0, 0, '社区评论开关', 'community_reply_status', 'radio', '0=>关闭\n1=>开启', '', 'required:true'),
-(516, 91, 0, 0, 0, '评论用户', 'community_reply_auth', 'radio', '0=>全部用户\n1=>绑定手机号用户', '', 'required:true'),
-(517, 91, 0, 0, 0, '评论审核', 'community_reply_audit', 'radio', '0=>免审核\n1=>审核', '0', 'required:true'),
-(518, 91, 0, 0, 7, '移动端内容展示', 'community_app_switch', 'checkbox', '1=>图文展示\n2=>短视频展示', '1', ''),
-(519, 91, 0, 0, 8, '短视频审核', 'community_video_audit', 'radio', '0=>审核\n1=>免审核', '0', 'required:true');
+(512, 91, 0, 1, 10, '社区开启', 'community_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
+(513, 91, 0, 1, 9, '图文免审核', 'community_audit', 'radio', '0=>审核\n1=>免审核', '', 'required:true'),
+(514, 91, 0, 1, 0, '允许发帖用户', 'community_auth', 'radio', '0=>全部用户\n1=>绑定手机号用户', '', 'required:true'),
+(515, 91, 0, 1, 0, '社区评论开关', 'community_reply_status', 'radio', '0=>关闭\n1=>开启', '', 'required:true'),
+(516, 91, 0, 1, 0, '评论用户', 'community_reply_auth', 'radio', '0=>全部用户\n1=>绑定手机号用户', '', 'required:true'),
+(517, 91, 0, 1, 0, '评论审核', 'community_reply_audit', 'radio', '0=>免审核\n1=>审核', '0', 'required:true'),
+(518, 91, 0, 1, 7, '移动端内容展示', 'community_app_switch', 'checkbox', '1=>图文展示\n2=>短视频展示', '1', ''),
+(519, 91, 0, 1, 8, '短视频审核', 'community_video_audit', 'radio', '0=>审核\n1=>免审核', '0', 'required:true');
 
 INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_title`, `status`, `info`, `icon`, `type`, `sort`)
  VALUES (92, '0', '0', '会员配置', 'members', '1', '0', '', '0', '0');
 
- INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`)
+ INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`, `width`)
  VALUES
- (520, 92, 0, 0, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true'),
- (521, 92, 0, 0, 0, '下单可获得成长值', 'member_pay_num', 'number', '', '0', 'min:0,precision:0'),
- (522, 92, 0, 0, 0, '签到可获得成长值', 'member_sign_num', 'number', '', '0', 'min:0,precision:0'),
- (523, 92, 0, 0, 0, '评价可获得成长值', 'member_reply_num', 'number', '', '0', 'min:0,precision:0'),
- (524, 92, 0, 0, 0, '邀请可获得成长值', 'member_share_num', 'number', '', '0', 'min:0,precision:0'),
- (525, 92, 0, 0, 0, '种草图文可获得成长值', 'member_community_num', 'number', '', '0', 'min:0,precision:0'),
- (526, 92, 0, 0, 0, '会员权益开关', 'member_interests_status', 'radio', '0=>开启\n1=>关闭', '0', 'required:true');
+ (520, 92, 0, 1, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true', 0),
+ (521, 92, 0, 1, 0, '下单可获得成长值', 'member_pay_num', 'text', '', '0', 'min:0', 100),
+ (522, 92, 0, 1, 0, '签到可获得成长值', 'member_sign_num', 'text', '', '0', 'min:0', 100),
+ (523, 92, 0, 1, 0, '评价可获得成长值', 'member_reply_num', 'text', '', '0', 'min:0', 100),
+ (524, 92, 0, 1, 0, '邀请可获得成长值', 'member_share_num', 'text', '', '0', 'min:0', 100),
+ (525, 92, 0, 1, 0, '种草图文可获得成长值', 'member_community_num', 'text', '', '0', 'min:0', 100),
+ (526, 92, 0, 0, 0, '会员权益开关', 'member_interests_status', 'radio', '0=>开启\n1=>关闭', '0', 'required:true', 0);
 
 
 ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员成长值' AFTER `integral`;
@@ -114,7 +114,7 @@ CREATE TABLE `gaga_user_history` (
 
 ALTER TABLE `gaga_user` ADD   `count_fans` int unsigned DEFAULT '0' COMMENT '用户粉丝数' AFTER `count_start`;
 
-CREATE TABLE `eb_store_order_product` (
+CREATE TABLE `gaga_store_order_product` (
   `order_product_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '订单产品 id',
   `order_id` int unsigned NOT NULL COMMENT '订单id',
   `uid` int unsigned NOT NULL DEFAULT '0' COMMENT '用户 id',
@@ -147,3 +147,43 @@ CREATE TABLE `eb_store_order_product` (
   KEY `oid` (`order_id`) USING BTREE,
   KEY `uid` (`uid`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COMMENT='订单购物详情表';
+
+ALTER TABLE `gaga_store_order_cart_info` ADD `active_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活时效开始时间' AFTER `add_time`, ADD `active_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活时效结束时间' AFTER `active_start`;
+ALTER TABLE `gaga_store_order_cart_info` ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '使用时效天数(课程订单)' AFTER `write_times`;
+
+CREATE TABLE `gaga_user_brokerages` (
+  `user_brokerage_id` int unsigned NOT NULL AUTO_INCREMENT,
+  `brokerage_level` tinyint unsigned NOT NULL COMMENT '等级',
+  `brokerage_name` varchar(32) NOT NULL COMMENT 'vip 名称',
+  `brokerage_icon` varchar(128) NOT NULL COMMENT 'vip 图标',
+  `brokerage_rule` varchar(1500) NOT NULL COMMENT '升级规则',
+  `user_num` int unsigned NOT NULL DEFAULT '0' COMMENT 'vip 人数',
+  `extension_one` decimal(8,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '一级佣金',
+  `extension_two` decimal(8,2) unsigned NOT NULL COMMENT '二级佣金',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `type` tinyint unsigned NOT NULL DEFAULT '0' COMMENT '默认0分销会员等级，1 免费会员等级',
+  PRIMARY KEY (`user_brokerage_id`) USING BTREE,
+  UNIQUE KEY `vip_level` (`brokerage_level`,`type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE `gaga_member_interests` (
+  `interests_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) DEFAULT NULL COMMENT '名称',
+  `info` varchar(200) DEFAULT NULL COMMENT '介绍',
+  `brokerage_level` tinyint unsigned DEFAULT NULL COMMENT '关联等级',
+  `pic` varchar(128) DEFAULT NULL COMMENT '图标',
+  `type` tinyint DEFAULT '0' COMMENT '类型1.免费会员 2.付费会员',
+  `link` varchar(500) DEFAULT NULL COMMENT '跳转 链接',
+  `has_type` int DEFAULT NULL COMMENT '特权类型',
+  `value` varchar(500) DEFAULT NULL COMMENT '特权值',
+  `on_pic` varchar(128) DEFAULT NULL,
+  `status` tinyint DEFAULT NULL,
+  PRIMARY KEY (`interests_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4
+
+
+
+ALTER TABLE `gaga_user_sign` ADD `integral` int NOT NULL DEFAULT '0' COMMENT '剩余积分' AFTER `balance`;
+ALTER TABLE `gaga_user_sign` ADD `sign_num` int unsigned NOT NULL DEFAULT '0' COMMENT '连续签到天数' AFTER `integral`;
+ALTER TABLE `gaga_user_sign` ADD `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间' AFTER `add_time`;
