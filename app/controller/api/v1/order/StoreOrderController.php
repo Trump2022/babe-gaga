@@ -782,8 +782,14 @@ class StoreOrderController
 
             if ($order['is_class']) {
                 $orderData['used_times'] = $orderData['write_times'] - $orderData['write_surplus_times'];
-                $orderData['write_times_str'] = $orderData['used_times'].'/'.$orderData['write_times'].'次';
+                $orderData['used_times_str'] = $orderData['used_times'].'/'.$orderData['write_times'].'次';
+                //激活时间
                 $orderData['active_time'] = '';
+                if ($orderData['used_times']) {
+                    
+                }
+
+                //下单信息
                 $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
             }
         }
