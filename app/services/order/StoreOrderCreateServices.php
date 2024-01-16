@@ -249,6 +249,25 @@ class StoreOrderCreateServices extends BaseServices
         }
 
         if ($is_class) {
+            //判断课程限购次数
+            $attr_info = $cartInfo[0]['productInfo']['attrInfo'];
+            if ($attr_info['quota']) {
+                $product_id = $cartInfo[0]['productInfo']['id'];
+                $cartNum = $cartInfo[0]['cart_num'];
+                $where_info = [
+                    'uid' => $uid, 
+                    'product_id' => $product_id, 
+                    'sku_unique' => $attr_info['unique']
+                ];
+                $orderCartServices = app()->make(StoreOrderCartInfoServices::class);
+                $orderPayNum = $orderCartServices->sum($where_info, 'cart_num');
+                $orderRefundNum = $orderCartServices->sum($where_info, 'refund_num');
+                $orderNum = $orderPayNum - $orderRefundNum;
+                if (($cartNum + $orderNum) > $attr_info['quota']) {
+                    throw new ValidateException('该课程限购数量：' . $attr_info['quota'] . '个 ，您已经购买 ' . $orderNum . ' 个');
+                }
+            }
+
             if (empty($orderInfos)) {
                 throw new ValidateException('下单信息不能为空');
             }

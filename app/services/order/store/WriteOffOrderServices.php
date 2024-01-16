@@ -355,7 +355,7 @@ class WriteOffOrderServices extends BaseServices
             if ($cartIds) {//商城存在部分核销
                 $ids = array_unique(array_column($cartIds, 'cart_id'));
                 //订单下原商品信息
-                $cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'cart_id' => $ids, 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end', 'cart_id');
+                $cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'cart_id' => $ids, 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'cart_id');
                 if (count($ids) != count($cartInfo)) {
                     throw new ValidateException('订单中有商品已核销');
                 }
@@ -369,7 +369,7 @@ class WriteOffOrderServices extends BaseServices
 					}
 				}
 			} else {//整单核销
-				$cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end', 'cart_id');
+				$cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'cart_id');
 			}
 			foreach ($cartInfo as $info) {
 				if ($info['write_start'] && $time < $info['write_start']) {
@@ -425,6 +425,15 @@ class WriteOffOrderServices extends BaseServices
                     if ($cartInfo['write_surplus_times'] > 0) {
                         //修改原来订单商品信息
                         if ($orderInfo['is_class'] && ($cartInfo['write_surplus_times'] == $cartInfo['write_times'])) {
+                            // 判断是否在激活时间内
+                            if ($cartInfo['active_start'] && (time() < $cartInfo['active_start'])) {
+                                throw new ValidateException('未到课程激活开始时间');
+                            }
+                            
+                            if ($cartInfo['active_end'] && (time() > $cartInfo['active_end'])) {
+                                throw new ValidateException('已过课程激活结束时间');
+                            }
+
                             // 第一次核销，激活课程, 使用时效的开始和结束时间
                             $cartData['write_start'] = time();
                             $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$cartInfo['write_days'], '86400'));

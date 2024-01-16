@@ -265,7 +265,10 @@ class Common extends BaseController
             $copyright = $this->__z6uxyJQ4xYa5ee1mx5();
             $res       = true;
         } catch (\Throwable $e) {
-            $copyright = ['copyrightContext' => '', 'copyrightImage' => ''];
+            $copyright = [
+                'copyrightContext' => sys_config('copyright_context'),
+                'copyrightImage' => sys_config('copyright_image'),
+            ];
         }
         $copyright['is_copyright'] = $res;
         return $this->success($copyright);

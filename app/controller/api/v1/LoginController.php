@@ -14,11 +14,16 @@ namespace app\controller\api\v1;
 
 use app\Request;
 use app\services\wechat\WechatServices as WechatAuthServices;
+use Psr\SimpleCache\InvalidArgumentException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\Config;
 use crmeb\services\CacheService;
 use app\services\user\LoginServices;
 use think\exception\ValidateException;
 use app\validate\api\user\RegisterValidates;
+use think\Response;
 
 /**
  * 登录
@@ -42,8 +47,8 @@ class LoginController
      * H5账号登陆
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function login(Request $request)
@@ -64,9 +69,9 @@ class LoginController
      * @param Request $request
      * @param WechatAuthServices $services
      * @return mixed
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      */
     public function appleLogin(Request $request, WechatAuthServices $services)
     {
@@ -148,7 +153,7 @@ class LoginController
      * @param $uni
      * @param string $code
      * @return bool
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function checkCaptcha($uni, string $code): bool
     {
@@ -201,7 +206,11 @@ class LoginController
     /**
      * 验证码发送
      * @param Request $request
-     * @return mixed
+     * @return mixed|Response
+     * @throws InvalidArgumentException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function verify(Request $request)
     {
@@ -326,8 +335,8 @@ class LoginController
      * 手机号登录
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function mobile(Request $request)
@@ -363,8 +372,8 @@ class LoginController
      * H5切换登陆
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function switch_h5(Request $request)
@@ -383,8 +392,8 @@ class LoginController
      * 绑定手机号
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function binding_phone(Request $request)
@@ -427,8 +436,8 @@ class LoginController
      * 绑定手机号
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function user_binding_phone(Request $request)
