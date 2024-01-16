@@ -359,6 +359,7 @@ class WriteOffOrderServices extends BaseServices
                 if (count($ids) != count($cartInfo)) {
                     throw new ValidateException('订单中有商品已核销');
                 }
+                var_dump($cartInfo);exit;
 				foreach ($cartIds as $cart) {
 					$info = $cartInfo[$cart['cart_id']] ?? [];
 					if (!$info) {
