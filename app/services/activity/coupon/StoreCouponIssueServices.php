@@ -923,6 +923,7 @@ class StoreCouponIssueServices extends BaseServices
                         }
                         break;
                     case 1://品类券
+                    case 4://品类券(课程)
                         $cateGorys = $storeCategoryServices->getAllById((int)$coupon['category_id']);
                         if ($cateGorys) {
                             $cateIds = array_column($cateGorys, 'id');
@@ -936,6 +937,7 @@ class StoreCouponIssueServices extends BaseServices
                         }
                         break;
                     case 2://商品券
+                    case 5://商品券(课程)
                         foreach ($cartList as $cart) {
                             if (!$isOverlay($cart))  continue;
 							$product_id = isset($cart['productInfo']['pid']) && $cart['productInfo']['pid'] ? $cart['productInfo']['pid'] : ($cart['product_id'] ?? 0);
