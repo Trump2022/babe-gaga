@@ -345,8 +345,8 @@ class SystemTimer extends Cron implements ListenerInterface
                     ]);
                 }
                 break;
-            case 'course_verification_rebate' : // 课程商品核销完返佣
-                /** @var StoreOrderCartInfoServices $service */
+            /*case 'course_verification_rebate' : // 课程商品核销完返佣
+
                 $service = app()->make(StoreOrderCartInfoServices::class);
                 try {
                     return $service->courseVerificationRebate();
@@ -357,7 +357,7 @@ class SystemTimer extends Cron implements ListenerInterface
                         'line' => $e->getLine()
                     ]);
                 }
-                break;
+                break;*/
         }
     }
 }
