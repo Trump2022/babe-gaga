@@ -1545,6 +1545,19 @@ class StoreProductServices extends BaseServices
             }
             $level_name = $levelInfo['name'] ?? '';
         }
+        if(!empty($where['city'])){
+            //按城市筛选课程
+            /** @var SystemStoreServices $systemStoreServices */
+            $systemStoreServices = app()->make(SystemStoreServices::class);
+            $storeIds = $systemStoreServices->getStore(['city' => $where['city']]);
+            $raw = '';
+            foreach ($storeIds as $item){
+                $raw .= " FIND_IN_SET({$item['id']}, `applicable_store_id`) OR";
+            }
+            $raw = substr_replace($raw, "", -2, 2);
+            //$raw = trim($raw, "OR");
+            $where['city'] = $raw;
+        }
 
         [$page, $limit] = $this->getPageValue();
         $field = ['id,relation_id,type,pid,delivery_type,product_type,store_name,cate_id,image,IFNULL(sales, 0) + IFNULL(ficti, 0) as sales,price,stock,activity,ot_price,spec_type,recommend_image,unit_name,is_vip,vip_price,is_presale_product,is_vip_product,system_form_id,is_presale_product,presale_start_time,presale_end_time,is_limit,limit_num,video_open,video_link'];
