@@ -88,7 +88,7 @@ class StoreCouponsController
      * @param $price
      * @return mixed
      */
-    public function order(Request $request, StoreCouponIssueServices $service, $cartId, $new)
+    public function order(Request $request, StoreCouponIssueServices $service)
     {
 		[$cartId, $new, $shipping_type, $storeId] = $request->getMore([
             ['cartId', ''],
