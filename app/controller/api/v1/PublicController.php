@@ -651,8 +651,8 @@ class PublicController extends BaseController
             $copyright = $this->__z6uxyJQ4xYa5ee1mx5();
         } catch (\Throwable $e) {
             $copyright = [
-						'copyrightContext' => '',
-						'copyrightImage' => '',
+						'copyrightContext' => sys_config('copyright_context'),
+						'copyrightImage' => sys_config('copyright_image'),
 					];
         }
 		$copyright['record_No'] = sys_config('record_No');
@@ -678,9 +678,9 @@ class PublicController extends BaseController
             $copyright = $this->__z6uxyJQ4xYa5ee1mx5();
         } catch (\Throwable $e) {
             $copyright = [
-						'copyrightContext' => '',
-						'copyrightImage' => '',
-					];
+                'copyrightContext' => sys_config('copyright_context'),
+                'copyrightImage' => sys_config('copyright_image'),
+            ];
         }
 		$copyright['record_No'] = sys_config('record_No');
 		$copyright['version'] = get_crmeb_version();

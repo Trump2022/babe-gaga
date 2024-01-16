@@ -2211,7 +2211,8 @@ WSS;
         $data = $this->getConfigAllField([
             'station_open', 'site_name', 'site_url', 'wap_login_logo', 'site_phone',
             'admin_login_slide', 'site_logo', 'site_logo_square', 'login_logo',
-            'navigation_open', 'cache_config', 'start_login_logo',
+            'navigation_open', 'cache_config',  'copyright_context', 'copyright_image',
+            'start_login_logo',
 //            'store_func_status',
             'video_func_status', 'product_video_status',
 //            'h5_avatar', 'store_user_mobile'
@@ -2225,7 +2226,7 @@ WSS;
         ]);
 
         $system = [];
-        foreach (['site_name', 'site_url', 'site_phone', 'cache_config'] as $key) {
+        foreach (['site_name', 'site_url', 'site_phone', 'cache_config', 'copyright_context', 'copyright_image'] as $key) {
             $system[] = Build::input($key, $data[$key]['info'], $data[$key]['value'])->maxlength($key === 'site_name' ? 20 : null)->info($data[$key]['desc'])->type($data[$key]['type']);
         }
         $setting = [];
