@@ -93,6 +93,10 @@ class StoreProductDao extends BaseDao
             })->when(isset($where['cate_id']) && $where['cate_id'], function ($query) use ($where) {
                 $raw = "FIND_IN_SET({$where['cate_id']}, `cate_id`)";
                 $query->whereRaw($raw);
+            })->when(isset($where['is_class']), function ($query) use ($where) {
+                $query->where('is_class', $where['is_class']);
+            })->when(!empty($where['city']), function ($query) use ($where) {
+                $query->whereRaw($where['city'])->whereOr('applicable_store_id', '=', '');
             });
     }
 
@@ -202,7 +206,6 @@ class StoreProductDao extends BaseDao
      */
     public function getSearchList(array $where, int $page = 0, int $limit = 0, array $field = ['*'], string $order = '', array $with = ['couponId', 'descriptions'])
     {
-        $is_class = $where['is_class'] ?? -1;
         if (isset($where['star'])) $with[] = 'star';
         return $this->search($where)->with($with)->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
             $query->page($page, $limit);
@@ -250,8 +253,6 @@ class StoreProductDao extends BaseDao
             }
         })->when(!$page && $limit, function ($query) use ($limit) {
             $query->limit($limit);
-        })->when($is_class > -1, function ($query) use ($is_class) {
-            $query->where('is_class', $is_class);
         })->field($field)->select()->toArray();
     }
 

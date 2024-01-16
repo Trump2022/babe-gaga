@@ -500,9 +500,9 @@ class SystemStoreServices extends BaseServices
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function getStore()
+    public function getStore($where = ['type' => 0])
     {
-        return $this->dao->getStore(['type' => 0]);
+        return $this->dao->getStore($where);
     }
 
     /**
