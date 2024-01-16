@@ -74,7 +74,7 @@ class StoreCouponIssue extends AuthController
             ['product_id', ''],
             ['category_id', []],
 			['brand_id', []],
-            ['type', 0],
+            ['type', 0],//0-通用, 1-分类, 2-商品, 3-品牌, 4-品类券(课程), 5-商品券(课程)
             ['sort', 0],
             ['status', 0],
             ['coupon_type', 1],
@@ -123,6 +123,14 @@ class StoreCouponIssue extends AuthController
 				$data['product_id'] = '';
 				$data['category_id'] = 0;
 				break;
+            case 4://品类券(课程)
+                $data['product_id'] = '';
+                $data['brand_id'] = 0;
+                break;
+            case 5://商品券(课程)
+                $data['category_id'] = 0;
+                $data['brand_id'] = 0;
+                break;
         }
         //赠送券 、新人券不限量
         if (in_array($data['receive_type'], [2, 3])) {
