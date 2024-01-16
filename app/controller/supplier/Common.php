@@ -254,7 +254,10 @@ class Common extends AuthController
         try {
             $copyright = $this->__z6uxyJQ4xYa5ee1mx5();
         } catch (\Throwable $e) {
-            $copyright = ['copyrightContext' => '', 'copyrightImage' => ''];
+            $copyright = [
+                'copyrightContext' => sys_config('copyright_context'),
+                'copyrightImage' => sys_config('copyright_image'),
+            ];
         }
 		$copyright['version'] = get_crmeb_version();
 		$copyright['extract_min_price'] = sys_config('supplier_extract_min_price');

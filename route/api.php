@@ -260,8 +260,8 @@ Route::group('api', function () {
         Route::get('product/code/:id', 'v1.product.StoreProductController/code')->name('productCode');//商品分享二维码 推广员
 
         //公共类
-        Route::post('upload/image', 'v1.PublicController/upload_image')->name('uploadImage');//图片上传
-        Route::post('upload/video', 'v1.PublicController/upload_video')->name('uploadVideo');//视频上传
+        Route::post('upload/image', 'v1.PublicController/upload_image')->name('apiUploadImage');//图片上传
+        Route::post('upload/video', 'v1.PublicController/upload_video')->name('apiUploadVideo');//视频上传
 
         //用户类 客服聊天记录
         Route::get('user/service/list', 'v1.user.StoreService/lst')->name('userServiceList');//客服列表

@@ -197,3 +197,11 @@ INSERT INTO `gaga_system_group` (`id`, `cate_id`, `name`, `info`, `config_name`,
 INSERT INTO `gaga_system_group` (`id`, `cate_id`, `name`, `info`, `config_name`, `fields`) VALUES
 (71, 0, '社区热门搜索', '移动端社区搜索页热门搜索设置', 'community_hot_keyword', '[{\"name\":\"\\u5173\\u952e\\u8bcd\",\"field\":\"keyword\",\"type\":\"input\",\"param\":\"\",\"props\":\"required = true\\nmaxlength = 20\"}]');
 
+
+INSERT INTO `gaga_system_config` (`id`, `is_store`, `menu_name`, `type`, `input_type`, `config_tab_id`, `parameter`, `upload_type`, `required`, `width`, `high`, `value`, `info`, `desc`, `sort`, `status`) VALUES
+(527, 0, 'copyright_context', 'text', 'input', 26, '', 0, 'required:true', 100, 0, '', '版权信息文本', '底部展示的copyright文本', 10, 1);
+
+INSERT INTO `gaga_system_config` (`id`, `is_store`, `menu_name`, `type`, `input_type`, `config_tab_id`, `parameter`, `upload_type`, `required`, `width`, `high`, `value`, `info`, `desc`, `sort`, `status`) VALUES
+(528, 0, 'copyright_image', 'text', 'input', 26, '', 0, 'required:true', 100, 0, '', '版权信息图标URL', '底部展示的copyright图标URL', 10, 1);
+
+
