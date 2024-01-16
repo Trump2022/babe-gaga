@@ -83,15 +83,33 @@ class LoginServices extends BaseServices
     public function updateUserInfo($user, $userInfo)
     {
         $data = [];
+        /*
         if (isset($userInfo['nickname']) && $userInfo['nickname']) {
             $data['nickname'] = !isset($user['nickname']) || !$user['nickname'] ? $userInfo->nickname : $user['nickname'];
         }
+        */
+        if (isset($user['nickname']) && $user['nickname']) {
+            $data['nickname'] = $user['nickname'];
+        }
+
+        /*
         if (isset($userInfo['avatar']) && $userInfo['avatar']) {
             $data['avatar'] = !isset($user['headimgurl']) || !$user['headimgurl'] ? $userInfo->avatar : $user['headimgurl'];
         }
+        */
+        if (isset($user['headimgurl']) && $user['headimgurl']) {
+            $data['avatar'] = $user['headimgurl'];
+        }
+
+        /*
         if (isset($userInfo['phone']) && $userInfo['phone']) {
             $data['phone'] = !isset($user['phone']) || !$user['phone'] ? $userInfo->phone : $user['phone'];
         }
+        */
+        if (isset($user['phone']) && $user['phone']) {
+            $data['phone'] = $user['phone'];
+        }
+
         $data['last_time'] = time();
         $data['last_ip'] = app()->request->ip();
         //永久绑定
