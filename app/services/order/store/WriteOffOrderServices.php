@@ -359,7 +359,7 @@ class WriteOffOrderServices extends BaseServices
                 if (count($ids) != count($cartInfo)) {
                     throw new ValidateException('订单中有商品已核销');
                 }
-                var_dump($cartInfo);exit;
+
 				foreach ($cartIds as $cart) {
 					$info = $cartInfo[$cart['cart_id']] ?? [];
 					if (!$info) {
@@ -372,6 +372,7 @@ class WriteOffOrderServices extends BaseServices
 			} else {//整单核销
 				$cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'cart_id');
 			}
+            var_dump($cartInfo);exit;
 			foreach ($cartInfo as $info) {
 				if ($info['write_start'] && $time < $info['write_start']) {
 					throw new ValidateException('还未到指定核销的开始时间，无法核销');
