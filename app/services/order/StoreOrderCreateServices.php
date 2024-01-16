@@ -258,8 +258,7 @@ class StoreOrderCreateServices extends BaseServices
                     'uid' => $uid, 
                     'product_id' => $product_id, 
                     'sku_unique' => $attr_info['unique']
-                ]
-                /** @var StoreOrderCartInfoServices $orderCartServices */
+                ];
                 $orderCartServices = app()->make(StoreOrderCartInfoServices::class);
                 $orderPayNum = $orderCartServices->sum($where_info, 'cart_num');
                 $orderRefundNum = $orderCartServices->sum($where_info, 'refund_num');
