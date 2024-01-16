@@ -1045,7 +1045,7 @@ class StoreCartServices extends BaseServices
                 $item['is_valid'] = 0;
                 $item['invalid_desc'] = '此商品超出配送/自提范围';
                 $invalid[] = $item;
-            } elseif ((isset($item['productInfo']['delivery_type']) && !$item['productInfo']['delivery_type']) || in_array($item['productInfo']['product_type'], [1, 2, 3])) {
+            } elseif ((isset($item['productInfo']['delivery_type']) && !$item['productInfo']['delivery_type']) || in_array($item['productInfo']['product_type'], [1, 2, 3]) || $item['productInfo']['is_class']) {
                 $item['is_valid'] = 1;
                 $valid[] = $item;
             } elseif (!$applicableStatus) {
