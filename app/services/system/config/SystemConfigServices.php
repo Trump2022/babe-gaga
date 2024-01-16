@@ -2063,7 +2063,7 @@ WSS;
     public function routineBaseFormBuild()
     {
         $data = $this->getConfigAllField([
-            'routine_appId', 'routine_appsecret', 'routine_contact_type', 'routine_name', 'store_user_avatar', 'order_shipping_open', 'routine_auth_type', 'store_user_agreement'
+            'routine_appId', 'routine_appsecret', 'routine_contact_type', 'routine_name', 'store_user_avatar', 'order_shipping_open', 'routine_auth_type',  'store_user_agreement'
         ]);
         return $data;
     }
@@ -2211,11 +2211,12 @@ WSS;
         $data = $this->getConfigAllField([
             'station_open', 'site_name', 'site_url', 'wap_login_logo', 'site_phone',
             'admin_login_slide', 'site_logo', 'site_logo_square', 'login_logo',
-            'navigation_open', 'cache_config',  'copyright_context', 'copyright_image',
+            'navigation_open', 'cache_config', 'copyright_context', 'copyright_image',
             'start_login_logo',
 //            'store_func_status',
             'video_func_status', 'product_video_status',
-//            'h5_avatar', 'store_user_mobile'
+//            'h5_avatar',
+            'store_user_mobile',
             'wechat_share_img', 'wechat_share_title', 'wechat_share_synopsis', 'product_poster_title',
 
             'community_status', 'community_audit', 'community_auth', 'community_reply_status',
@@ -2243,6 +2244,7 @@ WSS;
                     Build::switch('navigation_open', $data['navigation_open']['info'], (int)$data['navigation_open']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['navigation_open']['desc']),
                     Build::switch('video_func_status', $data['video_func_status']['info'], (int)$data['video_func_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['video_func_status']['desc']),
                     Build::switch('product_video_status', $data['product_video_status']['info'], (int)$data['product_video_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['product_video_status']['desc']),
+                    Build::radio('store_user_mobile', $data['store_user_mobile']['info'], (int)$data['store_user_mobile']['value'])->info($data['store_user_mobile']['desc'])->options($this->getOptions($data['store_user_mobile']['parameter'])),
                 ])
                 ->option('分享设置', [
                     Build::uploadFrame('wechat_share_img', $data['wechat_share_img']['info'], $data['wechat_share_img']['value'])->info($data['wechat_share_img']['desc'])->url('/' . config('admin.admin_prefix') .  '/widget.images/index.html'),
