@@ -359,6 +359,7 @@ class WriteOffOrderServices extends BaseServices
                 if (count($ids) != count($cartInfo)) {
                     throw new ValidateException('订单中有商品已核销');
                 }
+
 				foreach ($cartIds as $cart) {
 					$info = $cartInfo[$cart['cart_id']] ?? [];
 					if (!$info) {
@@ -379,7 +380,6 @@ class WriteOffOrderServices extends BaseServices
 					throw new ValidateException('已经超过指定核销的结束时间，无法核销');
 				}
 			}
-
             $data = ['clerk_id' => $uid];
             $cartData = ['writeoff_time' => $time];
             if ($auth == 1) {//店员
@@ -439,42 +439,44 @@ class WriteOffOrderServices extends BaseServices
                     }
                 } else {
                     //整单核销
-                    if ($cartInfo['write_surplus_times'] > 0) {
-                        //修改原来订单商品信息
-                        if ($orderInfo['is_class'] && ($cartInfo['write_surplus_times'] == $cartInfo['write_times'])) {
-                            // 判断是否在激活时间内
-                            if ($cartInfo['active_start'] && (time() < $cartInfo['active_start'])) {
-                                throw new ValidateException('未到课程激活开始时间');
+                    foreach ($cartInfo as $info) {
+                        if ($info['write_surplus_times'] > 0) {
+                            //修改原来订单商品信息
+                            if ($orderInfo['is_class'] && ($info['write_surplus_times'] == $info['write_times'])) {
+                                // 判断是否在激活时间内
+                                if ($info['active_start'] && (time() < $info['active_start'])) {
+                                    throw new ValidateException('未到课程激活开始时间');
+                                }
+
+                                if ($info['active_end'] && (time() > $info['active_end'])) {
+                                    throw new ValidateException('已过课程激活结束时间');
+                                }
+
+                                // 第一次核销，激活课程, 使用时效的开始和结束时间
+                                $cartData['write_start'] = time();
+                                $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$info['write_days'], '86400'));
                             }
-                            
-                            if ($cartInfo['active_end'] && (time() > $cartInfo['active_end'])) {
-                                throw new ValidateException('已过课程激活结束时间');
+
+                            //核销减1
+                            $cartInfoServices->decUpdate(['oid' => $orderInfo['id']], 'write_surplus_times');
+
+                            //核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
+                            /** @var UserServices $userServices */
+                            $userServices = app()->make(UserServices::class);
+                            $userInfo = $userServices->get((int)$orderInfo['uid']);
+
+                            $write_surplus_times = $info['write_surplus_times'] - 1;
+                            if ($write_surplus_times == 0) {
+                                //核销完成
+                                $cartData['is_writeoff'] = 1;
+                                $cartData['writeoff_time'] = time();
+                                $cartInfoServices->update(['oid' => $orderInfo['id']], $cartData);
+
+                                //返佣
+                                /** @var StoreOrderTakeServices $storeOrderTakeServices */
+                                $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
+                                $storeOrderTakeServices->backOrderBrokerage($orderInfo, $userInfo);
                             }
-
-                            // 第一次核销，激活课程, 使用时效的开始和结束时间
-                            $cartData['write_start'] = time();
-                            $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$cartInfo['write_days'], '86400'));
-                        }
-
-                        //核销减1
-                        $cartInfoServices->decUpdate(['oid' => $orderInfo['id']], 'write_surplus_times');
-
-                        //核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
-                        /** @var UserServices $userServices */
-                        $userServices = app()->make(UserServices::class);
-                        $userInfo = $userServices->get((int)$orderInfo['uid']);
-
-                        $write_surplus_times = $cartInfo['write_surplus_times'] - 1;
-                        if ($write_surplus_times == 0) {
-                            //核销完成
-                            $cartData['is_writeoff'] = 1;
-                            $cartData['writeoff_time'] = time();
-                            $cartInfoServices->update(['oid' => $orderInfo['id']], $cartData);
-
-                            //返佣
-                            /** @var StoreOrderTakeServices $storeOrderTakeServices */
-                            $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
-                            $storeOrderTakeServices->backOrderBrokerage($orderInfo, $userInfo);
                         }
                     }
                 }
