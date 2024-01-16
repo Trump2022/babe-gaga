@@ -54,7 +54,7 @@ class SystemTimer extends Cron implements ListenerInterface
             if (!$cacheCount) {
                 $timerServices->setAllTimerCache();
             }
-            /*$list = $timerServices->cacheList();
+            $list = $timerServices->cacheList();
             foreach ($list as $item) {
 				$mark = (string)($item['mark'] ?? '');
                 if (!$mark || !isset($item['is_open'])) {
@@ -70,7 +70,7 @@ class SystemTimer extends Cron implements ListenerInterface
 						});
 					}
 				}
-            }*/
+            }
         });
     }
 
