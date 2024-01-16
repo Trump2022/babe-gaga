@@ -407,6 +407,8 @@ class StoreCouponIssueServices extends BaseServices
                 if (!$list) $list = $this->dao->getIssueCouponListNew($uid, ['type' => 1], $field, $page, $limit);
                 if (!$list) $list = $this->dao->getIssueCouponListNew($uid, ['type' => 2], $field, $page, $limit);
 				if (!$list) $list = $this->dao->getIssueCouponListNew($uid, ['type' => 3], $field, $page, $limit);
+				if (!$list) $list = $this->dao->getIssueCouponListNew($uid, ['type' => 4], $field, $page, $limit);
+				if (!$list) $list = $this->dao->getIssueCouponListNew($uid, ['type' => 5], $field, $page, $limit);
             }
         } else {
             $productInfo = $storeProductService->getOne(['id' => $where['product_id']], 'id,type,relation_id,cate_id,brand_id');
@@ -435,9 +437,9 @@ class StoreCouponIssueServices extends BaseServices
 				$list = $this->dao->getIssueCouponListNew($uid, ['product_id' => $product_id, 'cate_id' => $cateId, 'brand_id' => $bandId], $field);
             } else {
 				$coupon_where = ['type' => $where['type']];
-                if ($where['type'] == 1) {
+                if ($where['type'] == 1 || $where['type'] == 4) {
 					$category_type['cate_id'] = $cateId;
-                } elseif ($where['type'] == 2) {
+                } elseif ($where['type'] == 2 || $where['type'] == 5) {
 					$category_type['product_id'] = $where['product_id'];
                 } elseif ($where['type'] == 3) {
 					$category_type['brand_id'] = $where['brand_id'];
@@ -481,6 +483,7 @@ class StoreCouponIssueServices extends BaseServices
                     case 0:
                         break;
                     case 1://品类券
+                    case 4://品类券(课程)
                         $product_where['salesOrder'] = 'desc';
                         $category_type = ($category[$item['category_id'] ?? 0]['pid'] ?? 0) == 0 ? 1 : 2;
                         if ($category_type == 1) {
@@ -490,6 +493,7 @@ class StoreCouponIssueServices extends BaseServices
                         }
                         break;
                     case 2://商品劵
+                    case 5://商品劵(课程)
                         $product_where['salesOrder'] = 'desc';
                         $product_where['ids'] = $item['product_id'];
                         break;
@@ -919,6 +923,7 @@ class StoreCouponIssueServices extends BaseServices
                         }
                         break;
                     case 1://品类券
+                    case 4://品类券(课程)
                         $cateGorys = $storeCategoryServices->getAllById((int)$coupon['category_id']);
                         if ($cateGorys) {
                             $cateIds = array_column($cateGorys, 'id');
@@ -932,6 +937,7 @@ class StoreCouponIssueServices extends BaseServices
                         }
                         break;
                     case 2://商品券
+                    case 5://商品券(课程)
                         foreach ($cartList as $cart) {
                             if (!$isOverlay($cart))  continue;
 							$product_id = isset($cart['productInfo']['pid']) && $cart['productInfo']['pid'] ? $cart['productInfo']['pid'] : ($cart['product_id'] ?? 0);

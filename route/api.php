@@ -310,7 +310,10 @@ Route::group('api', function () {
         Route::post('sign/integral', 'v1.user.UserSignController/sign_integral')->middleware(BlockerMiddleware::class)->name('signIntegral');//签到
         //优惠券类
         Route::post('coupon/receive', 'v1.activity.StoreCouponsController/receive')->name('couponReceive'); //领取优惠券
+
+        //空路由,方法不存在.
         Route::post('coupon/receive/batch', 'v1.activity.StoreCouponsController/receive_batch')->name('couponReceiveBatch'); //批量领取优惠券
+
         Route::get('coupons/user/:types', 'v1.activity.StoreCouponsController/user')->name('couponsUser');//用户已领取优惠券
         Route::get('coupons/order/:price', 'v1.activity.StoreCouponsController/order')->name('couponsOrder');//优惠券 订单列表
         //购物车类
@@ -707,7 +710,7 @@ Route::group('api', function () {
             Route::get('index', 'v2.PublicController/index')->name('index');//首页
             //优惠券
             Route::get('coupons', 'v2.activity.StoreCouponsController/lst')->name('couponsList'); //可领取优惠券列表
-            //商品评价列表
+            //商品评价列表:
             Route::get('reply/list/:id', 'v2.product.StoreProductController/reply_list')->name('v2replyList');//商品评价列表
         })->middleware(AuthTokenMiddleware::class, false);
 

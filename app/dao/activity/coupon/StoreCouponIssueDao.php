@@ -172,10 +172,10 @@ class StoreCouponIssueDao extends BaseDao
 			->when(isset($where['type']) && $where['type'] != -1, function ($query) use ($where) {
 				$query->where('type', $where['type']);
 			})
-			->when(isset($where['type']) && $where['type'] == 1 && isset($where['cate_id']) && $where['cate_id'], function ($query) use ($where) {
+			->when(isset($where['type']) && in_array($where['type'], [1,4]) && isset($where['cate_id']) && $where['cate_id'], function ($query) use ($where) {
 				$query->where('category_id', 'in', $where['cate_id']);
 			})
-			->when(isset($where['type']) && $where['type'] == 2 && isset($where['product_id']) && $where['product_id'], function ($query) use ($where) {
+			->when(isset($where['type']) && in_array($where['type'], [2,5]) && isset($where['product_id']) && $where['product_id'], function ($query) use ($where) {
 				$query->whereFindinSet('product_id', $where['product_id']);
 			})
 			->when(isset($where['type']) && $where['type'] == 3 && isset($where['brand_id']) && $where['brand_id'], function ($query) use ($where) {

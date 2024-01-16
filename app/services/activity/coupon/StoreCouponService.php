@@ -73,6 +73,25 @@ class StoreCouponService extends BaseServices
                 $f[] = Form::frameImages('image', '商品', Url::buildUrl(config('admin.admin_prefix') . '/store.StoreProduct/index', array('fodder' => 'image', 'type' => 'many')))->icon('ios-add')->width('960px')->height('430px')->modal(['footer-hide' => true])->props(['srcKey' => 'image']);
                 $f[] = Form::hidden('product_id', '');
                 break;
+
+            case 4://品类券(课程)
+                $options = function () {
+                    /** @var StoreProductCategoryServices $storeCategoryService */
+                    $storeCategoryService = app()->make(StoreProductCategoryServices::class);
+                    $list = $storeCategoryService->getTierList(1, 1, 1);
+                    $menus = [];
+                    foreach (sort_list_tier($list) as $menu) {
+                        $menus[] = ['value' => $menu['id'], 'label' => $menu['html'] . $menu['cate_name'], 'disabled' => false];
+                    }
+
+                    return $menus;
+                };
+                $f[] = Form::select('category_id', '选择品类')->setOptions(Form::setOptions($options))->filterable(1)->col(12);
+                break;
+            case 5://商品券(课程)
+                $f[] = Form::frameImages('image', '商品(课程)', Url::buildUrl(config('admin.admin_prefix') . '/store.StoreProduct/index', array('fodder' => 'image', 'type' => 'many')))->icon('ios-add')->width('960px')->height('430px')->modal(['footer-hide' => true])->props(['srcKey' => 'image']);
+                $f[] = Form::hidden('product_id', '');
+                break;
         }
         $f[] = Form::number('coupon_price', '优惠券面值', 0)->min(0);
         $f[] = Form::number('use_min_price', '优惠券最低消费', 0)->min(0);

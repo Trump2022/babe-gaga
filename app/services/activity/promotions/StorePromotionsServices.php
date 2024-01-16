@@ -1884,6 +1884,7 @@ class StorePromotionsServices extends BaseServices
                     }
                     break;
                 case 1://品类券
+                case 4://品类券(课程)
                     /** @var StoreProductCategoryServices $storeCategoryServices */
                     $storeCategoryServices = app()->make(StoreProductCategoryServices::class);
                     $cateGorys = $storeCategoryServices->getAllById((int)$couponInfo['category_id']);
@@ -1898,7 +1899,8 @@ class StorePromotionsServices extends BaseServices
                         }
                     }
                     break;
-                case 2:
+                case 2://商品券
+                case 5://商品券(课程)
                     foreach ($cartInfo as $cart) {
                         if (!$isOverlay($cart)) continue;
                         $product_id = isset($cart['productInfo']['pid']) && $cart['productInfo']['pid'] ? $cart['productInfo']['pid'] : ($cart['product_id'] ?? 0);
