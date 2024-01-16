@@ -8,6 +8,8 @@ ALTER TABLE `gaga_store_order_refund` ADD `is_class` TINYINT(1) NOT NULL DEFAULT
 
 ALTER TABLE `gaga_store_product_rule` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `type`;
 
+ALTER TABLE `gaga_diy` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '首页类型：0-商品，1-课程' AFTER `id`;
+
 ALTER TABLE `gaga_store_product` ADD `write_valid` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '激活时效：1、永久； 2、购买后几天；3、固定' AFTER `is_sold`, ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '购买后：N天有效' AFTER `write_valid`, ADD `write_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活开始时间' AFTER `write_days`, ADD `write_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活结束时间' AFTER `write_start`;
 ALTER TABLE `gaga_store_product` ADD `store_overview` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '课程概述' AFTER `write_end`;
 ALTER TABLE `gaga_store_product` ADD `store_notes` VARCHAR(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '注意事项' AFTER `store_overview`;
@@ -80,15 +82,15 @@ INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_tit
  INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`, `width`)
  VALUES
  (520, 92, 0, 1, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true', 0),
- (521, 92, 0, 1, 0, '下单可获得积分', 'member_pay_num', 'text', '', '0', 'min:0', 100),
- (522, 92, 0, 1, 0, '签到可获得积分', 'member_sign_num', 'text', '', '0', 'min:0', 100),
- (523, 92, 0, 1, 0, '评价可获得积分', 'member_reply_num', 'text', '', '0', 'min:0', 100),
- (524, 92, 0, 1, 0, '邀请可获得积分', 'member_share_num', 'text', '', '0', 'min:0', 100),
- (525, 92, 0, 1, 0, '种草图文可获得积分', 'member_community_num', 'text', '', '0', 'min:0', 100),
+ (521, 92, 0, 1, 0, '下单可获得成长值', 'member_pay_num', 'text', '', '0', 'min:0', 100),
+ (522, 92, 0, 1, 0, '签到可获得成长值', 'member_sign_num', 'text', '', '0', 'min:0', 100),
+ (523, 92, 0, 1, 0, '评价可获得成长值', 'member_reply_num', 'text', '', '0', 'min:0', 100),
+ (524, 92, 0, 1, 0, '邀请可获得成长值', 'member_share_num', 'text', '', '0', 'min:0', 100),
+ (525, 92, 0, 1, 0, '种草图文可获得成长值', 'member_community_num', 'text', '', '0', 'min:0', 100),
  (526, 92, 0, 0, 0, '会员权益开关', 'member_interests_status', 'radio', '0=>开启\n1=>关闭', '0', 'required:true', 0);
 
 
-ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员积分' AFTER `integral`;
+ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员成长值' AFTER `integral`;
 ALTER TABLE `gaga_user` ADD `member_level` int unsigned DEFAULT '0' COMMENT '免费会员等级' AFTER `integral`;
 
 
