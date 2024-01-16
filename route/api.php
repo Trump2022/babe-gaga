@@ -710,7 +710,7 @@ Route::group('api', function () {
             Route::get('index', 'v2.PublicController/index')->name('index');//首页
             //优惠券
             Route::get('coupons', 'v2.activity.StoreCouponsController/lst')->name('couponsList'); //可领取优惠券列表
-            //商品评价列表
+            //商品评价列表:
             Route::get('reply/list/:id', 'v2.product.StoreProductController/reply_list')->name('v2replyList');//商品评价列表
         })->middleware(AuthTokenMiddleware::class, false);
 

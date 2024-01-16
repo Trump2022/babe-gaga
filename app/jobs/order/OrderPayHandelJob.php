@@ -131,7 +131,7 @@ class OrderPayHandelJob extends BaseJobs
                                 case 3://具体时间段
                                     if ((isset($product['write_start']) && $product['write_start']) || (isset($product['write_end']) && $product['write_end'])) {
                                         $data['active_start'] = $product['write_start'] ?? 0;
-                                        $data['active_end'] = $product['write_end'] ?? 0;
+                                        $data['active_end'] = $product['write_end'] ? ($product['write_end'] + 86399) : 0;
                                     }
                                     break;
                             }

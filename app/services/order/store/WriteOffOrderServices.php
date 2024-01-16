@@ -410,9 +410,26 @@ class WriteOffOrderServices extends BaseServices
                     foreach ($cartIds as $cart) {
                         $write_surplus_num = $cartInfo[$cart['cart_id']]['write_surplus_times'] ?? 0;
                         if (!isset($cartInfo[$cart['cart_id']]) || !$write_surplus_num) continue;
+                        //修改原来订单商品信息
+                        if ($orderInfo['is_class'] && ($write_surplus_num == $cart['write_times'])) {
+                            // 判断是否在激活时间内
+                            if ($cart['active_start'] && (time() < $cart['active_start'])) {
+                                throw new ValidateException('未到课程激活开始时间');
+                            }
+                            
+                            if ($cart['active_end'] && (time() > $cart['active_end'])) {
+                                throw new ValidateException('已过课程激活结束时间');
+                            }
+
+                            // 第一次核销，激活课程, 使用时效的开始和结束时间
+                            $cartData['write_start'] = time();
+                            $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$cart['write_days'], '86400'));
+                        }
+                        
                         if ($cart['cart_num'] >= $write_surplus_num) {//拆分完成
                             $cartData['write_surplus_times'] = 0;
                             $cartData['is_writeoff'] = 1;
+                            $cartData['writeoff_time'] = time();
                         } else {//拆分部分数量
                             $cartData['write_surplus_times'] = bcsub((string)$write_surplus_num, $cart['cart_num'], 0);
                             $cartData['is_writeoff'] = 0;
