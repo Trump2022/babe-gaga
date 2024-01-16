@@ -248,8 +248,8 @@ class StoreOrderCreateServices extends BaseServices
             }
         }
 
+        throw new ValidateException(json_encode($cartInfo[0]['productInfo']));
         if ($is_class) {
-            throw new ValidateException(json_encode($cartInfo[0]['productInfo']));
             if (empty($orderInfos)) {
                 throw new ValidateException('下单信息不能为空');
             }
