@@ -262,22 +262,27 @@ class PublicController extends BaseController
      */
     public function upload_image(Request $request, SystemAttachmentServices $services)
     {
-        $data = $request->postMore([
-            ['filename', 'file'],
-        ]);
-        if (!$data['filename']) return app('json')->fail('参数有误');
+        //$data = $request->postMore([
+        //    ['filename', 'file'],
+        //]);
+        $file = $request->file('filename');
+        //if ( ! $data['filename']) return app('json')->fail('参数有误');
+        if ( ! $file) return app('json')->fail('参数有误');
         if (CacheService::has('start_uploads_' . $request->uid()) && CacheService::get('start_uploads_' . $request->uid()) >= 100) return app('json')->fail('非法操作');
         $upload = UploadService::init();
-        $info = $upload->to('store/comment')->validate()->move($data['filename']);
+        //$info = $upload->to('store/comment')->validate()->move($data['filename']);
+        $info = $upload->to('store/comment')->validate()->move('filename');
         if ($info === false) {
             return app('json')->fail($upload->getError());
         }
         $res = $upload->getUploadInfo();
         $services->attachmentAdd($res['name'], $res['size'], $res['type'], $res['dir'], $res['thumb_path'], 1, (int)sys_config('upload_type', 1), $res['time'], 3);
-        if (CacheService::has('start_uploads_' . $request->uid()))
+        if (CacheService::has('start_uploads_' . $request->uid())) {
             $start_uploads = (int)CacheService::get('start_uploads_' . $request->uid());
-        else
+        } else {
             $start_uploads = 0;
+        }
+
         $start_uploads++;
         CacheService::set('start_uploads_' . $request->uid(), $start_uploads, 86400);
         $res['dir'] = path_to_url($res['dir']);
@@ -298,8 +303,7 @@ class PublicController extends BaseController
     public function upload_video(Request $request, SystemAttachmentServices $services): Response
     {
         $file = $request->file('file');
-        if (!$file)
-            return app('json')->fail('请上传视频');
+        if ( ! $file) return app('json')->fail('请上传视频');
         validate(["file|视频" => [
             'fileSize' => config('upload.filesize'),
             'fileExt' => 'mp4,mov',
