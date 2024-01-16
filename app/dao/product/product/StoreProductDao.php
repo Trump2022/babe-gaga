@@ -202,6 +202,7 @@ class StoreProductDao extends BaseDao
      */
     public function getSearchList(array $where, int $page = 0, int $limit = 0, array $field = ['*'], string $order = '', array $with = ['couponId', 'descriptions'])
     {
+        $is_class = $where['is_class'] ?? -1;
         if (isset($where['star'])) $with[] = 'star';
         return $this->search($where)->with($with)->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
             $query->page($page, $limit);
@@ -249,6 +250,8 @@ class StoreProductDao extends BaseDao
             }
         })->when(!$page && $limit, function ($query) use ($limit) {
             $query->limit($limit);
+        })->when($is_class > -1, function ($query) use ($is_class) {
+            $query->where('is_class', $is_class);
         })->field($field)->select()->toArray();
     }
 
