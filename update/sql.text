@@ -8,8 +8,6 @@ ALTER TABLE `gaga_store_order_refund` ADD `is_class` TINYINT(1) NOT NULL DEFAULT
 
 ALTER TABLE `gaga_store_product_rule` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '类型：0-商品，1-课程' AFTER `type`;
 
-ALTER TABLE `gaga_diy` ADD `is_class` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '首页类型：0-商品，1-课程' AFTER `id`;
-
 ALTER TABLE `gaga_store_product` ADD `write_valid` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '激活时效：1、永久； 2、购买后几天；3、固定' AFTER `is_sold`, ADD `write_days` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '购买后：N天有效' AFTER `write_valid`, ADD `write_start` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活开始时间' AFTER `write_days`, ADD `write_end` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '激活结束时间' AFTER `write_start`;
 ALTER TABLE `gaga_store_product` ADD `store_overview` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '课程概述' AFTER `write_end`;
 ALTER TABLE `gaga_store_product` ADD `store_notes` VARCHAR(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '注意事项' AFTER `store_overview`;
