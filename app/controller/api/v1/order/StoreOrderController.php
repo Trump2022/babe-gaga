@@ -248,7 +248,7 @@ class StoreOrderController
         } elseif ($shipping_type == 4) {
             $addressInfo = $this->addressInfo;
         } else {
-            if (!$real_name || !$phone) {
+            if ( !$cartInfo[0]['productInfo']['is_class'] && (!$real_name || !$phone) ) {
                 return app('json')->fail('请填写姓名和电话');
             }
             $addressInfo = $this->addressInfo;
