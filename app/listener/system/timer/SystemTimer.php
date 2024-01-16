@@ -54,7 +54,7 @@ class SystemTimer extends Cron implements ListenerInterface
             if (!$cacheCount) {
                 $timerServices->setAllTimerCache();
             }
-            $list = $timerServices->cacheList();
+            /*$list = $timerServices->cacheList();
             foreach ($list as $item) {
 				$mark = (string)($item['mark'] ?? '');
                 if (!$mark || !isset($item['is_open'])) {
@@ -70,7 +70,7 @@ class SystemTimer extends Cron implements ListenerInterface
 						});
 					}
 				}
-            }
+            }*/
         });
     }
 
@@ -345,8 +345,8 @@ class SystemTimer extends Cron implements ListenerInterface
                     ]);
                 }
                 break;
-            /*case 'course_verification_rebate' : // 课程商品核销完返佣
-
+            case 'course_verification_rebate' : // 课程商品核销完返佣
+                /** @var StoreOrderCartInfoServices $service */
                 $service = app()->make(StoreOrderCartInfoServices::class);
                 try {
                     return $service->courseVerificationRebate();
@@ -357,7 +357,7 @@ class SystemTimer extends Cron implements ListenerInterface
                         'line' => $e->getLine()
                     ]);
                 }
-                break;*/
+                break;
         }
     }
 }
