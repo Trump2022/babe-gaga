@@ -12,6 +12,7 @@ namespace app\model\user;
 
 use app\model\activity\video\Video;
 use app\model\product\product\StoreProduct;
+use app\model\store\product\Spu;
 use crmeb\traits\ModelTrait;
 use crmeb\basic\BaseModel;
 use think\Model;
