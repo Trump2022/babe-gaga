@@ -8,15 +8,13 @@
 // +----------------------------------------------------------------------
 // | Author: CRMEB Team <admin@crmeb.com>
 // +----------------------------------------------------------------------
+declare (strict_types=1);
 
 namespace app\services\order;
 
 use app\dao\order\StoreOrderInfoDao;
 use app\services\BaseServices;
-use crmeb\traits\OptionTrait;
 use crmeb\traits\ServicesTrait;
-use crmeb\utils\Arr;
-use think\exception\ValidateException;
 
 /**
  * Class StoreOrderInfoServices
@@ -25,7 +23,6 @@ use think\exception\ValidateException;
  */
 class StoreOrderInfoServices extends BaseServices
 {
-    use OptionTrait;
     use ServicesTrait;
 
     /**
