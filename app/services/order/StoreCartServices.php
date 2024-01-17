@@ -456,6 +456,23 @@ class StoreCartServices extends BaseServices
             if ($type == 8) $info['is_luck'] = true;
             $info['trueStock'] = $info['productInfo']['attrInfo']['stock'] ?? 0;
             $info['costPrice'] = $info['productInfo']['attrInfo']['cost'] ?? 0;
+
+            //判断课程限购数量
+            if ($info['productInfo'] && $info['productInfo']['is_class'] && $info['attrInfo']['quota']) {
+                $where_info = [
+                    'uid' => $uid, 
+                    'product_id' => $product_id, 
+                    'sku_unique' => $info['attrInfo']['unique']
+                ];
+                $orderCartServices = app()->make(StoreOrderCartInfoServices::class);
+                $orderPayNum = $orderCartServices->sum($where_info, 'cart_num');
+                $orderRefundNum = $orderCartServices->sum($where_info, 'refund_num');
+                $orderNum = $orderPayNum - $orderRefundNum;
+                if (($cart_num + $orderNum) > $info['attrInfo']['quota']) {
+                    throw new ValidateException('该课程限购数量：' . $info['attrInfo']['quota'] . '个 ，您已经购买 ' . $orderNum . ' 个');
+                }
+            }
+
             try {
                 CacheService::redisHandler()->set($key, $info, 3600);
             } catch (\Throwable $e) {
