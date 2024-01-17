@@ -297,14 +297,14 @@ class StoreOrderCreateServices extends BaseServices
             }
             $tmp['sex'] = in_array($tmp['sex'], [0, 1, 2]) ? (int)$tmp['sex'] : 0;
 
-            if (empty($tmp['store_id'])) {
-                throw new ValidateException('请选择下单信息的上课门店');
-            }
+            // if (empty($tmp['store_id'])) {
+            //     throw new ValidateException('请选择下单信息的上课门店');
+            // }
             $tmp['store_id'] = (int)$tmp['store_id'];
 
-            if (empty($tmp['store_address'])) {
-                throw new ValidateException('请填写下单信息的上课门店地址');
-            }
+            // if (empty($tmp['store_address'])) {
+            //     throw new ValidateException('请填写下单信息的上课门店地址');
+            // }
 
             $orderInfos = $tmp;
         }
