@@ -468,6 +468,44 @@ class SystemStoreServices extends BaseServices
     }
 
     /**
+     * 获取适用门店缓存
+     * @param int $type
+     * @param array $ids
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @author 等风来
+     * @email 136327134@qq.com
+     * @date 2024/1/17
+     */
+    public function getApplicableStore(int $type, array $ids = [])
+    {
+        $res = $where = [];
+        $where['is_del'] = 0;
+        if ( ! $type) {
+            return $res;
+        }
+
+        if ($type == 2 && $ids) {
+            $where['ids'] = $ids;
+        }
+
+        $storeList = $this->dao->getStoreList($where, ['*'], 0);
+        if ($storeList) {
+            foreach ($storeList as $storeInfo) {
+                $storeInfo['latlng'] = $storeInfo['latitude'] . ',' . $storeInfo['longitude'];
+                $storeInfo['dataVal'] = $storeInfo['valid_time'] ? explode(' - ', $storeInfo['valid_time']) : [];
+                $storeInfo['timeVal'] = $storeInfo['day_time'] ? explode(' - ', $storeInfo['day_time']) : [];
+                $storeInfo['address2'] = $storeInfo['address'] ? explode(',', $storeInfo['address']) : [];
+                $res[] = $storeInfo;
+            }
+        }
+
+        return $res;
+    }
+
+    /**
      * 后台获取提货点详情
      * @param int $id
      * @param string $felid
