@@ -582,13 +582,16 @@ class StoreOrderController
             $type = 1;
             $orderInfo = $writeOffOrderServices->writeoffOrderInfo($uid, $verifyCode, $type);
         } catch (\Throwable $e) {
+            return app('json')->fail($e->getMessage());
             $orderInfo = [];
+
         }
         if (!$orderInfo) {
             try {
                 $type = 2;
                 $orderInfo = $writeOffOrderServices->writeoffOrderInfo($uid, $verifyCode, $type);
             } catch (\Throwable $e) {
+                return app('json')->fail($e->getMessage());
                 $orderInfo = [];
             }
         }

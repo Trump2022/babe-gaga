@@ -316,6 +316,9 @@ class StoreProductCategoryServices extends BaseServices
                 $order = ['sort', 'desc'];
                 $map['is_del'] = 0;
                 $map['is_show'] = 1;
+                if(!empty($where['is_class'])){
+                    $map['type'] = 0;
+                }
                 foreach ($list as &$itme){
                     if(!empty($itme['children'])){
                         foreach ($itme['children'] as &$v){
