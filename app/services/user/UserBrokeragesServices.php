@@ -175,7 +175,7 @@ class UserBrokeragesServices extends BaseServices
         ];
         $inc = sys_config($type) > 0 ? sys_config($type) : 0;
         $user = app()->make(UserServices::class)->getWhere(['uid' => $uid],'*',['member']);
-        $svip_status = $user->is_svip > 0 && sys_config('svip_switch_status') == '1';
+        $svip_status = $user->is_svip > 0 && sys_config('member_card_status') == '1';
         if ($svip_status) {
             $svipRate = app()->make(MemberInterestsServices::class)->getSvipInterestVal(MemberInterestsServices::HAS_TYPE_MEMBER);
             if ($svipRate > 0) {

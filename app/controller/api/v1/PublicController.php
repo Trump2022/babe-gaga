@@ -262,16 +262,16 @@ class PublicController extends BaseController
      */
     public function upload_image(Request $request, SystemAttachmentServices $services)
     {
-        //$data = $request->postMore([
-        //    ['filename', 'file'],
-        //]);
-        $file = $request->file('filename');
-        //if ( ! $data['filename']) return app('json')->fail('参数有误');
-        if ( ! $file) return app('json')->fail('参数有误');
+        $data = $request->postMore([
+            ['filename', 'file'],
+        ]);
+        //$file = $request->file('filename');
+        if ( ! $data['filename']) return app('json')->fail('参数有误');
+        //if ( ! $file) return app('json')->fail('参数有误');
         if (CacheService::has('start_uploads_' . $request->uid()) && CacheService::get('start_uploads_' . $request->uid()) >= 100) return app('json')->fail('非法操作');
         $upload = UploadService::init();
-        //$info = $upload->to('store/comment')->validate()->move($data['filename']);
-        $info = $upload->to('store/comment')->validate()->move('filename');
+        $info = $upload->to('store/comment')->validate()->move($data['filename']);
+        //$info = $upload->to('store/comment')->validate()->move('filename');
         if ($info === false) {
             return app('json')->fail($upload->getError());
         }
