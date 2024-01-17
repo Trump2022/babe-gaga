@@ -464,9 +464,6 @@ Route::group('api', function () {
             //回复列表
             Route::get('/:id/reply', 'v1.community.CommunityReplyController/lst')->name('apiCommunityReplyList');
 
-            //已购商品
-            Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
-
             //获取二维码
             Route::get('qrcode/:id', 'v1.community.CommunityController/qrcode');
         })->middleware(AuthTokenMiddleware::class, false);
@@ -491,6 +488,9 @@ Route::group('api', function () {
 
             //评论点赞
             Route::post('reply/start/:id', 'v1.community.CommunityReplyController/start')->name('apiCommunityReplyStart');
+
+            //已购商品
+            Route::get('pay_product/lst', 'v1.community.CommunityController/payList');
 
             //收藏商品
             Route::get('rela_product/lst', 'v1.community.CommunityController/relationList');

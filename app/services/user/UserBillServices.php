@@ -511,7 +511,7 @@ class UserBillServices extends BaseServices
      * @param int $link_id
      * @return bool|mixed
      */
-    public function income(string $type, int $uid, $number, $balance, int $link_id = 0)
+    public function income(string $type, int $uid, $number, $balance, $link_id = 0)
     {
         $data = $this->incomeData[$type] ?? null;
         if (!$data) {
