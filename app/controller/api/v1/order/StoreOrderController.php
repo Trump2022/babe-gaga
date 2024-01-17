@@ -804,7 +804,7 @@ class StoreOrderController
                 //下单信息
                 $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
                 //课程适用门店
-                $orderData['applicable_stores'] = app()->make(SystemStoreServices::class)->getApplicableStore($order['applicable_type'], $order['applicable_store_id']);
+                // $orderData['applicable_stores'] = app()->make(SystemStoreServices::class)->getApplicableStore($order['applicable_type'], $order['applicable_store_id']);
             }
         }
 		// 判断是否开启小程序订单管理
