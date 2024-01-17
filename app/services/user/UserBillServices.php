@@ -508,8 +508,17 @@ class UserBillServices extends BaseServices
      * @param int $uid
      * @param int|string|array $number
      * @param int|string $balance
-     * @param int $link_id
+     * @param mixed $link_id
      * @return bool|mixed
+     */
+
+    /**
+     * @param string $type | 写入类型
+     * @param int $uid
+     * @param $number
+     * @param $balance
+     * @param mixed $link_id
+     * @return bool|BaseModel|Model
      */
     public function income(string $type, int $uid, $number, $balance, $link_id = 0)
     {
