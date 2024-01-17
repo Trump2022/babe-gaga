@@ -21,7 +21,7 @@ use think\exception\ValidateException;
 /**
  * Class StoreOrderInfoServices
  * @package app\services\order
- * @mixin StoreOrderCartInfoDao
+ * @mixin StoreOrderInfoDao
  */
 class StoreOrderInfoServices extends BaseServices
 {
@@ -30,7 +30,7 @@ class StoreOrderInfoServices extends BaseServices
 
     /**
      * StorePinkServices constructor.
-     * @param StoreOrderCartInfoDao $dao
+     * @param StoreOrderInfoDao $dao
      */
     public function __construct(StoreOrderInfoDao $dao)
     {
