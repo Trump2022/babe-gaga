@@ -64,7 +64,7 @@ class StoreOrderInfoDao extends BaseDao
             $res = $this->getModel()->where('id', $row['id'])->update($data);
         } else {
             $data['oid'] = $oid;
-            $data['update_time'] = time();
+            $data['add_time'] = time();
             $res = $this->getModel()->insertGetId($data);
         }
         return $res;
