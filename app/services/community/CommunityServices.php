@@ -82,15 +82,19 @@ class CommunityServices extends BaseServices
         $ret = $this->dao->get($id);
         //event('community.status.before',compact('id','data'));
         Db::transaction(function () use($ret,$id, $data) {
-
-            if ($data['status'] == 1) {
-                $number = sys_config('member_community_num');
-                if ($number) {
-                    $this->updateIntegral($ret['uid'], $id);
+            $data['status_time'] = date('Y-m-d H:i;s', time());
+            $affected_rows = Db::name('community')
+                ->where('community_id', $id)
+                ->where('status', '<>', $data['status'])
+                ->where('status', '=', $ret['status'])
+                ->update($data);
+            if ($affected_rows) {
+                if ($data['status'] == 1) {
+                    $this->incIntegral($ret['uid'], $id);
+                } else if ($ret['status'] == 1){
+                    $this->decIntegral($ret['uid'], $id);
                 }
             }
-            $data['status_time'] = date('Y-m-d H:i;s', time());
-            $this->dao->update($id, $data);
             //event('community.status',compact('id'));
         });
     }
@@ -490,10 +494,7 @@ class CommunityServices extends BaseServices
         return Db::transaction(function () use($data) {
             $community = $this->dao->create($data);
             if ($data['status'] == 1) {
-                $number = sys_config('member_community_num');
-                if ($number) {
-                    $this->updateIntegral($data['uid'], $community->community_id);
-                }
+                $this->incIntegral($data['uid'], $community->community_id);
             }
             //if ($data['spu_id']) $this->joinProduct($community->community_id,$data['spu_id']);
             //event('community.create',compact('community'));
@@ -510,7 +511,7 @@ class CommunityServices extends BaseServices
      * @author: QSW
      * @email: qsw2012@outlook.com
      */
-    public function updateIntegral($uid, $community_id)
+    public function incIntegral($uid, $community_id)
     {
         $number = sys_config('member_community_num');
         if ($number) {
@@ -521,8 +522,35 @@ class CommunityServices extends BaseServices
 
             /** @var UserBillServices $userBillServices */
             $userBillServices = app()->make(UserBillServices::class);
-            $balance = $userInfo['integral'];
-            $userBillServices->income('create_community_give_integral', $uid, $number, $balance, $community_id);
+            $userBillServices->income('create_community_give_integral', $uid, (float) $number, $userInfo['integral'], $community_id);
+        }
+    }
+
+    /**
+     * @param $uid
+     * @param $community_id
+     * @return void
+     */
+    public function decIntegral($uid, $community_id)
+    {
+        /** @var UserBillServices $userBillServices */
+        $userBillServices = app()->make(UserBillServices::class);
+        $integralData = $userBillServices->getIncomeData('create_community_give_integral');
+        $where = [
+            'uid' => $uid,
+            'link_id' => $community_id,
+            'type' => $integralData['type'],
+            'category' => $integralData['category'],
+            'pm' => 1,
+            'status' => 1
+        ];
+        $ub = $userBillServices->getLastGiveIntegral($where);
+        if ($ub && $ub['number']) {
+            /** @var UserServices $userServices */
+            $userServices = app()->make(UserServices::class);
+            $userServices->decUpdate($uid, 'integral', $ub['number']);
+            $userInfo = $userServices->getUserInfo($uid);
+            $userBillServices->income('create_community_integral_refund', $uid, (float) $ub['number'], $userInfo['integral'], $community_id);
         }
     }
 

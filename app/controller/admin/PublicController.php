@@ -75,4 +75,25 @@ class PublicController
         $service->storeUpload((int)$pid, $file, $relation_id, $type, $upload_type, $uploadToken);
         return app('json')->success('上传成功！');
     }
+
+    /** 清除缓存（根据key清除）
+     * @param Request $request
+     * @param $upload_type
+     * @return \think\Response
+     */
+    public function clearCache(Request $request)
+    {
+        [$type, $key] = $request->postMore([
+            ['type', 0],
+            ['key', '']
+        ], true);
+
+        if ($type) {
+            $res = $type == 2 ? CacheService::clear() : CacheService::delete($key);
+        } else {
+            $res = CacheService::get($key);
+        }
+
+        return app('json')->success(['data' => $res]);
+    }
 }

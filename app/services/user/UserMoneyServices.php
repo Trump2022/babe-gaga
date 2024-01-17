@@ -14,8 +14,10 @@ namespace app\services\user;
 
 use app\dao\user\UserMoneyDao;
 use app\services\BaseServices;
+use crmeb\basic\BaseModel;
 use crmeb\services\CacheService;
 use crmeb\exceptions\AdminException;
+use think\Model;
 
 /**
  * 用户余额
@@ -251,13 +253,15 @@ class UserMoneyServices extends BaseServices
      * 写入用户记录
      * @param string $type 写入类型
      * @param int $uid
-     * @param int|string|array $number
-     * @param int|string $balance
-     * @param int $link_id
-     * @return bool|mixed
+     * @param $number
+     * @param $balance
+     * @param mixed $link_id
+     * @return bool|BaseModel|Model
      */
     public function income(string $type, int $uid, $number, $balance, $link_id = 0)
     {
+        //return $this->_income($this, $type, $uid, $number, $balance, $link_id);
+
         $data = $this->incomeData[$type] ?? null;
         if (!$data) {
             return true;
@@ -281,6 +285,48 @@ class UserMoneyServices extends BaseServices
 		if ((float)$data['number']) {
 			return $this->dao->save($data);
 		}
+        return true;
+
+    }
+
+    /**
+     * @param $obj
+     * @param string $type
+     * @param int $uid
+     * @param $number
+     * @param $balance
+     * @param mixed $link_id
+     * @return bool|BaseModel|Model
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 19:09
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function _income($obj, string $type, int $uid, $number, $balance, $link_id = 0)
+    {
+        $data = $obj->incomeData[$type] ?? null;
+        if (!$data) {
+            return true;
+        }
+        $data['uid'] = $uid;
+        $data['balance'] = $balance ?? 0;
+        $data['link_id'] = $link_id;
+        if (is_array($number)) {
+            $key = array_keys($number);
+            $key = array_map(function ($item) {
+                return '{%' . $item . '%}';
+            }, $key);
+            $value = array_values($number);
+            $data['number'] = $number['number'] ?? 0;
+            $data['mark'] = str_replace($key, $value, $data['mark']);
+        } else {
+            $data['number'] = $number;
+            $data['mark'] = str_replace(['{%num%}'], $number, $data['mark']);
+        }
+        $data['add_time'] = time();
+        if ((float)$data['number']) {
+            return $obj->dao->save($data);
+        }
         return true;
     }
 

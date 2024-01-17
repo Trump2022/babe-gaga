@@ -17,6 +17,7 @@ use app\model\system\Relevance;
 use app\services\system\RelevanceServices;
 use app\dao\BaseDao;
 use app\model\community\Community;
+use crmeb\basic\BaseModel;
 
 class CommunityDao extends BaseDao
 {
@@ -30,6 +31,18 @@ class CommunityDao extends BaseDao
     protected function setModel(): string
     {
         return Community::class;
+    }
+
+    /**
+     * @return BaseModel
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 20:10
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getModel(): BaseModel
+    {
+        return parent::getModel();
     }
 
     public function search(array $where = [])

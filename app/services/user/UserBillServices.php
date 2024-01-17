@@ -50,8 +50,16 @@ class UserBillServices extends BaseServices
         'create_community_give_integral' => [
             'title' => '种草图文获得积分(gaga币)',
             'category' => 'integral',
-            'type' => 'create_community',
+            'type' => 'create_community_add',
             'mark' => '种草图文赠送{%num%}gaga币',
+            'status' => 1,
+            'pm' => 1
+        ],
+        'create_community_integral_refund' => [
+            'title' => '种草图文撤销审核扣除积分(gaga币)',
+            'category' => 'integral',
+            'type' => 'create_community_sub',
+            'mark' => '种草图文撤销审核扣除{%num%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
@@ -192,6 +200,19 @@ class UserBillServices extends BaseServices
     public function __construct(UserBillDao $dao)
     {
         $this->dao = $dao;
+    }
+
+    /**
+     * @param string $key
+     * @return array|array[]
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 19:23
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getIncomeData(string $key = ''): array
+    {
+        return strlen($key) ? $this->incomeData[$key] : $this->incomeData;
     }
 
 
@@ -501,17 +522,15 @@ class UserBillServices extends BaseServices
         return true;
     }
 
-
     /**
-     * 写入用户记录
-     * @param string $type 写入类型
+     * @param string $type | 写入类型
      * @param int $uid
-     * @param int|string|array $number
-     * @param int|string $balance
-     * @param int $link_id
-     * @return bool|mixed
+     * @param $number
+     * @param $balance
+     * @param mixed $link_id
+     * @return bool|BaseModel|Model
      */
-    public function income(string $type, int $uid, $number, $balance, int $link_id = 0)
+    public function income(string $type, int $uid, $number, $balance, $link_id = 0)
     {
         $data = $this->incomeData[$type] ?? null;
         if (!$data) {
@@ -537,6 +556,7 @@ class UserBillServices extends BaseServices
 			return $this->dao->save($data);
 		}
         return true;
+
     }
 
     /**

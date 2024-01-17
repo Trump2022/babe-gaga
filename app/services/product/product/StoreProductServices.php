@@ -936,8 +936,8 @@ class StoreProductServices extends BaseServices
                     break;
                 case 2://购买后n天
                     $data['section_time'] = [0, 0];
-                    if (!isset($item['write_days']) || !$item['write_days']) {
-                        throw new AdminException('填写激活时效天数');
+                    if (!isset($data['write_days']) || !$data['write_days']) {
+                        throw new AdminException('请填写激活时效天数');
                     }
                     break;
                 case 3://固定时间

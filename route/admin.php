@@ -48,7 +48,8 @@ Route::group('adminapi', function () {
         //扫码上传
         Route::post('file/scan/upload', 'PublicController/scanUpload')->name('scanUpload');
 //        Route::get('index', 'Test/index')->option(['real_name' => '测试地址']);
-
+        //清除缓存
+        Route::post('clearCache', 'PublicController/clearCache')->name('clearCache');
 //        Route::get('r', 'Test/rule')->option(['real_name' => '查看路由地址']);
     });
     /**

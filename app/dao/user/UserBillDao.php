@@ -14,6 +14,8 @@ namespace app\dao\user;
 
 use app\dao\BaseDao;
 use app\model\user\UserBill;
+use crmeb\basic\BaseModel;
+use think\Model;
 
 /**
  * gaga币&经验
@@ -327,5 +329,19 @@ class UserBillDao extends BaseDao
             $lockIntegral = bcadd($lockIntegral, $bill['number'], 0);
         }
         return $lockIntegral;
+    }
+
+    /**
+     * 最后一条积分获得记录
+     * @param $where
+     * @return array|BaseModel|mixed|Model
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 19:45
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getLastGiveIntegral($where)
+    {
+        return $this->getModel()->where($where)->order('id desc')->limit(1)->findOrEmpty();
     }
 }
