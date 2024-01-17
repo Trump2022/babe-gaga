@@ -486,6 +486,7 @@ class WriteOffOrderServices extends BaseServices
                     } else {
                         $data['status'] = 2;
                     }
+                    $data['use_status'] = 2;
                     /** @var StoreOrderTakeServices $storeOrdeTask */
                     $storeOrdeTask = app()->make(StoreOrderTakeServices::class);
                     $re = $storeOrdeTask->storeProductOrderUserTakeDelivery($orderInfo);
@@ -497,6 +498,7 @@ class WriteOffOrderServices extends BaseServices
 					$storeOrderCreateServices = app()->make(StoreOrderCreateServices::class);
 					$data['verify_code'] = $storeOrderCreateServices->getStoreCode();
                     $data['status'] = 5;
+                    $data['use_status'] = 1;
                 }
                 if (!$this->dao->update($orderInfo['id'], $data)) {
                     throw new ValidateException('Write off failure');

@@ -78,16 +78,17 @@ class StoreOrderDao extends BaseDao
                 case 0://未支付
                     $query->where('paid', 0)->where('status', 0)->where('refund_status', 0)->where('is_del', 0);
                     break;
-                case 1://已支付 未发货
-                    $query->where('paid', 1)->whereIn('status', [0, 4])->whereIn('refund_status', [0, 3])->whereIn('shipping_type', [1, 3, 4])->where('is_del', 0);
+                case 1://已支付 未发货  (课程待使用)
+                    $where_raw = '( (is_class=0 AND shipping_type IN (1,3,4) ) OR (is_class=1 AND use_status=0) )';
+                    $query->where('paid', 1)->whereIn('status', [0, 4])->whereIn('refund_status', [0, 3])->where('is_del', 0)->where($where_raw);
                     break;
                 case 7://已支付 部分发货
                     $query->where('paid', 1)->where('status', 4)->whereIn('refund_status', [0, 3])->where('is_del', 0);
                     break;
-                case 2://已支付  待收货
+                case 2://已支付  待收货  (课程使用中)
                     $query->where('paid', 1)->whereIn('status', [1, 5])->whereIn('refund_status', [0, 3])->where('is_del', 0);
                     break;
-                case 3:// 已支付  已收货  待评价
+                case 3:// 已支付  已收货  待评价  (课程已完成)
                     $query->where('paid', 1)->where('status', 2)->whereIn('refund_status', [0, 3])->where('is_del', 0);
                     break;
                 case 4:// 交易完成
