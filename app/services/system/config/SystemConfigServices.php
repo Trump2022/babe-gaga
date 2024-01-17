@@ -2223,7 +2223,13 @@ WSS;
             'community_reply_auth', 'community_reply_audit',
             'community_app_switch', 'community_video_audit',
 
-            'member_status','member_pay_num','member_sign_num','member_reply_num','member_share_num','member_community_num','member_interests_status',
+            //'member_status',
+            //'member_pay_num',
+            //'member_sign_num',
+            //'member_reply_num',
+            //'member_share_num',
+            'member_community_num',
+            //'member_interests_status',
         ]);
 
         $system = [];
@@ -2262,16 +2268,17 @@ WSS;
                     Build::switch('community_reply_status', $data['community_reply_status']['info'], (int)$data['community_reply_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['community_reply_status']['desc']),
                     Build::radio('community_reply_auth', $data['community_reply_auth']['info'], (int)$data['community_reply_auth']['value'])->info($data['community_reply_auth']['desc'])->options($this->getOptions($data['community_reply_auth']['parameter'])),
                     Build::switch('community_reply_audit', $data['community_reply_audit']['info'], (int)$data['community_reply_audit']['value'])->trueValue('免审核', 1)->falseValue('审核', 0)->info($data['community_reply_audit']['desc']),
+                    Build::input('member_community_num', $data['member_community_num']['info'], (int)$data['member_community_num']['value'])->info($data['member_community_num']['desc']),
                 ])
-            ->option('会员配置', [
-                Build::switch('member_status', $data['member_status']['info'], (int)$data['member_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['member_status']['desc']),
-                Build::input('member_pay_num', $data['member_pay_num']['info'], (int)$data['member_pay_num']['value'])->info($data['member_pay_num']['desc']),
-                Build::input('member_sign_num', $data['member_sign_num']['info'], (int)$data['member_sign_num']['value'])->info($data['member_sign_num']['desc']),
-                Build::input('member_reply_num', $data['member_reply_num']['info'], (int)$data['member_reply_num']['value'])->info($data['member_reply_num']['desc']),
-                Build::input('member_share_num', $data['member_share_num']['info'], (int)$data['member_share_num']['value'])->info($data['member_share_num']['desc']),
-                Build::input('member_community_num', $data['member_community_num']['info'], (int)$data['member_community_num']['value'])->info($data['member_community_num']['desc']),
-                Build::radio('member_interests_status', $data['member_interests_status']['info'], (int)$data['member_interests_status']['value'])->options($this->getOptions($data['member_interests_status']['parameter'])),
-            ]),
+            //->option('会员配置', [
+                //Build::switch('member_status', $data['member_status']['info'], (int)$data['member_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->info($data['member_status']['desc']),
+                //Build::input('member_pay_num', $data['member_pay_num']['info'], (int)$data['member_pay_num']['value'])->info($data['member_pay_num']['desc']),
+                //Build::input('member_sign_num', $data['member_sign_num']['info'], (int)$data['member_sign_num']['value'])->info($data['member_sign_num']['desc']),
+                //Build::input('member_reply_num', $data['member_reply_num']['info'], (int)$data['member_reply_num']['value'])->info($data['member_reply_num']['desc']),
+                //Build::input('member_share_num', $data['member_share_num']['info'], (int)$data['member_share_num']['value'])->info($data['member_share_num']['desc']),
+                //Build::input('member_community_num', $data['member_community_num']['info'], (int)$data['member_community_num']['value'])->info($data['member_community_num']['desc']),
+                //Build::radio('member_interests_status', $data['member_interests_status']['info'], (int)$data['member_interests_status']['value'])->options($this->getOptions($data['member_interests_status']['parameter'])),
+            //]),
 //                ->option('APP微信开放平台', [
 //                    Build::alert('小程序、公众号、PC端登录、APP微信登录或企业微信用户同步必须配置微信开放平台，申请微信开放平台地址：https://open.weixin.qq.com', 'warning')->showIcon(true),
 //                    Build::input('wechat_app_appid', $data['wechat_app_appid']['info'], $data['wechat_app_appid']['value'])->info($data['wechat_app_appid']['desc']),

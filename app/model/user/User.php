@@ -463,8 +463,8 @@ class User extends BaseModel
         if ($value != '') $query->where('bar_code', $value);
     }
 
-    public function member()
-    {
-        return $this->hasOne(UserBrokerages::class, 'brokerage_level', 'member_level')->where('type',1);
-    }
+//    public function member()
+//    {
+//        return $this->hasOne(UserBrokerages::class, 'brokerage_level', 'member_level')->where('type',1);
+//    }
 }

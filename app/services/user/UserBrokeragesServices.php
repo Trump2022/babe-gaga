@@ -162,15 +162,16 @@ class UserBrokeragesServices extends BaseServices
 
     public function incMemberValue(int $uid, string $type, int $id)
     {
-        if (! sys_config('member_status')) return ;
+        //if (! sys_config('member_status')) return ;
+        if (! sys_config('member_card_status')) return ;
         $make = app()->make(UserBillServices::class);
         $count = $make->getWhereCount(['type' => $type, 'link_id' => $id]);
         if ($count) return ;
         $config = [
-            'member_pay_num'   => '下单获得成长值',
-            'member_sign_num'  => '签到获得成长值',
-            'member_reply_num' => '评价获得成长值',
-            'member_share_num' => '邀请获得成长值',
+            //'member_pay_num'   => '下单获得成长值',
+            //'member_sign_num'  => '签到获得成长值',
+            //'member_reply_num' => '评价获得成长值',
+            //'member_share_num' => '邀请获得成长值',
             'member_community_num'  => '种草图文获得成长值',
         ];
         $inc = sys_config($type) > 0 ? sys_config($type) : 0;

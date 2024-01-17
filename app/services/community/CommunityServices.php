@@ -78,16 +78,16 @@ class CommunityServices extends BaseServices
     public function setStatus($id, $data)
     {
         $ret = $this->dao->get($id);
-        event('community.status.before',compact('id','data'));
+        //event('community.status.before',compact('id','data'));
         Db::transaction(function () use($ret,$id, $data) {
 
             if ($data['status'] == 1) {
-                $make = app()->make(UserBrokeragesServices::class);
-                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+//                $make = app()->make(UserBrokeragesServices::class);
+//                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
             }
             $data['status_time'] = date('Y-m-d H:i;s', time());
             $this->dao->update($id, $data);
-            event('community.status',compact('id'));
+            //event('community.status',compact('id'));
         });
     }
 
@@ -131,9 +131,9 @@ class CommunityServices extends BaseServices
      */
     public function destroy($id, $user = null)
     {
-        event('community.delete.before',compact('id','user'));
+        //event('community.delete.before',compact('id','user'));
         $this->dao->update($id,  ['is_del' =>  1]);
-        event('community.delete',compact('id', 'user'));
+        //event('community.delete',compact('id', 'user'));
     }
 
     /**
@@ -387,9 +387,9 @@ class CommunityServices extends BaseServices
             ->with([
                 'author' => function ($query) {
                     $query->field('uid,real_name,status,avatar,nickname,count_start,member_level');
-                    if (sys_config('member_status')) $query->with(['member' => function ($query) {
-                        $query->field('brokerage_icon,brokerage_level');
-                    }]);
+//                    if (sys_config('member_status')) $query->with(['member' => function ($query) {
+//                        $query->field('brokerage_icon,brokerage_level');
+//                    }]);
                 },
                 'relevance' => [
                     'spu' => function ($query) {
@@ -477,7 +477,7 @@ class CommunityServices extends BaseServices
      */
     public function create(array $data)
     {
-        event('community.create.before',compact('data'));
+        //event('community.create.before',compact('data'));
         if ($data['topic_id']) {
             $getTopic  =  app()->make(CommunityTopicServices::class)->get($data['topic_id']);
             if (!$getTopic || !$getTopic->status) throw new ValidateException('话题不存在或已关闭');
@@ -485,8 +485,13 @@ class CommunityServices extends BaseServices
         }
         return Db::transaction(function () use($data) {
             $community = $this->dao->create($data);
+            if ($data['status'] == 1) {
+//                $make = app()->make(UserBrokeragesServices::class);
+//                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+            }
+            $data['status_time'] = date('Y-m-d H:i;s', time());
             if ($data['spu_id'])$this->joinProduct($community->community_id,$data['spu_id']);
-            event('community.create',compact('community'));
+            //event('community.create',compact('community'));
             return $community->community_id;
         });
     }
@@ -504,7 +509,7 @@ class CommunityServices extends BaseServices
      */
     public function edit(int $id, array $data)
     {
-        event('community.update.before',compact('id','data'));
+        //event('community.update.before',compact('id','data'));
         if ($data['topic_id']) {
             $getTopic  =  app()->make(CommunityTopicServices::class)->get($data['topic_id']);
 
@@ -517,7 +522,7 @@ class CommunityServices extends BaseServices
             unset($data['spu_id']);
             $community = $this->dao->update($id, $data);
             if ($spuId) $this->joinProduct($id, $spuId);
-            event('community.update.before',compact('id','community'));
+            //event('community.update.before',compact('id','community'));
         });
     }
 
@@ -569,7 +574,8 @@ class CommunityServices extends BaseServices
         $data['avatar'] = $user->avatar;
         $data['nickname'] = $user->nickname;
         $data['is_start'] = $is_start;
-        $data['member_icon'] = sys_config('member_status') ? ($user->member->brokerage_icon ?? '')  : '';
+        //$data['member_icon'] = sys_config('member_status') ? ($user->member->brokerage_icon ?? '')  : '';
+        //$data['member_icon'] = sys_config('member_card_status') ? ($user->member->brokerage_icon ?? '')  : '';
         $data['is_self'] = $is_self;
         $data['fans'] = $user->count_fans;
 

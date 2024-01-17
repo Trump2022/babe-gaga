@@ -80,15 +80,17 @@ INSERT INTO `gaga_system_config_tab` (`id`, `is_store`, `pid`, `title`, `eng_tit
  INSERT INTO `gaga_system_config` (`id`, `config_tab_id`, `is_store`, `status`, `sort`, `info`, `menu_name`, `type`, `parameter`, `value`, `required`, `width`)
  VALUES
  (520, 92, 0, 1, 10, '开启会员', 'member_status', 'radio', '0=>关闭\n1=>开启', '0', 'required:true', 0),
- (521, 92, 0, 1, 0, '下单可获得成长值', 'member_pay_num', 'text', '', '0', 'min:0', 100),
- (522, 92, 0, 1, 0, '签到可获得成长值', 'member_sign_num', 'text', '', '0', 'min:0', 100),
- (523, 92, 0, 1, 0, '评价可获得成长值', 'member_reply_num', 'text', '', '0', 'min:0', 100),
- (524, 92, 0, 1, 0, '邀请可获得成长值', 'member_share_num', 'text', '', '0', 'min:0', 100),
- (525, 92, 0, 1, 0, '种草图文可获得成长值', 'member_community_num', 'text', '', '0', 'min:0', 100),
+ (521, 92, 0, 1, 0, '下单可获得积分', 'member_pay_num', 'text', '', '0', 'min:0', 100),
+ (522, 92, 0, 1, 0, '签到可获得积分', 'member_sign_num', 'text', '', '0', 'min:0', 100),
+ (523, 92, 0, 1, 0, '评价可获得积分', 'member_reply_num', 'text', '', '0', 'min:0', 100),
+ (524, 92, 0, 1, 0, '邀请可获得积分', 'member_share_num', 'text', '', '0', 'min:0', 100),
+ (525, 92, 0, 1, 0, '种草图文可获得积分', 'member_community_num', 'text', '', '0', 'min:0', 100),
  (526, 92, 0, 0, 0, '会员权益开关', 'member_interests_status', 'radio', '0=>开启\n1=>关闭', '0', 'required:true', 0);
 
+DELETE FROM  `gaga_system_config`  WHERE `menu_name` IN ('member_status', 'member_pay_num', 'member_sign_num', 'member_reply_num', 'member_share_num', 'member_interests_status');
+UPDATE `gaga_system_config` SET `config_tab_id`=91 WHERE `menu_name`='member_community_num';
 
-ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员成长值' AFTER `integral`;
+ALTER TABLE `gaga_user` ADD `member_value` int unsigned DEFAULT '0' COMMENT '免费会员积分' AFTER `integral`;
 ALTER TABLE `gaga_user` ADD `member_level` int unsigned DEFAULT '0' COMMENT '免费会员等级' AFTER `integral`;
 
 
