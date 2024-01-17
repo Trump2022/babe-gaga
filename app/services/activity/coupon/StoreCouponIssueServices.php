@@ -348,7 +348,10 @@ class StoreCouponIssueServices extends BaseServices
 			}
 		}
 		$where = ['product_id' => $productInfo['pid'] ? : $product_id, 'cate_id' => $cateId, 'brand_id' => $brandIds];
-		$list = $this->dao->getIssueCouponListNew($uid, $where, $field, $page, $limit);
+        if (isset($productInfo['is_class'])) {
+            $where['is_class'] = (int) $productInfo['is_class'];
+        }
+		$list = $this->dao->getIssueCouponListNew($uid, $where, $field, $page, $limit, );
 
 		//门店ID
 		$store_id = $productInfo['type'] == 1 ? ($productInfo['relation_id'] ?? 0) : 0;

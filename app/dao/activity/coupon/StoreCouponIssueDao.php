@@ -164,11 +164,18 @@ class StoreCouponIssueDao extends BaseDao
 
 	public function getIssueCouponListNew(int $uid, array $where = [], string $field = '*', int $page = 0, int $limit = 0, string $sort = 'sort desc,id desc')
 	{
+        $is_class = $where['is_class'] ?? NULL;
+        if (isset($where['is_class'])) unset($where['is_class']);
 		return $this->validSearch()->field($field)
 			->whereIn('receive_type', [1, 4])
 			->with(['used' => function ($query) use ($uid) {
 				$query->where('uid', $uid);
 			}])
+            ->when($is_class, function ($query) use ($is_class) {
+                $query->whereIn('type', [0, 4, 5]);
+            }, function ($query) use ($is_class) {
+                $query->whereIn('type', [0, 1, 2, 3]);
+            })
 			->when(isset($where['type']) && $where['type'] != -1, function ($query) use ($where) {
 				$query->where('type', $where['type']);
 			})
