@@ -781,7 +781,7 @@ class StoreOrderController
             }
 
             if ($order['is_class']) {
-                $orderData['used_times'] = $orderData['write_times'] - $orderData['write_surplus_times'];
+                $orderData['used_times'] = $orderData['write_times'] - $cart['write_surplus_times'];
                 $orderData['used_times_str'] = $orderData['used_times'].'/'.$orderData['write_times'].'次';
                 //激活时间
                 $orderData['active_time'] = [];
