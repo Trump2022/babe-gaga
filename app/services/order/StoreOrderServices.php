@@ -326,7 +326,7 @@ class StoreOrderServices extends BaseServices
         if ($detail == true && isset($order['id'])) {
             /** @var StoreOrderCartInfoServices $cartServices */
             $cartServices = app()->make(StoreOrderCartInfoServices::class);
-            $cartInfos = $cartServices->getCartColunm(['oid' => $order['id']], 'cart_num,is_writeoff,surplus_num,cart_info,refund_num,product_type,is_support_refund,is_gift,promotions_id,type,relation_id,write_times,write_surplus_times,write_start,write_end', 'unique');
+            $cartInfos = $cartServices->getCartColunm(['oid' => $order['id']], 'cart_num,is_writeoff,surplus_num,cart_info,refund_num,product_type,is_support_refund,is_gift,promotions_id,type,relation_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'unique');
             $info = [];
             /** @var StoreProductReplyServices $replyServices */
             $replyServices = app()->make(StoreProductReplyServices::class);
