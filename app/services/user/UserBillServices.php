@@ -47,6 +47,14 @@ class UserBillServices extends BaseServices
      * @var array[]
      */
     protected $incomeData = [
+        'create_community_give_integral' => [
+            'title' => '种草图文获得积分(gaga币)',
+            'category' => 'integral',
+            'type' => 'create_community',
+            'mark' => '种草图文赠送{%num%}gaga币',
+            'status' => 1,
+            'pm' => 1
+        ],
         'pay_give_integral' => [
             'title' => '购买商品赠送gaga币',
             'category' => 'integral',
@@ -177,37 +185,6 @@ class UserBillServices extends BaseServices
 		],
     ];
 
-
-    const TYPE_INFO = [
-        'brokerage/now_money' => '佣金转入余额',
-        'brokerage/order_one' => '获得一级推广佣金',
-        'brokerage/order_two' => '获得二级推广佣金',
-        'brokerage/refund_one' => '退还一级佣金',
-        'brokerage/refund_two' => '退还二级佣金',
-        'integral/cancel' => '退回积分',
-        'integral/deduction' => '购买商品',
-        'integral/points' => '兑换商品',
-        'integral/lock' => '下单赠送积分',
-        'integral/refund' => '订单退款',
-        'integral/refund_lock' => '扣除赠送积分',
-        'integral/sign_integral' => '签到赠送积分',
-        'integral/spread' => '邀请好友',
-        'integral/sys_dec' => '系统减少积分',
-        'integral/sys_inc' => '系统增加积分',
-        'integral/timeout' => '积分过期',
-        'mer_integral/deduction' => '积分抵扣',
-        'mer_integral/refund' => '订单退款',
-        'mer_lock_money/order' => '商户佣金冻结',
-        'now_money/brokerage' => '佣金转入余额',
-        'now_money/pay_product' => '购买商品',
-        'now_money/presell' => '支付预售尾款',
-        'now_money/recharge' => '余额充值',
-        'now_money/sys_dec_money' => '系统减少余额',
-        'now_money/sys_inc_money' => '系统增加余额',
-        'mer_margin/local_margin' => '线下缴纳保证金',
-        'mer_margin/pay_margin' => '线上缴纳保证金',
-    ];
-
     /**
      * UserBillServices constructor.
      * @param UserBillDao $dao
@@ -306,15 +283,6 @@ class UserBillServices extends BaseServices
     public function decBill(int $uid, string $category, string $type, array $data)
     {
         return $this->bill($uid, $category, $type, 0, $data);
-    }
-
-    public function type()
-    {
-        $data = [];
-        foreach (self::TYPE_INFO as $type => $title) {
-            $data[] = compact('type', 'title');
-        }
-        return $data;
     }
 
     /**
@@ -543,7 +511,7 @@ class UserBillServices extends BaseServices
      * @param int $link_id
      * @return bool|mixed
      */
-    public function income(string $type, int $uid, $number, $balance, $link_id = 0)
+    public function income(string $type, int $uid, $number, $balance, int $link_id = 0)
     {
         $data = $this->incomeData[$type] ?? null;
         if (!$data) {

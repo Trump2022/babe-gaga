@@ -14,9 +14,10 @@ namespace app\services\community;
 
 use app\dao\community\CommunityDao;
 use app\services\BaseServices;
-use app\services\user\UserBrokeragesServices;
+//use app\services\user\UserBrokeragesServices;
 use app\services\system\RelevanceServices;
 use app\services\store\product\SpuServices;
+use app\services\user\UserBillServices;
 use app\services\user\UserServices;
 use crmeb\basic\BaseModel;
 use crmeb\services\QrcodeService;
@@ -32,6 +33,7 @@ use think\exception\ValidateException;
 use app\model\product\product\StoreProduct;
 use think\facade\Cache;
 use think\facade\Db;
+use think\facade\Log;
 use think\facade\Route;
 use think\Model;
 
@@ -82,8 +84,10 @@ class CommunityServices extends BaseServices
         Db::transaction(function () use($ret,$id, $data) {
 
             if ($data['status'] == 1) {
-//                $make = app()->make(UserBrokeragesServices::class);
-//                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+                $number = sys_config('member_community_num');
+                if ($number) {
+                    $this->updateIntegral($ret['uid'], $id);
+                }
             }
             $data['status_time'] = date('Y-m-d H:i;s', time());
             $this->dao->update($id, $data);
@@ -486,14 +490,40 @@ class CommunityServices extends BaseServices
         return Db::transaction(function () use($data) {
             $community = $this->dao->create($data);
             if ($data['status'] == 1) {
-//                $make = app()->make(UserBrokeragesServices::class);
-//                $make->incMemberValue($ret['uid'], 'member_community_num', $id);
+                $number = sys_config('member_community_num');
+                if ($number) {
+                    $this->updateIntegral($data['uid'], $community->community_id);
+                }
             }
-            $data['status_time'] = date('Y-m-d H:i;s', time());
-            if ($data['spu_id'])$this->joinProduct($community->community_id,$data['spu_id']);
+            //if ($data['spu_id']) $this->joinProduct($community->community_id,$data['spu_id']);
             //event('community.create',compact('community'));
             return $community->community_id;
         });
+    }
+
+    /**
+     * @param $uid
+     * @param $community_id
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 15:51
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function updateIntegral($uid, $community_id)
+    {
+        $number = sys_config('member_community_num');
+        if ($number) {
+            /** @var UserServices $userServices */
+            $userServices = app()->make(UserServices::class);
+            $userServices->incUpdate($uid, 'integral', $number);
+            $userInfo = $userServices->getUserInfo($uid);
+
+            /** @var UserBillServices $userBillServices */
+            $userBillServices = app()->make(UserBillServices::class);
+            $balance = $userInfo['integral'];
+            $userBillServices->income('create_community_give_integral', $uid, $number, $balance, $community_id);
+        }
     }
 
     /**
