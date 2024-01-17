@@ -8,29 +8,26 @@
 // +----------------------------------------------------------------------
 // | Author: CRMEB Team <admin@crmeb.com>
 // +----------------------------------------------------------------------
+declare (strict_types=1);
 
 namespace app\services\order;
 
 use app\dao\order\StoreOrderInfoDao;
 use app\services\BaseServices;
-use crmeb\traits\OptionTrait;
 use crmeb\traits\ServicesTrait;
-use crmeb\utils\Arr;
-use think\exception\ValidateException;
 
 /**
  * Class StoreOrderInfoServices
  * @package app\services\order
- * @mixin StoreOrderCartInfoDao
+ * @mixin StoreOrderInfoDao
  */
 class StoreOrderInfoServices extends BaseServices
 {
-    use OptionTrait;
     use ServicesTrait;
 
     /**
      * StorePinkServices constructor.
-     * @param StoreOrderCartInfoDao $dao
+     * @param StoreOrderInfoDao $dao
      */
     public function __construct(StoreOrderInfoDao $dao)
     {

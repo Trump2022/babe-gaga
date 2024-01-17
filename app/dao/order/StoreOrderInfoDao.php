@@ -43,7 +43,7 @@ class StoreOrderInfoDao extends BaseDao
      */
     public function getOrderInfo(array $where, array $field = ['*'])
     {
-        return $this->search($where)->field($field)->find();
+        return $this->getModel()->where($where)->field($field)->find();
     }
 
     /**
@@ -57,14 +57,14 @@ class StoreOrderInfoDao extends BaseDao
      */
     public function saveOrderInfo(int $oid, array $data)
     {
-        $row = $this->search(['oid' => $oid])->find();
+        $row = $this->getModel()->where(['oid' => $oid])->find();
         if ($row) {
             unset($data['oid']);
             $data['add_time'] = $data['update_time'] = time();
             $res = $this->getModel()->where('id', $row['id'])->update($data);
         } else {
             $data['oid'] = $oid;
-            $data['update_time'] = time();
+            $data['add_time'] = time();
             $res = $this->getModel()->insertGetId($data);
         }
         return $res;

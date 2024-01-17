@@ -802,7 +802,7 @@ class StoreOrderController
                 }
 
                 //下单信息
-                // $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
+                $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
             }
         }
 		// 判断是否开启小程序订单管理

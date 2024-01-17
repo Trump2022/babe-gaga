@@ -31,6 +31,37 @@ class StoreOrderInfo extends BaseModel
     protected $name = 'store_order_info';
 
     /**
+     * @var bool
+     */
+    protected $autoWriteTimestamp = false;
+
+    /**
+     * 添加时间获取器
+     * @param $value
+     * @return false|string
+     */
+    public function getAddTimeAttr($value)
+    {
+        if (!empty($value)) {
+            return date('Y-m-d H:i:s', (int)$value);
+        }
+        return '';
+    }
+
+    /**
+     * 更新时间获取器
+     * @param $value
+     * @return false|string
+     */
+    public function getUpdateTimeAttr($value)
+    {
+        if (!empty($value)) {
+            return date('Y-m-d H:i:s', (int)$value);
+        }
+        return '';
+    }
+
+    /**
      * 订单ID搜索器
      * @param Model $query
      * @param $value
