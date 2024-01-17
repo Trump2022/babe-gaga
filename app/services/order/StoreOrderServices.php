@@ -326,7 +326,7 @@ class StoreOrderServices extends BaseServices
         if ($detail == true && isset($order['id'])) {
             /** @var StoreOrderCartInfoServices $cartServices */
             $cartServices = app()->make(StoreOrderCartInfoServices::class);
-            $cartInfos = $cartServices->getCartColunm(['oid' => $order['id']], 'cart_num,is_writeoff,surplus_num,cart_info,refund_num,product_type,is_support_refund,is_gift,promotions_id,type,relation_id,write_times,write_surplus_times,write_start,write_end', 'unique');
+            $cartInfos = $cartServices->getCartColunm(['oid' => $order['id']], 'cart_num,is_writeoff,surplus_num,cart_info,refund_num,product_type,is_support_refund,is_gift,promotions_id,type,relation_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'unique');
             $info = [];
             /** @var StoreProductReplyServices $replyServices */
             $replyServices = app()->make(StoreProductReplyServices::class);
@@ -336,6 +336,9 @@ class StoreOrderServices extends BaseServices
                 $cart['is_writeoff'] = $cartInfo['is_writeoff'];
                 $cart['surplus_num'] = $cartInfo['write_surplus_times'];
                 $cart['refund_num'] = $cartInfo['refund_num'];
+                $cart['write_days'] = $cartInfo['write_days'];
+                $cart['active_start'] = $cartInfo['active_start'];
+                $cart['active_end'] = $cartInfo['active_end'];
                 $cart['write_times'] = $cartInfo['write_times'];
 				$cart['write_surplus_times'] = $cartInfo['write_surplus_times'];
 				$cart['write_start'] = $cartInfo['write_start'];

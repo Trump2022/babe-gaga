@@ -35,6 +35,7 @@ use app\services\order\{OtherOrderServices,
     StoreOrderEconomizeServices,
     StoreOrderRefundServices,
     StoreOrderServices,
+    StoreOrderInfoServices,
     StoreOrderStatusServices,
     StoreOrderSuccessServices,
     StoreOrderTakeServices,
@@ -781,27 +782,27 @@ class StoreOrderController
             }
 
             if ($order['is_class']) {
-                $orderData['used_times'] = $orderData['write_times'] - $orderData['write_surplus_times'];
+                $orderData['used_times'] = $orderData['write_times'] - $cart['write_surplus_times'];
                 $orderData['used_times_str'] = $orderData['used_times'].'/'.$orderData['write_times'].'次';
                 //激活时间
                 $orderData['active_time'] = [];
                 //使用期限
                 $orderData['use_expire_time'] = '';
                 if ($orderData['used_times'] > 0) {
-                    $orderData['active_time'][] = date('Y-m-d H:i:s', $orderData['write_start']);
-                    $orderData['use_expire_time'] = date('Y-m-d H:i:s', $orderData['write_end']).' 到期';
+                    $orderData['active_time'][] = date('Y-m-d H:i:s', $cart['write_start']);
+                    $orderData['use_expire_time'] = date('Y-m-d H:i:s', $cart['write_end']).' 到期';
                 } else {
-                    if ($orderData['active_start']) {
-                        $orderData['active_time'][] = date('Y-m-d H:i:s', $orderData['active_start']);
+                    if ($cart['active_start']) {
+                        $orderData['active_time'][] = date('Y-m-d H:i:s', $cart['active_start']);
                     }
                     
-                    if ($orderData['active_end']) {
-                        $orderData['active_time'][] = date('Y-m-d H:i:s', $orderData['active_end']);
+                    if ($cart['active_end']) {
+                        $orderData['active_time'][] = date('Y-m-d H:i:s', $cart['active_end']);
                     }
                 }
 
                 //下单信息
-                $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
+                // $orderData['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($order['id']);
             }
         }
 		// 判断是否开启小程序订单管理
