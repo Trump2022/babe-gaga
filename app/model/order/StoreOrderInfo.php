@@ -36,19 +36,6 @@ class StoreOrderInfo extends BaseModel
     protected $autoWriteTimestamp = false;
 
     /**
-     * 添加时间获取器
-     * @param $value
-     * @return false|string
-     */
-    public function getAddTimeAttr($value)
-    {
-        if (!empty($value)) {
-            return date('Y-m-d H:i:s', (int)$value);
-        }
-        return '';
-    }
-
-    /**
      * 更新时间获取器
      * @param $value
      * @return false|string
