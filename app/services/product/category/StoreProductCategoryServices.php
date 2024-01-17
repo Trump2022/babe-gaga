@@ -314,6 +314,8 @@ class StoreProductCategoryServices extends BaseServices
                 $storeProductServices = app()->make(StoreProductServices::class);
                 $field = 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price';
                 $order = ['sort', 'desc'];
+                $map['is_del'] = 0;
+                $map['is_show'] = 1;
                 foreach ($list as &$itme){
                     if(!empty($itme['children'])){
                         foreach ($itme['children'] as &$v){
