@@ -139,8 +139,8 @@ class CommunityTopicServices extends BaseServices
             $id = [$id];
         }
         foreach ($id as $item) {
-            $count = app()->make(CommunityRepository::class)
-                ->getSearch(CommunityRepository::IS_SHOW_WHERE)->where('topic_id',$item)->count();
+            $count = app()->make(CommunityServices::class)
+                ->getSearch(CommunityServices::IS_SHOW_WHERE)->where('topic_id',$item)->count();
             $this->dao->update($item, ['count_use' => $count]);
         }
     }
