@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "拼团列表",
-  "usingComponents": {
-    "home": "/components/home/index"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "usingComponents": {
-    "w-barcode": "/uni_modules/wmf-code/components/w-barcode/index",
-    "w-qrcode": "/uni_modules/wmf-code/components/w-qrcode/index"
-  },
-  "component": true
-}

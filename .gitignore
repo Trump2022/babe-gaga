@@ -14,3 +14,18 @@ help/docker-compose/mysql/data/
 help/docker-compose/redis/data/
 /update/sh
 
+static_supplier
+statics
+view_admin
+view_cashier
+view_store
+view_supplier
+cashier.html
+index.html
+protocol.html
+store.html
+supplier.html
+system.html
+pages
+static
+static_admin

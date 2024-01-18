@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "配送员订单详情",
-  "usingComponents": {
-    "custom-form": "/components/customForm/index"
-  }
-}

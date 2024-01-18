@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "home": "/components/home/index"
-  }
-}

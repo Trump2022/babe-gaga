@@ -1,7 +1,0 @@
-{
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "store-cate1": "/pages/store/group_cart/cart",
-    "page-footer": "/components/pageFooter/index"
-  }
-}

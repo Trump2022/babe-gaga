@@ -1,9 +1,0 @@
-{
-  "componentGenerics": {
-    "scoped-slots-bottom": true
-  },
-  "component": true,
-  "usingComponents": {
-    "address-window": "/components/addressWindow/index"
-  }
-}

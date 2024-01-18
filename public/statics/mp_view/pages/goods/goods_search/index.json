@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "搜索商品",
-  "usingComponents": {
-    "home": "/components/home/index"
-  }
-}

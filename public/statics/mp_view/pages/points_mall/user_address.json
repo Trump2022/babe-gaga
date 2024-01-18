@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "选择地址",
-  "usingComponents": {
-    "home": "/components/home/index"
-  }
-}

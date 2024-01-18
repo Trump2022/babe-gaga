@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "核销记录",
-  "usingComponents": {
-    "home": "/components/home/index",
-    "empty-page": "/components/emptyPage"
-  }
-}

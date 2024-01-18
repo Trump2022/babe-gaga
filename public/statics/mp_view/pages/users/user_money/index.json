@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "我的账户",
-  "usingComponents": {
-    "recommend": "/components/recommend/index",
-    "home": "/components/home/index"
-  }
-}

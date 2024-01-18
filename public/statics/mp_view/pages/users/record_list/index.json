@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "申请记录",
-  "usingComponents": {
-    "empty-page": "/components/emptyPage",
-    "home": "/components/home/index"
-  }
-}
