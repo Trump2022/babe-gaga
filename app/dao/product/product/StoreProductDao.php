@@ -97,6 +97,8 @@ class StoreProductDao extends BaseDao
                 $query->where('is_class', $where['is_class']);
             })->when(!empty($where['city']), function ($query) use ($where) {
                 $query->whereRaw($where['city'])->whereOr('applicable_store_id', '=', '');
+            })->when(isset($where['type']), function ($query) use ($where) {
+                $query->where('type', $where['type']);
             });
     }
 

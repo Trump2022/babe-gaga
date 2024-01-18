@@ -88,6 +88,9 @@ class StoreProductController
 			$where['type'] = [];
 			$where['pid'] = 0;
         }
+        if (!empty($where['is_class'])) {
+            $where['type'] = 0;
+        }
 		$where['show_type'] = [0, 1];
         $list = $this->services->getGoodsList($where, (int)$request->uid());
         return app('json')->successful(get_thumb_water($list, $type, $field));
