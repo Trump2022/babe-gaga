@@ -453,6 +453,20 @@ class StoreProduct extends BaseModel
     }
 
     /**
+     * @param $query
+     * @param $value
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/18 16:45
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function searchStoreLabelIdAttr($query, $value)
+    {
+        if ($value !== '') $query->where('FIND_IN_SET(' . $value . ',`store_label_id`)');
+    }
+
+    /**
      * @param Model $query
      * @param $value
      */

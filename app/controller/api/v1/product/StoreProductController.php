@@ -252,13 +252,17 @@ class StoreProductController
 				$is_vip = $userServices->value(['uid' => $uid], 'is_money_level');
 				$where['is_vip_product'] = $is_vip ? -1 : 0;
 			}
+
 			//推荐
-			if (isset($storeInfo['recommend_list']) && $storeInfo['recommend_list']) {
-				$recommend_list = explode(',', $storeInfo['recommend_list']);
-				$list = get_thumb_water($this->services->getProducts(['ids' => $recommend_list, 'is_del' => 0, 'is_show' => 1] + $where, '', $num, ['couponId']));
-			} else {
-				$list = get_thumb_water($this->services->getProducts(['store_label_id' => 5, 'is_del' => 0, 'is_show' => 1] + $where, 'rand()', $num, ['couponId']));
-			}
+            if (isset($storeInfo['is_good']) && $storeInfo['is_good'])
+            {
+                if (isset($storeInfo['recommend_list']) && $storeInfo['recommend_list']) {
+                    $recommend_list = explode(',', $storeInfo['recommend_list']);
+                    $list = get_thumb_water($this->services->getProducts(['ids' => $recommend_list, 'is_del' => 0, 'is_show' => 1] + $where, '', $num, ['couponId']));
+                } else {
+                    $list = get_thumb_water($this->services->getProducts(['store_label_id' => 5, 'is_del' => 0, 'is_show' => 1, 'is_class' => $storeInfo['is_class']] + $where, 'rand()', $num, ['couponId']));
+                }
+            }
 		}
         return app('json')->success($list);
     }
