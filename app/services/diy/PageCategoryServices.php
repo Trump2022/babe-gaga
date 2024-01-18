@@ -43,7 +43,6 @@ class PageCategoryServices extends BaseServices
      */
     public function getCategroyList()
     {
-        return $this->getSonCategoryList();
         return CacheService::get($this->tree_page_category_key, function () {
             return $this->getSonCategoryList();
         }, 86400) ?: [];
