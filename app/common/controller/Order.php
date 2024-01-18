@@ -777,6 +777,8 @@ trait Order
             $cart_num += $items['cart_info']['cart_num'];
         }
         $orderInfo['is_all_refund'] = $refund_num == $cart_num;
+        $writeOffOrderServices = app()->make(WriteOffOrderServices::class);
+        $orderInfo['writeoff_list'] = $writeOffOrderServices->writeoffOrderList($id);
         return app('json')->success(compact('orderInfo', 'userInfo'));
     }
 

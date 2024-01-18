@@ -11,6 +11,7 @@
 
 namespace app\model\order;
 
+use app\model\store\SystemStore;
 use app\model\store\SystemStoreStaff;
 use app\model\user\User;
 use crmeb\basic\BaseModel;
@@ -68,6 +69,15 @@ class StoreOrderWriteoff extends BaseModel
 	{
 		return $this->hasOne(SystemStoreStaff::class, 'id', 'staff_id')->field('id,store_id,staff_name')->bind(['staff_name']);
 	}
+
+    /**
+     * 门店信息
+     * @return \think\model\relation\HasOne
+     */
+    public function systemStore()
+    {
+        return $this->hasOne(SystemStore::class, 'id', 'store_id')->field('id, id as store_id,name as store_name')->bind(['store_name']);
+    }
 
     /**
      * 订单ID搜索器

@@ -13,6 +13,7 @@ namespace app\services\order\store;
 
 
 use app\dao\order\StoreOrderDao;
+use app\dao\order\StoreOrderWriteoffDao;
 use app\services\order\StoreOrderCartInfoServices;
 use app\services\order\StoreOrderCreateServices;
 use app\services\order\StoreOrderRefundServices;
@@ -37,14 +38,16 @@ use think\exception\ValidateException;
 class WriteOffOrderServices extends BaseServices
 {
 
+    protected $writeoffDao;
     /**
      * 构造方法
      * StoreOrderWriteOffServices constructor.
      * @param StoreOrderDao $dao
      */
-    public function __construct(StoreOrderDao $dao)
+    public function __construct(StoreOrderDao $dao, StoreOrderWriteoffDao $writeoffDao)
     {
         $this->dao = $dao;
+        $this->writeoffDao = $writeoffDao;
     }
 
     /**
@@ -77,6 +80,16 @@ class WriteOffOrderServices extends BaseServices
                         $isAuth = false;
                     }
                 }*/
+                if ($store_id == 0) {
+                    //全平台
+                    $isAuth = true;
+                } else {
+                    if ($info) {
+                        $isAuth = true;
+                    } else {
+                        $isAuth = false;
+                    }
+                }
                 break;
             case 2://配送员
                 if (in_array($orderInfo['shipping_type'], [1, 3]) && $info && $orderInfo['delivery_type'] == 'send' && $orderInfo['delivery_uid'] == $uid) {
@@ -583,5 +596,24 @@ class WriteOffOrderServices extends BaseServices
         $f[] = Form::number('cart_num', '本次核销数量', min(max($cart_num, 1), $cartInfo[0]['write_surplus_times'] ?? 0))->min(1)->max($cartInfo[0]['write_surplus_times'] ?? 1);
         return create_form('次卡核销', $f, $this->url('/order/write/form/' . $id), 'POST');
     }
+
+    /**
+     * 获取核销订单信息
+     * @param int $uid
+     * @param string $code
+     * @param int $auth
+     * @param int $oid
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function writeoffOrderList($oid = '')
+    {
+        //核销记录
+        $with = ['staffInfo', 'systemStore'];
+        return $this->writeoffDao->getList(['oid' => $oid], $field = '*', $page = 0, $limit = 0, $with);
+    }
+
 
 }
