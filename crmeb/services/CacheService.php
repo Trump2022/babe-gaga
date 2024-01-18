@@ -99,6 +99,20 @@ class CacheService
     }
 
     /**
+     * 获取缓存
+     * @param string $name 缓存名称
+     * @return array
+     */
+    public static function get_data(string $name)
+    {
+        try {
+            return self::redisHandler()->get($name);
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    /**
      * 如果不存在则写入缓存
      * @param string $name
      * @param bool $default

@@ -240,11 +240,13 @@ class StoreOrderCreateServices extends BaseServices
         }
         if ($shippingType == 2) {
             $orderInfo['verify_code'] = $this->getStoreCode();
-            /** @var SystemStoreServices $storeServices */
-            $storeServices = app()->make(SystemStoreServices::class);
-            $orderInfo['store_id'] = $storeServices->getStoreDisposeCache($storeId, 'id');
-            if (!$orderInfo['store_id']) {
-                throw new ValidateException('暂无门店无法选择门店自提');
+            if (!$is_class) {
+                /** @var SystemStoreServices $storeServices */
+                $storeServices = app()->make(SystemStoreServices::class);
+                $orderInfo['store_id'] = $storeServices->getStoreDisposeCache($storeId, 'id');
+                if (!$orderInfo['store_id']) {
+                    throw new ValidateException('暂无门店无法选择门店自提');
+                }
             }
         }
 
