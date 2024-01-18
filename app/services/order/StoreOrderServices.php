@@ -991,6 +991,7 @@ HTML;
             'pid' => [0, -1],
             'time' => $where['time'],
             'status' => $where['status'],
+            'is_class' => $where['is_class'],
             'pay_type' => $where['pay_type'],
             'field_key' => $where['field_key'],
             'real_name' => $where['real_name'],
