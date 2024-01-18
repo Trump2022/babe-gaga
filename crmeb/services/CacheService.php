@@ -106,7 +106,7 @@ class CacheService
     public static function get_data(string $name)
     {
         try {
-            return self::handler()->get($name);
+            return self::redisHandler()->get($name);
         } catch (\Throwable $e) {
             return [];
         }
