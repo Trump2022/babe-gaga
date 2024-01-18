@@ -274,21 +274,14 @@ class UserRelationServices extends BaseServices
     public function getUserProductToCommunity(?string $keyword, int $uid): array
     {
         [$page, $limit] = $this->getPageValue();
-        //$query = $this->dao->getUserProductToCommunity($uid, $keyword);
         $query = $this->dao->getModel()->alias('r')
         ->join('store_product p', 'r.relation_id=p.id')
         ->when($keyword, function ($que) use($keyword) {
             $que->whereLike('p.store_name',"%{$keyword}%");
         })->where('p.is_show',1);
-
-        //getUserProductToCommunity($uid, $keyword);
         $count = $query->count();
         $list = $query
-//            ->setOption('field',[])
             ->field('r.uid,r.relation_id product_id,r.relation_id spu_id,p.product_type,p.image,p.store_name,p.price')
-//            ->field('*')
-//            ->field('uid,product_id,product_type,spu_id,image,store_name,price')
-//            ->page($page, $limit)
             ->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
                 $query->page($page, $limit);
             })->select()->toArray();

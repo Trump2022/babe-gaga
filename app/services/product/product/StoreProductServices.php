@@ -1926,6 +1926,7 @@ class StoreProductServices extends BaseServices
             $page = 1;
             $limit = $num;
         }
+
         $list = $this->dao->getSearchList($where, $page, $limit, ['id,pid,type,store_name,cate_id,image,IFNULL(sales, 0) + IFNULL(ficti, 0) as sales,price,stock,activity,unit_name'], $order, $with);
         $list = $this->getActivityList($list);
         $list = $this->getProductPromotions($list);
