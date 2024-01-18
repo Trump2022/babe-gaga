@@ -13,6 +13,7 @@ namespace app\services\order\store;
 
 
 use app\dao\order\StoreOrderDao;
+use app\dao\order\StoreOrderWriteoffDao;
 use app\services\order\StoreOrderCartInfoServices;
 use app\services\order\StoreOrderCreateServices;
 use app\services\order\StoreOrderRefundServices;
@@ -37,14 +38,16 @@ use think\exception\ValidateException;
 class WriteOffOrderServices extends BaseServices
 {
 
+    protected $writeoffDao;
     /**
      * 构造方法
      * StoreOrderWriteOffServices constructor.
      * @param StoreOrderDao $dao
      */
-    public function __construct(StoreOrderDao $dao)
+    public function __construct(StoreOrderDao $dao, StoreOrderWriteoffDao $writeoffDao)
     {
         $this->dao = $dao;
+        $this->writeoffDao = $writeoffDao;
     }
 
     /**
@@ -77,6 +80,16 @@ class WriteOffOrderServices extends BaseServices
                         $isAuth = false;
                     }
                 }*/
+                if ($store_id == 0) {
+                    //全平台
+                    $isAuth = true;
+                } else {
+                    if ($info) {
+                        $isAuth = true;
+                    } else {
+                        $isAuth = false;
+                    }
+                }
                 break;
             case 2://配送员
                 if (in_array($orderInfo['shipping_type'], [1, 3]) && $info && $orderInfo['delivery_type'] == 'send' && $orderInfo['delivery_uid'] == $uid) {
@@ -464,47 +477,38 @@ class WriteOffOrderServices extends BaseServices
                     }
                 } else {
                     //整单核销
-                    foreach ($cartInfo as $info) {
-                        if ($info['write_surplus_times'] > 0) {
+                    foreach ($cartInfo as $cart) {
+                        if ($cart['write_surplus_times'] > 0) {
                             //修改原来订单商品信息
-                            if ($orderInfo['is_class'] && ($info['write_surplus_times'] == $info['write_times'])) {
+                            if ($orderInfo['is_class'] && ($cart['write_surplus_times'] == $cart['write_times'])) {
                                 // 判断是否在激活时间内
-                                if ($info['active_start'] && (time() < $info['active_start'])) {
+                                if ($cart['active_start'] && (time() < $cart['active_start'])) {
                                     throw new ValidateException('未到课程激活开始时间');
                                 }
 
-                                if ($info['active_end'] && (time() > $info['active_end'])) {
+                                if ($cart['active_end'] && (time() > $cart['active_end'])) {
                                     throw new ValidateException('已过课程激活结束时间');
                                 }
 
                                 // 第一次核销，激活课程, 使用时效的开始和结束时间
                                 $cartData['write_start'] = time();
-                                $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$info['write_days'], '86400'));
+                                $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$cart['write_days'], '86400'));
                             }
 
-                            //核销减1
-                            $cartInfoServices->decUpdate(['oid' => $orderInfo['id']], 'write_surplus_times');
-
-                            //核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
-                            /** @var UserServices $userServices */
-                            $userServices = app()->make(UserServices::class);
-                            $userInfo = $userServices->get((int)$orderInfo['uid']);
-
-                            $write_surplus_times = $info['write_surplus_times'] - 1;
-                            if ($write_surplus_times == 0) {
-                                //核销完成
+                            if ($cart['cart_num'] >= $cart['write_surplus_times']) {//拆分完成
+                                $cartData['write_surplus_times'] = 0;
                                 $cartData['is_writeoff'] = 1;
                                 $cartData['writeoff_time'] = time();
-                                $cartInfoServices->update(['oid' => $orderInfo['id']], $cartData);
-
-                                //返佣
-                                /** @var StoreOrderTakeServices $storeOrderTakeServices */
-                                $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
-                                $storeOrderTakeServices->backOrderBrokerage($orderInfo, $userInfo);
+                            } else {//拆分部分数量
+                                $cartData['write_surplus_times'] = bcsub((string)$cart['write_surplus_times'], $cart['cart_num'], 0);
+                                $cartData['is_writeoff'] = 0;
                             }
+
+                            $cartInfoServices->update(['oid' => $orderInfo['id'], 'cart_id' => $cart['cart_id']], $cartData);
                         }
                     }
                 }
+
                 if (!$cartInfoServices->count(['oid' => (int)$orderInfo['id'], 'is_writeoff' => 0])) {//全部核销
                     if ($orderInfo['type'] == 8) {
                         $data['status'] = 3;
@@ -521,6 +525,15 @@ class WriteOffOrderServices extends BaseServices
                     if (!$re) {
                         throw new ValidateException('Write off failure');
                     }
+
+                    //核销完成调用返佣逻辑，定时任务判断是否已核销且已过期并返佣
+                    /** @var UserServices $userServices */
+                    $userServices = app()->make(UserServices::class);
+                    $userInfo = $userServices->get((int)$orderInfo['uid']);
+                    //返佣
+                    /** @var StoreOrderTakeServices $storeOrderTakeServices */
+                    $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
+                    $storeOrderTakeServices->backOrderBrokerage($orderInfo, $userInfo);
                 } else {//部分核销
                     /** @var StoreOrderCreateServices $storeOrderCreateServices */
                     $storeOrderCreateServices = app()->make(StoreOrderCreateServices::class);
@@ -583,5 +596,24 @@ class WriteOffOrderServices extends BaseServices
         $f[] = Form::number('cart_num', '本次核销数量', min(max($cart_num, 1), $cartInfo[0]['write_surplus_times'] ?? 0))->min(1)->max($cartInfo[0]['write_surplus_times'] ?? 1);
         return create_form('次卡核销', $f, $this->url('/order/write/form/' . $id), 'POST');
     }
+
+    /**
+     * 获取核销订单信息
+     * @param int $uid
+     * @param string $code
+     * @param int $auth
+     * @param int $oid
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function writeoffOrderList($oid = '')
+    {
+        //核销记录
+        $with = ['staffInfo', 'systemStore'];
+        return $this->writeoffDao->getList(['oid' => $oid], $field = '*', $page = 0, $limit = 0, $with);
+    }
+
 
 }

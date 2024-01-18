@@ -212,7 +212,7 @@ class StoreOrderWriteOffServices extends BaseServices
     public function userOrderWriteOffRecords(array $where = [])
     {
         [$page, $limit] = $this->getPageValue();
-        $list = $this->dao->getList($where, '*', $page, $limit, ['cartInfo']);
+        $list = $this->dao->getList($where, '*', $page, $limit, ['cartInfo', 'systemStore']);
         $count = $this->dao->count($where);
         $times = [];
         if ($list) {
