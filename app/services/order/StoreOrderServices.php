@@ -753,6 +753,9 @@ class StoreOrderServices extends BaseServices
                 $item['_status'] = 7;//已支付 已退款
             } else if ($item['paid'] == 1 && $item['status'] == 5 && $item['refund_status'] == 0) {
                 $status_name['status_name'] = $item['shipping_type'] == 2 ? '部分核销' : '部分收货';
+                if ($item['is_class']) {
+                    $status_name['status_name'] = '使用中';
+                }
                 $item['_status'] = 12;//已支付 部分核销
             } else if ($item['paid'] == 1 && $item['refund_status'] == 1) {
                 $item['_status'] = 3;//已支付 申请退款中
@@ -782,6 +785,9 @@ HTML;
                 $item['_status'] = 2;//已支付 未发货
             } else if ($item['paid'] == 1 && in_array($item['status'], [0, 1]) && $item['shipping_type'] == 2 && $item['refund_status'] == 0) {
                 $status_name['status_name'] = '未核销';
+                if ($item['is_class']) {
+                    $status_name['status_name'] = '待使用';
+                }
                 $item['_status'] = 11;//已支付 待核销
             } else if ($item['paid'] == 1 && in_array($item['status'], [1, 5]) && in_array($item['shipping_type'], [1, 3, 4]) && $item['refund_status'] == 0) {
                 $status_name['status_name'] = '待收货';
