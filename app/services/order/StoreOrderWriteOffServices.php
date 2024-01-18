@@ -192,6 +192,7 @@ class StoreOrderWriteOffServices extends BaseServices
 				$writeOffData['product_type'] = $cart['product_type'];
 				$writeOffData['writeoff_price'] = (float)bcmul((string)$info['truePrice'], (string)$writeOffData['writeoff_num'], 2);
 				$writeOffData['staff_id'] = $data['staff_id'] ?? 0;
+				$writeOffData['store_id'] = $data['store_id'] ?? 0;
 				$writeOffDataAll[] = $writeOffData;
 			}
 		}

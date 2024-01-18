@@ -21,6 +21,7 @@ use app\services\activity\integral\StoreIntegralOrderServices;
 use app\services\activity\integral\StoreIntegralOrderStatusServices;
 use app\services\activity\combination\StorePinkServices;
 use app\services\BaseServices;
+use app\services\product\product\StoreProductServices;
 use app\services\store\SystemStoreStaffServices;
 use app\services\store\DeliveryServiceServices;
 use app\services\user\UserServices;
@@ -61,16 +62,21 @@ class WriteOffOrderServices extends BaseServices
         }
         $store_id = $orderInfo['store_id'] ?? 0;
         $info = $this->checkUserAuth($uid, $auth, $store_id, $staff_id);
-		$isAuth = true;
+        $isAuth = true;
         switch ($auth) {
-			case 0://管理员
-				break;
+            case 0://管理员
+                break;
             case 1://门店
-                if ($orderInfo['shipping_type'] == 2 && $info && isset($info['store_id']) && $info['store_id'] == $store_id) {
+                /*if ($store_id == 0) {
+                    //全平台
                     $isAuth = true;
                 } else {
-                    $isAuth = false;
-                }
+                    if ($orderInfo['shipping_type'] == 2 && $info && isset($info['store_id']) && $info['store_id'] == $store_id) {
+                        $isAuth = true;
+                    } else {
+                        $isAuth = false;
+                    }
+                }*/
                 break;
             case 2://配送员
                 if (in_array($orderInfo['shipping_type'], [1, 3]) && $info && $orderInfo['delivery_type'] == 'send' && $orderInfo['delivery_uid'] == $uid) {
@@ -102,8 +108,8 @@ class WriteOffOrderServices extends BaseServices
         $isAuth = true;
         $info = [];
         switch ($auth) {
-			case 0://管理员
-				break;
+            case 0://管理员
+                break;
             case 1://门店
                 //验证店员
                 /** @var SystemStoreStaffServices $storeStaffServices */
@@ -201,7 +207,7 @@ class WriteOffOrderServices extends BaseServices
             $orderInfo = $this->dao->getOne(['id' => $oid, 'is_del' => 0], '*', ['user', 'pink']);
             $order_type = 'order';
             if (!$orderInfo) {
-				//gaga币兑换订单
+                //gaga币兑换订单
                 /** @var StoreIntegralOrderServices $storeIntegralOrderServices */
                 $storeIntegralOrderServices = app()->make(StoreIntegralOrderServices::class);
                 $orderInfo = $storeIntegralOrderServices->getOne(['id' => $oid]);
@@ -234,25 +240,34 @@ class WriteOffOrderServices extends BaseServices
         $orderInfo = $orderInfo->toArray();
         //验证权限
         $this->checkAuth($uid, $orderInfo, $auth, $staff_id);
-		if ($order_type == 'order') {
-			/** @var StoreOrderCartInfoServices $cartServices */
-			$cartServices = app()->make(StoreOrderCartInfoServices::class);
-			$cartInfo = $cartServices->getCartInfoList(['oid' => $orderInfo['id']], ['id', 'oid', 'write_times', 'write_surplus_times', 'write_start', 'write_end']);
-			$orderInfo['write_off'] = $orderInfo['write_times'] = 0;
-			$orderInfo['write_day'] = '';
-			$cart = $cartInfo[0] ?? [];
-			if ($orderInfo['product_type'] == 4 && $cart) {//次卡商品
-				$orderInfo['write_off'] = max(bcsub((string)$cart['write_times'], (string)$cart['write_surplus_times'], 0), 0);
-				$orderInfo['write_times'] = $cart['write_times'] ?? 0;
-				$start = $cart['write_start'] ?? 0;
-				$end = $cart['write_end'] ?? 0;
-				if (!$start && !$end) {
-					$orderInfo['write_day'] = '不限时';
-				} else {
-					$orderInfo['write_day'] = ($start ? date('Y-m-d', $start) : '') . '/' . ($end ? date('Y-m-d', $end) : '');
-				}
-			}
-		}
+        if ($order_type == 'order') {
+            /** @var StoreOrderCartInfoServices $cartServices */
+            $cartServices = app()->make(StoreOrderCartInfoServices::class);
+            $cartInfo = $cartServices->getCartInfoList(['oid' => $orderInfo['id']]
+                , ['id', 'oid', 'write_times', 'write_surplus_times', 'write_start', 'write_end', 'product_id']);
+            $orderInfo['write_off'] = $orderInfo['write_times'] = 0;
+            $orderInfo['write_day'] = '';
+            $cart = $cartInfo[0] ?? [];
+            if ($orderInfo['product_type'] == 4 && $cart) {//次卡商品
+                $orderInfo['write_off'] = max(bcsub((string)$cart['write_times'], (string)$cart['write_surplus_times'], 0), 0);
+                $orderInfo['write_times'] = $cart['write_times'] ?? 0;
+                $start = $cart['write_start'] ?? 0;
+                $end = $cart['write_end'] ?? 0;
+                if (!$start && !$end) {
+                    $orderInfo['write_day'] = '不限时';
+                } else {
+                    $orderInfo['write_day'] = ($start ? date('Y-m-d', $start) : '') . '/' . ($end ? date('Y-m-d', $end) : '');
+                }
+
+                //核销适用门店
+                $product_id = $cart['product_id'];
+                /** @var StoreProductServices $storeProductServices */
+                $storeProductServices = app()->make(StoreProductServices::class);
+                $productInfo = $storeProductServices->getOne(['id'=>$product_id]);
+                $orderInfo['applicable_type'] = $productInfo['applicable_type'];
+                $orderInfo['applicable_store_id'] = $productInfo['applicable_store_id'];
+            }
+        }
         return $orderInfo;
     }
 
@@ -293,9 +308,9 @@ class WriteOffOrderServices extends BaseServices
             $_info['productInfo'] = get_thumb_water($_info['productInfo']);
             $item['cart_info'] = $_info;
             if ($item['write_times'] > $item['write_surplus_times']) {
-				$writeoff_count = bcadd((string)$writeoff_count, (string)bcsub((string)$item['write_times'], (string)$item['write_surplus_times']));
-			}
-			$item['surplus_num'] = $item['write_surplus_times'];
+                $writeoff_count = bcadd((string)$writeoff_count, (string)bcsub((string)$item['write_times'], (string)$item['write_surplus_times']));
+            }
+            $item['surplus_num'] = $item['write_surplus_times'];
             unset($_info);
         }
         $orderInfo['cart_count'] = count($cartInfo);
@@ -322,22 +337,22 @@ class WriteOffOrderServices extends BaseServices
         }
         //默认正常订单
         $orderInfo['order_type'] = $orderInfo['order_type'] ?? 'order';
-		$time = time();
+        $time = time();
         if ($orderInfo['order_type'] == 'order') {
-			//验证核销权限
-			$this->checkAuth($uid, $orderInfo, $auth, $staff_id);
+            //验证核销权限
+            $this->checkAuth($uid, $orderInfo, $auth, $staff_id);
 
-			if (!$orderInfo['verify_code'] || ($orderInfo['shipping_type'] != 2 && $orderInfo['delivery_type'] != 'send')) {
-				throw new ValidateException('此订单不能被核销');
-			}
-			/** @var StoreOrderRefundServices $storeOrderRefundServices */
-			$storeOrderRefundServices = app()->make(StoreOrderRefundServices::class);
-			if ($storeOrderRefundServices->count(['store_order_id' => $orderInfo['id'], 'refund_type' => [1, 2, 4, 5, 6], 'is_cancel' => 0, 'is_del' => 0])) {
-				throw new ValidateException('订单有售后申请请先处理');
-			}
-			if (isset($orderInfo['pinkStatus']) && $orderInfo['pinkStatus'] != 2) {
-				throw new ValidateException('拼团未完成暂不能核销!');
-			}
+            if (!$orderInfo['verify_code'] || ($orderInfo['shipping_type'] != 2 && $orderInfo['delivery_type'] != 'send')) {
+                throw new ValidateException('此订单不能被核销');
+            }
+            /** @var StoreOrderRefundServices $storeOrderRefundServices */
+            $storeOrderRefundServices = app()->make(StoreOrderRefundServices::class);
+            if ($storeOrderRefundServices->count(['store_order_id' => $orderInfo['id'], 'refund_type' => [1, 2, 4, 5, 6], 'is_cancel' => 0, 'is_del' => 0])) {
+                throw new ValidateException('订单有售后申请请先处理');
+            }
+            if (isset($orderInfo['pinkStatus']) && $orderInfo['pinkStatus'] != 2) {
+                throw new ValidateException('拼团未完成暂不能核销!');
+            }
             /** @var StoreOrderCartInfoServices $cartInfoServices */
             $cartInfoServices = app()->make(StoreOrderCartInfoServices::class);
             if ($orderInfo['status'] >= 2 && !$cartInfoServices->count(['oid' => $orderInfo['id'], 'is_writeoff' => 0])) {
@@ -360,26 +375,26 @@ class WriteOffOrderServices extends BaseServices
                     throw new ValidateException('订单中有商品已核销');
                 }
 
-				foreach ($cartIds as $cart) {
-					$info = $cartInfo[$cart['cart_id']] ?? [];
-					if (!$info) {
-						throw new ValidateException('核销商品不存在');
-					}
-					if ($cart['cart_num'] > $info['write_surplus_times']) {
-						throw new ValidateException('核销数量超出剩余总核销次数');
-					}
-				}
-			} else {//整单核销
-				$cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'cart_id');
-			}
-			foreach ($cartInfo as $info) {
-				if ($info['write_start'] && $time < $info['write_start']) {
-					throw new ValidateException('还未到指定核销的开始时间，无法核销');
-				}
-				if ($info['write_end'] && $time > $info['write_end']) {
-					throw new ValidateException('已经超过指定核销的结束时间，无法核销');
-				}
-			}
+                foreach ($cartIds as $cart) {
+                    $info = $cartInfo[$cart['cart_id']] ?? [];
+                    if (!$info) {
+                        throw new ValidateException('核销商品不存在');
+                    }
+                    if ($cart['cart_num'] > $info['write_surplus_times']) {
+                        throw new ValidateException('核销数量超出剩余总核销次数');
+                    }
+                }
+            } else {//整单核销
+                $cartInfo = $cartInfoServices->getCartColunm(['oid' => $orderInfo['id'], 'is_writeoff' => 0], 'id,cart_id,cart_num,surplus_num,product_id,write_times,write_surplus_times,write_start,write_end,write_days,active_start,active_end', 'cart_id');
+            }
+            foreach ($cartInfo as $info) {
+                if ($info['write_start'] && $time < $info['write_start']) {
+                    throw new ValidateException('还未到指定核销的开始时间，无法核销');
+                }
+                if ($info['write_end'] && $time > $info['write_end']) {
+                    throw new ValidateException('已经超过指定核销的结束时间，无法核销');
+                }
+            }
             $data = ['clerk_id' => $uid];
             $cartData = ['writeoff_time' => $time];
             if ($auth == 1) {//店员
@@ -387,6 +402,15 @@ class WriteOffOrderServices extends BaseServices
                 $storeStaffServices = app()->make(SystemStoreStaffServices::class);
                 if ($uid) {//商城前端
                     $staffInfo = $storeStaffServices->getStaffInfoByUid($uid, $store_id);
+                    //适应门店
+                    if(isset($orderInfo['applicable_type'])){
+                        if($orderInfo['applicable_type'] == 2){
+                            $applicableStore = explode(',', $orderInfo['applicable_store_id']);
+                            if(!in_array($staffInfo['store_id'], $applicableStore)){
+                                throw new ValidateException('该门店不适用');
+                            }
+                        }
+                    }
                 } else {//门店后台
                     $staffInfo = $storeStaffServices->getStaffInfo($staff_id);
                     if ($store_id != $staffInfo['store_id']) {
@@ -398,6 +422,7 @@ class WriteOffOrderServices extends BaseServices
                     $data['clerk_id'] = $staffInfo['uid'];
                 }
                 $data['staff_id'] = $staffInfo['id'] ?? 0;
+                $data['store_id'] = $staffInfo['store_id'] ?? 0;
                 $cartData['staff_id'] = $staffInfo['id'] ?? 0;
             } else if ($auth == 2) {//配送员
                 /** @var DeliveryServiceServices $deliverServiceServices */
@@ -416,7 +441,7 @@ class WriteOffOrderServices extends BaseServices
                             if ($cart['active_start'] && (time() < $cart['active_start'])) {
                                 throw new ValidateException('未到课程激活开始时间');
                             }
-                            
+
                             if ($cart['active_end'] && (time() > $cart['active_end'])) {
                                 throw new ValidateException('已过课程激活结束时间');
                             }
@@ -425,7 +450,7 @@ class WriteOffOrderServices extends BaseServices
                             $cartData['write_start'] = time();
                             $cartData['write_end'] = bcadd((string)$cartData['write_start'], (string)bcmul((string)$cart['write_days'], '86400'));
                         }
-                        
+
                         if ($cart['cart_num'] >= $write_surplus_num) {//拆分完成
                             $cartData['write_surplus_times'] = 0;
                             $cartData['is_writeoff'] = 1;
@@ -497,18 +522,18 @@ class WriteOffOrderServices extends BaseServices
                         throw new ValidateException('Write off failure');
                     }
                 } else {//部分核销
-					/** @var StoreOrderCreateServices $storeOrderCreateServices */
-					$storeOrderCreateServices = app()->make(StoreOrderCreateServices::class);
-					$data['verify_code'] = $storeOrderCreateServices->getStoreCode();
+                    /** @var StoreOrderCreateServices $storeOrderCreateServices */
+                    $storeOrderCreateServices = app()->make(StoreOrderCreateServices::class);
+                    $data['verify_code'] = $storeOrderCreateServices->getStoreCode();
                     $data['status'] = 5;
                     $data['use_status'] = 1;
                 }
                 if (!$this->dao->update($orderInfo['id'], $data)) {
                     throw new ValidateException('Write off failure');
                 }
-				return $data;
+                return $data;
             });
-			event('order.writeoff', [$orderInfo, $auth, $data, $cartIds, $cartInfo]);
+            event('order.writeoff', [$orderInfo, $auth, $data, $cartIds, $cartInfo]);
         } else {//gaga币订单
             if ($orderInfo['status'] == 3) {
                 throw new ValidateException('订单已核销');
@@ -532,31 +557,31 @@ class WriteOffOrderServices extends BaseServices
         return $orderInfo;
     }
 
-	/**
-	 * 次卡商品核销表单
-	 * @param int $id
-	 * @param int $staffId
-	 * @param int $cart_num
-	 * @return mixed
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
-	 */
-	public function writeOrderFrom(int $id, int $staffId, int $cart_num = 1)
-	{
-		$orderInfo = $this->getOrderCartInfo(0, (int)$id, 1, (int)$staffId);
-		$cartInfo = $orderInfo['cart_info'] ?? [];
-		if (!$cartInfo) {
-			throw new ValidateException('核销订单商品信息不存在');
-		}
-		if ($orderInfo['product_type'] != 4) {
-			throw new ValidateException('订单商品不支持此类型核销');
-		}
-		$name = ($cartInfo[0]['write_surplus_times'] ?? 0) . '/'. ($cartInfo[0]['write_times'] ?? 0);
-		$f[] = Form::hidden('cart_id', $cartInfo[0]['cart_id'] ?? 0);
-		$f[] = Form::input('name', '核销数', $name)->disabled(true);
-		$f[] = Form::number('cart_num', '本次核销数量', min(max($cart_num, 1), $cartInfo[0]['write_surplus_times'] ?? 0))->min(1)->max($cartInfo[0]['write_surplus_times'] ?? 1);
-		return create_form('次卡核销', $f, $this->url('/order/write/form/' . $id), 'POST');
-	}
+    /**
+     * 次卡商品核销表单
+     * @param int $id
+     * @param int $staffId
+     * @param int $cart_num
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function writeOrderFrom(int $id, int $staffId, int $cart_num = 1)
+    {
+        $orderInfo = $this->getOrderCartInfo(0, (int)$id, 1, (int)$staffId);
+        $cartInfo = $orderInfo['cart_info'] ?? [];
+        if (!$cartInfo) {
+            throw new ValidateException('核销订单商品信息不存在');
+        }
+        if ($orderInfo['product_type'] != 4) {
+            throw new ValidateException('订单商品不支持此类型核销');
+        }
+        $name = ($cartInfo[0]['write_surplus_times'] ?? 0) . '/' . ($cartInfo[0]['write_times'] ?? 0);
+        $f[] = Form::hidden('cart_id', $cartInfo[0]['cart_id'] ?? 0);
+        $f[] = Form::input('name', '核销数', $name)->disabled(true);
+        $f[] = Form::number('cart_num', '本次核销数量', min(max($cart_num, 1), $cartInfo[0]['write_surplus_times'] ?? 0))->min(1)->max($cartInfo[0]['write_surplus_times'] ?? 1);
+        return create_form('次卡核销', $f, $this->url('/order/write/form/' . $id), 'POST');
+    }
 
 }
