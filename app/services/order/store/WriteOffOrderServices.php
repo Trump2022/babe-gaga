@@ -487,7 +487,7 @@ class WriteOffOrderServices extends BaseServices
                                 $cartData['is_writeoff'] = 1;
                                 $cartData['writeoff_time'] = time();
                             } else {//拆分部分数量
-                                $cartData['write_surplus_times'] = bcsub((string)$write_surplus_num, $cart['cart_num'], 0);
+                                $cartData['write_surplus_times'] = bcsub((string)$cart['write_surplus_times'], $cart['cart_num'], 0);
                                 $cartData['is_writeoff'] = 0;
                             }
 
