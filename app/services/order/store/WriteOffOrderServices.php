@@ -487,6 +487,9 @@ class WriteOffOrderServices extends BaseServices
                         $data['status'] = 2;
                     }
                     $data['use_status'] = 2;
+                    if ($orderInfo['is_class']) {
+                        $data['status'] = 3;
+                    }
                     /** @var StoreOrderTakeServices $storeOrdeTask */
                     $storeOrdeTask = app()->make(StoreOrderTakeServices::class);
                     $re = $storeOrdeTask->storeProductOrderUserTakeDelivery($orderInfo);

@@ -676,5 +676,34 @@ if (!function_exists('getModelTime')) {
 }
 
 
+if (!function_exists('system_config')) {
+    function system_config(array $key = []): array
+    {
+        return SystemConfigService::more($key);
+    }
+}
+
+
+if (!function_exists('systemGroupData')) {
+    /**
+     * 获取总后台组合数据配置
+     *
+     * @param string $key
+     * @param int|null $page
+     * @param int|null $limit
+     * @return array
+     * @author xaboy
+     * @day 2020/5/27
+     */
+    function systemGroupData(string $key, ?int $page = null, ?int $limit = 10)
+    {
+        $make = app()->make(\app\services\system\config\SystemGroupDataServices::class);
+        return $make->groupData($key, $page, $limit);
+    }
+}
+
+
+
+
 
 
