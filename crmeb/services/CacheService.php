@@ -99,6 +99,20 @@ class CacheService
     }
 
     /**
+     * 获取缓存
+     * @param string $name 缓存名称
+     * @return array
+     */
+    public static function get_data(string $name)
+    {
+        try {
+            return self::handler()->get($name);
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    /**
      * 如果不存在则写入缓存
      * @param string $name
      * @param bool $default
@@ -107,20 +121,7 @@ class CacheService
     public static function get(string $name, $default = false, int $expire = null)
     {
         try {
-            
-            $res = self::handler()->get($name);
-            if ($res) {
-                return $res;
-            }
-            
-            self::set($name, $default, $expire ?? self::getExpire($expire));
-            if (is_callable($default)) {
-                return $default();
-            } else {
-                return $default;
-            }
-            
-            // return self::handler()->remember($name, $default, $expire ?? self::getExpire($expire));
+            return self::handler()->remember($name, $default, $expire ?? self::getExpire($expire));
         } catch (\Throwable $e) {
             try {
                 if (is_callable($default)) {
