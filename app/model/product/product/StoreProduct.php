@@ -463,7 +463,10 @@ class StoreProduct extends BaseModel
      */
     public function searchStoreLabelIdAttr($query, $value)
     {
-        if ($value !== '') $query->where('FIND_IN_SET(' . $value . ',`store_label_id`)');
+        if ($value) {
+            $str = is_array($value) ? implode(',', $value) : $value;
+            $query->where('FIND_IN_SET(' . $str . ',`store_label_id`)');
+        }
     }
 
     /**

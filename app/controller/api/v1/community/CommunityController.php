@@ -344,9 +344,6 @@ class CommunityController
      * @param Request $request
      * @param StoreProductLogServices $services
      * @return Response
-     * @throws DataNotFoundException
-     * @throws DbException
-     * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:13
      * @author: QSW
