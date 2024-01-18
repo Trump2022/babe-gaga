@@ -88,7 +88,7 @@ class LoginServices extends BaseServices
             $data['nickname'] = !isset($user['nickname']) || !$user['nickname'] ? $userInfo->nickname : $user['nickname'];
         }
         */
-        if (isset($user['nickname']) && $user['nickname']) {
+        if (isset($user['nickname']) && $user['nickname'] && ! $userInfo->nickname) {
             $data['nickname'] = $user['nickname'];
         }
 
@@ -97,7 +97,7 @@ class LoginServices extends BaseServices
             $data['avatar'] = !isset($user['headimgurl']) || !$user['headimgurl'] ? $userInfo->avatar : $user['headimgurl'];
         }
         */
-        if (isset($user['headimgurl']) && $user['headimgurl']) {
+        if (isset($user['headimgurl']) && $user['headimgurl'] && ! $userInfo->avatar) {
             $data['avatar'] = $user['headimgurl'];
         }
 
@@ -106,7 +106,7 @@ class LoginServices extends BaseServices
             $data['phone'] = !isset($user['phone']) || !$user['phone'] ? $userInfo->phone : $user['phone'];
         }
         */
-        if (isset($user['phone']) && $user['phone']) {
+        if (isset($user['phone']) && $user['phone'] && ! $userInfo->phone) {
             $data['phone'] = $user['phone'];
         }
 

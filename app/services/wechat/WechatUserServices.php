@@ -20,6 +20,9 @@ use app\services\user\UserServices;
 use crmeb\exceptions\AdminException;
 use crmeb\exceptions\AuthException;
 use crmeb\services\wechat\OfficialAccount;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 
 /**
@@ -51,9 +54,9 @@ class WechatUserServices extends BaseServices
      * @param array $where
      * @param string $field
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getWechatUserInfo(array $where, $field = '*')
     {
@@ -101,9 +104,9 @@ class WechatUserServices extends BaseServices
      * 更新微信用户信息
      * @param $message
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function saveUserV1($message)
     {
@@ -122,9 +125,9 @@ class WechatUserServices extends BaseServices
      * @param int $spread_uid
      * @param string $phone
      * @return \app\services\user\User|array|\think\Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function saveUser($openid, $spread_uid = 0, $phone = '')
     {
@@ -215,9 +218,9 @@ class WechatUserServices extends BaseServices
      * @param int $spread_uid
      * @param array $append 追加字段
      * @return \app\services\user\User|\think\Model
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function setNewUser($openid, $spread_uid = 0, array $append = [])
     {
@@ -389,10 +392,11 @@ class WechatUserServices extends BaseServices
 
     /**
      * 微信授权成功后
-     * @param $event
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
-     * @throws \think\exception\DbException
+     * @param array $data
+     * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function wechatOauthAfter(array $data)
     {
@@ -491,9 +495,9 @@ class WechatUserServices extends BaseServices
      * 更新用户信息（同步）
      * @param array $openids
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function syncWechatUser(array $openids)
     {
