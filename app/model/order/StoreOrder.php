@@ -297,6 +297,15 @@ class StoreOrder extends BaseModel
     }
 
     /**
+     * 订单课程表单
+     * @return \think\model\relation\hasOne
+     */
+    public function storeOrderInfo()
+    {
+        return $this->hasOne(StoreOrderInfo::class, 'oid', 'id');
+    }
+
+    /**
      * 购物车ID修改器
      * @param $value
      * @return false|string

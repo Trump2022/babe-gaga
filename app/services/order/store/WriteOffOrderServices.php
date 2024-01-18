@@ -612,7 +612,11 @@ class WriteOffOrderServices extends BaseServices
     {
         //核销记录
         $with = ['staffInfo', 'systemStore'];
-        return $this->writeoffDao->getList(['oid' => $oid], $field = '*', $page = 0, $limit = 0, $with);
+        $list = $this->writeoffDao->getList(['oid' => $oid], $field = '*', $page = 0, $limit = 0, $with);
+        foreach ($list as &$item){
+            $item['add_time'] = date('Y-m-d H:i:s', $item['add_time']);
+        }
+        return $list;
     }
 
 
