@@ -19,6 +19,7 @@ use app\services\system\config\SystemConfigServices;
 use app\services\system\RelevanceServices;
 //use app\common\repositories\user\UserHistoryRepository;
 //use app\common\repositories\user\UserRelationRepository;
+use app\services\user\UserRelationServices;
 use app\services\user\UserRelationsServices;
 use app\services\user\UserHistoryServices;
 use app\services\user\UserServices;
@@ -334,7 +335,7 @@ class CommunityController
     public function relationList(Request $request): Json
     {
         $keyword = $request->param('keyword');
-        $data = app()->make(UserRelationsServices::class)->getUserProductToCommunity($keyword, $request->uid());
+        $data = app()->make(UserRelationServices::class)->getUserProductToCommunity($keyword, $request->uid());
         return app('json')->success($data);
     }
 

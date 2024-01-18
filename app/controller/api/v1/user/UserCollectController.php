@@ -13,6 +13,10 @@ namespace app\controller\api\v1\user;
 use app\Request;
 use app\services\user\UserRelationServices;
 use crmeb\services\CacheService;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\Response;
 
 
 /**
@@ -58,11 +62,12 @@ class UserCollectController
     /**
      * 添加收藏
      * @param Request $request
-     * @param $id
-     * @param $category
-     * @return mixed
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function collect_add(Request $request)
+    public function collect_add(Request $request): Response
     {
         [$id, $category] = $request->postMore([
             ['id', 0],

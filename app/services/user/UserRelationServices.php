@@ -261,4 +261,34 @@ class UserRelationServices extends BaseServices
 
         return true;
     }
+
+    /**
+     * @param string|null $keyword
+     * @param int $uid
+     * @return array
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 21:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getUserProductToCommunity(?string $keyword, int $uid): array
+    {
+        [$page, $limit] = $this->getPageValue();
+        //$query = $this->dao->getUserProductToCommunity($uid, $keyword);
+        $query = $this->dao->getModel()->alias('r')
+        ->join('store_product p', 'r.relation_id=p.id')
+        ->when($keyword, function ($que) use($keyword) {
+            $que->whereLike('p.store_name',"%{$keyword}%");
+        })->where('p.is_show',1);
+
+        //getUserProductToCommunity($uid, $keyword);
+        $count = $query->count();
+        $list = $query
+//            ->setOption('field',[])
+            ->field('r.uid,r.relation_id product_id,r.relation_id spu_id,p.product_type,p.image,p.store_name,p.price')
+//            ->field('*')
+//            ->field('uid,product_id,product_type,spu_id,image,store_name,price')
+            ->page($page, $limit)->select()->toArray();
+        return compact('count', 'list');
+    }
 }

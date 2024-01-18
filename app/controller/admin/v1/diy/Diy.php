@@ -21,6 +21,9 @@ use app\services\other\CacheServices;
 use app\services\product\category\StoreProductCategoryServices;
 use app\services\product\product\StoreProductServices;
 use crmeb\exceptions\AdminException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\App;
 
 /**
@@ -44,9 +47,9 @@ class Diy extends AuthController
     /**
      * DIY列表
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getList()
     {
@@ -330,9 +333,9 @@ class Diy extends AuthController
     /**
      * 获取商品分类
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getCategory()
     {
@@ -531,9 +534,9 @@ class Diy extends AuthController
      * 获取颜色选择和分类模板选择
      * @param $type
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getColorChange($type)
     {
@@ -555,9 +558,9 @@ class Diy extends AuthController
     /**
      * 获取会员中心数据
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getMember()
     {
@@ -568,6 +571,9 @@ class Diy extends AuthController
     /**
      * 保存个人中心数据
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function memberSaveData()
     {
@@ -630,9 +636,9 @@ class Diy extends AuthController
 	/**
      * 获取商品详情数据
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getProductDetailDiy()
     {

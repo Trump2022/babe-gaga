@@ -13,6 +13,7 @@ namespace app\dao\user;
 
 use app\dao\BaseDao;
 use app\model\user\UserRelation;
+use crmeb\basic\BaseModel;
 use think\db\BaseQuery;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
@@ -82,5 +83,38 @@ class UserRelationDao extends BaseDao
             $query->table('gaga_store_product')->where('is_class', $is_class)
                 ->whereRaw('gaga_store_product.id = gaga_user_relation.relation_id');
         })->count();
+    }
+
+    /**
+     * @param int $uid
+     * @param string|null $keyword
+     * @return BaseQuery
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 21:21
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getUserProductToCommunity(int $uid, ?string  $keyword = ''): BaseQuery
+    {
+        $query = UserRelation::hasWhere('product', function ($query) use($keyword) {
+            $query->when($keyword, function ($query) use($keyword) {
+                $query->whereLike('store_name',"%{$keyword}%");
+            });
+            $query->where('is_show',1);
+        });
+        $query->where('uid',$uid);
+        return $query;
+    }
+
+    /**
+     * @return BaseModel
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/17 21:49
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getModel(): BaseModel
+    {
+        return parent::getModel();
     }
 }
