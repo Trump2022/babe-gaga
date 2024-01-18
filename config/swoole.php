@@ -30,8 +30,8 @@ return strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN' ? [] : [
             'redis' => [
                 'host' => '127.0.0.1',
                 'port' => 6379,
-                'max_active' => 3,
-                'max_wait_time' => 5,
+                'max_active' => 10,
+                'max_wait_time' => 60,
             ],
         ],
         'listen' => [],
