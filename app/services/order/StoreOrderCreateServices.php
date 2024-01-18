@@ -238,7 +238,7 @@ class StoreOrderCreateServices extends BaseServices
             $wechatServices = app()->make(WechatUserServices::class);
             $orderInfo['province'] = $wechatServices->value(['uid' => $uid, 'user_type' => $userInfo['user_type']], 'province') ?: '';
         }
-        if ($shippingType == 2) {
+        if ($shippingType == 2 && !$is_class) {
             $orderInfo['verify_code'] = $this->getStoreCode();
             /** @var SystemStoreServices $storeServices */
             $storeServices = app()->make(SystemStoreServices::class);
