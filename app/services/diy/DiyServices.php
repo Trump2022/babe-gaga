@@ -19,6 +19,9 @@ use app\services\system\config\SystemGroupDataServices;
 use app\services\system\config\SystemGroupServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\SystemConfigService;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 
 /**
@@ -91,9 +94,9 @@ class DiyServices extends BaseServices
      * 获取DIY列表
      * @param array $where
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getDiyList(array $where)
     {
@@ -136,9 +139,9 @@ class DiyServices extends BaseServices
     }
 
 	/**
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 * @author 等风来
 	 * @email 136327134@qq.com
 	 * @date 2022/11/9
@@ -212,9 +215,9 @@ class DiyServices extends BaseServices
     /**
      * 获取页面数据
      * @return array|\think\Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getDiy(string $name)
     {
@@ -256,9 +259,9 @@ class DiyServices extends BaseServices
      * @param int $id
      * @param int $type
      * @return array|object
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getDiyInfo(int $id, $type = 1)
     {
@@ -342,9 +345,9 @@ class DiyServices extends BaseServices
 
     /**
      * 获取换色/分类数据
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getColorChange(string $name)
     {
@@ -358,9 +361,9 @@ class DiyServices extends BaseServices
      * 取单个diy小程序预览二维码
      * @param int $id
      * @return string
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getRoutineCode(int $id)
     {
@@ -378,9 +381,9 @@ class DiyServices extends BaseServices
     /**
  	* 获取个人中心数据
 	* @return array
-	* @throws \think\db\exception\DataNotFoundException
-	* @throws \think\db\exception\DbException
-	* @throws \think\db\exception\ModelNotFoundException
+	* @throws DataNotFoundException
+	* @throws DbException
+	* @throws ModelNotFoundException
 	 */
     public function getMemberData()
     {
@@ -432,11 +435,11 @@ class DiyServices extends BaseServices
      * 保存个人中心数据配置
      * @param array $data
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function memberSaveData(array $data)
+    public function memberSaveData(array $data): bool
     {
 		$key = 'diy_data_member_3';
         /** @var SystemGroupDataServices $systemGroupDataServices */
@@ -467,9 +470,9 @@ class DiyServices extends BaseServices
 	/**
      * 获取商品diy数据
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getProductDetailDiy()
     {
@@ -492,9 +495,9 @@ class DiyServices extends BaseServices
  	* 保存商品diy数据
 	* @param array $content
 	* @return bool
-	* @throws \think\db\exception\DataNotFoundException
-	* @throws \think\db\exception\DbException
-	* @throws \think\db\exception\ModelNotFoundException
+	* @throws DataNotFoundException
+	* @throws DbException
+	* @throws ModelNotFoundException
 	 */
     public function saveProductDetailDiy(array $content)
     {
