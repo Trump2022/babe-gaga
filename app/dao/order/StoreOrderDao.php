@@ -88,10 +88,10 @@ class StoreOrderDao extends BaseDao
                 case 2://已支付  待收货  (课程使用中)
                     $query->where('paid', 1)->whereIn('status', [1, 5])->whereIn('refund_status', [0, 3])->where('is_del', 0);
                     break;
-                case 3:// 已支付  已收货  待评价  (课程已完成)
+                case 3:// 已支付  已收货  待评价
                     $query->where('paid', 1)->where('status', 2)->whereIn('refund_status', [0, 3])->where('is_del', 0);
                     break;
-                case 4:// 交易完成
+                case 4:// 交易完成  (课程已完成)
                     $query->where('paid', 1)->where('status', 3)->whereIn('refund_status', [0, 3])->where('is_del', 0);
                     break;
                 case 5://已支付  待核销
