@@ -77,10 +77,11 @@ class StoreProductDao extends BaseDao
                     $query->name('store_product_relation')->where('type', 2)->whereIn('relation_id', $where['brand_id'])->field('product_id')->select();
                 });
             })->when(isset($where['store_label_id']) && $where['store_label_id'], function ($query) use ($where) {
-                $str = is_array($where['store_label_id']) ? implode(',', $where['store_label_id']) : $where['store_label_id'];
+                //$str = is_array($where['store_label_id']) ? implode(',', $where['store_label_id']) : $where['store_label_id'];
                 $query->whereIn('id', function ($query) use ($where) {
                     $query->name('store_product_relation')->where('type', 3)->whereIn('relation_id', $where['store_label_id'])->field('product_id')->select();
-                })->where('FIND_IN_SET(' . $str . ',`store_label_id`)');
+                });
+                //->where('FIND_IN_SET(' . $str . ',`store_label_id`)');
             })->when(isset($where['is_live']) && $where['is_live'] == 1, function ($query) use ($where) {
                 $query->whereNotIn('id', function ($query) {
                     $query->name('live_goods')->where('is_del', 0)->where('audit_status', '<>', 3)->field('product_id')->select();
