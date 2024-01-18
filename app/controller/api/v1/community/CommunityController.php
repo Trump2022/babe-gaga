@@ -14,6 +14,7 @@ namespace app\controller\api\v1\community;
 
 use app\Request;
 use app\services\community\CommunityServices;
+use app\services\product\product\StoreProductLogServices;
 use app\services\system\config\SystemConfigServices;
 //use app\common\repositories\store\order\StoreOrderProductRepository;
 use app\services\system\RelevanceServices;
@@ -341,6 +342,7 @@ class CommunityController
 
     /**
      * @param Request $request
+     * @param StoreProductLogServices $services
      * @return Response
      * @throws DataNotFoundException
      * @throws DbException
@@ -350,13 +352,28 @@ class CommunityController
      * @author: QSW
      * @email: qsw2012@outlook.com
      */
-    public function historyList(Request $request): Response
+    public function historyList(Request $request, StoreProductLogServices $services): Response
     {
         $where['keyword'] = $request->param('keyword');
         $where['uid'] = $request->uid();
-        $where['type'] = 1;
-        $data = app()->make(UserHistoryServices::class)->historyLst($where);
-        return app('json')->success($data);
+        $where['type'] = 'visit';
+        $result = $services->getListForCommunity($where);
+        /*
+        $time_data = [];
+        if ($result['list']) {
+            foreach ($result['list'] as $key => &$item) {
+                $add_time = strtotime($item['add_time']);
+                if (date('Y') == date('Y', $add_time)) {//今年
+                    $item['time_key'] = date('m月d日', $add_time);
+                } else {
+                    $item['time_key'] = date('Y年m月d日', $add_time);
+                }
+            }
+            $time_data = array_merge(array_unique(array_column($result['list'], 'time_key')));
+        }
+        $result['time'] = $time_data;
+        */
+        return app('json')->success($result);
     }
 
     /**

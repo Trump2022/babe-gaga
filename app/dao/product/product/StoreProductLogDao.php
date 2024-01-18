@@ -14,6 +14,8 @@ namespace app\dao\product\product;
 
 use app\dao\BaseDao;
 use app\model\product\product\StoreProductLog;
+use crmeb\basic\BaseModel;
+use think\db\BaseQuery;
 use think\facade\Config;
 
 class StoreProductLogDao extends BaseDao
@@ -69,11 +71,46 @@ class StoreProductLogDao extends BaseDao
      */
     public function getList(array $where, string $field = '*', int $page = 0, int $limit = 0, string $group = '')
     {
-        return $this->search($where)->with(['storeName'])->field($field)
+        return $this->search($where)
+            ->with(['storeName'])
+            ->field($field)
             ->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
                 $query->page($page, $limit);
             })->when($group, function ($query) use ($group) {
                 $query->group($group);
             })->order('add_time desc')->select()->toArray();
+    }
+
+    /**
+     * @param $where
+     * @return BaseQuery
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/18 11:23
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function joinStoreProduct($where): BaseQuery
+    {
+        $query = StoreProductLog::hasWhere('storeName',function($que) use($where){
+            $que->when(isset($where['keyword']) && $where['keyword'] !== '', function($q) use ($where){
+                $q->whereLike('store_name',"%{$where['keyword']}%");
+            });
+            $que->where(true);
+        });
+        $query->where('uid', $where['uid']);
+        $query->where('type', $where['type']);
+        return $query;
+    }
+
+    /**
+     * @return BaseModel
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/18 12:02
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getModel(): BaseModel
+    {
+        return parent::getModel();
     }
 }

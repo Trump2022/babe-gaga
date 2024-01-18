@@ -496,7 +496,7 @@ class CommunityServices extends BaseServices
             if ($data['status'] == 1) {
                 $this->incIntegral($data['uid'], $community->community_id);
             }
-            //if ($data['spu_id']) $this->joinProduct($community->community_id,$data['spu_id']);
+            if ($data['spu_id']) $this->joinProduct($community->community_id,$data['spu_id']);
             //event('community.create',compact('community'));
             return $community->community_id;
         });
