@@ -355,21 +355,6 @@ class CommunityController
         $where['uid'] = $request->uid();
         $where['type'] = 'visit';
         $result = $services->getListForCommunity($where);
-        /*
-        $time_data = [];
-        if ($result['list']) {
-            foreach ($result['list'] as $key => &$item) {
-                $add_time = strtotime($item['add_time']);
-                if (date('Y') == date('Y', $add_time)) {//今年
-                    $item['time_key'] = date('m月d日', $add_time);
-                } else {
-                    $item['time_key'] = date('Y年m月d日', $add_time);
-                }
-            }
-            $time_data = array_merge(array_unique(array_column($result['list'], 'time_key')));
-        }
-        $result['time'] = $time_data;
-        */
         return app('json')->success($result);
     }
 
