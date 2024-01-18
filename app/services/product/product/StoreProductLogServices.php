@@ -16,6 +16,9 @@ use app\dao\product\product\StoreProductLogDao;
 use app\services\order\StoreOrderCartInfoServices;
 use app\services\BaseServices;
 use app\services\product\branch\StoreBranchProductServices;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 
 /**
@@ -162,11 +165,11 @@ class StoreProductLogServices extends BaseServices
      * @param string $group
      * @param string $field
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getList(array $where, string $group = '', string $field = '*')
+    public function getList(array $where, string $group = '', string $field = '*'): array
     {
         [$page, $limit] = $this->getPageValue();
         $list = $this->dao->getList($where, $field, $page, $limit, $group);
@@ -176,5 +179,46 @@ class StoreProductLogServices extends BaseServices
             $count = $this->dao->count($where);
         }
         return compact('list', 'count');
+    }
+
+    /**
+     * @param array $where
+     * @return array
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/18 14:50
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getListForCommunity(array $where): array
+    {
+        [$page, $limit] = $this->getPageValue();
+        $list = $this->getQueryForHistoryList($where)
+            ->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
+                $query->page($page, $limit);
+            })
+            ->field('r.product_id,r.product_id spu_id,r.uid,max(r.add_time) as add_time,p.product_type,p.store_name,p.image,p.price')
+            ->group('r.product_id')
+            ->order('add_time desc')
+            ->select()->toArray();
+        $count = $this->getQueryForHistoryList($where)->field('COUNT(distinct(r.product_id)) as count')->select()->toArray()[0]['count'] ?? 0;
+        return compact('list', 'count');
+    }
+
+    /**
+     * @param $where
+     * @return mixed
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/18 14:49
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getQueryForHistoryList($where)
+    {
+        return $this->dao->getModel()->alias('r')
+            ->join('store_product p', 'r.product_id=p.id')
+            ->when(isset($where['keyword']) && $where['keyword'] !== '', function($q) use ($where){
+                $q->whereLike('p.store_name',"%{$where['keyword']}%");
+            })->where('r.uid',$where['uid'])
+            ->where('r.type', $where['type']);
     }
 }

@@ -86,6 +86,8 @@ class StoreOrderRefundDao extends BaseDao
             }
         })->when(isset($where['supplier']) && $where['supplier'] !== '', function ($query) use ($where) {
             $query->where('supplier_id', '>', 0);
+        })->when(isset($where['is_class']) && $where['is_class'] !== '', function ($query) use ($where) {
+            $query->where('is_class', $where['is_class']);
         });
     }
 

@@ -14,6 +14,10 @@ namespace app\controller\api\v2\wechat;
 use app\Request;
 use app\services\wechat\RoutineServices;
 use crmeb\services\CacheService;
+use Psr\SimpleCache\InvalidArgumentException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
+use think\Response;
 
 
 /**
@@ -39,7 +43,7 @@ class AuthController
 	 * @param $code
 	 * @param $spread_code
 	 * @param $spread_spid
-	 * @return \think\Response
+	 * @return Response
 	 */
 	public function authType($code, $spread_code = '', $spread_spid = '')
 	{
@@ -48,13 +52,16 @@ class AuthController
 		return app('json')->success($data);
 	}
 
-	/**
-	 * 根据缓存获取token
-	 * @param $key
-	 * @return \think\Response
-	 */
-	public function authLogin($key)
-	{
+    /**
+     * 根据缓存获取token
+     * @param $key
+     * @return Response
+     * @throws InvalidArgumentException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
+     */
+	public function authLogin($key): Response
+    {
 		if (!$key) return app('json')->fail('参数有误');
 		$data = $this->services->authLogin($key);
 		return app('json')->success($data);
@@ -67,8 +74,8 @@ class AuthController
 	 * @param $spread_code
 	 * @param $spread_spid
 	 * @param $code
-	 * @return \think\Response
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
+	 * @return Response
+	 * @throws InvalidArgumentException
 	 */
 	public function phoneLogin($key = '', $phone = '', $captcha = '', $spread_code = '', $spread_spid = '', $code = '')
 	{
@@ -90,7 +97,7 @@ class AuthController
 	 * @param $code
 	 * @param $iv
 	 * @param $encryptedData
-	 * @return \think\Response
+	 * @return Response
 	 */
 	public function bindingPhone($code = '', $iv = '', $encryptedData = '')
 	{
@@ -104,9 +111,9 @@ class AuthController
      * 小程序授权登录
      * @param Request $request
      * @return mixed
-     * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws InvalidArgumentException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function auth(Request $request)

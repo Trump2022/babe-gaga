@@ -22,6 +22,9 @@ use crmeb\services\CacheService;
 use crmeb\services\template\Template;
 use crmeb\services\wechat\MiniProgram;
 use crmeb\services\wechat\WechatResponse;
+use Psr\SimpleCache\InvalidArgumentException;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Config;
 
@@ -85,15 +88,16 @@ class RoutineServices extends BaseServices
 	 * 根据缓存获取token
 	 * @param $key
 	 * @return array
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws InvalidArgumentException
+	 * @throws DataNotFoundException
+	 * @throws ModelNotFoundException
 	 */
-	public function authLogin($key)
-	{
+	public function authLogin($key): array
+    {
 		[$openid, $wechatInfo, $spread_uid, $login_type, $userType] = CacheService::getTokenBucket($key);
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
+
 		//写入用户信息
 		$user = $wechatUserServices->wechatOauthAfter([$openid, $wechatInfo, $spread_uid, $login_type, $userType]);
 		return $this->getReturnInfo($user);
@@ -107,8 +111,8 @@ class RoutineServices extends BaseServices
 	 * @param $spread_code
 	 * @param $code
 	 * @return array
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws ModelNotFoundException
 	 */
 	public function phoneLogin($key, $phone, $spread_uid, $spread_code, $code = '')
 	{
@@ -140,8 +144,8 @@ class RoutineServices extends BaseServices
 	 * @param $iv
 	 * @param $encryptedData
 	 * @return mixed
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws ModelNotFoundException
 	 */
 	public function bindingPhone($code, $iv, $encryptedData)
 	{
@@ -353,8 +357,8 @@ class RoutineServices extends BaseServices
      * @param $iv
      * @param $encryptedData
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      */
     public function newAuth($code, $spread_uid, $spread_code, $iv, $encryptedData)
     {
@@ -459,9 +463,9 @@ class RoutineServices extends BaseServices
 	 * @param $spread_uid
 	 * @param $key
 	 * @return array
-	 * @throws \Psr\SimpleCache\InvalidArgumentException
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws InvalidArgumentException
+	 * @throws DataNotFoundException
+	 * @throws ModelNotFoundException
 	 */
     public function authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_uid, $key = '')
     {
@@ -496,9 +500,9 @@ class RoutineServices extends BaseServices
      * @param $uid
      * @param array $data
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
+     * @throws DataNotFoundException
      * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function updateUserInfo($uid, array $data)
     {

@@ -14,6 +14,9 @@ use app\Request;
 use app\services\product\product\StoreProductLogServices;
 use app\services\user\UserServices;
 use app\services\wechat\WechatUserServices;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 
 /**
@@ -50,8 +53,8 @@ class UserController
      * @param Request $request
      * @return mixed
      * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function balance(Request $request)
@@ -104,8 +107,8 @@ class UserController
      * 推广人排行
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function rank(Request $request)
@@ -221,9 +224,9 @@ class UserController
      * @param Request $request
      * @param StoreProductLogServices $services
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function visitList(Request $request, StoreProductLogServices $services)
     {
@@ -251,9 +254,9 @@ class UserController
      * @param Request $request
      * @param StoreProductLogServices $services
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function visitDelete(Request $request, StoreProductLogServices $services)
     {

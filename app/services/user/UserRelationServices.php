@@ -288,7 +288,10 @@ class UserRelationServices extends BaseServices
             ->field('r.uid,r.relation_id product_id,r.relation_id spu_id,p.product_type,p.image,p.store_name,p.price')
 //            ->field('*')
 //            ->field('uid,product_id,product_type,spu_id,image,store_name,price')
-            ->page($page, $limit)->select()->toArray();
+//            ->page($page, $limit)
+            ->when($page != 0 && $limit != 0, function ($query) use ($page, $limit) {
+                $query->page($page, $limit);
+            })->select()->toArray();
         return compact('count', 'list');
     }
 }

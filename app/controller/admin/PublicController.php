@@ -91,7 +91,7 @@ class PublicController
         if ($type) {
             $res = $type == 2 ? CacheService::clear() : CacheService::delete($key);
         } else {
-            $res = CacheService::get($key);
+            $res = CacheService::get_data($key);
         }
 
         return app('json')->success(['data' => $res]);
