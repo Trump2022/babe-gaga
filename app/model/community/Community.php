@@ -19,6 +19,7 @@ use app\model\store\product\Spu;
 use app\model\system\Relevance;
 use app\model\user\User;
 use crmeb\traits\ModelTrait;
+use think\model\relation\HasMany;
 
 
 class Community extends BaseModel
@@ -79,10 +80,16 @@ class Community extends BaseModel
         return $this->hasMany(CommunityReply::class,'community_id','community_id');
     }
 
-    public function relevance()
+    /**
+     * @return HasMany
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/19 11:31
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function relevance(): HasMany
     {
-        return $this->hasMany(Relevance::class, 'left_id','community_id')
-            ->where('type',RelevanceServices::TYPE_COMMUNITY_PRODUCT);
+        return $this->hasMany(Relevance::class, 'left_id','community_id')->where('type',RelevanceServices::TYPE_COMMUNITY_PRODUCT);
     }
 
     /*
