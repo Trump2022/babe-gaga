@@ -243,11 +243,11 @@ class StoreOrderController
                     $orderInfo['use_expire_time'] = date('Y-m-d H:i:s', $cart['write_end']).' 到期';
                 } else {
                     if ($cart['active_start']) {
-                        $orderInfo['active_time'][] = date('Y-m-d H:i:s', $cart['active_start']);
+                        $orderInfo['active_time'][] = $cart['active_start'];
                     }
                     
                     if ($cart['active_end']) {
-                        $orderInfo['active_time'][] = date('Y-m-d H:i:s', $cart['active_end']);
+                        $orderInfo['active_time'][] = $cart['active_end'];
                     }
                 }
 
