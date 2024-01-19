@@ -435,7 +435,7 @@ class WriteOffOrderServices extends BaseServices
                 $cartData['delivery_id'] = $deliveryInfo['id'] ?? 0;
             }
             //适应门店
-            if(!empty($staffInfo['id']) && $store_id > 0 && isset($orderInfo['applicable_type'])){
+            if(!empty($staffInfo['id']) && isset($orderInfo['applicable_type'])){
                 if($orderInfo['applicable_type'] == 2 && !empty($orderInfo['applicable_store_id'])){
                     $applicableStore = $orderInfo['applicable_store_id'];
                     if(!in_array($staffInfo['store_id'], $applicableStore)){
