@@ -19,7 +19,9 @@ use app\model\store\product\Spu;
 use app\model\system\Relevance;
 use app\model\user\User;
 use crmeb\traits\ModelTrait;
+use think\db\exception\DbException;
 use think\model\relation\HasMany;
+use think\model\relation\HasOne;
 
 
 class Community extends BaseModel
@@ -65,52 +67,67 @@ class Community extends BaseModel
         return explode(',',$value);
     }
 
-    public function author()
+    /**
+     * @return HasOne
+     */
+    public function author(): HasOne
     {
         return $this->hasOne(User::class,'uid','uid');
     }
 
-    public function topic()
+    /**
+     * @return HasOne
+     */
+    public function topic(): HasOne
     {
         return $this->hasOne(CommunityTopic::class,'topic_id','topic_id');
     }
 
-    public function reply()
+    /**
+     * @return HasMany
+     */
+    public function reply(): HasMany
     {
         return $this->hasMany(CommunityReply::class,'community_id','community_id');
     }
 
     /**
      * @return HasMany
-     * @descr: I am on my way to future,where you are there.
-     * @date : 2024/1/19 11:31
-     * @author: QSW
-     * @email: qsw2012@outlook.com
      */
     public function relevance(): HasMany
     {
         return $this->hasMany(Relevance::class, 'left_id','community_id')->where('type',RelevanceServices::TYPE_COMMUNITY_PRODUCT);
     }
 
-    /*
-     *  右侧为内容ID的
+    /**
+     * 右侧为内容ID的
+     * @return HasMany
      */
-    public function relevanceRight()
+    public function relevanceRight(): HasMany
     {
         return $this->hasMany(Relevance::class, 'right_id','community_id');
     }
 
-    public function isStart()
+    /**
+     * @return HasOne
+     */
+    public function isStart(): HasOne
     {
         return $this->hasOne(Relevance::class, 'right_id','community_id')->where('type', RelevanceServices::TYPE_COMMUNITY_START)->bind(['relevance_id']);
     }
 
-    public function isFans()
+    /**
+     * @return HasOne
+     */
+    public function isFans(): HasOne
     {
         return $this->hasOne(Relevance::class, 'right_id','uid')->where('type', RelevanceServices::TYPE_COMMUNITY_FANS)->bind(['is_fans' => 'right_id']);
     }
 
-    public function category()
+    /**
+     * @return HasOne
+     */
+    public function category(): HasOne
     {
         return $this->hasOne(CommunityCategory::class, 'category_id','category_id');
     }
@@ -120,7 +137,11 @@ class Community extends BaseModel
         return date('m月d日',strtotime($this->create_time));
     }
 
-    public function getCountReplyAttr()
+    /**
+     * @return int
+     * @throws DbException
+     */
+    public function getCountReplyAttr(): int
     {
         return CommunityReply::where('community_id',$this->community_id)->where('status',1)->count();
     }
