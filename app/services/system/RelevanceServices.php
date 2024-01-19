@@ -247,7 +247,7 @@ class RelevanceServices extends BaseServices
                     },
                     'relevance'  => [
                         'spu' => function($query) {
-                            $query->field('spu_id,store_name,image,price,product_type,activity_id,product_id');
+                            $query->field('id,id product_id,id spu_id,store_name,image,price,product_type,0 as activity_id');
                         }
                     ],
                     'is_fans' => function($query) use($where){
