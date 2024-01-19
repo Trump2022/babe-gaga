@@ -14,6 +14,7 @@ namespace app\controller\api\v1\community;
 
 use app\Request;
 use app\services\community\CommunityServices;
+use app\services\kefu\ProductServices;
 use app\services\product\product\StoreProductLogServices;
 use app\services\system\config\SystemConfigServices;
 //use app\common\repositories\store\order\StoreOrderProductRepository;
@@ -481,15 +482,18 @@ class CommunityController
     /**
      * 已购商品
      * @param Request $request
+     * @param ProductServices $ProductServices
      * @return Json
      * @author Qinii
      * @day 10/28/21
      */
-    public function payList(Request $request): Json
+    public function payList(Request $request, ProductServices $ProductServices): Json
     {
-        $keyword = $request->param('keyword');
-        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $request->uid());
-        return app('json')->success($data);
+        $keyword = $request->param('keyword') ?? '';
+//        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $request->uid());
+//        return app('json')->success($data);
+
+        return app('json')->success(get_thumb_water($ProductServices->getProductCartList((int) $request->uid(), $keyword)));
     }
 
     /**
