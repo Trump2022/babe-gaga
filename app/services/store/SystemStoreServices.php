@@ -17,6 +17,7 @@ use app\services\order\StoreDeliveryOrderServices;
 use app\services\order\StoreOrderCartInfoServices;
 use app\services\order\StoreOrderServices;
 use app\services\product\branch\StoreBranchProductServices;
+use app\services\product\product\StoreProductServices;
 use app\services\product\sku\StoreProductAttrValueServices;
 use app\services\store\finance\StoreFinanceFlowServices;
 use app\services\system\SystemRoleServices;
@@ -110,6 +111,15 @@ class SystemStoreServices extends BaseServices
                 $where['ids'] = $ids;
             } else {//没登录，无常用门店
                 return [];
+            }
+        }
+        //课程适用门店
+        if (!empty($where['product_id'])) {
+            /** @var StoreProductServices $storeProductServices */
+            $storeProductServices = app()->make(StoreProductServices::class);
+            $productInfo = $storeProductServices->getOne(['id' => $where['product_id']], 'applicable_type, applicable_store_id')->toArray();
+            if(!empty($productInfo['applicable_type']) && $productInfo['applicable_type'] == 2 && !empty($productInfo['applicable_store_id'])){
+                $where['store_id'] = $productInfo['applicable_store_id'];
             }
         }
         $storeList = [];
