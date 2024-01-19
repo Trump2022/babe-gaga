@@ -13,7 +13,8 @@ namespace app\model\system;
 
 use app\model\user\User;
 use app\model\community\Community;
-use app\model\store\product\Spu;
+//use app\model\store\product\Spu;
+use app\model\product\product\StoreProduct;
 use crmeb\basic\BaseModel;
 use crmeb\traits\ModelTrait;
 use think\model\relation\HasOne;
@@ -53,7 +54,7 @@ class Relevance extends BaseModel
      */
     public function spu(): HasOne
     {
-        return $this->hasOne(Spu::class, 'spu_id', 'right_id');
+        return $this->hasOne(StoreProduct::class, 'id', 'right_id');
     }
 
     /**

@@ -395,13 +395,10 @@ class CommunityServices extends BaseServices
             ->with([
                 'author' => function ($query) {
                     $query->field('uid,real_name,status,avatar,nickname,count_start,member_level');
-//                    if (sys_config('member_status')) $query->with(['member' => function ($query) {
-//                        $query->field('brokerage_icon,brokerage_level');
-//                    }]);
                 },
-                'relevance' => [
+                 'relevance'=> [
                     'spu' => function ($query) {
-                        $query->field('spu_id,store_name,image,price,product_type,activity_id,product_id');
+                        $query->field('id,id product_id,id spu_id,store_name,image,price,product_type,0 as activity_id');
                     }
                 ],
                 'topic' => function ($query) {
