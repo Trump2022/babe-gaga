@@ -415,15 +415,6 @@ class WriteOffOrderServices extends BaseServices
                 $storeStaffServices = app()->make(SystemStoreStaffServices::class);
                 if ($uid) {//商城前端
                     $staffInfo = $storeStaffServices->getStaffInfoByUid($uid, $store_id);
-                    //适应门店
-                    if($store_id > 0 && isset($orderInfo['applicable_type'])){
-                        if($orderInfo['applicable_type'] == 2 && !empty($orderInfo['applicable_store_id'])){
-                            $applicableStore = $orderInfo['applicable_store_id'];
-                            if(!in_array($staffInfo['store_id'], $applicableStore)){
-                                throw new ValidateException('该订单不支持该门店核销');
-                            }
-                        }
-                    }
                 } else {//门店后台
                     $staffInfo = $storeStaffServices->getStaffInfo($staff_id);
                     if ($store_id != $staffInfo['store_id']) {
@@ -442,6 +433,15 @@ class WriteOffOrderServices extends BaseServices
                 $deliverServiceServices = app()->make(DeliveryServiceServices::class);
                 $deliveryInfo = $deliverServiceServices->getDeliveryInfoByUid($uid, 1, (int)$store_id);
                 $cartData['delivery_id'] = $deliveryInfo['id'] ?? 0;
+            }
+            //适应门店
+            if(!empty($staffInfo['id']) && $store_id > 0 && isset($orderInfo['applicable_type'])){
+                if($orderInfo['applicable_type'] == 2 && !empty($orderInfo['applicable_store_id'])){
+                    $applicableStore = $orderInfo['applicable_store_id'];
+                    if(!in_array($staffInfo['store_id'], $applicableStore)){
+                        throw new ValidateException('该订单不支持该门店核销');
+                    }
+                }
             }
             $data = $this->transaction(function () use ($orderInfo, $staff_id, $data, $cartIds, $cartInfoServices, $cartData, $auth, $cartInfo) {
                 if ($cartIds) {//选择商品、件数核销
