@@ -233,7 +233,6 @@ class StoreOrderCreateServices extends BaseServices
             'give_coupon' => implode(',', $promotions_give['give_coupon'] ?? []),
             'store_id' => $storeId
         ];
-        Log::info(json_encode($orderInfo));
         if ($userInfo['user_type'] == 'wechat' || $userInfo['user_type'] == 'routine') {
             /** @var WechatUserServices $wechatServices */
             $wechatServices = app()->make(WechatUserServices::class);
@@ -315,6 +314,7 @@ class StoreOrderCreateServices extends BaseServices
         $priceData['coupon_id'] = $couponId;
         $order = $this->transaction(function () use ($cartIds, $couponId, $orderInfo, $cartInfo, $key, $userInfo, $useIntegral, $priceData, $type, $activity_id, $uid, $addressId, $promotions_give, $storeId, $orderInfos) {
             //创建订单
+            Log::info(json_encode($orderInfo));
             $order = $this->dao->save($orderInfo);
             if ($couponId) {
                 /** @var StoreCouponUserServices $couponServices */
