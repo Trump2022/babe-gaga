@@ -418,9 +418,9 @@ class WriteOffOrderServices extends BaseServices
                     //适应门店
                     if($store_id > 0 && isset($orderInfo['applicable_type'])){
                         if($orderInfo['applicable_type'] == 2 && !empty($orderInfo['applicable_store_id'])){
-                            $applicableStore = explode(',', $orderInfo['applicable_store_id']);
+                            $applicableStore = $orderInfo['applicable_store_id'];
                             if(!in_array($staffInfo['store_id'], $applicableStore)){
-                                throw new ValidateException('该门店不适用');
+                                throw new ValidateException('该订单不支持该门店核销');
                             }
                         }
                     }
