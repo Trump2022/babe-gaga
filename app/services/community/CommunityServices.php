@@ -599,7 +599,7 @@ class CommunityServices extends BaseServices
             }
         }
         $make->clear($id,RelevanceServices::TYPE_COMMUNITY_PRODUCT,'left_id');
-        if($res) $make->insertAll($res);
+        if($res) $make->saveAll($res);
     }
 
     /**
