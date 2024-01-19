@@ -337,8 +337,8 @@ class StoreOrderServices extends BaseServices
                 $cart['surplus_num'] = $cartInfo['write_surplus_times'];
                 $cart['refund_num'] = $cartInfo['refund_num'];
                 $cart['write_days'] = $cartInfo['write_days'];
-                $cart['active_start'] = $cartInfo['active_start'];
-                $cart['active_end'] = $cartInfo['active_end'];
+                $cart['active_start'] = $cartInfo['active_start'] ? date('Y-m-d H:i:s', $cartInfo['active_start']) : '';
+                $cart['active_end'] = $cartInfo['active_end'] ? date('Y-m-d H:i:s', $cartInfo['active_end']) : '';
                 $cart['write_times'] = $cartInfo['write_times'];
 				$cart['write_surplus_times'] = $cartInfo['write_surplus_times'];
 				$cart['write_start'] = $cartInfo['write_start'];

@@ -713,7 +713,7 @@ trait Order
      */
     public function order_info($id)
     {
-        if (!$id || !($orderInfo = $this->services->get($id, ['*'], ['invoice', 'virtual', 'pink', 'refund', 'supplierInfo']))) {
+        if (!$id || !($orderInfo = $this->services->get($id, ['*'], ['invoice', 'virtual', 'pink', 'refund', 'supplierInfo', 'storeOrderInfo']))) {
             return app('json')->fail('订单不存在');
         }
         $userInfo = ['spread_uid' => '', 'spread_name' => '无'];
