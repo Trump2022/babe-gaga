@@ -233,6 +233,7 @@ class StoreOrderCreateServices extends BaseServices
             'give_coupon' => implode(',', $promotions_give['give_coupon'] ?? []),
             'store_id' => $storeId
         ];
+        Log::info(json_encode($orderInfo));
         if ($userInfo['user_type'] == 'wechat' || $userInfo['user_type'] == 'routine') {
             /** @var WechatUserServices $wechatServices */
             $wechatServices = app()->make(WechatUserServices::class);
