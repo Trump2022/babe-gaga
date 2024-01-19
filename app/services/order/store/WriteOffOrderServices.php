@@ -416,8 +416,8 @@ class WriteOffOrderServices extends BaseServices
                 if ($uid) {//商城前端
                     $staffInfo = $storeStaffServices->getStaffInfoByUid($uid, $store_id);
                     //适应门店
-                    if(isset($orderInfo['applicable_type'])){
-                        if($orderInfo['applicable_type'] == 2){
+                    if($store_id > 0 && isset($orderInfo['applicable_type'])){
+                        if($orderInfo['applicable_type'] == 2 && !empty($orderInfo['applicable_store_id'])){
                             $applicableStore = explode(',', $orderInfo['applicable_store_id']);
                             if(!in_array($staffInfo['store_id'], $applicableStore)){
                                 throw new ValidateException('该门店不适用');
