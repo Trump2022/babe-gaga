@@ -484,15 +484,13 @@ class CommunityController
      * @param Request $request
      * @param ProductServices $ProductServices
      * @return Json
-     * @author Qinii
-     * @day 10/28/21
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function payList(Request $request, ProductServices $ProductServices): Json
     {
         $keyword = $request->param('keyword') ?? '';
-//        $data = app()->make(StoreOrderProductServices::class)->getUserPayProduct($keyword, $request->uid());
-//        return app('json')->success($data);
-
         return app('json')->success(get_thumb_water($ProductServices->getProductCartList((int) $request->uid(), $keyword)));
     }
 
