@@ -392,7 +392,7 @@ class StoreOrderCartInfoServices extends BaseServices
         return true;
     }
 
-    /** 课程商品核销完返佣任务失败
+    /** 课程商品核销完返佣任务
      * @return bool
      */
     public function courseVerificationRebate()
