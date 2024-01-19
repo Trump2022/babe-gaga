@@ -107,7 +107,6 @@ class CommunityController
             ['is_type', 1],
             'video_link'
         ]);
-
         $config = system_config(["community_app_switch",'community_audit','community_video_audit']);
         $data['status'] = 0;
         $data['is_show'] = 0;

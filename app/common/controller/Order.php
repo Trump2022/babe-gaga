@@ -21,6 +21,7 @@ use app\services\order\StoreOrderCreateServices;
 use app\services\order\StoreOrderDeliveryServices;
 use app\services\order\StoreOrderRefundServices;
 use app\services\order\StoreOrderServices;
+use app\services\order\StoreOrderInfoServices;
 use app\services\order\StoreOrderStatusServices;
 use app\services\order\StoreOrderTakeServices;
 use app\services\order\StoreOrderWriteOffServices;
@@ -768,6 +769,47 @@ trait Order
         }
 
         $orderInfo = $this->services->tidyOrderList([$orderInfo])[0];
+        $orderInfo['write_off'] = $orderInfo['write_times'] = 0;
+        $orderInfo['write_day'] = '';
+        $cart = $orderInfo['cartInfo'][0] ?? [];
+        if ($orderInfo['product_type'] == 4 && $cart) {//次卡商品
+            $orderInfo['write_off'] = $cart['write_off'] ?? max(bcsub((string)$cart['write_times'], (string)$cart['write_surplus_times'], 0), 0);
+            $orderInfo['write_times'] = $cart['write_times'] ?? 0;
+            $start = $cart['write_start'] ?? 0;
+            $end = $cart['write_end'] ?? 0;
+            if (!$start && !$end) {
+                $orderInfo['write_day'] = '不限时';
+            } else {
+                $orderInfo['write_day'] = ($start ? date('Y-m-d', $start) : '') . '/' . ($end ? date('Y-m-d', $end) : '');
+            }
+
+            if ($orderInfo['is_class']) {
+                $orderInfo['used_times'] = $orderInfo['write_times'] - $cart['write_surplus_times'];
+                $orderInfo['used_times_str'] = $orderInfo['used_times'].'/'.$orderInfo['write_times'].'次';
+                //激活时间
+                $orderInfo['active_time'] = [];
+                //使用期限
+                $orderInfo['use_expire_time'] = '';
+                if ($orderInfo['used_times'] > 0) {
+                    $orderInfo['active_time'][] = date('Y-m-d H:i:s', $cart['write_start']);
+                    $orderInfo['use_expire_time'] = date('Y-m-d H:i:s', $cart['write_end']).' 到期';
+                } else {
+                    if ($cart['active_start']) {
+                        $orderInfo['active_time'][] = $cart['active_start'];
+                    }
+                    
+                    if ($cart['active_end']) {
+                        $orderInfo['active_time'][] = $cart['active_end'];
+                    }
+                }
+
+                //下单信息
+                $orderInfo['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($orderInfo['id']);
+                //课程适用门店
+                $orderInfo['applicable_stores'] = app()->make(SystemStoreServices::class)->getApplicableStore($cart['productInfo']['applicable_type'], $cart['productInfo']['applicable_store_id']);
+            }
+        }
+
         $orderInfo['_status_new'] = $orderInfo['_status'];
         $orderInfo['_status'] = $_status;
         $refund_num = array_sum(array_column($orderInfo['refund'], 'refund_num'));
