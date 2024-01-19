@@ -57,7 +57,7 @@ class ProductServices extends BaseServices
 			$where['store_name'] = $storeName;
 			$where['pid'] = 0;
 		}
-        return $this->dao->getProductCartList($where, $page, $limit, ['id', 'IFNULL(sales,0) + IFNULL(ficti,0) as sales', 'store_name', 'image', 'stock', 'price']);
+        return $this->dao->getProductCartList($where, $page, $limit, ['id', 'id product_id', 'id spu_id','product_type','IFNULL(sales,0) + IFNULL(ficti,0) as sales', 'store_name', 'image', 'stock', 'price']);
     }
 
     /**

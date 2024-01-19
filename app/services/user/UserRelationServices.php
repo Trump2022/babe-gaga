@@ -278,7 +278,7 @@ class UserRelationServices extends BaseServices
         ->join('store_product p', 'r.relation_id=p.id')
         ->when($keyword, function ($que) use($keyword) {
             $que->whereLike('p.store_name',"%{$keyword}%");
-        })->where('p.is_show',1);
+        })->where('p.is_show',1)->where('r.uid', $uid)->where('r.type', 'collect');
         $count = $query->count();
         $list = $query
             ->field('r.uid,r.relation_id product_id,r.relation_id spu_id,p.product_type,p.image,p.store_name,p.price')
