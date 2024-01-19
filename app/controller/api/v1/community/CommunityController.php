@@ -364,10 +364,9 @@ class CommunityController
      * @param Request $request
      * @param RelevanceServices $RelevanceServices
      * @return Response
-     * @descr: I am on my way to future,where you are there.
-     * @date : 2024/1/12 16:33
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getUserStartCommunity(Request $request, RelevanceServices $RelevanceServices): Response
     {

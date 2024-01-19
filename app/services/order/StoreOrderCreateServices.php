@@ -314,6 +314,7 @@ class StoreOrderCreateServices extends BaseServices
         $priceData['coupon_id'] = $couponId;
         $order = $this->transaction(function () use ($cartIds, $couponId, $orderInfo, $cartInfo, $key, $userInfo, $useIntegral, $priceData, $type, $activity_id, $uid, $addressId, $promotions_give, $storeId, $orderInfos) {
             //创建订单
+            Log::info(json_encode($orderInfo));
             $order = $this->dao->save($orderInfo);
             if ($couponId) {
                 /** @var StoreCouponUserServices $couponServices */

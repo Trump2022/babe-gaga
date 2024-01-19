@@ -16,6 +16,7 @@ namespace app\services\system;
 
 use app\dao\system\RelevanceDao;
 use app\services\BaseServices;
+use think\Collection;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
@@ -221,15 +222,19 @@ class RelevanceServices extends BaseServices
         return compact('count','list');
     }
 
-
     /**
-     * TODO 我点赞过的文章
-     * @param int $uid
-     * @return \think\Collection
-     * @author Qinii
-     * @day 10/28/21
+     * 我点赞过的文章
+     * @param array $where
+     * @return array
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/19 15:39
+     * @author: QSW
+     * @email: qsw2012@outlook.com
      */
-    public function getUserStartCommunity(array $where)
+    public function getUserStartCommunity(array $where): array
     {
         [$page, $limit] = $this->getPageValue();
         $query = $this->dao->joinUser($where)->with([
@@ -247,7 +252,7 @@ class RelevanceServices extends BaseServices
                     },
                     'relevance'  => [
                         'spu' => function($query) {
-                            $query->field('id,id product_id,id spu_id,store_name,image,price,product_type,0 as activity_id');
+                            $query->field('id,id product_id,id spu_id,store_name,image,price,product_type,0 as activity_id,is_class');
                         }
                     ],
                     'is_fans' => function($query) use($where){
@@ -267,7 +272,7 @@ class RelevanceServices extends BaseServices
     /**
      * TODO 我点赞过的文章
      * @param int $uid
-     * @return \think\Collection
+     * @return Collection
      * @author Qinii
      * @day 10/28/21
      */

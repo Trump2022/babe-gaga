@@ -67,7 +67,11 @@ class Relevance extends BaseModel
     public function community(): HasOne
     {
         return $this->hasOne(Community::class,'community_id','right_id')
-            ->bind(['community_id','title','image','start','uid','create_time','count_start','author','is_type']);
+            ->bind([
+                'community_id','topic_id',
+                'topic','relevance','is_fans',
+                'title','image','start','uid','create_time','count_start','author','is_type'
+            ]);
     }
 
     /**
