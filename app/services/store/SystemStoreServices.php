@@ -172,6 +172,106 @@ class SystemStoreServices extends BaseServices
     }
 
     /**
+     * 商品适用门店列表
+     * @param array $where
+     * @param string $latitude
+     * @param string $longitude
+     * @param string $ip
+     * @param int $limit
+     * @return array|mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function goodsStoreList(array $where, string $latitude, string $longitude, string $ip = '', int $limit = 0)
+    {
+        $where = array_merge($where, ['type' => 0]);
+        if ($limit) {
+            $page = 1;
+            $field = ['*'];
+        } else {
+            [$page, $limit] = $this->getPageValue();
+            $field = ['id', 'name', 'phone', 'image', 'latitude', 'longitude', 'address', 'detailed_address', 'is_show', 'day_time', 'day_start', 'day_end', 'valid_range'];
+        }
+        //默认附近门店
+        $store_type = $where['store_type'] ?? 1;
+        $uid = $where['uid'] ?? 0;
+        unset($where['store_type'], $where['uid']);
+        if ($store_type != 1) {//常用门店
+            if ($uid) {
+                /** @var StoreUserServices $storeUserServices */
+                $storeUserServices = app()->make(StoreUserServices::class);
+                $ids = $storeUserServices->getColumn(['uid' => $uid], 'store_id');
+                if (!$ids) {
+                    return [];
+                }
+                $where['ids'] = $ids;
+            } else {//没登录，无常用门店
+                return [];
+            }
+        }
+        //课程适用门店
+        if (!empty($where['product_id'])) {
+            /** @var StoreProductServices $storeProductServices */
+            $storeProductServices = app()->make(StoreProductServices::class);
+            $productInfo = $storeProductServices->getOne(['id' => $where['product_id']], 'applicable_type, applicable_store_id')->toArray();
+            if(!empty($productInfo['applicable_type']) && $productInfo['applicable_type'] == 2 && !empty($productInfo['applicable_store_id'])){
+                $where['store_id'] = $productInfo['applicable_store_id'];
+            }
+        }
+        $storeList = [];
+
+        if (isset($where['id']) && $where['id']) {
+            $storeList = $this->dao->getStoreList($where, $field, $page, $limit, [], $latitude, $longitude, $latitude && $longitude ? 1 : 0);
+        } elseif ($latitude && $longitude) {
+            $storeList = $this->dao->getStoreList($where, $field, $page, $limit, [], $latitude, $longitude, 1);
+        } elseif ((isset($where['province']) && $where['province']) || (isset($where['city']) && $where['city']) || (isset($where['area']) && $where['area'])) {
+            $storeList = $this->dao->getStoreList($where, $field, $page, $limit, [], $latitude, $longitude, $latitude && $longitude ? 1 : 0);
+        } elseif ((isset($where['province']) && $where['province']) && (isset($where['city']) && $where['city']) && (isset($where['area']) && $where['area']) && !$latitude && !$longitude) {
+            $storeList = $this->dao->getStoreList($where, $field, $page, $limit);
+        } elseif ($ip) {
+            $strField = $limit == 1 ? '*' : implode(',', $field);
+            $addressArr = $this->addressHandle($this->convertIp($ip));
+            $city = $addressArr['city'] ?? '';
+            if ($city) {
+                $storeList = $this->dao->getStoreByAddressInfo($city, $where, $strField, $page, $limit);
+            }
+            $province = $addressArr['province'] ?? '';
+            if (!$storeList && $province) {
+                $storeList = $this->dao->getStoreByAddressInfo($province, $where, $strField, $page, $limit);
+            }
+        }
+        //上面条件都没获取到门店
+        if (!$storeList) {
+            $storeList = $this->dao->getStoreList($where, $field, $page, $limit);
+        }
+        if ($storeList) {
+            foreach ($storeList as &$item) {
+                $item['range'] = 0;
+                if (isset($item['distance'])) {
+                    $item['range'] = bcdiv($item['distance'], '1000', 1);
+                } else {
+                    $item['range'] = 0;
+                }
+                if (isset($item['is_show']) && $item['is_show'] == 1) {
+                    $item['status_name'] = '营业中';
+                } else {
+                    $item['status_name'] = '已停业';
+                }
+                if ($item['day_start'] && $item['day_end']) {
+                    $start = date('H:i', strtotime($item['day_start']));
+                    $end = date('H:i', strtotime($item['day_end']));
+                    $item['day_time'] = implode(' - ', [$start, $end]);
+                }
+            }
+        }
+        $list = $storeList;
+        $count = $this->dao->count($where);
+
+        return compact('list', 'count');
+    }
+
+    /**
      * 获取门店
      * @param array $where
      * @param array $field
