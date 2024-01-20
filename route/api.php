@@ -456,7 +456,7 @@ Route::group('api', function () {
             Route::get('user/community/:id', 'v1.community.CommunityController/userCommunityList')->name('apiUserCommunityList');
 
             //用户的视频
-            Route::get('user/community_video/:id', 'v1.community.CommunityController/userCommunityVideoList')->name('apiUserCommunityVideoList');
+            Route::get('user/community_video/[:id]', 'v1.community.CommunityController/userCommunityVideoList')->name('apiUserCommunityVideoList');
 
             //用户页
             Route::get('user/info/:id', 'v1.community.CommunityController/userInfo')->name('apiCommunityUserInfo');

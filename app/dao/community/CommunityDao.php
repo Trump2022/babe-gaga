@@ -150,8 +150,11 @@ class CommunityDao extends BaseDao
 
     public function joinUser($where)
     {
-        return Community::when(isset($where['is_type']) && $where['is_type'] !==  '', function ($query) use($where) {
-                $query->whereIn('Community.is_type',$where['is_type']);
+        return Community::hasWhere('relevanceRight',function($query) use($where){
+                $query->where('type',RelevanceServices::TYPE_COMMUNITY_START)->where('left_id',$where['uid']);
+            })
+            ->when(isset($where['is_type']) && $where['is_type'] !==  '', function ($query) use($where) {
+                $query->where('Community.is_type',$where['is_type']);
             })
             ->when(isset($where['is_show']) && $where['is_show'] !==  '', function ($query) use($where) {
                 $query->where('Community.is_show',$where['is_show']);

@@ -290,10 +290,11 @@ class CommunityServices extends BaseServices
         return compact('count','list');
     }
 
-    public function getFirst($community_id, $userInfo)
+    public function getFirstVideo($where, $userInfo)
     {
         $where['is_del'] = 0;
-        $where['community_id'] = $community_id;
+//        $where['community_id'] = $community_id;
+        $where['is_type'] = self::COMMUNIT_TYPE_VIDEO;
         $info = $this->dao->search($where)
             ->with([
                 'author' => function ($query) use ($userInfo) {
@@ -341,16 +342,20 @@ class CommunityServices extends BaseServices
     {
         [$page, $limit] = $this->getPageValue();
         $where['is_type'] = self::COMMUNIT_TYPE_VIDEO;
-        $first = $this->getFirst($where['community_id'],$userInfo);
 
         if ($type) { // 点赞过的内容
-            $where['uid'] = $userInfo->uid;
+            $where['uid'] = $userInfo->uid ?? 0;
             $where['community_ids'] = $this->dao->joinUser($where)->column('community_id');
-        } else { // 条件视频
+            unset($where['uid']);
+        }
+        $first = $this->getFirstVideo($where,$userInfo);
+
+        if ( ! $type) { // 条件视频
             if ( ! isset($where['uid']) && $first) $where['topic_id'] = $first['topic_id'];
         }
+
         if ($first) {
-            $where['not_id'] = [$where['community_id']];
+            $where['not_id'] = [$first['community_id']];
             $limit--;
         }
 
@@ -361,7 +366,7 @@ class CommunityServices extends BaseServices
             $data = $this->getApiList($where, $userInfo);
         }
 
-        if ($first && !$data['list']->isEmpty()) {
+        if ($first) {
             $data['list']->unshift($first);
             $data['count']++;
         }

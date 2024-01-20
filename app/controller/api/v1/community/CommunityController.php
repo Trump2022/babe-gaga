@@ -297,7 +297,7 @@ class CommunityController
      * 某个用户的视频
      *
      * @param Request $request
-     * @param $id
+     * @param mixed $id
      * @return Json
      * @throws DataNotFoundException
      * @throws DbException
@@ -305,7 +305,7 @@ class CommunityController
      * @author Qinii
      * @day 10/29/21
      */
-    public function userCommunityVideoList(Request $request, $id): Json
+    public function userCommunityVideoList(Request $request, $id = 0): Json
     {
         $where = [];
         $is_start = $request->param('is_star',0);
