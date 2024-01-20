@@ -16,31 +16,31 @@ use think\Response;
  */
 Route::group('api', function () {
 
-	/**
-	 * 无需授权接口
-	 */
-	Route::group(function () {
+    /**
+     * 无需授权接口
+     */
+    Route::group(function () {
 
-		Route::get('geoLbscoder', 'v1.PublicController/geoLbscoder')->name('geoLbscoder');//经纬度转位置信息
+        Route::get('geoLbscoder', 'v1.PublicController/geoLbscoder')->name('geoLbscoder');//经纬度转位置信息
 
-		Route::get('city', 'v2.PublicController/city')->name('city');//增加省市区
+        Route::get('city', 'v2.PublicController/city')->name('city');//增加省市区
 
-		Route::get('site_config', 'v1.PublicController/getSiteConfig')->name('getSiteConfig');//获取网站配置
+        Route::get('site_config', 'v1.PublicController/getSiteConfig')->name('getSiteConfig');//获取网站配置
 
-		Route::get('navigation/[:template_name]', 'v1.PublicController/getNavigation')->name('getNavigation');//获取底部导航
-		Route::get('search/keyword', 'v1.PublicController/search')->name('searchKeyword');//热门搜索关键字获取
+        Route::get('navigation/[:template_name]', 'v1.PublicController/getNavigation')->name('getNavigation');//获取底部导航
+        Route::get('search/keyword', 'v1.PublicController/search')->name('searchKeyword');//热门搜索关键字获取
 
-		Route::get('category', 'v1.product.CategoryController/category')->name('category');//商品分类类
-		Route::get('category_version', 'v1.product.CategoryController/getCategoryVersion')->name('getCategoryVersion');//商品分类类版本
-		Route::get('reply/list/:id', 'v1.product.StoreProductController/reply_list')->name('replyList');//商品评价列表
-		Route::get('reply/config/:id', 'v1.product.StoreProductController/reply_config')->name('replyConfig');//商品评价数量和好评度
+        Route::get('category', 'v1.product.CategoryController/category')->name('category');//商品分类类
+        Route::get('category_version', 'v1.product.CategoryController/getCategoryVersion')->name('getCategoryVersion');//商品分类类版本
+        Route::get('reply/list/:id', 'v1.product.StoreProductController/reply_list')->name('replyList');//商品评价列表
+        Route::get('reply/config/:id', 'v1.product.StoreProductController/reply_config')->name('replyConfig');//商品评价数量和好评度
 
 
-		Route::get('user_agreement/[:type]', 'v1.PublicController/getUserAgreement')
-			->name('getUserAgreement')
-			->middleware(AuthTokenMiddleware::class, false);//获取用户协议
+        Route::get('user_agreement/[:type]', 'v1.PublicController/getUserAgreement')
+            ->name('getUserAgreement')
+            ->middleware(AuthTokenMiddleware::class, false);//获取用户协议
 
-		Route::get('get_open_adv', 'v1.PublicController/getOpenAdv')->name('getOpenAdv');//首页开屏广告
+        Route::get('get_open_adv', 'v1.PublicController/getOpenAdv')->name('getOpenAdv');//首页开屏广告
 
         //热门搜索
         Route::get('hot_keyword', 'v1.PublicController/hotKeyword')->append(['type'  => 0])->name('apiHotKeyword');
@@ -48,38 +48,38 @@ Route::group('api', function () {
         //社区热门搜索
         Route::get('community/hot_keyword', 'v1.PublicController/hotKeyword')->append(['type'  => 1])->name('apiCommunityHotKeyword');
 
-	})->middleware(StationOpenMiddleware::class);
+    })->middleware(StationOpenMiddleware::class);
 
-	/**
-	 * 授权不通过,不会抛出异常继续执行
-	 */
-	Route::group(function () {
-		//公共类
-		Route::get('index', 'v1.PublicController/index')->name('index');//首页
-		Route::get('menu/user', 'v1.PublicController/menu_user')->name('menuUser');//个人中心菜单
+    /**
+     * 授权不通过,不会抛出异常继续执行
+     */
+    Route::group(function () {
+        //公共类
+        Route::get('index', 'v1.PublicController/index')->name('index');//首页
+        Route::get('menu/user', 'v1.PublicController/menu_user')->name('menuUser');//个人中心菜单
 
-		//商品类
-		Route::get('brand', 'v1.product.StoreProductController/brand')->name('brand');//品牌列表
-		Route::get('presale/list', 'v1.product.StoreProductController/presaleList')->name('presaleList');//预售商品列表
-		Route::post('image_base64', 'v1.PublicController/get_image_base64')->name('getImageBase64');// 获取图片base64
-		Route::get('product/detail/recommend/:id','v1.product.StoreProductController/recommend')->name('productRecommend');//商品详情推荐商品
-		Route::get('product/detail/activity/:id','v1.product.StoreProductController/activity')->name('productActivity');//商品详情关联活动
-		Route::get('product/detail/:id/[:type]', 'v1.product.StoreProductController/detail')->name('detail');//商品详情
-		Route::get('product/store/detail/:id', 'v2.product.StoreProductController/getStoreProductInfo')->name('getStoreProductInfo');//用平台商品ID获取门店该商品详情
-		Route::get('product/detail_content/:id/', 'v1.product.StoreProductController/detailContent')->name('detailContent');//商品详情内容
-		Route::get('groom/list/:type', 'v1.product.StoreProductController/groom_list')->name('groomList');//获取首页推荐不同类型商品的轮播图和商品
-		Route::get('products', 'v1.product.StoreProductController/lst')->name('products');//商品列表
-		Route::get('product/hot', 'v1.product.StoreProductController/product_hot')->name('productHot');//为你推荐
-		Route::get('reply/comment/:id', 'v1.product.StoreProductController/commentList')->name('commentList');//评价回复列表
+        //商品类
+        Route::get('brand', 'v1.product.StoreProductController/brand')->name('brand');//品牌列表
+        Route::get('presale/list', 'v1.product.StoreProductController/presaleList')->name('presaleList');//预售商品列表
+        Route::post('image_base64', 'v1.PublicController/get_image_base64')->name('getImageBase64');// 获取图片base64
+        Route::get('product/detail/recommend/:id','v1.product.StoreProductController/recommend')->name('productRecommend');//商品详情推荐商品
+        Route::get('product/detail/activity/:id','v1.product.StoreProductController/activity')->name('productActivity');//商品详情关联活动
+        Route::get('product/detail/:id/[:type]', 'v1.product.StoreProductController/detail')->name('detail');//商品详情
+        Route::get('product/store/detail/:id', 'v2.product.StoreProductController/getStoreProductInfo')->name('getStoreProductInfo');//用平台商品ID获取门店该商品详情
+        Route::get('product/detail_content/:id/', 'v1.product.StoreProductController/detailContent')->name('detailContent');//商品详情内容
+        Route::get('groom/list/:type', 'v1.product.StoreProductController/groom_list')->name('groomList');//获取首页推荐不同类型商品的轮播图和商品
+        Route::get('products', 'v1.product.StoreProductController/lst')->name('products');//商品列表
+        Route::get('product/hot', 'v1.product.StoreProductController/product_hot')->name('productHot');//为你推荐
+        Route::get('reply/comment/:id', 'v1.product.StoreProductController/commentList')->name('commentList');//评价回复列表
 
-		//文章分类
-		Route::get('article/category/list', 'v1.publics.ArticleCategoryController/lst')->name('articleCategoryList');//文章分类列表
-		//文章类
-		Route::get('article/list/:cid', 'v1.publics.ArticleController/lst')->name('articleList');//文章列表
-		Route::get('article/details/:id', 'v1.publics.ArticleController/details')->name('articleDetails');//文章详情
-		Route::get('article/hot/list', 'v1.publics.ArticleController/hot')->name('articleHotList');//文章 热门
-		Route::get('article/new/list', 'v1.publics.ArticleController/new')->name('articleNewList');//文章 最新
-		Route::get('article/banner/list', 'v1.publics.ArticleController/banner')->name('articleBannerList');//文章 banner
+        //文章分类
+        Route::get('article/category/list', 'v1.publics.ArticleCategoryController/lst')->name('articleCategoryList');//文章分类列表
+        //文章类
+        Route::get('article/list/:cid', 'v1.publics.ArticleController/lst')->name('articleList');//文章列表
+        Route::get('article/details/:id', 'v1.publics.ArticleController/details')->name('articleDetails');//文章详情
+        Route::get('article/hot/list', 'v1.publics.ArticleController/hot')->name('articleHotList');//文章 热门
+        Route::get('article/new/list', 'v1.publics.ArticleController/new')->name('articleNewList');//文章 最新
+        Route::get('article/banner/list', 'v1.publics.ArticleController/banner')->name('articleBannerList');//文章 banner
 
         //定制活动分类
         Route::get('activity/category/list', 'v1.activity.ActivityCategoryController/lst')->name('activityCategoryList');//文章分类列表
@@ -88,105 +88,105 @@ Route::group('api', function () {
         Route::get('activity/details/:id', 'v1.activity.ActivityController/details')->name('activityDetails');//定制活动详情
 
         //活动---秒杀
-		Route::get('seckill/index', 'v1.activity.StoreSeckillController/index')->name('seckillIndex');//秒杀商品时间区间
-		Route::get('seckill/list/:time', 'v1.activity.StoreSeckillController/lst')->name('seckillList');//秒杀商品列表
-		Route::get('seckill/detail/:id/[:time]', 'v1.activity.StoreSeckillController/detail')->name('seckillDetail');//秒杀商品详情
-		Route::get('seckill/detail_code/:id', 'v1.activity.StoreSeckillController/detailCode')->name('seckilldetailCode');//秒杀商品二维码
-		//活动---砍价
-		Route::get('bargain/config', 'v1.activity.StoreBargainController/config')->name('bargainConfig');//砍价商品列表配置
-		Route::get('bargain/list', 'v1.activity.StoreBargainController/lst')->name('bargainList');//砍价商品列表
-		Route::get('bargain/detail/:id', 'v1.activity.StoreBargainController/detail')->name('bargainDetail');//砍价商品详情
-		//活动---拼团
-		Route::get('combination/list', 'v1.activity.StoreCombinationController/lst')->name('combinationList');//拼团商品列表
-		Route::get('combination/detail/:id', 'v1.activity.StoreCombinationController/detail')->name('combinationDetail');//拼团商品详情
-		Route::get('combination/detail_code/:id', 'v1.activity.StoreCombinationController/detailCode')->name('detailCode');//拼团商品详情二维码
-		//用户类
-		Route::get('user/activity', 'v1.user.UserController/activity')->name('userActivity');//活动状态
+        Route::get('seckill/index', 'v1.activity.StoreSeckillController/index')->name('seckillIndex');//秒杀商品时间区间
+        Route::get('seckill/list/:time', 'v1.activity.StoreSeckillController/lst')->name('seckillList');//秒杀商品列表
+        Route::get('seckill/detail/:id/[:time]', 'v1.activity.StoreSeckillController/detail')->name('seckillDetail');//秒杀商品详情
+        Route::get('seckill/detail_code/:id', 'v1.activity.StoreSeckillController/detailCode')->name('seckilldetailCode');//秒杀商品二维码
+        //活动---砍价
+        Route::get('bargain/config', 'v1.activity.StoreBargainController/config')->name('bargainConfig');//砍价商品列表配置
+        Route::get('bargain/list', 'v1.activity.StoreBargainController/lst')->name('bargainList');//砍价商品列表
+        Route::get('bargain/detail/:id', 'v1.activity.StoreBargainController/detail')->name('bargainDetail');//砍价商品详情
+        //活动---拼团
+        Route::get('combination/list', 'v1.activity.StoreCombinationController/lst')->name('combinationList');//拼团商品列表
+        Route::get('combination/detail/:id', 'v1.activity.StoreCombinationController/detail')->name('combinationDetail');//拼团商品详情
+        Route::get('combination/detail_code/:id', 'v1.activity.StoreCombinationController/detailCode')->name('detailCode');//拼团商品详情二维码
+        //用户类
+        Route::get('user/activity', 'v1.user.UserController/activity')->name('userActivity');//活动状态
 
-		//微信
-		Route::get('wechat/config', 'v1.wechat.WechatController/config')->name('wechatConfig');//微信 sdk 配置
-		Route::get('wechat/auth', 'v1.wechat.WechatController/auth')->name('wechatAuth');//微信授权
-		Route::post('wechat/app_auth', 'v1.wechat.WechatController/appAuth')->name('appAuth');//微信APP授权
+        //微信
+        Route::get('wechat/config', 'v1.wechat.WechatController/config')->name('wechatConfig');//微信 sdk 配置
+        Route::get('wechat/auth', 'v1.wechat.WechatController/auth')->name('wechatAuth');//微信授权
+        Route::post('wechat/app_auth', 'v1.wechat.WechatController/appAuth')->name('appAuth');//微信APP授权
 
-		//小程序登陆
-		Route::post('wechat/mp_auth', 'v1.wechat.AuthController/mp_auth')->name('mpAuth');//小程序登陆
-		Route::get('wechat/get_logo', 'v1.PublicController/getLogo')->name('getLogo');//登陆页面logo
-		Route::get('wechat/teml_ids', 'v1.wechat.AuthController/teml_ids')->name('wechatTemlIds');//小程序订阅消息
-		Route::get('wechat/live', 'v1.wechat.AuthController/live')->name('wechatLive');//小程序直播列表
-		Route::get('wechat/livePlaybacks/:id', 'v1.wechat.AuthController/livePlaybacks')->name('livePlaybacks');//小程序直播回放
+        //小程序登陆
+        Route::post('wechat/mp_auth', 'v1.wechat.AuthController/mp_auth')->name('mpAuth');//小程序登陆
+        Route::get('wechat/get_logo', 'v1.PublicController/getLogo')->name('getLogo');//登陆页面logo
+        Route::get('wechat/teml_ids', 'v1.wechat.AuthController/teml_ids')->name('wechatTemlIds');//小程序订阅消息
+        Route::get('wechat/live', 'v1.wechat.AuthController/live')->name('wechatLive');//小程序直播列表
+        Route::get('wechat/livePlaybacks/:id', 'v1.wechat.AuthController/livePlaybacks')->name('livePlaybacks');//小程序直播回放
 
-		//物流公司
-		Route::get('logistics', 'v1.PublicController/logistics')->name('logistics');//物流公司列表
+        //物流公司
+        Route::get('logistics', 'v1.PublicController/logistics')->name('logistics');//物流公司列表
 
-		//分享配置
-		Route::get('share', 'v1.PublicController/share')->name('share');//分享配置
+        //分享配置
+        Route::get('share', 'v1.PublicController/share')->name('share');//分享配置
 
-		//优惠券
-		Route::get('coupons', 'v1.activity.StoreCouponsController/lst')->name('couponsList'); //可领取优惠券列表
+        //优惠券
+        Route::get('coupons', 'v1.activity.StoreCouponsController/lst')->name('couponsList'); //可领取优惠券列表
 
-		//短信购买异步通知
-		Route::post('sms/pay/notify', 'v1.PublicController/sms_pay_notify')->name('smsPayNotify'); //短信购买异步通知
+        //短信购买异步通知
+        Route::post('sms/pay/notify', 'v1.PublicController/sms_pay_notify')->name('smsPayNotify'); //短信购买异步通知
 
-		//获取关注微信公众号海报
-		Route::get('wechat/follow', 'v1.wechat.WechatController/follow')->name('Follow');
-		//用户是否关注
-		Route::get('subscribe', 'v1.user.UserController/subscribe')->name('Subscribe');
-		//门店列表
-		Route::get('store_list', 'v1.PublicController/store_list')->name('storeList');
-		//获取城市列表
-		Route::get('city_list', 'v1.PublicController/city_list')->name('cityList');
-		//获取附近最近门店
-		Route::get('nearby_store', 'v1.store.StoreController/nearbyStore')->name('nearbyStore');
+        //获取关注微信公众号海报
+        Route::get('wechat/follow', 'v1.wechat.WechatController/follow')->name('Follow');
+        //用户是否关注
+        Route::get('subscribe', 'v1.user.UserController/subscribe')->name('Subscribe');
+        //门店列表
+        Route::get('store_list', 'v1.PublicController/store_list')->name('storeList');
+        //获取城市列表
+        Route::get('city_list', 'v1.PublicController/city_list')->name('cityList');
+        //获取附近最近门店
+        Route::get('nearby_store', 'v1.store.StoreController/nearbyStore')->name('nearbyStore');
 
-		Route::get('pink', 'v1.PublicController/pink')->name('pinkData');
-		Route::get('combination/banner_list', 'v1.activity.StoreCombinationController/banner_list')->name('combinationBannerList');//拼团列表轮播图
+        Route::get('pink', 'v1.PublicController/pink')->name('pinkData');
+        Route::get('combination/banner_list', 'v1.activity.StoreCombinationController/banner_list')->name('combinationBannerList');//拼团列表轮播图
 
-		Route::post('user/set_visit', 'v1.user.UserController/set_visit')->name('setVisit');// 添加用户访问记录
-		Route::get('copy_words', 'v1.PublicController/copy_words')->name('copyWords');// 复制口令接口
+        Route::post('user/set_visit', 'v1.user.UserController/set_visit')->name('setVisit');// 添加用户访问记录
+        Route::get('copy_words', 'v1.PublicController/copy_words')->name('copyWords');// 复制口令接口
 
-		//活动---gaga币商城
-		Route::get('store_integral/index', 'v1.activity.StoreIntegralController/index')->name('storeIntegralIndex');//gaga币商城首页数据
-		Route::get('store_integral/list', 'v1.activity.StoreIntegralController/lst')->name('storeIntegralList');//gaga币商品列表
-		Route::get('store_integral/detail/:id', 'v1.activity.StoreIntegralController/detail')->name('storeIntegralDetail');//gaga币商品详情
+        //活动---gaga币商城
+        Route::get('store_integral/index', 'v1.activity.StoreIntegralController/index')->name('storeIntegralIndex');//gaga币商城首页数据
+        Route::get('store_integral/list', 'v1.activity.StoreIntegralController/lst')->name('storeIntegralList');//gaga币商品列表
+        Route::get('store_integral/detail/:id', 'v1.activity.StoreIntegralController/detail')->name('storeIntegralDetail');//gaga币商品详情
 
-		//优惠套餐列表
-		Route::get('store_discounts/list/:product_id', 'v1.activity.StoreDiscountsController/index');
+        //优惠套餐列表
+        Route::get('store_discounts/list/:product_id', 'v1.activity.StoreDiscountsController/index');
 
-		//获取客服类型
-		Route::get('get_customer_type', 'v2.PublicController/getCustomerType')->name('getCustomerType');//获取客服类型
-		Route::get('user/service/get_adv', 'v1.user.StoreService/getKfAdv')->name('userServiceGetKfAdv');//获取客服页面广告
+        //获取客服类型
+        Route::get('get_customer_type', 'v2.PublicController/getCustomerType')->name('getCustomerType');//获取客服类型
+        Route::get('user/service/get_adv', 'v1.user.StoreService/getKfAdv')->name('userServiceGetKfAdv');//获取客服页面广告
 
-	})->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, false);
+    })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, false);
 
-	/**
-	 * diy相关
-	 */
-	Route::group('diy', function () {
+    /**
+     * diy相关
+     */
+    Route::group('diy', function () {
 
-		//无需登录接口
-		Route::group(function () {
-			Route::get('get_diy/[:id]', 'v1.PublicController/getDiy');//DIY接口
-			Route::get('diy_version/[:id]', 'v1.PublicController/getDiyVersion');//DIY版本接口
-		});
+        //无需登录接口
+        Route::group(function () {
+            Route::get('get_diy/[:id]', 'v1.PublicController/getDiy');//DIY接口
+            Route::get('diy_version/[:id]', 'v1.PublicController/getDiyVersion');//DIY版本接口
+        });
 
-		//未授权接口---不会抛异常
-		Route::group(function () {
+        //未授权接口---不会抛异常
+        Route::group(function () {
 
-			Route::get('user_info', 'v1.diy.Diy/userInfo')->name('diyUserInfo');//diy用户信息
-			Route::get('video_list', 'v1.diy.Diy/videoList')->name('diyVideoList');//diy短视频列表
-			Route::get('newcomer_list', 'v1.diy.Diy/newcomerList')->name('diyNewcomerList');//diy新人专享商品列表
+            Route::get('user_info', 'v1.diy.Diy/userInfo')->name('diyUserInfo');//diy用户信息
+            Route::get('video_list', 'v1.diy.Diy/videoList')->name('diyVideoList');//diy短视频列表
+            Route::get('newcomer_list', 'v1.diy.Diy/newcomerList')->name('diyNewcomerList');//diy新人专享商品列表
 
-		})->middleware(AuthTokenMiddleware::class, false);
+        })->middleware(AuthTokenMiddleware::class, false);
 
-		//需要授权接口
-		Route::group(function () {
+        //需要授权接口
+        Route::group(function () {
 
-		})->middleware(AuthTokenMiddleware::class, true);
+        })->middleware(AuthTokenMiddleware::class, true);
 
-	})->middleware(StationOpenMiddleware::class);
+    })->middleware(StationOpenMiddleware::class);
 
     Route::any('wechat/serve', 'v1.wechat.WechatController/serve');//公众号服务
-	Route::any('wechat/miniServe', 'v1.wechat.WechatController/miniServe');//小程序服务
+    Route::any('wechat/miniServe', 'v1.wechat.WechatController/miniServe');//小程序服务
     Route::any('work/serve', 'v1.wechat.WechatController/work');//公众号服务
     Route::any('wechat/notify', 'v1.wechat.WechatController/notify');//公众号支付回调
     Route::any('routine/notify', 'v1.wechat.AuthController/notify');//小程序支付回调
@@ -199,9 +199,9 @@ Route::group('api', function () {
     //图形验证码
     Route::post('ajcheck', 'v1.LoginController/ajcheck')->name('ajcheck');
 
-	/**
-	 * 登录类
-	 */
+    /**
+     * 登录类
+     */
     Route::group(function () {
         //apple快捷登陆
         Route::post('apple_login', 'v1.LoginController/appleLogin')->name('appleLogin');//微信APP授权
@@ -227,9 +227,9 @@ Route::group('api', function () {
     })->middleware(StationOpenMiddleware::class);
 
 
-	/**
-	 * 会员授权接口
-	 */
+    /**
+     * 会员授权接口
+     */
     Route::group(function () {
         //保存商品评价回复
         Route::post('reply/comment/:id', 'v1.product.StoreProductController/replyComment')->name('replyComment');
@@ -268,7 +268,7 @@ Route::group('api', function () {
         Route::get('user/service/record', 'v1.user.StoreService/record')->name('userServiceRecord');//客服聊天记录
         Route::post('user/service/feedback', 'v1.user.StoreService/saveFeedback')->name('saveFeedback');//保存客服反馈信息
         Route::get('user/service/feedback', 'v1.user.StoreService/getFeedbackInfo')->name('getFeedbackInfo');//获得客服反馈头部信息
-		Route::get('user/record', 'v1.user.StoreService/recordList')->name('recordList');//获取用户和客服的消息列表
+        Route::get('user/record', 'v1.user.StoreService/recordList')->name('recordList');//获取用户和客服的消息列表
 
         //用户类  用户
         Route::get('user', 'v1.user.UserController/user')->name('user');//个人中心
@@ -420,10 +420,10 @@ Route::group('api', function () {
         Route::get('user/message_system/list', 'v1.user.MessageSystemController/message_list')->name('MessageSystemList'); //站内信列表
         Route::get('user/message_system/detail/:id', 'v1.user.MessageSystemController/detail')->name('MessageSystemDetail'); //详情
 
-		//供应商申请
-		Route::get('user/apply/record', 'v1.system.UserApplyController/userApplyRecord')->name('userApplyRecord'); //供应商申请记录
-		Route::post('user/apply/supplier/:id', 'v1.system.UserApplyController/userApply')->name('userApplySupplier'); //供应商申请
-		Route::get('user/apply/:id', 'v1.system.UserApplyController/getInfo')->name('userApplyInfo'); //单个申请记录数据
+        //供应商申请
+        Route::get('user/apply/record', 'v1.system.UserApplyController/userApplyRecord')->name('userApplyRecord'); //供应商申请记录
+        Route::post('user/apply/supplier/:id', 'v1.system.UserApplyController/userApply')->name('userApplySupplier'); //供应商申请
+        Route::get('user/apply/:id', 'v1.system.UserApplyController/getInfo')->name('userApplyInfo'); //单个申请记录数据
 
     })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true);
 
@@ -524,20 +524,20 @@ Route::group('api', function () {
 
         //无需授权接口
         Route::group(function () {
-			//小程序登录页面自动加载，返回用户信息的缓存key，返回是否强制绑定手机号
-			Route::get('routine/auth_type', 'v2.wechat.AuthController/authType')->option(['real_name' => '小程序页面登录类型']);
-			//小程序授权登录，返回token
-			Route::get('routine/auth_login', 'v2.wechat.AuthController/authLogin')->option(['real_name' => '小程序授权登录']);
-			//小程序授权绑定手机号
-			Route::post('routine/auth_binding_phone', 'v2.wechat.AuthController/authBindingPhone')->option(['real_name' => '小程序授权绑定手机号']);
-			//小程序手机号直接登录
-			Route::post('routine/phone_login', 'v2.wechat.AuthController/phoneLogin')->option(['real_name' => '手机号直接登录']);
-			//小程序授权后绑定手机号
-			Route::post('routine/binding_phone', 'v2.wechat.AuthController/BindingPhone')->option(['real_name' => '小程序授权后绑定手机号']);
-			//公众号授权登录，返回token
-			Route::get('wechat/auth_login', 'v2.wechat.WechatController/authLogin')->option(['real_name' => '公众号授权登录']);
-			//公众号授权绑定手机号
-			Route::post('wechat/auth_binding_phone', 'v2.wechat.WechatController/silenceAuthBindingPhone')->option(['real_name' => '公众号授权绑定手机号']);
+            //小程序登录页面自动加载，返回用户信息的缓存key，返回是否强制绑定手机号
+            Route::get('routine/auth_type', 'v2.wechat.AuthController/authType')->option(['real_name' => '小程序页面登录类型']);
+            //小程序授权登录，返回token
+            Route::get('routine/auth_login', 'v2.wechat.AuthController/authLogin')->option(['real_name' => '小程序授权登录']);
+            //小程序授权绑定手机号
+            Route::post('routine/auth_binding_phone', 'v2.wechat.AuthController/authBindingPhone')->option(['real_name' => '小程序授权绑定手机号']);
+            //小程序手机号直接登录
+            Route::post('routine/phone_login', 'v2.wechat.AuthController/phoneLogin')->option(['real_name' => '手机号直接登录']);
+            //小程序授权后绑定手机号
+            Route::post('routine/binding_phone', 'v2.wechat.AuthController/BindingPhone')->option(['real_name' => '小程序授权后绑定手机号']);
+            //公众号授权登录，返回token
+            Route::get('wechat/auth_login', 'v2.wechat.WechatController/authLogin')->option(['real_name' => '公众号授权登录']);
+            //公众号授权绑定手机号
+            Route::post('wechat/auth_binding_phone', 'v2.wechat.WechatController/silenceAuthBindingPhone')->option(['real_name' => '公众号授权绑定手机号']);
 
 
             //小程序授权
@@ -546,18 +546,18 @@ Route::group('api', function () {
             Route::get('wechat/silence_auth', 'v2.wechat.AuthController/silenceAuthNoLogin');
             //小程序静默授权登陆
             Route::get('wechat/silence_auth_login', 'v2.wechat.AuthController/silenceAuth');
-			//小程序授权绑定手机号
-			Route::post('auth_bindind_phone', 'v2.wechat.AuthController/authBindingPhone');
-			//小程序手机号登录直接绑定
-			Route::post('phone_silence_auth', 'v2.wechat.AuthController/silenceAuthBindingPhone');
-			//公众号授权登录
-			Route::get('wechat/auth', 'v2.wechat.WechatController/auth');
+            //小程序授权绑定手机号
+            Route::post('auth_bindind_phone', 'v2.wechat.AuthController/authBindingPhone');
+            //小程序手机号登录直接绑定
+            Route::post('phone_silence_auth', 'v2.wechat.AuthController/silenceAuthBindingPhone');
+            //公众号授权登录
+            Route::get('wechat/auth', 'v2.wechat.WechatController/auth');
             //公众号静默授权
             Route::get('wechat/wx_silence_auth', 'v2.wechat.WechatController/silenceAuthNoLogin');
             //公众号静默授权登陆
             Route::get('wechat/wx_silence_auth_login', 'v2.wechat.WechatController/silenceAuth');
-			//微信手机号登录直接绑定
-			Route::post('phone_wx_silence_auth', 'v2.wechat.WechatController/silenceAuthBindingPhone');
+            //微信手机号登录直接绑定
+            Route::post('phone_wx_silence_auth', 'v2.wechat.WechatController/silenceAuthBindingPhone');
 
             //DIY接口
             Route::get('diy/get_diy/[:name]', 'v2.PublicController/getDiy');
@@ -567,13 +567,13 @@ Route::group('api', function () {
             Route::get('diy/get_store_status', 'v2.PublicController/getStoreStatus');
             //一键换色
             Route::get('diy/color_change/:name', 'v2.PublicController/colorChange');
-			//商品详情diy
+            //商品详情diy
             Route::get('diy/product_detail', 'v2.PublicController/productDetailDiy');
             //获取地址列表
             Route::get('cityList', 'v2.PublicController/cityList');
             //活动优惠活动商品列表
             Route::get('promotions/productList/:type', 'v2.activity.StorePromotions/productList');
-			//优惠活动赠品信息
+            //优惠活动赠品信息
             Route::get('promotions/give_info/:id', 'v2.activity.StorePromotions/getPromotionsGive');
         });
         //需要授权
@@ -712,48 +712,48 @@ Route::group('api', function () {
 
     })->middleware(StationOpenMiddleware::class);
 
-	/**
-	 * 营销路由
-	 */
-	Route::group('marketing', function () {
+    /**
+     * 营销路由
+     */
+    Route::group('marketing', function () {
 
-		//无需登录接口
-		Route::group(function () {
+        //无需登录接口
+        Route::group(function () {
 
-		});
+        });
 
-		//未授权接口---不会抛异常
-		Route::group(function () {
-			Route::get('short_video', 'v1.activity.VideoController/list')->name('shortVideoList');//短视频列表
-			Route::get('short_video/comment/:id', 'v1.activity.VideoController/commentList')->name('shortVideoCommentList');//短视频评论列表
-			Route::get('short_video/product/:id', 'v1.activity.VideoController/productList')->name('shortVideoProductList');//短视频关联商品列表
+        //未授权接口---不会抛异常
+        Route::group(function () {
+            Route::get('short_video', 'v1.activity.VideoController/list')->name('shortVideoList');//短视频列表
+            Route::get('short_video/comment/:id', 'v1.activity.VideoController/commentList')->name('shortVideoCommentList');//短视频评论列表
+            Route::get('short_video/product/:id', 'v1.activity.VideoController/productList')->name('shortVideoProductList');//短视频关联商品列表
 
-			//新人礼
-			Route::get('newcomer/product_list', 'v1.activity.StoreNewcomerController/lst')->name('newcomerProductList');//新人专享商品
-			Route::get('newcomer/product_detail/:id', 'v1.activity.StoreNewcomerController/detail')->name('newcomerProductInfo');//新人商品详情
+            //新人礼
+            Route::get('newcomer/product_list', 'v1.activity.StoreNewcomerController/lst')->name('newcomerProductList');//新人专享商品
+            Route::get('newcomer/product_detail/:id', 'v1.activity.StoreNewcomerController/detail')->name('newcomerProductInfo');//新人商品详情
 
-		})->middleware(AuthTokenMiddleware::class, false);
+        })->middleware(AuthTokenMiddleware::class, false);
 
-		//需要授权接口
-		Route::group(function () {
-			Route::post('short_video/comment/:id/:pid', 'v1.activity.VideoController/saveComment')->name('shortVideoComment');//短视频评论
-			Route::get('short_video/comment_reply/:pid', 'v1.activity.VideoController/commentReplyList')->name('shortVideoCommentReplyList');//短视频评论回复列表
-			Route::delete('short_video/comment/:id', 'v1.activity.VideoController/commentDelete')->name('shortVideoCommentDelete');//删除短视频评论
+        //需要授权接口
+        Route::group(function () {
+            Route::post('short_video/comment/:id/:pid', 'v1.activity.VideoController/saveComment')->name('shortVideoComment');//短视频评论
+            Route::get('short_video/comment_reply/:pid', 'v1.activity.VideoController/commentReplyList')->name('shortVideoCommentReplyList');//短视频评论回复列表
+            Route::delete('short_video/comment/:id', 'v1.activity.VideoController/commentDelete')->name('shortVideoCommentDelete');//删除短视频评论
 
-			Route::get('short_video/comment/:type/:id', 'v1.activity.VideoController/commentRelation')->name('shortVideoCommentRelation');//短视频评论点赞
-			Route::get('short_video/:type/:id', 'v1.activity.VideoController/relation')->name('shortVideoRelation');//短视频点赞、收藏、分享
+            Route::get('short_video/comment/:type/:id', 'v1.activity.VideoController/commentRelation')->name('shortVideoCommentRelation');//短视频评论点赞
+            Route::get('short_video/:type/:id', 'v1.activity.VideoController/relation')->name('shortVideoRelation');//短视频点赞、收藏、分享
 
-			//新人礼
-			Route::get('newcomer/info', 'v1.activity.StoreNewcomerController/getInfo')->name('newcomerInfo');//新人礼信息
-			Route::get('newcomer/gift', 'v1.activity.StoreNewcomerController/getGift')->name('newcomerInfo');//新人大礼包弹窗信息
+            //新人礼
+            Route::get('newcomer/info', 'v1.activity.StoreNewcomerController/getInfo')->name('newcomerInfo');//新人礼信息
+            Route::get('newcomer/gift', 'v1.activity.StoreNewcomerController/getGift')->name('newcomerInfo');//新人大礼包弹窗信息
 
-		})->middleware(AuthTokenMiddleware::class, true);
+        })->middleware(AuthTokenMiddleware::class, true);
 
-	})->middleware(StationOpenMiddleware::class);
+    })->middleware(StationOpenMiddleware::class);
 
-	/**
-	* pc 路由
-	 */
+    /**
+     * pc 路由
+     */
     Route::group('pc', function () {
         //登陆接口
         Route::group(function () {
@@ -791,73 +791,132 @@ Route::group('api', function () {
 
     })->middleware(StationOpenMiddleware::class);
 
-	/**
-	 * 管理员订单操作类
-	 */
-	Route::post('order/order_verific', 'v1.admin.StoreOrderController/order_verific')
-		->middleware(StationOpenMiddleware::class)
-		->middleware(AuthTokenMiddleware::class, true)
-		->middleware(\app\http\middleware\api\CustomerMiddleware::class)->name('order');//订单核销
-	Route::group('admin', function () {
-		Route::get('erp/config', 'v1.admin.StoreOrderController/getErpConfig')->name('getErpConfig');//获取erp配置
-		Route::get('order/statistics', 'v1.admin.StoreOrderController/statistics')->name('adminOrderStatistics');//订单数据统计
-		Route::get('order/data', 'v1.admin.StoreOrderController/data')->name('adminOrderData');//订单每月统计数据
-		Route::get('order/list', 'v1.admin.StoreOrderController/lst')->name('adminOrderList');//订单列表
-		Route::get('refund_order/list', 'v1.admin.StoreOrderController/refundOrderList')->name('RefundOrderList');//退款订单列表
-		Route::get('refund_order/detail/:uni', 'v1.admin.StoreOrderController/refundOrderDetail')->name('RefundOrderDetail');//退款订单详情
-		Route::post('refund_order/remark', 'v1.admin.StoreOrderController/refundRemark')->name('refundRemark');//退款订单备注
-		Route::get('order/detail/:orderId', 'v1.admin.StoreOrderController/detail')->name('adminOrderDetail');//订单详情
-		Route::get('order/delivery/gain/:orderId', 'v1.admin.StoreOrderController/delivery_gain')->name('adminOrderDeliveryGain');//订单发货获取订单信息
-		Route::post('order/delivery/keep/:id', 'v1.admin.StoreOrderController/delivery_keep')->name('adminOrderDeliveryKeep');//订单发货
-		Route::post('order/price', 'v1.admin.StoreOrderController/price')->name('adminOrderPrice');//订单改价
-		Route::post('order/remark', 'v1.admin.StoreOrderController/remark')->name('adminOrderRemark');//订单备注
-		Route::get('order/time', 'v1.admin.StoreOrderController/time')->name('adminOrderTime');//订单交易额时间统计
-		Route::post('order/offline', 'v1.admin.StoreOrderController/offline')->name('adminOrderOffline');//订单支付
-		Route::post('order/refund', 'v1.admin.StoreOrderController/refund')->name('adminOrderRefund');//订单退款
-		Route::post('order/refund_agree/:id', 'v1.admin.StoreOrderController/agreeRefund')->name('adminOrderAgreeRefund');//商家同意退货退款
-		Route::get('order/delivery', 'v1.admin.StoreOrderController/getDeliveryAll')->name('getDeliveryAll');//获取配送员
-		Route::get('order/delivery_info/:orderId', 'v1.admin.StoreOrderController/getDeliveryInfo')->name('getDeliveryInfo');//获取电子面单默认信息
-		Route::get('order/export_temp', 'v1.admin.StoreOrderController/getExportTemp')->name('getExportTemp');//获取电子面单模板获取
-		Route::get('order/export_all', 'v1.admin.StoreOrderController/getExportAll')->name('getExportAll');//获取物流公司
-		Route::get('order/split_cart_info/:id', 'v1.admin.StoreOrderController/split_cart_info')->name('StoreOrderSplitCartInfo')->option(['real_name' => '获取订单可拆分商品列表']);//获取订单可拆分商品列表
-		Route::put('order/split_delivery/:id', 'v1.admin.StoreOrderController/split_delivery')->name('StoreOrderSplitDelivery')->option(['real_name' => '拆单发送货']);//拆单发送货
-	})->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true)->middleware(\app\http\middleware\api\CustomerMiddleware::class);
+    /**
+     * 管理员订单操作类
+     */
+    Route::post('order/order_verific', 'v1.admin.StoreOrderController/order_verific')
+        ->middleware(StationOpenMiddleware::class)
+        ->middleware(AuthTokenMiddleware::class, true)
+        ->middleware(\app\http\middleware\api\CustomerMiddleware::class)->name('order');//订单核销
+    Route::group('admin', function () {
+        Route::get('erp/config', 'v1.admin.StoreOrderController/getErpConfig')->name('getErpConfig');//获取erp配置
+        Route::get('order/statistics', 'v1.admin.StoreOrderController/statistics')->name('adminOrderStatistics');//订单数据统计
+        Route::get('order/data', 'v1.admin.StoreOrderController/data')->name('adminOrderData');//订单每月统计数据
+        Route::get('order/list', 'v1.admin.StoreOrderController/lst')->name('adminOrderList');//订单列表
+        Route::get('refund_order/list', 'v1.admin.StoreOrderController/refundOrderList')->name('RefundOrderList');//退款订单列表
+        Route::get('refund_order/detail/:uni', 'v1.admin.StoreOrderController/refundOrderDetail')->name('RefundOrderDetail');//退款订单详情
+        Route::post('refund_order/remark', 'v1.admin.StoreOrderController/refundRemark')->name('refundRemark');//退款订单备注
+        Route::get('order/detail/:orderId', 'v1.admin.StoreOrderController/detail')->name('adminOrderDetail');//订单详情
+        Route::get('order/delivery/gain/:orderId', 'v1.admin.StoreOrderController/delivery_gain')->name('adminOrderDeliveryGain');//订单发货获取订单信息
+        Route::post('order/delivery/keep/:id', 'v1.admin.StoreOrderController/delivery_keep')->name('adminOrderDeliveryKeep');//订单发货
+        Route::post('order/price', 'v1.admin.StoreOrderController/price')->name('adminOrderPrice');//订单改价
+        Route::post('order/remark', 'v1.admin.StoreOrderController/remark')->name('adminOrderRemark');//订单备注
+        Route::get('order/time', 'v1.admin.StoreOrderController/time')->name('adminOrderTime');//订单交易额时间统计
+        Route::post('order/offline', 'v1.admin.StoreOrderController/offline')->name('adminOrderOffline');//订单支付
+        Route::post('order/refund', 'v1.admin.StoreOrderController/refund')->name('adminOrderRefund');//订单退款
+        Route::post('order/refund_agree/:id', 'v1.admin.StoreOrderController/agreeRefund')->name('adminOrderAgreeRefund');//商家同意退货退款
+        Route::get('order/delivery', 'v1.admin.StoreOrderController/getDeliveryAll')->name('getDeliveryAll');//获取配送员
+        Route::get('order/delivery_info/:orderId', 'v1.admin.StoreOrderController/getDeliveryInfo')->name('getDeliveryInfo');//获取电子面单默认信息
+        Route::get('order/export_temp', 'v1.admin.StoreOrderController/getExportTemp')->name('getExportTemp');//获取电子面单模板获取
+        Route::get('order/export_all', 'v1.admin.StoreOrderController/getExportAll')->name('getExportAll');//获取物流公司
+        Route::get('order/split_cart_info/:id', 'v1.admin.StoreOrderController/split_cart_info')->name('StoreOrderSplitCartInfo')->option(['real_name' => '获取订单可拆分商品列表']);//获取订单可拆分商品列表
+        Route::put('order/split_delivery/:id', 'v1.admin.StoreOrderController/split_delivery')->name('StoreOrderSplitDelivery')->option(['real_name' => '拆单发送货']);//拆单发送货
+    })->middleware(StationOpenMiddleware::class)->middleware(AuthTokenMiddleware::class, true)->middleware(\app\http\middleware\api\CustomerMiddleware::class);
 
 
-	/**
-	* 移动端门店中心 路由
-	 */
-	 Route::group('store', function () {
+    /**
+     * 移动端门店中心 路由
+     */
+    Route::group('store', function () {
 
-	 })->middleware(StationOpenMiddleware::class);
+        //无需登录接口
+        Route::group(function () {
+            Route::get('category', 'v1.store.CategoryController/category')->name('category');//商品分类
 
-	/**
-	 * 企业微信
-	 */
-	Route::group('work', function () {
-		//获取企业微信jsSDK配置
-		Route::get('config', 'v1.work.WorkController/config')->name('WorkConfig');
-		//获取企业微信应用jsSDK配置
-		Route::get('agentConfig', 'v1.work.WorkController/agentConfig')->name('agentConfig');
-		//获取客户群详情
-		Route::get('groupInfo', 'v1.work.GroupChatController/getGroupInfo')->name('getGroupInfo');
-		//获取群成员列表
-		Route::get('groupMember/:id', 'v1.work.GroupChatController/getChatMemberList')->name('getChatMemberList');
+        });
 
-		Route::group(function () {
-			//获取客户信息详情
-			Route::get('client/info', 'v1.work.ClientController/getClientInfo')->name('getClientInfo');
-			//获取客户订单列表
-			Route::get('order/list', 'v1.work.OrderController/getUserOrderList')->name('getWorkOrderList');
-			//获取客户订单详情
-			Route::get('order/info/:id', 'v1.work.OrderController/orderInfo')->name('getWorkOrderInfo');
-			//购买商品记录
-			Route::get('product/cart_list', 'v1.work.ProductController/getCartProductList')->name('getCartProductList');
-			//浏览记录商品记录
-			Route::get('product/visit_list', 'v1.work.ProductController/getVisitProductList')->name('getVisitProductList');
+        //未授权接口---不会抛异常
+        Route::group(function () {
+            Route::get('list', 'v1.store.StoreController/getStoreList')->name('storeList');//门店列表
+            Route::get('store_cities', 'v1.store.StoreController/getStoreCities')->name('storeCities');//门店城市列表
+            Route::get('goods_store_list', 'v1.store.StoreController/goodsStoreList')->name('goodsStoreList');//商品适用门店列表
+            Route::get('info/:id', 'v1.store.StoreController/getStoreInfo')->name('storeInfo');//门店详情
 
-		})->middleware(ClientMiddleware::class);
-	});
+            Route::get('customer/list/:store_id', 'v1.store.StoreController/getCustomerList')->name('customerList');//客服列表
+            Route::get('customer/info/:id', 'v1.store.StoreController/getCustomerInfo')->name('customerInfo');//客服详情
+
+            Route::get('products', 'v1.store.StoreProductController/lst')->name('storeProducts');//商品列表
+            Route::get('brand', 'v1.store.StoreProductController/brand')->name('brand');//品牌列表
+
+        })->middleware(AuthTokenMiddleware::class, false);
+
+        //需要授权接口
+        Route::group(function () {
+            //门店店员订单操作类
+            Route::get('staff/info', 'store.StoreStaffController/info')->name('storeStaffInfo');//门店店员信息
+            Route::get('staff/statistics', 'store.StoreStaffController/statistics')->name('storeStatistics');//门店|店员统计信息
+            Route::get('staff/data/:type', 'store.StoreStaffController/data');//详细信息列表
+            Route::get('order/statistics', 'store.StoreOrderController/statistics')->name('adminOrderStatistics');//订单数据统计
+            Route::get('order/data', 'store.StoreOrderController/data')->name('adminOrderData');//订单每月统计数据
+            Route::get('staff/card/code', 'store.StoreStaffController/code');//详细信息列表
+
+            Route::get('delivery/info', 'store.StoreDeliveryController/info')->name('storeStaffInfo');//配送员信息
+            Route::get('delivery/statistics', 'store.StoreDeliveryController/statistics')->name('deliveryStatistics');//门店配送员统计信息
+            Route::get('delivery/data', 'store.StoreDeliveryController/data')->name('deliveryData');//每月配送统计列表数据
+            Route::get('delivery/order', 'store.StoreDeliveryController/orderList')->name('deliveryOrder');//配送员订单列表
+            Route::get('delivery/list', 'store.StoreDeliveryController/getDeliveryAll')->name('getDeliveryAll');//获取配送员列表
+            Route::get('order/list', 'store.StoreOrderController/lst')->name('storeOrderList');//订单列表
+            Route::get('refund/list', 'store.StoreOrderController/refundList')->name('refundList');//订单列表
+            Route::get('refund/detail/:id', 'store.StoreOrderController/refundDetail')->name('refundDetail');//订单列表
+            Route::get('order/detail/:id', 'store.StoreOrderController/detail')->name('storeOrderDetail');//订单详情
+            Route::get('order/delivery_info/:orderId', 'store.StoreOrderController/deliveryInfo')->name('storeOrderDeliveryInfo');//订单发货获取订单信息
+            Route::post('order/delivery/:id', 'store.StoreOrderController/delivery')->name('storeOrderDelivery');//订单发货
+            Route::get('order/split_cart_info/:id', 'store.StoreOrderController/split_cart_info')->name('StoreOrderSplitCartInfo');//获取订单可拆分商品列表
+            Route::put('order/split_delivery/:id', 'store.StoreOrderController/split_delivery')->name('StoreOrderSplitDelivery');//拆单发送货
+            Route::post('order/price', 'store.StoreOrderController/price')->name('storeOrderPrice');//订单改价
+            Route::post('order/remark', 'store.StoreOrderController/remark')->name('storeOrderRemark');//订单备注
+            Route::post('refund/remark', 'store.StoreOrderController/refundRemark')->name('refundRemark');//订单备注
+            Route::post('order/offline', 'store.StoreOrderController/offline')->name('storeOrderOffline');//订单支付
+            Route::post('order/refund', 'store.StoreOrderController/refund')->name('storeOrderRefund');//订单退款
+            Route::post('order/refund_agree/:id', 'store.StoreOrderController/agreeRefund')->name('storeOrderAgreeRefund');//商家同意退货退款
+            Route::get('order/export_temp', 'store.StoreOrderController/getExportTemp')->name('storeOrderExportTemp');//获取电子面单模板获取
+            Route::get('order/export_all', 'store.StoreOrderController/getExportAll')->name('storeOrderExportAll');//获取物流公司
+            Route::post('order/cancel/:id', 'store.StoreOrderController/cancel')->name('storeOrderCancel'); //订单取消
+            Route::delete('order/del/:id', 'store.StoreOrderController/del')->name('storeOrderDel');//订单删除
+            Route::get('order/writeoff_info/:type', 'store.StoreOrderController/writeoffOrderinfo')->name('writeoffOrderinfo');//扫码核销获取订单信息
+            Route::get('order/cart_info/:type', 'store.StoreOrderController/orderCartInfo')->name('writeoffOrderCartInfo');//核销获取商品信息
+            Route::post('order/writeoff/:type', 'store.StoreOrderController/wirteoff')->name('storeOrderWriteoff');//订单核销
+        })->middleware(AuthTokenMiddleware::class, true);
+
+    })->middleware(StationOpenMiddleware::class);
+
+    /**
+     * 企业微信
+     */
+    Route::group('work', function () {
+        //获取企业微信jsSDK配置
+        Route::get('config', 'v1.work.WorkController/config')->name('WorkConfig');
+        //获取企业微信应用jsSDK配置
+        Route::get('agentConfig', 'v1.work.WorkController/agentConfig')->name('agentConfig');
+        //获取客户群详情
+        Route::get('groupInfo', 'v1.work.GroupChatController/getGroupInfo')->name('getGroupInfo');
+        //获取群成员列表
+        Route::get('groupMember/:id', 'v1.work.GroupChatController/getChatMemberList')->name('getChatMemberList');
+
+        Route::group(function () {
+            //获取客户信息详情
+            Route::get('client/info', 'v1.work.ClientController/getClientInfo')->name('getClientInfo');
+            //获取客户订单列表
+            Route::get('order/list', 'v1.work.OrderController/getUserOrderList')->name('getWorkOrderList');
+            //获取客户订单详情
+            Route::get('order/info/:id', 'v1.work.OrderController/orderInfo')->name('getWorkOrderInfo');
+            //购买商品记录
+            Route::get('product/cart_list', 'v1.work.ProductController/getCartProductList')->name('getCartProductList');
+            //浏览记录商品记录
+            Route::get('product/visit_list', 'v1.work.ProductController/getVisitProductList')->name('getVisitProductList');
+
+        })->middleware(ClientMiddleware::class);
+    });
 
     /**
      * miss 路由
