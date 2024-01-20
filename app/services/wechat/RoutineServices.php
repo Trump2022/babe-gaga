@@ -131,9 +131,10 @@ class RoutineServices extends BaseServices
 			$wechatInfo['phone'] = $phone;
 			$createData = [$openid, $wechatInfo, $spread_uid, 'routine', 'routine'];
 		}
+
+        //写入用户信息
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
-		//写入用户信息
 		$user = $wechatUserServices->wechatOauthAfter($createData);
 		return $this->getReturnInfo($user);
 	}

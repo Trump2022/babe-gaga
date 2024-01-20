@@ -521,6 +521,7 @@ Route::group('api', function () {
      * v1.1 版本路由
      */
     Route::group('v2', function () {
+
         //无需授权接口
         Route::group(function () {
 			//小程序登录页面自动加载，返回用户信息的缓存key，返回是否强制绑定手机号
