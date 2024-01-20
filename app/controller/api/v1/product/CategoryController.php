@@ -36,6 +36,7 @@ class CategoryController
             ['pid', 0],
             ['id', 0],
             ['is_class', 0],
+            ['city', 0],
         ]);
         $lines = $request->get('lines', 0);
         $category = $this->services->getCategory($where, $lines);

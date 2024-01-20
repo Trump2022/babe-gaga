@@ -13,6 +13,7 @@ namespace app\services\product\category;
 use app\dao\product\category\StoreProductCategoryDao;
 use app\services\BaseServices;
 use app\services\product\product\StoreProductServices;
+use app\services\store\SystemStoreServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\FormBuilder as Form;
 use crmeb\utils\Arr;
@@ -314,10 +315,24 @@ class StoreProductCategoryServices extends BaseServices
                 $storeProductServices = app()->make(StoreProductServices::class);
                 $field = 'id as product_id,store_name,sales,price, price as val,image,store_info,ot_price';
                 $order = ['sort', 'desc'];
+
                 $map['is_del'] = 0;
                 $map['is_show'] = 1;
                 if(!empty($where['is_class'])){
                     $map['type'] = 0;
+                }
+                if(!empty($where['city'])){
+                    //按城市筛选课程
+                    /** @var SystemStoreServices $systemStoreServices */
+                    $systemStoreServices = app()->make(SystemStoreServices::class);
+                    $storeIds = $systemStoreServices->getStore(['city' => $where['city']]);
+                    $raw = '';
+                    foreach ($storeIds as $item){
+                        $raw .= " FIND_IN_SET({$item['id']}, `applicable_store_id`) OR";
+                    }
+                    $raw = substr_replace($raw, "", -2, 2);
+                    //$raw = trim($raw, "OR");
+                    $where['city'] = $raw;
                 }
                 foreach ($list as &$itme){
                     if(!empty($itme['children'])){
