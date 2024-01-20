@@ -77,6 +77,7 @@ class StoreCouponIssue extends AuthController
             ['type', 0],//0-通用, 1-分类, 2-商品, 3-品牌, 4-品类券(课程), 5-商品券(课程)
             ['sort', 0],
             ['status', 0],
+            ['receive_limit', 1],
             ['coupon_type', 1],
 			['applicable_type', 1],//适用门店类型
 			['applicable_store_id', []],//适用门店IDS

@@ -829,65 +829,6 @@ Route::group('api', function () {
 	 */
 	 Route::group('store', function () {
 
-		//无需登录接口
-		Route::group(function () {
-			Route::get('category', 'v1.store.CategoryController/category')->name('category');//商品分类
-
-		});
-
-		//未授权接口---不会抛异常
-        Route::group(function () {
-			Route::get('list', 'v1.store.StoreController/getStoreList')->name('storeList');//门店列表
-			Route::get('store_cities', 'v1.store.StoreController/getStoreCities')->name('storeCities');//门店城市列表
-			Route::get('goods_store_list', 'v1.store.StoreController/goodsStoreList')->name('goodsStoreList');//商品适用门店列表
-			Route::get('info/:id', 'v1.store.StoreController/getStoreInfo')->name('storeInfo');//门店详情
-
-			Route::get('customer/list/:store_id', 'v1.store.StoreController/getCustomerList')->name('customerList');//客服列表
-			Route::get('customer/info/:id', 'v1.store.StoreController/getCustomerInfo')->name('customerInfo');//客服详情
-
-			Route::get('products', 'v1.store.StoreProductController/lst')->name('storeProducts');//商品列表
-        	Route::get('brand', 'v1.store.StoreProductController/brand')->name('brand');//品牌列表
-
-        })->middleware(AuthTokenMiddleware::class, false);
-
-		 //需要授权接口
-        Route::group(function () {
-			//门店店员订单操作类
-			Route::get('staff/info', 'store.StoreStaffController/info')->name('storeStaffInfo');//门店店员信息
-			Route::get('staff/statistics', 'store.StoreStaffController/statistics')->name('storeStatistics');//门店|店员统计信息
-			Route::get('staff/data/:type', 'store.StoreStaffController/data');//详细信息列表
-			Route::get('order/statistics', 'store.StoreOrderController/statistics')->name('adminOrderStatistics');//订单数据统计
-			Route::get('order/data', 'store.StoreOrderController/data')->name('adminOrderData');//订单每月统计数据
-			Route::get('staff/card/code', 'store.StoreStaffController/code');//详细信息列表
-
-			Route::get('delivery/info', 'store.StoreDeliveryController/info')->name('storeStaffInfo');//配送员信息
-			Route::get('delivery/statistics', 'store.StoreDeliveryController/statistics')->name('deliveryStatistics');//门店配送员统计信息
-			Route::get('delivery/data', 'store.StoreDeliveryController/data')->name('deliveryData');//每月配送统计列表数据
-			Route::get('delivery/order', 'store.StoreDeliveryController/orderList')->name('deliveryOrder');//配送员订单列表
-			Route::get('delivery/list', 'store.StoreDeliveryController/getDeliveryAll')->name('getDeliveryAll');//获取配送员列表
-			Route::get('order/list', 'store.StoreOrderController/lst')->name('storeOrderList');//订单列表
-			Route::get('refund/list', 'store.StoreOrderController/refundList')->name('refundList');//订单列表
-			Route::get('refund/detail/:id', 'store.StoreOrderController/refundDetail')->name('refundDetail');//订单列表
-			Route::get('order/detail/:id', 'store.StoreOrderController/detail')->name('storeOrderDetail');//订单详情
-			Route::get('order/delivery_info/:orderId', 'store.StoreOrderController/deliveryInfo')->name('storeOrderDeliveryInfo');//订单发货获取订单信息
-			Route::post('order/delivery/:id', 'store.StoreOrderController/delivery')->name('storeOrderDelivery');//订单发货
-			Route::get('order/split_cart_info/:id', 'store.StoreOrderController/split_cart_info')->name('StoreOrderSplitCartInfo');//获取订单可拆分商品列表
-			Route::put('order/split_delivery/:id', 'store.StoreOrderController/split_delivery')->name('StoreOrderSplitDelivery');//拆单发送货
-			Route::post('order/price', 'store.StoreOrderController/price')->name('storeOrderPrice');//订单改价
-			Route::post('order/remark', 'store.StoreOrderController/remark')->name('storeOrderRemark');//订单备注
-			Route::post('refund/remark', 'store.StoreOrderController/refundRemark')->name('refundRemark');//订单备注
-			Route::post('order/offline', 'store.StoreOrderController/offline')->name('storeOrderOffline');//订单支付
-			Route::post('order/refund', 'store.StoreOrderController/refund')->name('storeOrderRefund');//订单退款
-			Route::post('order/refund_agree/:id', 'store.StoreOrderController/agreeRefund')->name('storeOrderAgreeRefund');//商家同意退货退款
-			Route::get('order/export_temp', 'store.StoreOrderController/getExportTemp')->name('storeOrderExportTemp');//获取电子面单模板获取
-			Route::get('order/export_all', 'store.StoreOrderController/getExportAll')->name('storeOrderExportAll');//获取物流公司
-			Route::post('order/cancel/:id', 'store.StoreOrderController/cancel')->name('storeOrderCancel'); //订单取消
-			Route::delete('order/del/:id', 'store.StoreOrderController/del')->name('storeOrderDel');//订单删除
-			Route::get('order/writeoff_info/:type', 'store.StoreOrderController/writeoffOrderinfo')->name('writeoffOrderinfo');//扫码核销获取订单信息
-			Route::get('order/cart_info/:type', 'store.StoreOrderController/orderCartInfo')->name('writeoffOrderCartInfo');//核销获取商品信息
-			Route::post('order/writeoff/:type', 'store.StoreOrderController/wirteoff')->name('storeOrderWriteoff');//订单核销
-		})->middleware(AuthTokenMiddleware::class, true);
-
 	 })->middleware(StationOpenMiddleware::class);
 
 	/**
