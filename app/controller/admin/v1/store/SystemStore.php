@@ -15,6 +15,9 @@ use app\services\product\branch\StoreBranchProductServices;
 use app\services\store\LoginServices;
 use app\services\store\SystemStoreStaffServices;
 use app\services\system\attachment\SystemAttachmentServices;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\facade\App;
 use app\controller\admin\AuthController;
 use app\services\store\SystemStoreServices;
@@ -41,6 +44,9 @@ class SystemStore extends AuthController
     /**
      * 获取门店列表1
      * @return mixed
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function index()
     {
@@ -69,9 +75,9 @@ class SystemStore extends AuthController
     /**
      * 门店设置
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function get_info()
     {
@@ -138,9 +144,9 @@ class SystemStore extends AuthController
 	 * 重置门店超级管理员账号密码
 	 * @param $id
 	 * @return mixed
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 */
     public function resetAdmin($id)
     {
@@ -329,8 +335,8 @@ class SystemStore extends AuthController
      * @param LoginServices $services
      * @param $id
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      */
     public function storeLogin(SystemStoreStaffServices $staffServices, LoginServices $services, $id)
     {
