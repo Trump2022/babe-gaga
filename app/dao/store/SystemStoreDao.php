@@ -45,6 +45,8 @@ class SystemStoreDao extends BaseDao
 			$query->where('area', $where['area']);
 		})->when(isset($where['street']) && $where['street'], function ($query) use ($where) {
 			$query->where('street', $where['street']);
+		})->when(!empty($where['store_id']) && $where['store_id'], function ($query) use ($where) {
+		    $query->whereIn('id', $where['store_id']);
 		});
 	}
 

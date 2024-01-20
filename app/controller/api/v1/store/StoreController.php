@@ -77,7 +77,7 @@ class StoreController
 	 */
 	public function getStoreList(Request $request)
 	{
-		[$store_type, $keywords, $latitude, $longitude, $province, $city, $area, $street] = $request->getMore([
+		[$store_type, $keywords, $latitude, $longitude, $province, $city, $area, $street, $product_id] = $request->getMore([
 			['store_type', 1],
 			['keyword', ''],
             ['latitude', ''],
@@ -85,16 +85,47 @@ class StoreController
             ['province', 0],
             ['city', 0],
             ['area', 0],
-            ['street', 0]
+            ['street', 0],
+            ['product_id', 0],
         ], true);
-		$where = ['uid' => (int)$request->uid(), 'store_type' => $store_type, 'keywords' => $keywords, 'province' => $province, 'city' => $city, 'area' => $area, 'street' => $street];
-		$storeList = [];
-		//开启门店
-		if (sys_config('store_func_status', 1)) {
-			$storeList = $this->services->getNearbyStore($where, $latitude, $longitude);
-		}
-		return app('json')->success($storeList);
-	}
+        $where = ['uid' => (int)$request->uid(), 'store_type' => $store_type, 'keywords' => $keywords, 'province' => $province, 'city' => $city, 'area' => $area, 'street' => $street, 'product_id'=> $product_id];
+        $storeList = [];
+        //开启门店
+        if (sys_config('store_func_status', 1)) {
+            $storeList = $this->services->getNearbyStore($where, $latitude, $longitude);
+        }
+        return app('json')->success($storeList);
+    }
+
+    /**
+     * 商品适用门店列表
+     * @param Request $request
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function goodsStoreList(Request $request)
+    {
+        [$store_type, $keywords, $latitude, $longitude, $province, $city, $area, $street, $product_id] = $request->getMore([
+            ['store_type', 1],
+            ['keyword', ''],
+            ['latitude', ''],
+            ['longitude', ''],
+            ['province', 0],
+            ['city', 0],
+            ['area', 0],
+            ['street', 0],
+            ['product_id', 0],
+        ], true);
+        $where = ['uid' => (int)$request->uid(), 'store_type' => $store_type, 'keywords' => $keywords, 'province' => $province, 'city' => $city, 'area' => $area, 'street' => $street, 'product_id'=> $product_id];
+        $storeData = [];
+        //开启门店
+        if (sys_config('store_func_status', 1)) {
+            $storeData = $this->services->goodsStoreList($where, $latitude, $longitude);
+        }
+        return app('json')->success($storeData);
+    }
 
     /**
      * 获取门店详情
