@@ -401,6 +401,7 @@ class WechatUserServices extends BaseServices
     public function wechatOauthAfter(array $data)
     {
         [$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $data;
+
         /** @var UserServices $userServices */
         $userServices = app()->make(UserServices::class);
         if ($spread_uid && !$userServices->userExist((int)$spread_uid)) {
