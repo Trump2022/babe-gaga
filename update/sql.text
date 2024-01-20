@@ -207,3 +207,5 @@ INSERT INTO `gaga_system_config` (`id`, `is_store`, `menu_name`, `type`, `input_
 (528, 0, 'copyright_image', 'text', 'input', 26, '', 0, 'required:true', 100, 0, '', '版权信息图标URL', '底部展示的copyright图标URL', 10, 1);
 ALTER TABLE `gaga_store_order` ADD `use_status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '课程订单使用状态：0-待使用，1-使用中，2-已完成' AFTER `status`;
 
+ALTER TABLE `gaga_store_coupon_issue` ADD `receive_limit` int NOT NULL DEFAULT '0' COMMENT '每个人个领取的优惠券数量' AFTER `remain_count`;
+

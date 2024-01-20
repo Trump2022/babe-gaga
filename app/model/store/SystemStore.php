@@ -12,9 +12,11 @@
 namespace app\model\store;
 
 use app\model\other\Category;
+use app\model\other\CityArea;
 use crmeb\basic\BaseModel;
 use crmeb\traits\ModelTrait;
 use think\Model;
+use think\model\relation\HasOne;
 
 /**
  * 门店列表
@@ -38,7 +40,7 @@ class SystemStore extends BaseModel
     protected $name = 'system_store';
 
 	/**
-	 * @return \think\model\relation\HasOne
+	 * @return HasOne
 	 */
 	public function categoryName()
 	{
@@ -48,7 +50,7 @@ class SystemStore extends BaseModel
 	}
 
 	/**
-	 * @return \think\model\relation\HasOne
+	 * @return HasOne
 	 */
 	public function category()
 	{
@@ -161,5 +163,15 @@ class SystemStore extends BaseModel
         }
     }
 
-
+    /**
+     * @return HasOne
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/20 15:28
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function cityName(): HasOne
+    {
+        return $this->hasOne(CityArea::class, 'id', 'city_id')->field('id,name')->bind(['city_name' => 'name']);
+    }
 }

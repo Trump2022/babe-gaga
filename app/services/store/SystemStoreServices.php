@@ -24,6 +24,9 @@ use app\services\system\SystemRoleServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\erp\Erp;
 use crmeb\services\FormBuilder;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Cache;
 use think\facade\Log;
@@ -60,9 +63,9 @@ class SystemStoreServices extends BaseServices
      * @param int $id
      * @param string $field
      * @return array|\think\Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getStoreInfo(int $id, string $field = "*")
     {
@@ -82,9 +85,9 @@ class SystemStoreServices extends BaseServices
      * @param string $ip
      * @param int $limit
      * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getNearbyStore(array $where, string $latitude, string $longitude, string $ip = '', int $limit = 0)
     {
@@ -179,9 +182,9 @@ class SystemStoreServices extends BaseServices
      * @param string $ip
      * @param int $limit
      * @return array|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function goodsStoreList(array $where, string $latitude, string $longitude, string $ip = '', int $limit = 0)
     {
@@ -280,12 +283,13 @@ class SystemStoreServices extends BaseServices
      * @param int $product_id
      * @param array $with
      * @param int $type 0:普通1：秒杀
+     * @param int $store_id
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function getStoreList(array $where, array $field = ['*'], string $latitude = '', string $longitude = '', int $product_id = 0, array $with = [], int $type = 0, $store_id = 0)
+    public function getStoreList(array $where, array $field = ['*'], string $latitude = '', string $longitude = '', int $product_id = 0, array $with = [], int $type = 0, $store_id = 0): array
     {
         [$page, $limit] = $this->getPageValue();
         $order = 0;
@@ -389,9 +393,9 @@ class SystemStoreServices extends BaseServices
      * @param int $id
      * @return array
      * @throws \FormBuilder\Exception\FormBuilderException
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function storeAdminAccountForm(int $id)
     {
@@ -412,9 +416,9 @@ class SystemStoreServices extends BaseServices
 	 * @param int $id
 	 * @param array $data
 	 * @return bool
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 */
 	public function resetAdmin(int $id, array $data)
 	{
@@ -549,9 +553,9 @@ class SystemStoreServices extends BaseServices
      * 获取门店缓存
      * @param int $id
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author 等风来
      * @email 136327134@qq.com
      * @date 2022/11/21
@@ -582,9 +586,9 @@ class SystemStoreServices extends BaseServices
      * @param int $type
      * @param array $ids
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      * @author 等风来
      * @email 136327134@qq.com
      * @date 2024/1/17
@@ -620,9 +624,9 @@ class SystemStoreServices extends BaseServices
      * @param int $id
      * @param string $felid
      * @return array|false|mixed|string|string[]|\think\Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getStoreDispose(int $id, string $felid = '')
     {
@@ -644,9 +648,9 @@ class SystemStoreServices extends BaseServices
     /**
      * 获取门店不分页
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getStore($where = ['type' => 0])
     {
@@ -657,9 +661,9 @@ class SystemStoreServices extends BaseServices
      * 获得导出店员列表
      * @param array $where
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getExportData(array $where)
     {
@@ -670,9 +674,9 @@ class SystemStoreServices extends BaseServices
      * 平台门店运营统计
      * @param array $time
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function storeChart(array $time)
     {
@@ -840,9 +844,9 @@ class SystemStoreServices extends BaseServices
      * @param string $latitude
      * @param string $longitude
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function checkStoreDeliveryScope(int $store_id, array $addressInfo = [], string $latitude = '', string $longitude = '')
     {

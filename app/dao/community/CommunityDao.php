@@ -18,6 +18,7 @@ use app\services\system\RelevanceServices;
 use app\dao\BaseDao;
 use app\model\community\Community;
 use crmeb\basic\BaseModel;
+use think\db\BaseQuery;
 
 class CommunityDao extends BaseDao
 {
@@ -45,7 +46,11 @@ class CommunityDao extends BaseDao
         return parent::getModel();
     }
 
-    public function search(array $where = [])
+    /**
+     * @param array $where
+     * @return BaseQuery
+     */
+    public function search(array $where = []): BaseQuery
     {
         $query = Community::hasWhere('author', function($query) use ($where){
             $query->when(isset($where['username']) && $where['username'] !==  '', function ($query) use($where) {
@@ -53,13 +58,26 @@ class CommunityDao extends BaseDao
             });
             $query->where(true);
         });
-        $query
-            ->when(isset($where['keyword']) && $where['keyword'] !==  '', function ($query) use($where) {
-                $query->whereLike('Community.title',"%{$where['keyword']}%");
-            })
-            ->when(isset($where['uid']) && $where['uid'] !==  '', function ($query) use($where) {
+        $query->when(isset($where['uid']) && $where['uid'] !==  '', function ($query) use($where) {
                 $query->where('Community.uid',$where['uid']);
             })
+
+            ->when(isset($where['keyword']) && $where['keyword'] !==  '', function ($query) use($where) {
+                $query->where(function ($query) use ($where) {
+                    $query->where(function ($query) use ($where){
+                        $query->whereLike('Community.title|Community.content',"%{$where['keyword']}%");
+                    })
+                    ->whereOr(function ($query) use ($where) {
+                        $query->whereIn('Community.community_id', function ($que) use ($where){
+                            $que->name('relevance')->whereIn('right_id', function ($q) use ($where) {
+                                $q->name('store_product')->whereLike('store_name', "%{$where['keyword']}%")->field('id')->select();
+                            })->where('type', RelevanceServices::TYPE_COMMUNITY_PRODUCT)->field('left_id')->select();
+                        });
+                    })
+                    ;
+                });
+            })
+
             ->when(isset($where['uids']) && $where['uids'] !==  '', function ($query) use($where) {
                 $query->whereIn('Community.uid',$where['uids']);
             })
@@ -69,10 +87,10 @@ class CommunityDao extends BaseDao
             ->when(isset($where['community_id']) && $where['community_id'] !==  '', function ($query) use($where) {
                 $query->where('Community.community_id',$where['community_id']);
             })
-            ->when(isset($where['not_id']) && $where['not_id'] !==  '', function ($query) use($where) {
+            ->when(isset($where['not_id']) && $where['not_id'], function ($query) use($where) {
                 $query->whereNotIn('Community.community_id',$where['not_id']);
             })
-            ->when(isset($where['in_id']) && $where['in_id'] !==  '', function ($query) use($where) {
+            ->when(isset($where['in_id']) && $where['in_id'], function ($query) use($where) {
                 $query->whereOr(function($query) use($where){
                     $query->whereIn('Community.community_id',$where['in_id']);
                 });

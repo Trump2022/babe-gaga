@@ -350,7 +350,7 @@ class CommunityServices extends BaseServices
             if ( ! isset($where['uid']) && $first) $where['topic_id'] = $first['topic_id'];
         }
         if ($first) {
-            $where['not_id'] = $where['community_id'];
+            $where['not_id'] = [$where['community_id']];
             $limit--;
         }
 

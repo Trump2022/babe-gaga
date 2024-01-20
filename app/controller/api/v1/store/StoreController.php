@@ -14,6 +14,10 @@ use app\services\order\StoreCartServices;
 use app\services\store\SystemStoreServices;
 use app\services\store\SystemStoreStaffServices;
 use app\Request;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\Response;
 
 /**
  * Class StoreController
@@ -34,9 +38,9 @@ class StoreController
 	* @param SystemStoreServices $services
 	* @param StoreCartServices $cartServices
 	* @return mixed
-	* @throws \think\db\exception\DataNotFoundException
-	* @throws \think\db\exception\DbException
-	* @throws \think\db\exception\ModelNotFoundException
+	* @throws DataNotFoundException
+	* @throws DbException
+	* @throws ModelNotFoundException
 	 */
     public function nearbyStore(Request $request, SystemStoreServices $services, StoreCartServices $cartServices)
     {
@@ -71,9 +75,9 @@ class StoreController
 	* 获取门店列表
 	* @param Request $request
 	* @return mixed
-	* @throws \think\db\exception\DataNotFoundException
-	* @throws \think\db\exception\DbException
-	* @throws \think\db\exception\ModelNotFoundException
+	* @throws DataNotFoundException
+	* @throws DbException
+	* @throws ModelNotFoundException
 	 */
 	public function getStoreList(Request $request)
 	{
@@ -98,12 +102,46 @@ class StoreController
     }
 
     /**
+     * @param Request $request
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/20 15:28
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getStoreCities(Request $request): Response
+    {
+        $where = [
+            'type' => '',
+            'is_del' => 0,
+        ];
+        $field = ['id', 'cate_id', 'name', 'phone', 'address', 'detailed_address', 'image', 'is_show', 'day_time', 'day_start', 'day_end', 'city city_id'];
+        $arr = $this->services->getStoreList($where, $field, '', '', 0, ['cityName']);
+        $arr = $arr['list'] ?? [];
+        $list = [];
+        $city_ids = [];
+        foreach ($arr as $item) {
+            if ( ! in_array($item['city_id'], $city_ids)) {
+                $city_ids[] = $item['city_id'];
+                $list[] = [
+                    'city_id' => $item['city_id'],
+                    'city_name' => $item['city_name'],
+                ];
+            }
+        }
+        return app('json')->success($list);
+    }
+
+    /**
      * 商品适用门店列表
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function goodsStoreList(Request $request)
     {
@@ -131,9 +169,9 @@ class StoreController
      * 获取门店详情
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getStoreInfo(Request $request)
     {
@@ -161,9 +199,9 @@ class StoreController
 	* @param SystemStoreStaffServices $staffServices
 	* @param $store_id
 	* @return mixed
-	* @throws \think\db\exception\DataNotFoundException
-	* @throws \think\db\exception\DbException
-	* @throws \think\db\exception\ModelNotFoundException
+	* @throws DataNotFoundException
+	* @throws DbException
+	* @throws ModelNotFoundException
 	 */
 	public function getCustomerList(SystemStoreStaffServices $staffServices, $store_id)
 	{
@@ -179,9 +217,9 @@ class StoreController
 	* @param SystemStoreStaffServices $staffServices
 	* @param $id
 	* @return mixed
-	* @throws \think\db\exception\DataNotFoundException
-	* @throws \think\db\exception\DbException
-	* @throws \think\db\exception\ModelNotFoundException
+	* @throws DataNotFoundException
+	* @throws DbException
+	* @throws ModelNotFoundException
 	 */
 	public function getCustomerInfo(SystemStoreStaffServices $staffServices, $id)
 	{
