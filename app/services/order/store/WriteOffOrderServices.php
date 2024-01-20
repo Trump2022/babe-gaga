@@ -426,7 +426,7 @@ class WriteOffOrderServices extends BaseServices
                     $data['clerk_id'] = $staffInfo['uid'];
                 }
                 $data['staff_id'] = $staffInfo['id'] ?? 0;
-                $data['store_id'] = $staffInfo['store_id'] ?? 0;
+
                 $cartData['staff_id'] = $staffInfo['id'] ?? 0;
             } else if ($auth == 2) {//配送员
                 /** @var DeliveryServiceServices $deliverServiceServices */
@@ -546,6 +546,8 @@ class WriteOffOrderServices extends BaseServices
                 }
                 return $data;
             });
+            //核销门店
+            $data['store_id'] = $staffInfo['store_id'] ?? 0;
             event('order.writeoff', [$orderInfo, $auth, $data, $cartIds, $cartInfo]);
         } else {//gaga币订单
             if ($orderInfo['status'] == 3) {
