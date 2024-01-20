@@ -214,6 +214,11 @@ class RoutineServices extends BaseServices
      */
     public function getUserInfoByCode(string $code)
     {
+//        $userInfoConfig = [];
+//        $userInfoConfig['session_key'] = '';
+//        $userInfoConfig['openid'] = 'ocTW36-qRDex7leJhH4DoQaWsgP4';
+//        $userInfoConfig['unionid'] = '';
+        return $userInfoConfig;
         if (!$code)
             throw new ValidateException('授权失败,参数有误');
         try {
