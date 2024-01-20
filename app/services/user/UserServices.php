@@ -42,15 +42,20 @@ use app\services\user\level\UserLevelServices;
 use app\services\wechat\WechatUserServices;
 use app\services\work\WorkClientServices;
 use app\services\work\WorkMemberServices;
+use crmeb\basic\BaseModel;
 use crmeb\exceptions\AdminException;
 use crmeb\services\CacheService;
 use crmeb\services\FormBuilder as Form;
 use crmeb\services\FormBuilder;
 use crmeb\services\SystemConfigService;
 use crmeb\services\wechat\OfficialAccount;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\Exception;
 use think\exception\ValidateException;
 use think\facade\Route as Url;
+use think\Model;
 
 /**
  *
@@ -145,9 +150,9 @@ class UserServices extends BaseServices
      * @param array $where
      * @param string $field
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getUserList(array $where, string $field = '*'): array
     {
@@ -172,7 +177,10 @@ class UserServices extends BaseServices
      * @param $user
      * @param int $spreadUid
      * @param string $userType
-     * @return User|\think\Model
+     * @return BaseModel|Model
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function setUserInfo($user, int $spreadUid = 0, string $userType = 'wechat')
     {
@@ -232,9 +240,9 @@ class UserServices extends BaseServices
      * @param array $where
      * @param string $field
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getAgentUserList(array $where = [], string $field = '*', $is_page = true)
     {
@@ -278,9 +286,9 @@ class UserServices extends BaseServices
      * @param string $field
      * @param int $page
      * @param int $limit
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getSairList(array $where, string $field = '*')
     {
@@ -312,9 +320,9 @@ class UserServices extends BaseServices
      * @param string $field
      * @param int $page
      * @param int $limit
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getSairCount(array $where)
     {
@@ -398,9 +406,9 @@ class UserServices extends BaseServices
 	 * @param int $type
 	 * @param int $relation_id
 	 * @return array
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 */
     public function getUserLablel(array $uids, int $type = 0, int $relation_id = 0)
     {
@@ -1001,9 +1009,9 @@ class UserServices extends BaseServices
      * @param int $type
      * @param int $store_id
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function setLabel($uids, $all, $where, int $type = 0, int $relation_id = 0)
     {
@@ -1728,8 +1736,8 @@ class UserServices extends BaseServices
      * 获取推广人排行
      * @param $data 查询条件
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function getRankList(array $data)
@@ -2071,9 +2079,9 @@ class UserServices extends BaseServices
      * @param int $is_money_level 会员来源途径
      * @param bool $member_type 会员卡类型
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function setMemberOverdueTime($vip_day, int $user_id, int $is_money_level, $member_type = false)
     {
@@ -2122,9 +2130,9 @@ class UserServices extends BaseServices
      * @param $uid
      * @param null $userInfo
      * @return bool
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function offMemberLevel($uid, $userInfo = null)
     {
@@ -2141,9 +2149,9 @@ class UserServices extends BaseServices
     /**
      * @param array $where
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function getUserInfoList(array $where, $field = "*")
     {
@@ -2195,9 +2203,9 @@ class UserServices extends BaseServices
      * @param array $userInfo
      * @param array $spread_user
      * @return bool|mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function addBrokeragePrice(int $uid, int $spread_uid, array $userInfo = [], array $spread_user = [])
     {
@@ -2340,9 +2348,9 @@ class UserServices extends BaseServices
      * @param $uid
      * @param $type
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function agentUserList($uid, $type)
     {
