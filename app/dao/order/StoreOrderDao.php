@@ -47,6 +47,11 @@ class StoreOrderDao extends BaseDao
         if (isset($where['real_name'])) {
             $where['real_name'] = trim($where['real_name']);
         }
+        $store_id = 0;
+        if (isset($where['store_id'])) {
+            $store_id = $where['store_id'] ?? 0;
+            unset($where['store_id']);
+        }
         $isDel = isset($where['is_del']) && $where['is_del'] !== '' && $where['is_del'] != -1;
         $realName = $where['real_name'] ?? '';
         $fieldKey = $where['field_key'] ?? '';
@@ -242,6 +247,12 @@ class StoreOrderDao extends BaseDao
             } else {
                 $query->where('refund_status', 0);
             }
+        })->when($store_id, function ($query) use ($store_id) {
+            //关联查询核销记录
+            $query->whereExists(function ($query) use ($store_id) {
+                $query->table('gaga_store_order_writeoff')->where('store_id', $store_id)
+                    ->whereRaw('gaga_store_order.id = gaga_store_order_writeoff.oid');
+            })->whereOr('store_id', $store_id);
         });
     }
 
