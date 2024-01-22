@@ -441,49 +441,53 @@ class WechatUserServices extends BaseServices
             $routineUserInfo = $this->getAuthUserInfo($openid, $userType);
         }
 
-        //如果该手机号用户不存在,说明该手机号尚未绑定任何账号
-        if ( ! $userInfo) {
+        if (isset($wechatInfo['phone']) && $wechatInfo['phone']) {
+            //如果该手机号用户不存在,说明该手机号尚未绑定任何账号
+            if ( ! $userInfo) {
 
-            //如果小程序授权账号存在
-            if ($routineUserInfo)
-            {
-                //未绑定手机号
-                if ( ! $routineUserInfo['phone'])
+                //如果小程序授权账号存在
+                if ($routineUserInfo)
                 {
-                    //将手机号绑定到该授权账号,此处重置用户信息,后续续逻辑不变,updateUserInfo方法会更新phone字段
-                    $userInfo = $routineUserInfo;
+                    //未绑定手机号
+                    if ( ! $routineUserInfo['phone'])
+                    {
+                        //将手机号绑定到该授权账号,此处重置用户信息,后续续逻辑不变,updateUserInfo方法会更新phone字段
+                        $userInfo = $routineUserInfo;
+                    } else {
+                        //注册新账号并登录,此处清除微信信息,后面就不创建wechat_user
+                        $wechatInfo['unionid'] = '';
+                        $wechatInfo['openid'] = '';
+                        $openid = '';
+                    }
                 } else {
                     //注册新账号并登录,此处清除微信信息,后面就不创建wechat_user
                     $wechatInfo['unionid'] = '';
                     $wechatInfo['openid'] = '';
                     $openid = '';
                 }
+
+                //            if (isset($wechatInfo['unionid']) && $wechatInfo['unionid']) {
+                //                $uid = $this->dao->value(['unionid' => $wechatInfo['unionid'], 'is_del' => 0], 'uid');
+                //                if ($uid) {
+                //                    $userInfo = $userServices->getOne(['uid' => $uid]);
+                //                }
+                //            } else {
+                //                $userInfo = $this->getAuthUserInfo($openid, $userType);
+                //            }
+
             } else {
-                //注册新账号并登录,此处清除微信信息,后面就不创建wechat_user
-                $wechatInfo['unionid'] = '';
-                $wechatInfo['openid'] = '';
-                $openid = '';
+                //如果该手机号用户存在
+                //如果小程序授权账号不存在,或小程序账号的uid与手机号账号的uid不相同,说明是手机号用户直接登录或小程序用户切换账号登录
+                if ( ( ! $routineUserInfo) || ($routineUserInfo['uid'] != $userInfo['uid']) )
+                {
+                    //此处清除微信信息,后面就不创建wechat_user
+                    $wechatInfo['unionid'] = '';
+                    $wechatInfo['openid'] = '';
+                    $openid = '';
+                }
             }
-
-            //            if (isset($wechatInfo['unionid']) && $wechatInfo['unionid']) {
-            //                $uid = $this->dao->value(['unionid' => $wechatInfo['unionid'], 'is_del' => 0], 'uid');
-            //                if ($uid) {
-            //                    $userInfo = $userServices->getOne(['uid' => $uid]);
-            //                }
-            //            } else {
-            //                $userInfo = $this->getAuthUserInfo($openid, $userType);
-            //            }
-
         } else {
-            //如果该手机号用户存在
-            //如果小程序授权账号不存在,或小程序账号的uid与手机号账号的uid不相同,说明是手机号用户直接登录或小程序用户切换账号登录
-            if ( ( ! $routineUserInfo) || ($routineUserInfo['uid'] != $userInfo['uid']) )
-            {
-                //此处清除微信信息,后面就不创建wechat_user
-                $wechatInfo['unionid'] = '';
-                $wechatInfo['openid'] = '';
-                $openid = '';
-            }
+            $userInfo = $routineUserInfo;
         }
 
         $uid = (int)($userInfo['uid'] ?? 0);
