@@ -94,7 +94,11 @@ class RoutineServices extends BaseServices
 	 */
 	public function authLogin($key): array
     {
-		[$openid, $wechatInfo, $spread_uid, $login_type, $userType] = CacheService::getTokenBucket($key);
+		[$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $createData = CacheService::getTokenBucket($key);
+        if (!$createData) {
+            throw new ValidateException('请刷新页面或者重新授权');
+        }
+
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
 
