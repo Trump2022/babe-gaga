@@ -66,4 +66,11 @@ class SystemGroup extends BaseModel
     {
         $query->where('cate_id', $value);
     }
+
+    public function searchStatusAttr($query, $value)
+    {
+        if (strlen($value)) {
+            $query->where('status', $value);
+        }
+    }
 }

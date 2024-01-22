@@ -202,6 +202,25 @@ class SystemGroup extends AuthController
     }
 
     /**
+     * 修改状态
+     * @param $id
+     * @param $status
+     * @return mixed
+     */
+    public function set_status($id, $status)
+    {
+        if ($status == '' || $id == 0) return $this->fail('参数错误');
+        $this->services->update($id, ['status' => $status]);
+        \crmeb\services\CacheService::clear();
+        if ($status) {
+            $this->services->cacheSaveValue($id, 'status', $status);
+        } else {
+            $this->services->cacheDelById($id);
+        }
+        return $this->success($status == 0 ? '隐藏成功' : '显示成功');
+    }
+
+    /**
      * 获取组合数据
      * @return mixed
      * @throws \think\db\exception\DataNotFoundException
@@ -210,6 +229,6 @@ class SystemGroup extends AuthController
      */
     public function getGroup()
     {
-        return $this->success($this->services->getGroupList(['cate_id' => 1], ['id', 'name', 'config_name'])['list']);
+        return $this->success($this->services->getGroupList(['cate_id' => 1, 'status' => 1], ['id', 'name', 'config_name'])['list']);
     }
 }

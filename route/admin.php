@@ -1799,10 +1799,16 @@ Route::group('adminapi', function () {
         Route::get('get_version', 'v1.system.config.SystemConfig/getVersion')->option(['real_name' => '获取版权信息']);
         //组合数据全部
         Route::get('group_all', 'v1.system.config.SystemGroup/getGroup')->option(['real_name' => '组合数据全部']);
+
+        //修改组合数据状态
+        Route::put('group/set_status/:id/:status', 'v1.system.config.SystemGroup/set_status')->option(['real_name' => '修改组合数据状态']);
+
         //组合数据头部
         Route::get('group_data/header', 'v1.system.config.SystemGroupData/header')->option(['real_name' => '组合数据头部']);
-        //修改组合数据状态
-        Route::put('group_data/set_status/:id/:status', 'v1.system.config.SystemGroupData/set_status')->option(['real_name' => '修改组合数据状态']);
+
+        //修改组合数据项状态
+        Route::put('group_data/set_status/:id/:status', 'v1.system.config.SystemGroupData/set_status')->option(['real_name' => '修改组合数据项状态']);
+
         //获取城市数据列表
         Route::get('city/list/:parent_id', 'v1.other.CityArea/index')->option(['real_name' => '获取城市数据列表']);
         //添加城市数据表单

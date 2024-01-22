@@ -606,6 +606,10 @@ class Diy extends AuthController
         $data = $data ?: [];
 		$data['time'] = (float)($data['time'] ?? 3);
 		$data['interval_time'] = (float)($data['interval_time'] ?? 24);
+        $data['status'] = $data['status'] ?? 0;
+        $data['type'] = $data['type'] ?? 'pic';
+        $data['value'] = $data['value'] ?? [];
+        $data['video_link'] = $data['video_link'] ?? '';
         return app('json')->success($data);
     }
 
