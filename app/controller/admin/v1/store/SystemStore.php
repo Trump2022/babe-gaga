@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\controller\admin\v1\store;
 
+use app\model\other\CityArea;
 use app\services\order\StoreOrderServices;
 use app\services\product\branch\StoreBranchProductServices;
 use app\services\store\LoginServices;
@@ -194,6 +195,7 @@ class SystemStore extends AuthController
             ['image', ''],
             ['phone', ''],
             ['address', ''],
+            ['addressSelect', []],
             ['detailed_address', ''],
             ['province', ''],
             ['city', ''],
@@ -250,6 +252,19 @@ class SystemStore extends AuthController
             'account' => $data['store_account'],
             'pwd' => $data['store_password']
         ];
+        $addressSelect = $data['addressSelect'] ?? [];
+        $city_id = $data['city'] ?? 0;
+        if ($addressSelect && $city_id) {
+            if (in_array($city_id, $addressSelect)) {
+                $city = CityArea::where('id', $city_id)->find();
+                if (str_contains($city['name'], '区')) {
+                    $key = array_search($city_id, $addressSelect);
+                    if ($key >= 1) {
+                        $data['city'] = $addressSelect[$key - 1];
+                    }
+                }
+            }
+        }
         $data['valid_range'] = bcmul($data['valid_range'], '1000', 0);
 		$data['cate_com'] = $data['cate_id'] ? implode(',', $data['cate_id']) : '';
 		$data['cate_id'] = $data['cate_id'] ? end($data['cate_id']) : 0;

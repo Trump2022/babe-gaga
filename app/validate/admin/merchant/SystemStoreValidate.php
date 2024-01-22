@@ -32,8 +32,9 @@ class SystemStoreValidate extends Validate
 		'store_account' => ['require', 'length:4,64'],
 		'true_password' => ['require', 'length:4,64'],
 		'store_password' => ['require', 'length:4,64'],
-
+        'addressSelect|地址选项' => 'array',
     ];
+
     /**
      * 定义错误信息
      * 格式：'字段名.规则名'    =>    '错误信息'
@@ -60,7 +61,7 @@ class SystemStoreValidate extends Validate
 
     protected $scene = [
 		'reset' => ['store_account', 'true_password', 'store_password'],
-        'save' => ['name', 'phone', 'address', 'detailed_address', 'latlng', 'day_time', 'store_account', 'store_password'],
-		'update' => ['name', 'phone', 'address', 'detailed_address', 'latlng', 'day_time'],
+        'save' => ['name', 'phone', 'address', 'detailed_address', 'addressSelect','latlng', 'day_time', 'store_account', 'store_password'],
+		'update' => ['name', 'phone', 'address', 'detailed_address', 'addressSelect', 'latlng', 'day_time'],
     ];
 }

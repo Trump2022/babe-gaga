@@ -1150,8 +1150,10 @@ Route::group('adminapi', function () {
         Route::get('erp/shop', 'v1.store.SystemStore/getErpShop')->option(['real_name' => '获取ERP门店列表']);
         //门店详情
         Route::get('store/get_info/:id', 'v1.store.SystemStore/get_info')->option(['real_name' => '门店详情']);
+
         //保存修改门店信息
         Route::post('store/:id', 'v1.store.SystemStore/save')->option(['real_name' => '保存修改门店信息']);
+
         //门店快捷登录
         Route::get('store/login/:id', 'v1.store.SystemStore/storeLogin')->option(['real_name' => '门店快捷登录']);
         //获取门店重置账号密码表单
