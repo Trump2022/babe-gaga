@@ -149,6 +149,7 @@ class SystemGroup extends AuthController
             ['config_name', ''],
             [['cate_id', 'd'], 0],
             ['info', ''],
+            ['status', 0],
             ['typelist', []],
         ]);
 
