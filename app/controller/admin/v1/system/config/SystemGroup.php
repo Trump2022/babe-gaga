@@ -181,6 +181,7 @@ class SystemGroup extends AuthController
             }
         }
         $data["fields"] = json_encode($data["fields"]);
+        $data['status'] = $params['status'] ? 1 : 0;
         $this->services->update($id, $data);
         \crmeb\services\CacheService::clear();
         return $this->success('编辑数据组成功!');
