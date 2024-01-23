@@ -86,7 +86,8 @@ class CommunityTopicServices extends BaseServices
                 return app()->make(CommunityCategoryServices::class)->options();
             })->requiredNum(),
 
-            Elm::frameImage('pic', '图标', '/' . config('admin.admin_prefix') . '/setting/uploadPicture?field=pic&type=1')
+            //Elm::frameImage('pic', '图标', '/' . config('admin.admin_prefix') . '/setting/uploadPicture?field=pic&type=1')
+            Elm::frameImage('pic', '图标', '/admin/widget.images/index.html?fodder=image')
                 ->modal(['modal' => false])
                 ->width('896px')
                 ->height('480px'),
