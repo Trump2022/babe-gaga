@@ -118,7 +118,7 @@ class StoreController
             'type' => '',
             'is_del' => 0,
         ];
-        $field = ['id', 'cate_id', 'name', 'phone', 'address', 'detailed_address', 'image', 'is_show', 'day_time', 'day_start', 'day_end', 'city city_id'];
+        $field = ['id', 'cate_id', 'name', 'phone', 'address', 'detailed_address', 'image', 'is_show', 'day_time', 'day_start', 'day_end', 'city_id'];
         $arr = $this->services->getStoreList($where, $field, '', '', 0, ['cityName']);
         $arr = $arr['list'] ?? [];
         $list = [];
