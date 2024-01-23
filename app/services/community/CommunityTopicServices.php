@@ -87,7 +87,7 @@ class CommunityTopicServices extends BaseServices
             })->requiredNum(),
 
             //Elm::frameImage('pic', '图标', '/' . config('admin.admin_prefix') . '/setting/uploadPicture?field=pic&type=1')
-            Elm::frameImage('image', '图标', '/admin/widget.images/index.html?fodder=image')
+            Elm::frameImage('pic', '图标', '/admin/widget.images/index.html?fodder=pic')
 //                ->modal(['modal' => false])
                 ->modal(['footer-hide' => true])
                 ->width('896px')
