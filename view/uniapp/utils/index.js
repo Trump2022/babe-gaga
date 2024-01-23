@@ -10,6 +10,7 @@
 
 import { spread } from "@/api/user";
 import Cache from "@/utils/cache";
+import Store from '@/store/index';
 
 /**
  * 绑定用户授权
@@ -77,6 +78,23 @@ export function parseQuery() {
   });
 
   return res;
+}
+
+export function configMap(args, init) {
+	if(Array.isArray(args)) {
+		return args.reduce((i, v)=>{
+			i[v] = () => Store.getters.globalData[v];
+			return i;
+		}, init || {})
+	}else{
+		return Object.keys(args).reduce((i, v)=>{
+			i[v] = () => {
+				const val = Store.getters.globalData[v];
+				return (val === undefined || val === null || val === '') ? args[v] : val;
+			};
+			return i;
+		}, init || {})
+	}
 }
 
 // #ifdef H5

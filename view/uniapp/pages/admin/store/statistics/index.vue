@@ -44,7 +44,7 @@
 		</div>
 		<div class="public-wrapper">
 			<div class="conter">
-				<div class="item" v-for="(item, index) in  cardData.list" :key="index">
+				<div class="item" v-for="(item, index) in  cardData.list" :key="index" @click="goDetails(item)">
 					<div v-if="type == 8">
 						<div class="datas">
 							<div class="number_leftbox">
@@ -317,6 +317,11 @@
 					Promise.all([self.getList()]);
 				}
 			},
+			goDetails(item) {
+				uni.navigateTo({
+					url: '/pages/admin/store/orderDetail/index?id=' + item.id + '&goname=looks'
+				})
+			}
 		},
 		onReachBottom() {
 			if(this.tip == 1){

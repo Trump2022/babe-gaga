@@ -89,7 +89,7 @@
                   </div>
                 </template>
                 <template slot-scope="{ row, index }" slot="action">
-                  <a @click="edit(row)" v-if="row.status || row.is_diy">编辑</a>
+                  <a @click="edit(row, 2)" v-if="row.status || row.is_diy">编辑</a>
                   <div
                     v-if="row.id != 1 && row.is_diy"
                     style="display: inline-block"
@@ -183,7 +183,7 @@
                   </div>
                 </template>
                 <template slot-scope="{ row, index }" slot="action">
-                  <a @click="edit(row)" v-if="row.status || row.is_diy">编辑</a>
+                  <a @click="edit(row, 1)" v-if="row.status || row.is_diy">编辑</a>
                   <div
                     v-if="row.id != 1 && row.is_diy"
                     style="display: inline-block"
@@ -250,7 +250,7 @@
       dis-hover
       class="fixed-card"
       :style="{ left: `${!menuCollapse ? '200px' : isMobile ? '0' : '80px'}` }"
-      v-show="cardShow == 0 || cardShow == 1 || cardShow == 2 || cardShow == 3"
+      v-show="cardShow == 4 || cardShow == 2 || cardShow == 3"
     >
       <div class="acea-row row-center-wrapper">
         <Button
@@ -391,13 +391,13 @@ export default {
     submit() {
       switch (this.cardShow) {
         case 0:
-        case 1:
+        case 2:
           this.$refs.category.onSubmit()
           break
-        case 2:
+        case 3:
           this.$refs.newGoods.onSubmit()
           break
-        case 3:
+        case 4:
           this.$refs.users.onSubmit()
           break
       }
@@ -490,12 +490,12 @@ export default {
       this.getList()
     },
     // 编辑
-    edit(row) {
+    edit(row, type) {
       if (row.is_diy) {
         // this.$store.commit('userInfo/setPageName', row.template_name || 'moren');
         this.$router.push({
           path: this.roterPre + '/pages/diy',
-          query: { id: row.id, name: row.template_name || 'moren' },
+          query: { id: row.id, name: row.template_name || 'moren', type },
         })
       } else {
         let storage = window.localStorage

@@ -78,8 +78,8 @@
                 </view>
                 <view class="phone" v-if="!userInfo.phone && isLogin && userInfo.uid" @tap="bindPhone">绑定手机号</view>
               </view>
-              <view v-if="isLogin" class="qrCode message iconfont icon-erweima-xingerenzhongxin" @click="tapQrCode">
-              </view>
+              <!-- <view v-if="isLogin" class="qrCode message iconfont icon-erweima-xingerenzhongxin" @click="tapQrCode">
+              </view> -->
               <view class="message">
                 <view @click="intoPage('/pages/users/user_set/index')">
                   <view class="iconfont icon-shezhi"></view>
@@ -204,7 +204,7 @@
             </view>
             <view class="num-item" @click="goMenuPage('/pages/users/user_integral/index')">
               <text class="num">{{userInfo.integral || 0}}</text>
-              <view class="txt">积分</view>
+              <view class="txt">gaga币</view>
             </view>
             <view class="num-item" @click="goMenuPage('/pages/users/user_goods_collection/index')">
               <text class="num">{{userInfo.collectCount || 0}}</text>
@@ -400,7 +400,7 @@
               {{copyRightText}}
             </view>
           </template>
-          <image v-else :src="copyRightImg" mode="aspectFill" class='support'></image>
+          <!-- <image v-else :src="copyRightImg" mode="aspectFill" class='support'></image> -->
         </view>
         <view class="uni-p-b-98"></view>
       </scroll-view>
@@ -531,12 +531,12 @@
           },
           {
             img: 'icon-daifahuo',
-            title: '待发货',
+            title: '待发货/待核销',
             url: '/pages/goods/order_list/index?status=1'
           },
           {
             img: 'icon-daishouhuo',
-            title: '待收货',
+            title: '待收货/使用中',
             url: '/pages/goods/order_list/index?status=2'
           },
           {
@@ -2003,7 +2003,7 @@
 
             .txt {
               margin-top: 6rpx;
-              font-size: 26rpx;
+              font-size: 20rpx;
               color: #454545;
             }
           }

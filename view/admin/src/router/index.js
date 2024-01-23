@@ -7,21 +7,20 @@
 // +----------------------------------------------------------------------
 // | Author: CRMEB Team <admin@crmeb.com>
 // +----------------------------------------------------------------------
-import Vue from "vue";
-import VueRouter from "vue-router";
-import iView from "view-design";
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import iView from 'view-design';
 
-import util from "@/libs/util";
+import util from '@/libs/util';
 
-import Setting from "@/setting";
+import Setting from '@/setting';
 
-import store from "@/store/index";
+import store from '@/store/index';
 
 // 路由数据
-import routes from "./routes";
+import routes from './routes';
 
-import { includeArray } from "@/libs/system";
-
+import { includeArray } from '@/libs/system';
 Vue.use(VueRouter);
 
 /**
@@ -51,29 +50,29 @@ router.beforeEach(async (to, from, next) => {
   // // 判断是否需要登录才可以进入
   if (to.matched.some((_) => _.meta.auth)) {
     // 这里依据 token 判断是否登录，可视情况修改
-    const db = await store.dispatch("admin/db/database", {
+    const db = await store.dispatch('admin/db/database', {
       user: true,
     });
-    const token = util.cookies.get("token");
-    if (token && token !== "undefined") {
-      const access = db.get("unique_auth").value();
+    const token = util.cookies.get('token');
+    if (token && token !== 'undefined') {
+      const access = db.get('unique_auth').value();
       const isPermission = includeArray(to.meta.auth, access);
       if (isPermission) {
         next();
       } else {
         next({
-          name: "403",
+          name: '403',
         });
       }
       // next();
     } else {
-      store.dispatch("admin/db/databaseClear", {
+      store.dispatch('admin/db/databaseClear', {
         user: true,
       });
       // 没有登录的时候跳转到登录界面
       // 携带上登陆成功之后需要跳转的页面完整路径
       next({
-        name: "login",
+        name: 'login',
         query: {
           redirect: to.fullPath,
         },
@@ -81,17 +80,24 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     // 不需要身份校验 直接通过
-    if (store.state.admin.menus.menusName.length || to.path === `${Setting.roterPre}/login` || to.path === '/app/upload') {
+    if (
+      store.state.admin.menus.menusName.length ||
+      to.path === `${Setting.roterPre}/login` ||
+      to.path === '/app/upload'
+    ) {
       next();
     } else {
-      store.dispatch("admin/db/databaseClear", {
-        user: true
+      store.dispatch('admin/db/databaseClear', {
+        user: true,
       });
       next({
-        name: "login",
+        name: 'login',
         query: {
-          redirect: to.fullPath.replace(localStorage.getItem('roterPre'), Setting.roterPre)
-        }
+          redirect: to.fullPath.replace(
+            localStorage.getItem('roterPre'),
+            Setting.roterPre
+          ),
+        },
       });
     }
   }
@@ -101,7 +107,7 @@ router.beforeEach(async (to, from, next) => {
 router.afterEach((to) => {
   // if (Setting.showProgressBar) iView.LoadingBar.finish();
   // 多页控制 打开新的页面
-  store.dispatch("admin/page/open", to);
+  store.dispatch('admin/page/open', to);
 
   // 更改标题
   util.title({

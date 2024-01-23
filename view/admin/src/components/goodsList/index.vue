@@ -18,7 +18,7 @@
             @on-change="treeSearchs"
         ></Cascader>
       </FormItem>
-      <FormItem label="商品标签：" label-for="pid" v-if="!liveStatus">
+      <FormItem label="商品标签：" label-for="pid" v-if="!liveStatus && !isClass">
           <Select
             v-model="formValidate.store_label_id"
             class="input-add"
@@ -98,6 +98,7 @@
 <script>
 import { mapState } from "vuex";
 import { cascaderListApi, changeListApi, allLabelApi } from "@/api/product";
+import { cascaderListApi as classCascaderListApi, changeListApi as classChangeListApi } from "@/api/classes";
 import { liveGoods } from "@/api/live";
 export default {
   name: "index",
@@ -139,6 +140,10 @@ export default {
       default: function () {
         return {};
       },
+    },
+    isClass: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -292,9 +297,14 @@ export default {
     }
   },
   mounted() {
-    this.goodsCategory();
-    this.getList();
+    if(this.isClass == false) {
+        this.goodsCategory();
+        this.getList();
 		this.getAllLabelApi();
+    } else {
+        this.classCategory();
+        this.getList();
+    }
   },
   methods: {
 		// 判断是否选中
@@ -352,6 +362,15 @@ export default {
           this.$Message.error(res.msg);
         });
     },
+    classCategory() {
+      classCascaderListApi(1)
+        .then((res) => {
+          this.treeSelect = res.data;
+        })
+        .catch((res) => {
+          this.$Message.error(res.msg);
+        });
+    },
     pageChange(index) {
       this.formValidate.page = index;
       this.getList();
@@ -371,7 +390,8 @@ export default {
       this.formValidate.is_supplier = 0;
     }
 		this.formValidate.cate_id = this.cateIds[this.cateIds.length-1]
-        changeListApi(this.formValidate)
+        if(this.isClass) {
+            classChangeListApi(this.formValidate)
           .then(async (res) => {
             let data = res.data;
             this.tableList = data.list;
@@ -383,6 +403,20 @@ export default {
             this.loading = false;
             this.$Message.error(res.msg);
           });
+        } else {
+            changeListApi(this.formValidate)
+          .then(async (res) => {
+            let data = res.data;
+            this.tableList = data.list;
+            this.total = res.data.count;
+			this.sortData();
+            this.loading = false;
+          })
+          .catch((res) => {
+            this.loading = false;
+            this.$Message.error(res.msg);
+          });
+        }
       } else {
         liveGoods({
           is_show: "1",

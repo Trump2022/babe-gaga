@@ -558,11 +558,61 @@ export function storeList(data) {
 }
 
 /**
+ * 商品适用门店列表
+ * @param {Object} data
+ */
+export function goodsStoreList(data) {
+	return request.get("store/goods_store_list", data, {
+		noAuth: true
+	});
+}
+
+/**
  * 课程分类
  * @param {Object} data
  */
 export function storeCategory(data) {
 	return request.get("category", data, {
+		noAuth: true
+	});
+}
+
+/**
+ * 活动分类
+ * @param {Object} data
+ */
+export function activityCategory(data) {
+	return request.get("activity/category/list", data, {
+		noAuth: true
+	});
+}
+
+/**
+ * 门店详情
+ * @param {Object} data
+ */
+export function storeInfo(id, data) {
+	return request.get("store/info/" + id, data, {
+		noAuth: true
+	});
+}
+
+/**
+ * 课程列表
+ * @param {Object} data
+ */
+export function getProducts(data) {
+	return request.get("products", data, {
+		noAuth: true
+	});
+}
+
+/**
+ * 所有门店所在的城市列表
+ * @param {Object} data
+ */
+export function storeCities(data) {
+	return request.get("store/store_cities", data, {
 		noAuth: true
 	});
 }

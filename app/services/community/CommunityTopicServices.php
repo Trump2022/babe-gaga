@@ -86,8 +86,10 @@ class CommunityTopicServices extends BaseServices
                 return app()->make(CommunityCategoryServices::class)->options();
             })->requiredNum(),
 
-            Elm::frameImage('pic', '图标', '/' . config('admin.admin_prefix') . '/setting/uploadPicture?field=pic&type=1')
-                ->modal(['modal' => false])
+            //Elm::frameImage('pic', '图标', '/' . config('admin.admin_prefix') . '/setting/uploadPicture?field=pic&type=1')
+            Elm::frameImage('pic', '图标', '/admin/widget.images/index.html?fodder=pic')
+//                ->modal(['modal' => false])
+                ->modal(['footer-hide' => true])
                 ->width('896px')
                 ->height('480px'),
             Elm::input('topic_name', '社区话题')->required(),

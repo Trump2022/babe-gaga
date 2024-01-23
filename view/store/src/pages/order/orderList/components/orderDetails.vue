@@ -14,7 +14,7 @@
 							<Button v-if="orderData._status_new == 1" @click="edit">编辑</Button>
 		                    <Button v-if="(orderData._status_new === 2 || orderData._status_new === 8 || orderData.status === 4) && orderData.shipping_type === 3 && (orderData.pinkStatus === null || orderData.pinkStatus === 2)" @click="sendOrder">发送货</Button>
 		                    <Button v-if="orderData._status_new === 4" @click="delivery">配送信息</Button>
-		                    <Button v-if="orderData.shipping_type == 2 && (orderData.status == 0 || orderData.status == 5) && orderData.paid == 1 && orderData.refund_status === 0" @click="bindWrite">立即核销</Button>
+		                    <!-- <Button v-if="orderData.shipping_type == 2 && (orderData.status == 0 || orderData.status == 5) && orderData.paid == 1 && orderData.refund_status === 0" @click="bindWrite">立即核销</Button> -->
 		                    <Button v-if="orderData._status_new >= 2" @click="changeMenu('10')">小票打印</Button>
 							<Button v-if="orderData._status_new >= 3 && orderData.express_dump" @click="changeMenu('11')">电子面单打印</Button>
 		                    <Button v-if="

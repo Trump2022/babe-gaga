@@ -104,8 +104,8 @@ export function getNewCoupon() {
  * 文章分类列表
  * 
  */
-export function getArticleCategoryList() {
-	return request.get('article/category/list', {}, {
+export function getArticleCategoryList(data = {}) {
+	return request.get('article/category/list', data, {
 		noAuth: true
 	})
 }
@@ -117,6 +117,27 @@ export function getArticleCategoryList() {
  */
 export function getArticleList(cid, data) {
 	return request.get('article/list/' + cid, data, {
+		noAuth: true
+	})
+}
+
+/**
+ * 文章分类列表
+ * 
+ */
+export function getActivityCategoryList(data = {}) {
+	return request.get('activity/category/list', data, {
+		noAuth: true
+	})
+}
+
+/**
+ * 文章列表
+ * @param int cid
+ * 
+ */
+export function getActivityList(cid, data) {
+	return request.get('activity/list/' + cid, data, {
 		noAuth: true
 	})
 }

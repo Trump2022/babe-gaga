@@ -65,6 +65,7 @@
             },
             tabClick(name) {
               let tab = this.filterHeader.find(item => item.header === name);
+              console.log('tab======>', tab, name);
               this.$router.push(tab.path);
             }
         },
@@ -80,6 +81,7 @@
             this.handleResize = throttle(this.handleGetMenuHeight, 100, { leading: false });
             on(window, 'resize', this.handleResize);
             this.handleGetMenuHeight();
+            console.log('filterHeader====>', this.filterHeader);
         },
         beforeDestroy () {
             off(window, 'resize', this.handleResize);

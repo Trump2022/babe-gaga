@@ -210,3 +210,5 @@ ALTER TABLE `gaga_store_order` ADD `use_status` TINYINT(1) UNSIGNED NOT NULL DEF
 ALTER TABLE `gaga_store_coupon_issue` ADD `receive_limit` int NOT NULL DEFAULT '0' COMMENT '每个人个领取的优惠券数量' AFTER `remain_count`;
 
 ALTER TABLE `gaga_system_group` ADD `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态,0-隐藏,1-显示';
+
+ALTER TABLE `gaga_system_store` ADD  `city_id` int NOT NULL DEFAULT '0' COMMENT '城市ID' AFTER `longitude`;

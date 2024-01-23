@@ -207,6 +207,10 @@
 				type: Boolean,
 				default: false,
 			},
+			is_class: {
+				type: Number,
+				default: 0,
+			},
 			split: {
 				type: Boolean,
 				default: false,
@@ -276,9 +280,15 @@
 			},
 			jumpCon: function(id) {
 				if (this.jump) {
-					uni.navigateTo({
-						url: `/pages/goods_details/index?id=${id}`
-					})
+					if(this.is_class == 1) {
+						uni.navigateTo({
+							url: `/pages/class_details/index?id=${id}`
+						})
+					} else {
+						uni.navigateTo({
+							url: `/pages/goods_details/index?id=${id}`
+						})
+					}
 				} else if (this.jumpDetail) {
 					uni.navigateTo({
 						url: `/pages/goods/order_details/index?order_id=${this.orderId}`

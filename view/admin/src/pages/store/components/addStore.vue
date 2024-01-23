@@ -60,8 +60,12 @@
                             </Col>
                             <Col span="24">
                             	<Col v-bind="grid">
-                            		<FormItem label="门店简介：" label-for="introduction">
-                            			<Input v-model="formItem.introduction"  maxlength="100" show-word-limit :rows="4" :autosize="{maxRows:4,minRows: 4}" type="textarea"   placeholder="请输入门店简介"s/>
+                            		<FormItem label="门店简介：" label-for="introduction" prop="introduction">
+                                        <wangeditor
+                                            style="width: 100%"
+                                            @editorContent="data => formItem.introduction = data"
+                                        ></wangeditor>
+                            			<!-- <Input v-model="formItem.introduction"  maxlength="100" show-word-limit :rows="4" :autosize="{maxRows:4,minRows: 4}" type="textarea"   placeholder="请输入门店简介" /> -->
                             		</FormItem>
                             	</Col>
                             </Col>
@@ -222,9 +226,10 @@
 	import uploadPictures from '@/components/uploadPictures';
 	import erpList from './erpList.vue';
 	import Maps from '@/components/map/map.vue'
+    import wangeditor from "@/components/wangEditor/index.vue";
 	export default {
 		name: 'systemStore',
-		components: { uploadPictures,Maps,erpList,goodsList },
+		components: { uploadPictures,Maps,erpList,goodsList, wangeditor },
 		props: { },
 		data () {
 			let validatePhone = (rule, value, callback) => {
@@ -325,7 +330,10 @@
 					],
 					image: [
 						{ required: true, validator: validateUpload, trigger: 'change' }
-					]
+					],
+                    introduction: [
+						{ required: true, message: '请输入门店简介', trigger: 'blur' }
+					],
 				},
 				mapKey: '',
 				grid: {

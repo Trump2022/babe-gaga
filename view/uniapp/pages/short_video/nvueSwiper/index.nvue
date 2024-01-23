@@ -1,5 +1,5 @@
 <template>
-	<view class="shortVideo">
+	<view class="shortVideo" @click="showManage = false">
 		<!--  
 		注意：这是 H5、微信小程序界面，请勿和 new_index.nvue、index.nvue 混用
 		 
@@ -12,39 +12,23 @@
 		4. 视频 id 切记是字符串类型  
 		 -->
 		<!-- 头部导航 -->
-		<view class="header">
+		<!-- 头部导航 -->
+		<view v-if="!isUser" class="header">
+		 <!-- #ifdef H5 -->
+		 <view class="tool-bar">
+			<view class='iconfont icon-xiangzuo' @tap='goBack'></view>
+		 </view>
+		 <!-- #endif -->
 			<view class="items" @click.stop="navTap(2)">
-				<text class="tName" :class="currentNav==2?'on':''">推荐</text>
-				<view class="tLine" v-if="currentNav==2"></view>
+				<text class="tName" :class="currentNav==2?'on':''">关注</text>
 			</view>
 			<view class="items" @click.stop="navTap(1)">
-				<text class="tName" :class="currentNav==1?'on':''">最新</text>
-				<view class="tLine" v-if="currentNav==1"></view>
+				<text class="tName" :class="currentNav==1?'on':''">推荐</text>
 			</view>
 		</view>
-		<view class="footer acea-row row-around row-middle">
-			<text class="items" @click="goIndex">首页</text>
-			<text class="items on">视频</text>
-			<view class="items" @click="goCarts"><text>购物车</text>
-				<!-- <view class="cartNum" v-if="cartNum>0">{{cartNum}}</view> -->
-				<uni-badge v-if="cartNum>0" class="uni-badge-left-margin" type='error' :text="cartNum" />
-			</view>
-			<text class="items" @click="goUser">我的</text>
-		</view>
-		<view class="noVideo acea-row row-center-wrapper" v-if="!dataList.length">
-			<view>
-				<image :src="imgHost+'/statics/images/no-video.png'" class="pictrue"></image>
-				<text class="tips">暂无短视频内容哦~</text>
-			</view>
-		</view>
-		<image v-if="isShowAixin" src="../static/img/index/aixining.png"
-			:style="'position: fixed; margin-left: '+ aixinLeft +'px; margin-top: '+ aixinTop +'px; width: 70px; height: 65px; transform: rotate('+ Rotate +'deg);'">
-		</image>
-		<swiper :style="'width: '+ windowWidth +'px; height: '+ (windowHeight) +'px; background-color: #000000;'"
-			:vertical="true" @animationfinish="animationfinish" previous-margin="0rpx" @change="change" :current="k"
-			:indicator-dots="false">
+		<swiper :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'" :vertical="true" @animationfinish="animationfinish" @change="change" :current="k" :indicator-dots="false">
 			<swiper-item v-for="(list,index) in dataList">
-				<view v-if="Math.abs(k-index)<=1">
+				<view v-if="max > index">
 					<view>
 						<!-- 
 						1.v-if：用于控制视频在节点的渲染数
@@ -54,212 +38,314 @@
 						5.show-loading：这里默认去掉播放转圈的标志
 						v-if="Math.abs(k-index)<=1"
 						 -->
-						<video :id="list.id+''+index" :loop="true" :muted="list.isplay" :controls="false"
-							:http-cache="true" :page-gesture="false" :show-fullscreen-btn="false" :show-loading="false"
-							:show-center-play-btn="false" :enable-progress-gesture="false" :src="list.video_url"
-							@ended="ended" @click="tapVideoHover(list.state,$event)"
-							:style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; background-color: #000000; z-index: -1;'"
-							></video>
-							<!-- list.video_url+'?x-oss-process=video/snapshot,t_100,f_jpg' -->
-						<!-- 
-						1.这里是封面（方案二）：这里的封面可以自定义。
-						2.也在代码中做了批注，两种方案可以共存，不会相互影响。
-						-->
-						<!-- <image v-if="!list.playIng" :src="list.image"
-							:style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px; position: absolute;'"
-							mode="aspectFit"></image> -->
+						<video
+						:id="list.community_id+''+index"
+						:loop="true"
+						:muted="list.isplay"
+						:autoplay="index == k && isRoutine"
+						:controls="false"
+						:http-cache="true"
+						:page-gesture="false"
+						:show-fullscreen-btn="false"
+						:show-loading="false"
+						:show-center-play-btn="false"
+						:enable-progress-gesture="false"
+						:src="list.video_link"
+						@ended="ended"
+						@play="play(index)"
+						@click="tapVideoHover(list.state,$event)"
+						@waiting="waiting(index)"
+						:style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;z-index: -1;'"
+
+						></video>
 					</view>
 					<!-- 播放状态：pause 的时候就会暂停 -->
-					<view class="videoHover" @click="tapVideoHover(list.state,$event)" @touchstart="touchstartHover"
-						:style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'">
+					<view class="videoHover" @click="tapVideoHover(list.state,$event)" :style="'width: '+ windowWidth +'px; height: '+ windowHeight +'px;'">
 						<image v-if="list.state=='pause'" class="playState" src="../static/img/index/play.png"></image>
 					</view>
-					<view class="userInfo">
-						<!-- 1.头像 -->
-						<view class="pictrue">
-							<image @click="tozuozhe(list)" class="userAvatar" :style="list.is_live?'border-width:0':''"
-								:src="list.type_image" mode="aspectFill"></image>
-							<!-- #ifdef MP -->
-							<view class="live" v-if="list.is_live" @click="goLive"></view>
-							<!-- #endif -->
+					<!--审核状态-->
+					<view v-if="list.status==-1 || list.status==0 || list.status==-2" class="video-status">
+						<view v-if="list.status == -1 || list.status == -2" class="status-title">
+							<image class="image" src="../static/img/index/video-failed.png"></image>
+							<text class="title">{{list.status == -1 ? '审核未通过' : '已下架'}}，内容仅自己可见</text>
 						</view>
-						<!-- 2.点赞 -->
-						<view @click="cLike(list);" class="likes">
-							<image v-if="list.is_like" src="../static/img/index/xin.png"></image>
-							<image v-if="!list.is_like" src="../static/img/index/xin-2.png"></image>
-							<text :class="{'likeNumActive':list.is_like}">{{list.like_num}}</text>
+						<view v-else class="status-title">
+							<image class="image" src="../static/img/index/video-review.png"></image>
+							<text class="title">正在审核，内容仅自己可见</text>
 						</view>
-						<!-- 3.评论 -->
-						<view class="comment" @click="toComment(list)" style="opacity: 0.9; margin-top: 18px;">
-							<image src="../static/img/index/evaluate.png"></image>
-							<text>{{list.comment_num}}</text>
+						<view class="status_info">
+							<text class="refusal">{{(list.status == -1 || list.status == -2) ? list.refusal : '发布的内容审核通过后，将在首页展示！'}}</text>
 						</view>
-						<!-- 收藏 -->
-						<view @click="cCollect(list)" class="collects">
-							<image v-if="list.is_collect" src="../static/img/index/collection02.png"></image>
-							<image v-if="!list.is_collect" src="../static/img/index/collection01.png"></image>
-							<text :class="{'likeNumActive':list.is_collect}">{{list.collect_num}}</text>
-						</view>
-						<!-- 4.分享 -->
-						<!-- #ifdef H5 -->
-						<view @click="share(list.id)" class="shares" v-if="$wechat.isWeixin()">
-							<image src="../static/img/index/we-chat.png"></image>
-							<text>分享</text>
-						</view>
-						<view @click="getId(list.id)" class="copy-data"
-							:data-clipboard-text="imgHost+'/pages/short_video/nvueSwiper/index?id='+ list.id"
-							style="opacity: 0.9; margin-top: 17px;" v-else>
-							<image src="../static/img/index/we-chat.png"
-								style="width: 62rpx; height: 48rpx; position: absolute; right: 5px;"></image>
-							<text
-								style="color: #FFFFFF; margin-top: 5px; font-size: 12px; text-align: center; margin-top: 30px;">分享</text>
-						</view>
-						<!-- #endif -->
-						<!-- #ifdef MP -->
-						<button open-type="share" hover-class="none"
-							style="margin-top: 17px;background-color: transparent;position: relative;height: 85rpx;"
-							@click="getId(list.id)">
-							<image src="../static/img/index/we-chat.png"
-								style="width: 62rpx; height: 48rpx; position: absolute; right: 5px;"></image>
-							<text
-								style="color: #FFFFFF; font-size: 12px; text-align: center;position: absolute;top:52rpx;right: 24rpx;">分享</text>
-						</button>
-						<!-- <button class="item" open-type="share" hover-class="none">
-							<view class="pictrue">
-								<image src="../../static/images/weixin.png"></image>
-							</view>
-							<view class="">分享给好友</view>
-						</button> -->
-						<!-- #endif -->
 					</view>
-					<!-- 最底下的文字部分 -->
-					<view class="content">
-						<view class="cart" @click="goCart(list)" v-if="list.product_num>0">
-							<image class="cartPic" src="../static/img/index/shopping-car.png"></image>
-							<text class="cartName">购物</text>
-							<text class="line"></text>
-							<text class="cartName">视频款请点击这里购买</text>
-						</view>
-						<view class="timeCon" :style="'width: '+ (windowWidth - 90) +'px;'">
-							<text class="userName line1"
-								:style="'max-width: '+ (windowWidth-160) +'px;'">{{list.type_name}}</text>
-							<text class="time">.{{list.date}}</text>
-						</view>
-						<view class="words" :style="'width: '+ (windowWidth - 120) +'px;'">
-							<view v-if="list.isMore || list.desc.length<=29">
-								<text class="info">{{list.desc}}</text>
-								<view class="close">
-									<text v-if="list.isMore" class="more" @click="moreTap(list)">收起</text>
-									<image v-if="list.isMore" class="imgClose" src="../static/img/index/drop-down.png">
-									</image>
+					<view>
+						<!-- 最底下的文字部分 -->
+						<view class="content">
+							<view class="cart">
+								<text class="cartName">@{{list.author && list.author.nickname}}</text>
+							</view>
+							<view class="words" :style="'width: '+ (windowWidth - 120) +'px;'">
+								<view v-if="list.isMore || list.content.length<=15">
+									 <text class="info">{{list.content}}</text>
+									 <view class="close">
+										 <text v-if="list.isMore" class="more" @click="moreTap(list)">收起</text>
+									 </view>
+								</view>
+								<view class="wordsCon" v-else>
+									<text class="info">{{list.content.slice(0,15)}}...</text>
+									<text class="more" @click.stop="moreTap(list)">展开</text>
 								</view>
 							</view>
-							<view class="wordsCon" v-else>
-								<text class="info">{{list.desc.slice(0,29)}}...</text>
-								<text class="more" @click="moreTap(list)">更多</text>
-								<image class="img" src="../static/img/index/drop-down.png"></image>
+							<view v-if="list.relevance.length == 1 && k===index" class="product">
+								<scroll-view scroll-x="true" style="white-space: nowrap; display: flex;" scroll-with-animation show-scrollbar="true">
+									<view class="product-item" v-for="(goods,idx) in list.relevance" :key="idx" v-if="goods.spu">
+										<view v-if="goods.spu" class="item-count acea-row" @click="goDetail(goods.spu)">
+											<view class="picture">
+												<image :src="goods.spu.image"></image>
+											</view>
+											<view class="product-text">
+												<view class="name line1">{{goods.spu.store_name}}</view>
+												<view class="product-price">
+													<view class="price">¥<text>{{goods.spu.price}}</text></view>
+													<view class="buy-btn">购买</view>
+												</view>
+											</view>
+										</view>
+									</view>
+								</scroll-view>
+							</view>
+							<view v-else-if="list.relevance.length > 1 && k===index" class="product">
+								<swiper
+								:autoplay="true"
+								:circular="circular"
+								:interval="interval" 
+								:duration="duration" 
+								:loop="true"
+								next-margin="20rpx"
+								previous-margin="20rpx"
+								 >
+								 <block v-for="(goods,idx) in list.relevance" :key="idx" v-if="goods.spu">
+								 	<swiper-item class="swiper-item">
+										<view class="swiper-count">
+											<view v-if="goods.spu" class="item-count acea-row" @click="goDetail(goods.spu)">
+												<view class="picture">
+													<image :src="goods.spu.image"></image>
+												</view>
+												<view class="product-text">
+													<view class="name line1">{{goods.spu.store_name}}</view>
+													<view class="product-price">
+														<view class="price">¥<text>{{goods.spu.price}}</text></view>
+														<view class="buy-btn">购买</view>
+													</view>
+												</view>
+											</view>
+										</view>	
+								 	</swiper-item>
+								 </block>
+								</swiper>
+							</view>
+							<navigator v-if="list.topic" hover-class="none" class="product_cate" :url="'/pages/plantGrass/plant_search_list/index?id='+list.topic.topic_id">
+								<view>
+									<text class="icon">#</text><text class="text">{{list.topic.topic_name}}</text>
+								</view>
+							</navigator>
+						</view>
+						<view class="userInfo">
+							<!-- 1.头像 -->
+							<navigator v-if="list.author && userInfo.uid != list.author.uid" hover-class="none" :url="'/pages/plantGrass/plant_user/index?id='+list.uid" class="pictrue">
+								<image class="userAvatar" :src="list.author&&list.author.avatar || '/static/images/f.png'" mode="aspectFill"></image>
+								<view v-if="!list.is_fans || !userInfo.uid" class="guanzhu" @click.stop="followAuthor(list)"><text class="iconfont icon-shangpinshuliang-jia"></text></view>
+								<view v-else class="yiguanzhu"><text class="iconfont"></text></view>
+							</navigator>
+							<!-- 2.点赞 -->
+							<view @click="cLike(list);" style="margin-top: 5px;" :class="{'likeNumActive':list.relevance_id}">
+								<text class="iconfont icon-shipindianzan-yidian" :class="{'likeNumActive':list.relevance_id}"></text>
+								<text class="info-text">{{list.count_start > 0 ? list.count_start : '点赞'}}</text>
+							</view>
+							<!-- 3.评论 -->
+							<view v-if="community_reply_status == 1 && list.status == 1" class="comment" @click="toComment(list,index)" style="margin-top: 18px;">
+								<text class="iconfont icon-pinglun2"></text>
+								<text class="info-text">{{list.count_reply>0 ? list.count_reply : '评论'}}</text>
+							</view>
+							<!-- 4.分享 -->
+							<view v-if="list.status == 1" @click="listenerActionSheet" style="margin-top: 17px;">
+								<text class="iconfont icon-fenxiang3"></text>
+								<text class="info-text">分享</text>
+							</view>
+							<!-- 5.自己的视频 -->
+							<view v-if="list.author && userInfo.uid == list.author.uid && isUser" style="margin-top: 17px;">
+								<view class="video-my">
+									<view class="video-dian" @click.stop="showManage = !showManage">
+										<text class="dian"></text>
+										<text class="dian"></text>
+										<text class="dian"></text>
+									</view>
+									
+									<view class="manage" v-show="showManage">
+										<navigator hover-class="none" :url="'/pages/plantGrass/plant_release/index?id='+list.community_id+'&type=2'" class="items">
+											<image class="image" src="../static/img/index/video-edit.png"></image>
+											<text>编辑</text>
+										</navigator>
+										<view class="items" @click.stop="deleteTopic(list)">
+											<image class="image" src="../static/img/index/video-delete.png"></image>
+											<text>删除</text>
+										</view>
+									</view>
+								</view>
+							</view>
+							<!-- 提到的商品 -->
+							<view v-if="list.relevance.length>0 && k === index" @click="openMore(list)" class="mention" style="opacity: 0.9; margin-top: 18px;">
+								<image src="../static/img/index/collection.png"></image>
+								<text class="count">{{list.relevance.length}}</text>
 							</view>
 						</view>
 					</view>
 				</view>
 			</swiper-item>
 		</swiper>
-		<uni-popup type="bottom" ref="pinglun" @touchmove.stop.prevent="moveHandle">
-			<view
-				:style="'width: '+ windowWidth +'px;background-color: #fff; border-top-left-radius: 10px; border-top-right-radius: 10px;'">
-				<!-- 
-				 注意：
-				 deleteIOSHeight
-				 deleteAndroidHeight
-				 这两个参数用于控制评论等的高度
-				 -->
-				<douyin-scrollview v-if="isComment" ref="comments" :Width="windowWidth" :Height="(boxStyle.height/1.23)"
-					:deleteIOSHeight="36" :deleteAndroidHeight="15" :pinlunNum="pinlunNum" :videoID="videoID"
-					@closeScrollview="closeScrollview" @pinlunFun="pinlunFun"></douyin-scrollview>
+		<view class="noVideo acea-row row-center-wrapper" v-if="!dataList.length && !loadVideo">
+			<view>
+				<image :src="imgHost+'/static/no-video.png'" class="pictrue"></image>
+				<text class="tips">暂无短视频内容哦~</text>
 			</view>
-		</uni-popup>
-		<uni-popup type="bottom" ref="pinglunGoods" @touchmove.stop.prevent="moveHandle">
-			<view
-				:style="'width: '+ windowWidth +'px; background-color: #F5F5F5; border-top-left-radius: 10px; border-top-right-radius: 10px;'">
-				<goodsList ref="goodsLists" :Width="windowWidth" :Height="(boxStyle.height/1.18)"></goodsList>
-			</view>
-		</uni-popup>
-		<image v-if="H5ShareBox" class="shareImg" :src="imgHost + '/statics/images/share-info.png'"
-			@click="H5ShareBox = false"></image>
+		</view>
+		<comment
+		ref="comments"
+		:bottom="0"
+		:isShow="showComment" 
+		:userInfo="userInfo"
+		@successFul="pinlunFun" 
+		@close="closeScrollview"
+		></comment>
+		<!-- 他提到的宝贝弹窗 -->
+		<mentioned ref="mentioned" @close="closePopup" :list="moreList" :uid="authorUid"></mentioned>
+		<image v-if="H5ShareBox" class="shareImg" :src="imgHost + '/static/images/share-info.png'" @click="H5ShareBox = false"></image>
+		<!-- 分享按钮 -->
+		<view class="generate-posters acea-row row-middle" :class="posters ? 'on' : ''">
+			<!-- #ifndef MP -->
+			<button class="item" :class="weixinStatus ? 'item3' : ''"  hover-class='none' v-if="weixinStatus === true" @click="H5ShareBox = true">
+				<view class="iconfont icon-weixin3"></view>
+				<view class="">发送给朋友</view>
+			</button>
+			<!-- #endif -->
+			<!-- #ifdef MP -->
+			<button class="item" :class="weixinStatus ? 'item3' : ''" open-type="share" hover-class='none' @click="goFriend">
+				<view class="iconfont icon-weixin3"></view>
+				<view class="">发送给朋友</view>
+			</button>
+			<!-- #endif -->
+			<button class="item" :class="weixinStatus ? 'item3' : ''" hover-class='none' @click="goPoster">
+				<view class="iconfont icon-haibao"></view>
+				<view class="">生成海报</view>
+			</button>
+		</view>
+		<view class="mask" v-if="posters" @click="listenerActionClose"></view>
+		<!-- 海报展示 -->
+		<view class='mask' v-if="posterImageStatus"></view>
+		<view class='poster-pop' v-if="posterImageStatus">
+			<image src='/static/images/poster-close.png' class='close' @click="posterImageClose"></image>
+			<image :src='posterImage' class="image"></image>
+			<!-- #ifndef H5 -->
+			<view class="keep" @click="savePosterPath">保存到相册</view>
+			<!-- #endif -->
+		</view>
+		<canvas class="canvas" canvas-id='myCanvas' v-if="canvasStatus"></canvas>
 	</view>
 </template>
 
 <script>
+	// +----------------------------------------------------------------------
+	// | CRMEB [ CRMEB赋能开发者，助力企业发展 ]
+	// +----------------------------------------------------------------------
+	// | Copyright (c) 2016~2023 https://www.crmeb.com All rights reserved.
+	// +----------------------------------------------------------------------
+	// | Licensed CRMEB并不是自由软件，未经许可不能去掉CRMEB相关版权
+	// +----------------------------------------------------------------------
+	// | Author: CRMEB Team <admin@crmeb.com>
+	// +----------------------------------------------------------------------
 	const app = getApp();
-	// import userList from '../new_index/data.js'//这个是假数据
-	import {
-		toLogin
-	} from '@/libs/login.js';
-	import {
-		mapGetters
-	} from 'vuex';
-	/*
-	引入评论组件
-	*/
-	import douyinScrollview from '../components/douyin-scrollview/douyin-scrollview.vue'
-	import goodsList from '../components/goodsList/index.vue'
-	import {
-		HTTP_REQUEST_URL
-	} from '@/config/app';
-	import {
-		videoList,
-		markeVideo
-	} from '@/api/short-video.js';
-	import {
-		getCartCounts,
-	} from '@/api/order.js';
+	import { toLogin } from '@/libs/login.js';
+	import { mapGetters } from 'vuex';
+	import { configMap } from '@/utils';
+	import comment from '../components/comment.vue';
+	import mentioned from '../components/mentioned.vue';
+	import { HTTP_REQUEST_URL } from '@/config/app';
+	import { videoList, myVideoList, graphicStartApi, followAuthorApi, getVideoCode, deletePlantApi, focusArticleLst } from '@/api/community.js';
+	import { getUserInfo, imgToBase } from '@/api/user.js';
 	import ClipboardJS from "@/plugin/clipboard/clipboard.js";
 	export default {
-		components: {
-			douyinScrollview,
-			goodsList
+		components:{
+			comment,
+			mentioned,
 		},
-		computed: mapGetters(['isLogin', 'uid', 'cartNum']),
+		computed: configMap({community_reply_status:0},mapGetters(['isLogin', 'uid'])),
 		data() {
 			return {
 				imgHost: HTTP_REQUEST_URL,
-				videoID: 0, //视频id
-				pinlunNum: 0,
+				videoID:0,
+				pinlunNum:0,
 				windowWidth: 0,
 				windowHeight: 0,
 				platform: "",
 				deleteHeight: 0,
-				isComment: 0,
 				dataList: [],
+				shareItem: null,
 				k: 0,
+				max: 2,
 				oldVideo: "",
 				voice: "",
 				timeout: "",
+				authorUid: 0,
 				current: 0,
-				boxStyle: { //视频，图片封面样式🌟💗
-					'height': 0,
-					'width': 0,
-				},
 				// 引入评论 - 参数
 				heightNum: 1.3,
 				// 双击点赞参数
 				touchNum: 0,
 				aixinLeft: 0,
 				aixinTop: 0,
-				isShowAixin: false,
 				Rotate: 0,
-				currentNav: 1,
-				limit: 3,
+				currentNav:1,
+				limit: 6,
 				page: 1,
 				oldCurrent: 1,
-				H5ShareBox: false
+				H5ShareBox: false,
+				showComment: false,
+				loadVideo: true,
+				loadend: false,
+				userInfo: {},
+				moreList: [],
+				posters: false,
+				weixinStatus: false,
+				showManage: false,
+				isUser: false,
+				isSatrt: 0,
+				userUid: 0,
+				posterImageStatus: false,
+				storeImage: '', //海报产品图
+				PromotionCode: '', //二维码图片
+				canvasStatus: false, //海报绘图标签
+				posterImage: '', //海报路径
+				posterbackgd: '../static/img/index/posterbackgd.png',
+				avatar: '/static/images/f.png',
+				codeImg: "",
+				autoplay: false,
+				circular: true,
+				interval: 3000,
+				duration: 500,
+				actionSheetHidden: false,
+				// #ifdef MP
+				isRoutine: true,
+				// #endif
+				// #ifndef MP
+				isRoutine: false,
+				// #endif
 			}
 		},
-		watch: {
-			currentNav(news, old) {
-				this.oldCurrent = old;
-			},
-			k(k, old_k) {
+		watch:{
+			k(new_k,old_k){
+				const max = new_k+2;
+				if(this.max < max){
+					this.max = max;
+				}
 				if (this.oldCurrent != this.currentNav) {
 					this.oldCurrent = this.currentNav
 					return false
@@ -267,209 +353,212 @@
 				this.dataList[old_k].playIng = false //如果视频暂停，就加载封面
 				this.dataList[old_k].isplay = true
 				this.dataList[old_k].state = 'pause'
-				console.log('预留第' + (old_k + 1) + '个视频：' + this.dataList[old_k].id + '' + old_k)
+				console.log('预留第' + (old_k + 1) + '个视频：' + this.dataList[old_k].community_id + '' + old_k)
 				// 2.0版本已经去掉了下面这一句，视频不用暂停，只需要把声音禁止就行
-				uni.createVideoContext(this.dataList[old_k].id + '' + old_k, this)
-					.stop() //如果视频暂停，那么旧视频停止，这里的this.dataList[old_k].id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
+				uni.createVideoContext(this.dataList[old_k].community_id + '' + old_k, this).pause() //如果视频暂停，那么旧视频停止，这里的this.dataList[old_k].id + '' + old_k，后面加 old_k 是为了每一个视频的 id 值不同，这样就可以大程度的避免串音问题
 				console.log('已经暂停 --> 第' + (old_k + 1) + '个视频～') //提示
-				this.dataList[k].state = 'play'
+				// #ifdef MP
+				this.dataList[new_k].state = 'play'
+				this.dataList[new_k].isplay = false
+				this.dataList[new_k].playIng = true
 				setTimeout(() => {
-					uni.createVideoContext(this.dataList[k].id + '' + k, this).play()
-					setTimeout(() => {
-						this.dataList[k].isplay = false
-						this.dataList[k].playIng = true
-					}, 50)
+					uni.createVideoContext(this.dataList[new_k].community_id + '' + new_k, this).play()
 				}, 250)
-				var p = k + 1;
-				// console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p].id+''+p)
+				this.videoShare(this.dataList[new_k])
+				// #endif
 			}
 		},
 		onLoad(options) {
-			this.videoID = options.id || 0;
 			this.getOptions(options);
-			this.platform = uni.getSystemInfoSync().platform
-			var model = uni.getSystemInfoSync().model
-			if (this.platform == 'ios' && (model !== 'iPhone6' || model !== 'iPhone6s' || model !== 'iPhone7' || model !==
-					'iPhone8')) {
-				this.deleteHeight = 0 //有 tabbar的 修改这里可以改变视频高度
-			}
-			this.windowWidth = uni.getSystemInfoSync().windowWidth
-			this.windowHeight = uni.getSystemInfoSync().windowHeight - 59
-			this.boxStyle.width = this.windowWidth + 'px' //给宽度加px
-			this.boxStyle.height = this.windowHeight - this.deleteHeight; //有 tabbar的 修改这里可以改变视频高度
+			this.videoID = options.id;
+			this.isUser = options.user==1 ? true : false;
+			this.userUid = options.uid ? options.uid : 0;
+			this.isSatrt = options.tab == 1 ? 1 : 0;
+			
 			this.get() //刚进入页面加载数据
-			if (this.isLogin) {
-				this.getCartNum()
+			if(this.isLogin){
+				this.getUserInfo();
+				this.downloadFilePromotionCode(this.videoID);
 			}
-		},
-		onShow() {
-			if (this.dataList.length !== 0) {
-				this.dataList[this.k].state = 'play';
-				uni.createVideoContext(this.dataList[this.k].id + '' + this.k, this).play()
-			}
-		},
-		onHide() {
-			this.dataList[this.k].state = 'pause'; //界面隐藏也要停止播放视频
-			uni.createVideoContext(this.dataList[this.k].id + '' + this.k, this).pause(); //暂停以后继续播放
-			console.log('到后台');
-		},
-		onReady: function() {
 			// #ifdef H5
-			this.$nextTick(function() {
-				const clipboard = new ClipboardJS(".copy-data");
-				clipboard.on("success", () => {
-					this.$util.Tips({
-						title: '复制成功'
-					});
-				});
-			});
+			this.setOpenShare();
 			// #endif
 		},
-		// #ifdef MP
-		onShareAppMessage: function() {
-			let uid = this.uid ? this.uid : 0;
-			let data = this.dataList[this.k];
-			this.cShare(this.videoID);
-			return {
-				title: data.type_name || '',
-				imageUrl: data.image || '',
-				path: '/pages/short_video/nvueSwiper/index?spid=' + uid + '&id=' + this.videoID
-			};
+		onShow(){},
+		onHide(){
+			this.dataList[this.k].state = 'pause';//界面隐藏也要停止播放视频
+			uni.createVideoContext(this.dataList[this.k].community_id+''+this.k,this).pause();//暂停以后继续播放
 		},
-		// #endif
+		onReady: function() {
+			this.windowWidth = uni.getSystemInfoSync().windowWidth
+			this.windowHeight = uni.getSystemInfoSync().windowHeight
+		},
+		 //发送给朋友
+		onShareAppMessage(res) {
+			let uid = this.uid?this.uid:0;
+			return {
+				title: this.shareItem.title || '',
+				path: '/pages/short_video/nvueSwiper/index?id='+this.shareItem.community_id+'&pid='+uid,
+				imageUrl: this.shareItem.image[0] || '' //分享图标，路径可以是本地文件路径、代码包文件路径或者网络图片路径.支持PNG及JPG。显示图片长宽比是 5:4
+			}
+		},
+		//分享到朋友圈
+		onShareTimeline(res) {
+			return {
+				title: this.shareItem.title || '',
+				query:{
+					id: this.shareItem.community_id,
+					pid: this.uid
+				},//页面参数
+				imageUrl: this.shareItem.image[0] || '' //分享图标，路径可以是本地文件路径、代码包文件路径或者网络图片路径.支持PNG及JPG。显示图片长宽比是 5:4
+			}
+		},
 		methods: {
-			getCartNum: function() {
-				getCartCounts().then(res => {
-					this.$store.commit('indexData/setCartNum', res.data.count + '')
+			//#ifdef MP
+			videoShare(item){
+				this.shareItem = item;
+				if(item && item.status == 1){
+					uni.showShareMenu({
+						withShareTicket: true,
+						menus: ['shareAppMessage','shareTimeline'],
+					})
+				}else{
+					uni.hideShareMenu()
+				}
+			},
+			// #endif
+			//#ifdef H5
+			goBack: function() {
+				uni.navigateBack();
+			},
+			//#endif
+			navTap(n) {
+				this.currentNav = n;
+				this.dataList.forEach(item=>{
+					item.state = 'pause';
+				})
+				this.k = 0;
+				this.page = 1;
+				this.loadVideo = true;
+				this.loadend = false;
+				this.dataList = [];
+				n == 1 ? this.get() : this.getFocusList()
+			},
+			/**
+			 * 获取个人用户信息
+			 */
+			getUserInfo: function() {
+				let that = this;
+				getUserInfo().then(res => {
+					that.userInfo = res.data;
 				});
 			},
-			goIndex() {
-				uni.switchTab({
-					url: '/pages/index/index'
-				})
-			},
-			goCarts() {
-				uni.switchTab({
-					url: '/pages/order_addcart/order_addcart'
-				})
-			},
-			goUser() {
-				uni.switchTab({
-					url: '/pages/user/index'
-				})
-			},
-
-			goLive() {
-				uni.navigateTo({
-					url: `/pages/columnGoods/live_list/index`
-				});
-			},
-			tozuozhe(item) {
-				if (item.type == 0) {
-					uni.reLaunch({
-						url: `/pages/index/index`
-					});
-				} else {
-					uni.reLaunch({
-						url: `/pages/store_cate/store_cate?id=` + item.relation_id
+			// 关注作者
+			followAuthor: function(item) {
+				if (this.isLogin === false) {
+					toLogin()
+				}else{
+					let status = 1
+					followAuthorApi(item.uid,{status:status}).then(res => {
+						if (res.status === 200) {
+							item.is_fans = true
+						}
+						this.$util.Tips({
+							title: res.message
+						});
+					}).catch(err=>{
+						return uni.showToast({
+							title: err,
+							icon: 'none',
+							duration: 2000
+						});
 					});
 				}
 			},
-			getOptions(options) {
+			// 删除话题
+			deleteTopic(item){
+				let that = this;
+				uni.showModal({
+				  content: '确定要删除该话题么？',
+				  success: function(res) {
+				    if(res.confirm) {
+				      deletePlantApi(item.community_id).then(res => {
+				      	if (res.status === 200) {
+				      		that.$util.Tips({
+				      			title: res.message
+				      		});
+									setTimeout(function() {
+										uni.redirectTo({
+											url: '/pages/plantGrass/plant_user/index?id='+item.uid
+										})
+									}, 1000);
+								}
+				      })
+				    } else if(res.cancel) {
+				      console.log('用户点击取消');
+				    }
+				  }
+				});
+			},
+			play(k){
+				console.log(' 播放了',k)
+				this.dataList[k].isplay = false
+				this.dataList[k].playIng = true
+				this.dataList[k].state = 'play'
+				this.dataList[k].loading = false
+			},
+			waiting(k){
+				console.log('视频缓冲了', k)
+				this.dataList[k].loading = true
+			},
+			pinlunFun(e){
+				this.pinlunNum = e;
+				this.dataList.forEach(item=>{
+					if(item.community_id == this.videoID){
+						item.count_reply = item.count_reply+1;
+					}
+				})
+			},
+			getOptions(options){
 				let that = this;
 				// #ifdef MP
 				if (options.scene) {
 					let value = that.$util.getUrlParams(decodeURIComponent(options.scene));
 					//记录推广人uid
-					if (value.spid) app.globalData.spid = value.spid;
-					if (value.id) that.videoID = value.id || 0;
+					if (value.pid) app.globalData.spid = value.pid;
 				}
 				// #endif
-				if (options.spid) app.globalData.spid = options.spid;
+				if (options.pid) app.globalData.spid = options.pid;
 			},
 			// #ifdef H5
 			// 微信分享；
-			setOpenShare: function(id) {
+			setOpenShare: function() {
 				let that = this;
-				let uid = this.uid ? this.uid : 0;
-				let href = location.href;
+				let uid = this.uid?this.uid:0;
 				if (that.$wechat.isWeixin()) {
-					let data = this.dataList[that.k];
+					let data = this.dataList[0];
 					let configAppMessage = {
-						desc: data.desc,
-						title: data.type_name,
-						link: href.indexOf('?') === -1 ? href + '?spid=' + uid + '&id=' + id : href + '&spid=' +
-							uid + '&id=' + id,
-						imgUrl: data.image,
-						success:function(res){
-						   that.cShare(id);
-						}
+						desc: data.content,
+						title: data.title,
+						link: location.href+'?pid='+uid+'&id='+this.videoID,
+						imgUrl: data.image
 					};
 					that.$wechat.wechatEvevt(['updateAppMessageShareData', 'updateTimelineShareData',
-							'onMenuShareAppMessage',
-							'onMenuShareTimeline'
+							'onMenuShareAppMessage', 'onMenuShareTimeline'
 						],
 						configAppMessage);
 				}
 			},
 			// #endif
-			goCart(item) {
-				if (this.isLogin === false) {
-					// #ifndef MP
-					return toLogin();
-					// #endif
-					// #ifdef MP
-					uni.showToast({
-						title: '请登录',
-						icon: 'none',
-						duration: 1000
-					});
-					return
-					// #endif
-				}
-				// uni.showToast({
-				// 	title: '加载中...',
-				// 	icon: 'none',
-				// 	position: 'bottom',
-				// 	duration: 300
-				// })
-				// #ifdef H5
-				uni.setStorageSync("videoID", parseInt(item.id));
-				// #endif
-				// #ifdef MP
-				this.$refs.goodsLists.productList(item.id, 1);
-				// #endif
-				this.$refs.pinglunGoods.open('bottom')
-			},
-			navTap(n) {
-				this.currentNav = n;
-				this.timeout = "";
-				this.k = 0;
-				this.page = 1;
-				this.dataList = [];
-				this.get();
-			},
-			moreTap(item) {
+			moreTap(item){
 				item.isMore = !item.isMore;
 			},
-			moveHandle() {},
-			closeScrollview() {
+			moveHandle(){},
+			closeScrollview(){
 				// 点击评论里面的叉叉，就会关闭评论
-				this.$refs.pinglun.close();
-				this.isComment = false
+				this.showComment = false
 			},
-			pinlunFun(e,videoID) {
-				this.pinlunNum = e;
-				this.dataList.forEach(item => {
-					if (item.id == videoID) {
-						item.comment_num = e;
-					}
-				})
-				// this.isComment = false
-			},
-			toComment(item) {
-				this.isComment = true
-				console.log('我被点了')
+			toComment(item,index){
 				// 注意点击评论之后会执行这里
 				/*
 				（1）先加载缓冲
@@ -481,486 +570,464 @@
 					 记得写一下。
 					 
 				（4）打开评论
-				*/
-				uni.showToast({
-					title: '加载中...',
-					icon: 'none',
-					position: 'bottom',
-					duration: 300
-				})
-				this.$nextTick(e => {
-					this.pinlunNum = item.comment_num;
-					// #ifdef H5
-					this.videoID = parseInt(item.id);
-					// #endif
-					// #ifdef MP
-					this.$refs.comments.getnewpinlun(item.id, 1);
-					// #endif
-					this.$refs.pinglun.open('bottom')
-				})
-
+				*/ 
+				this.showComment = true
+				this.$refs.comments.getData(item,index);
 			},
-			ended() {
+			ended(){
 				// 1.播放当前视频结束时触发，自动切换下一个视频
 				// this.current = this.k+1
 			},
-			// 双击点赞效果
-			touchstartHover(event) {
-				if (this.touchNum >= 1) {
-					// console.log('双击 -- X坐标：'+ event.touches[0].screenX);
-					// console.log('双击 -- Y坐标：'+ event.touches[0].screenY);
-					this.aixinLeft = event.touches[0].screenX - 50;
-					this.aixinTop = event.touches[0].screenY - 50;
-					this.isShowAixin = true;
-					let max = 40;
-					let min = -40;
-					this.Rotate = Math.floor(Math.random() * (max - min + 1)) + min;
-					setTimeout(() => {
-						this.isShowAixin = false;
-					}, 700)
-				}
-			},
 			//点击播放&&暂停
-			tapVideoHover(state, event) {
-				this.dataList[this.k].isShowimage = false
-				this.dataList[this.k].isShowProgressBarTime = false
-				this.ProgressBarOpacity = 0.5
-				this.dotWidth = 0
-				console.log('state--', state);
+			tapVideoHover(state,event){
 				// 1.启用双击点赞 --- start
 				this.touchNum++;
-				setTimeout(() => {
-					if (this.touchNum == 1) {
-						if (state == 'play' || state == 'continue') {
+				setTimeout(()=>{
+					if(this.touchNum == 1){
+						if(state=='play'||state=='continue'){
 							this.dataList[this.k].state = 'pause';
-						} else {
+						}else{
 							this.dataList[this.k].state = 'continue';
 						}
-						if (this.dataList[this.k].state == 'continue') {
-							uni.createVideoContext(this.dataList[this.k].id + '' + this.k, this).play(); //暂停以后继续播放
+						if(this.dataList[this.k].state == 'continue'){
+							uni.createVideoContext(this.dataList[this.k].community_id+''+this.k,this).play();//暂停以后继续播放
 						}
-						if (this.dataList[this.k].state == 'pause') {
-							uni.createVideoContext(this.dataList[this.k].id + '' + this.k, this)
-								.pause(); //暂停以后继续播放
+						if(this.dataList[this.k].state == 'pause'){
+							uni.createVideoContext(this.dataList[this.k].community_id+''+this.k,this).pause();//暂停以后继续播放
 						}
-					}
-					if (this.touchNum >= 2) {
-						// this.doubleLike();
 					}
 					this.touchNum = 0;
-				}, 200)
-				// --------------- ending
-				// 2. 不启用双击点赞 start
-				// if(state=='play'||state=='continue'){
-				// 	this.dataList[this.k].state = 'pause';
-				// }else{
-				// 	this.dataList[this.k].state = 'continue';
-				// }
-				// if(this.dataList[this.k].state == 'continue'){
-				// 	uni.createVideoContext(this.dataList[this.k].id+''+this.k,this).play();//暂停以后继续播放
-				// }
-				// if(this.dataList[this.k].state == 'pause'){
-				// 	uni.createVideoContext(this.dataList[this.k].id+''+this.k,this).pause();//暂停以后继续播放
-				// }
-				// --------------- ending
+				},200)
 			},
-			doubleLike() {
-				if (this.dataList[this.k].is_like == false) {
-					this.dataList[this.k].like_num += 1;
-					this.dataList[this.k].is_like = true;
-				}
-				/*
-				点赞
-				*/
+			change(event){
+				this.k = event.detail.current;
+				this.posterImage = false;
+				if(this.isLogin && this.dataList[this.k]){
+					this.downloadFilePromotionCode(this.dataList[this.k]['community_id']);
+				}	
 			},
-			change(event) {
-				this.k = event.detail.current
-			},
-			animationfinish(event) {
+			animationfinish(event){
 				// 1.这里进行判断，如果是最后一个视频就进入 get() 方法加载视频进入列表
-				if (this.k == this.dataList.length - 1) {
-					this.GET()
+				if(this.k == this.dataList.length - 1){
+					this.loadVideo = true;
+					this.currentNav == 1 ? this.GET() : this.getFocusList()
 				}
 			},
 			//每一组结束时新的请求
-			GET() {
-				videoList({
-					page: this.page,
-					limit: this.limit,
-					order_type: this.currentNav,
-					id: (this.page > 1 ||  this.currentNav == 2)? 0 : this.videoID
-				}).then(res => {
-					this.page = this.page + 1;
-					var msg = res.data
-					// 2.这里把视频添加到视频列表
-					for (let i = 0; i < msg.length; i++) {
-						this.dataList.push(msg[i])
-					}
-				}).catch(err => {
+			GET(){
+				let that = this
+				if(!that.loadVideo) return
+				if(that.loadend) return
+				that.loadVideo = true
+				that.isUser ? 
+				myVideoList(that.userUid,{
+						page: that.page,
+						limit: that.limit,
+						is_star: that.isSatrt,
+						community_id: that.videoID
+					}).then(res=>{
+						that.videoData(res.data.list)
+						that.loadVideo = false
+						that.loadend = res.data.list.length < that.limit
+				}).catch(err=>{
 					return uni.showToast({
-						title: err,
-						icon: 'none',
-						duration: 2000
-					});
+							title: err,
+							icon: 'none',
+							duration: 2000
+						});
+				}) :
+				videoList({
+						page: that.page,
+						limit: that.limit,
+						id: that.videoID
+					}).then(res=>{
+						that.loadVideo = false
+						that.videoData(res.data.list)
+						that.loadend = res.data.list.length < that.limit
+				}).catch(err=>{
+					return uni.showToast({
+							title: err,
+							icon: 'none',
+							duration: 2000
+						});
 				})
 			},
-			get() {
+			get(){
+				let that = this
 				// 1.这里引入后端请求数据
+				that.isUser ? 
+				myVideoList(that.userUid,{
+					page: that.page,
+					limit: that.limit,
+					is_star: that.isSatrt,
+					community_id: that.videoID
+					}).then(res=>{
+						that.page = that.page + 1;
+						that.videoData(res.data.list)
+				}).catch(err=>{
+					return uni.showToast({
+							title: err,
+							icon: 'none',
+							duration: 2000
+						});
+				}) :
 				videoList({
-					page: this.page,
-					limit: this.limit,
-					order_type: this.currentNav,
-					id: (this.page > 1 || this.currentNav == 2)?0:this.videoID
-				}).then(res => {
-					this.page = this.page + 1;
-					var msg = res.data
-					// 2.这里把视频添加到视频列表
-					for (let i = 0; i < msg.length; i++) {
-						this.dataList.push(msg[i])
-					}
-					// #ifdef H5
-					if (this.isLogin) {
-						this.setOpenShare(this.videoID);
-					}
-					// #endif
-					// 3.播放当前视频
-					setTimeout(() => {
-						this.dataList[this.k].isplay = false
-						this.dataList[this.k].state = 'play'
-						// uni.createVideoContext(this.dataList[0].id,this).seek(0)
-						// uni.createVideoContext(this.dataList[0].id,this).play()
-						uni.createVideoContext(this.dataList[this.k].id + '' + this.k, this).seek(0)
-						uni.createVideoContext(this.dataList[this.k].id + '' + this.k, this).play()
-						this.dataList[this.k].playIng = true
-					}, 500)
-					// start - 预加载开始
-					var p = this.k
-						++p
-					if(this.dataList[p].id){
-						setTimeout(() => {
-							uni.createVideoContext(this.dataList[p].id + '' + p, this).play()
-						}, 50)
-						clearTimeout(this.timeout)
-						this.timeout = setTimeout(() => {
-							uni.createVideoContext(this.dataList[p].id + '' + p, this).seek(0)
-							uni.createVideoContext(this.dataList[p].id + '' + p, this).pause()
-							console.log('预加载第' + (p + 1) + '个视频：' + this.dataList[p].id + '' + p)
-						}, 1500)
-					}	
-					// end - 预加载结束
-				}).catch(err => {
+					page: that.page,
+					limit: that.limit,
+					id: that.videoID
+					}).then(res=>{
+					that.page = that.page + 1;
+					that.videoData(res.data.list)
+				}).catch(err=>{
 					return uni.showToast({
-						title: err,
-						icon: 'none',
-						duration: 2000
-					});
+							title: err,
+							icon: 'none',
+							duration: 2000
+						});
 				})
 			},
-			cShare(id){
-				markeVideo('share',id).then(res=>{}).catch(err=>{
+			getFocusList(){
+				let that = this;
+				if(!that.loadVideo) return
+				if(that.loadend) return
+				that.loadVideo = true
+				focusArticleLst({
+					page: that.page,
+					limit: that.limit,
+					}).then(res=>{
+					that.loadVideo = false
+					that.loadend = res.data.list.length < that.limit
+					that.page = that.page + 1;
+					that.videoData(res.data.list)
+				}).catch(err=>{
 					return uni.showToast({
-						title: err,
-						icon: 'none',
-						duration: 2000
-					});
+							title: err,
+							icon: 'none',
+							duration: 2000
+						});
 				})
 			},
-			getId(id) {
-				this.videoID = id;
-				// #ifdef H5
-				this.cShare(id);
+			videoData(list){
+				if(list.length == 0)return
+				let that = this;
+				
+				var msg = list
+				// 2.这里把视频添加到视频列表
+				for (let i = 0; i < msg.length; i++) {
+					msg[i]['isMore'] = false
+					msg[i]['playIng'] = false
+					msg[i]['state'] = 'pause'
+					msg[i]['isplay'] = true
+					msg[i]['loading'] = false
+					that.dataList.push(msg[i])
+					//#ifndef H5
+					if(i == 0 && that.k == 0){
+						this.dataList[0].isplay = false
+						this.dataList[0].playIng = true
+						this.dataList[0].state = 'play'
+						this.dataList[0].loading = false
+						uni.createVideoContext(that.dataList[0].community_id+''+0,that).play()
+					}
+					//#endif
+				}
+				//#ifdef MP
+				if(this.k==0){
+					this.videoShare(this.dataList[0]);
+				}
 				// #endif
-			},
-			share(id) {
-				this.H5ShareBox = true;
 				// #ifdef H5
-				if (this.isLogin) {
-					this.setOpenShare(id);
+				if (that.isLogin) {
+					that.setOpenShare(that.videoID);
 				}
 				// #endif
 			},
-			cLike(item) {
-				markeVideo('like', item.id).then(res => {
-					this.dataList[this.k].is_like = !this.dataList[this.k].is_like
-					const video = this.dataList[this.k];
-					item.is_like ? video.like_num += 1 : video.like_num -= 1;
+			share(){
+				this.H5ShareBox = true;
+			},
+			/**
+			 * 分享打开
+			 *
+			 */
+			listenerActionSheet: function() {
+				if (this.isLogin === false) {
+					toLogin()
+				} else {
+					// #ifdef H5
+					if (this.$wechat.isWeixin() === true) {
+						this.weixinStatus = true;
+					}
+					// #endif
+					this.posters = true;
+				}
+			},
+			// 分享关闭
+			listenerActionClose: function() {
+				this.posters = false;
+			},
+			//隐藏海报
+			posterImageClose: function() {
+				this.posterImageStatus = false
+			},
+			// 小程序关闭分享弹窗；
+			goFriend: function() {
+				this.posters = false;
+			},
+			/* 获取产品分销二维码
+			 * @param function successFn 下载完成回调
+			 *
+			 */
+			downloadFilePromotionCode: function(id) {
+				let that = this;
+				let type;
+				// #ifndef MP
+				type = 'wechat'
+				// #endif
+				// #ifdef MP
+				type = 'routine'
+				// #endif
+				getVideoCode(id, {
+					type: type
+				}).then(async res => {
+					that.codeImg = res.data.url
 				}).catch(err => {
-					return uni.showToast({
-						title: err,
-						icon: 'none',
-						duration: 2000
+					that.$set(that, 'PromotionCode', '');
+				});
+			},
+			/*
+			 * 保存到手机相册
+			 */
+			// #ifdef MP
+			savePosterPath: function() {
+				let that = this;
+				uni.getSetting({
+					success(res) {
+						if (!res.authSetting['scope.writePhotosAlbum']) {
+							uni.authorize({
+								scope: 'scope.writePhotosAlbum',
+								success() {
+									uni.saveImageToPhotosAlbum({
+										filePath: that.posterImage,
+										success: function(res) {
+											that.posterImageClose();
+											that.$util.Tips({
+												title: '保存成功',
+												icon: 'success'
+											});
+										},
+										fail: function(res) {
+											that.$util.Tips({
+												title: '保存失败'
+											});
+										}
+									})
+								}
+							})
+						} else {
+							uni.saveImageToPhotosAlbum({
+								filePath: that.posterImage,
+								success: function(res) {
+									that.posterImageClose();
+									that.$util.Tips({
+										title: '保存成功',
+										icon: 'success'
+									});
+								},
+								fail: function(res) {
+									that.$util.Tips({
+										title: '保存失败'
+									});
+								},
+							})
+						}
+					}
+				})
+			},
+			// #endif
+			/**
+			 * 生成海报
+			 */
+			async goPoster() {
+				if(!this.isLogin){
+					
+				}
+				if (this.posterImage) {
+					this.posterImageStatus = true
+					this.posters = false
+					return
+				}
+				let that = this;
+				let arr2
+				that.posters = false;
+				that.$set(that, 'canvasStatus', true);
+				uni.showLoading({
+					title: '海报生成中',
+					mask: true
+				});
+				// #ifdef MP || APP-PLUS
+				if(that.dataList[that.k].author.avatar){
+					arr2 = [that.posterbackgd,await that.fileStoreImage(that.dataList[that.k].image[0]), await that.fileStoreImage(
+						that.codeImg), await that.fileStoreImage(that.dataList[that.k].author.avatar)];
+				}else{
+					arr2 = [that.posterbackgd,await that.fileStoreImage(that.dataList[that.k].image[0]), await that.fileStoreImage(
+						that.codeImg), that.avatar];
+				}
+				// #endif
+				// #ifdef H5
+				if(that.dataList[that.k].author.avatar){
+					arr2 = [that.posterbackgd,await that.imgToBase(that.dataList[that.k].image[0]), await that.imgToBase(that.codeImg), await that.imgToBase(that.dataList[that.k].author.avatar)];
+				}else{
+					arr2 = [that.posterbackgd,await that.imgToBase(that.dataList[that.k].image[0]), await that.imgToBase(that.codeImg), that.avatar];
+				}
+				// #endif
+				//生成推广海报
+				that.$util.videoPosterCanvas(arr2, that.dataList[that.k].content, that.dataList[that.k].author.nickname, function(tempFilePath) {
+					that.$set(that, 'posterImage', tempFilePath);
+					that.$set(that, 'posterImageStatus', true);
+					that.$set(that, 'actionSheetHidden', !that.actionSheetHidden);
+					that.$set(that, 'canvasStatus', false);
+				}, (err) => {
+					that.$set(that, 'canvasStatus', false);
+				});
+			},
+			//图片转符合安全域名路径
+			fileStoreImage(url) {
+				let that = this;
+				// #ifdef MP  || APP-PLUS
+				let ishttps = url.split('//')[0] == 'https:'
+				if (!ishttps) {
+					url = 'https://'+url.split('//')[1]
+				}
+				// #endif
+				return new Promise((resolve, reject) => {
+					uni.downloadFile({
+						url: url,
+						success: function(res) {
+							resolve(res.tempFilePath);
+						},
+						fail: function() {
+							return that.$util.Tips({
+								title: ''
+							});
+						}
 					});
 				})
 			},
-			cCollect(item) {
-				markeVideo('collect', item.id).then(res => {
-					this.dataList[this.k].is_collect = !this.dataList[this.k].is_collect
-					const video = this.dataList[this.k];
-					item.is_collect ? video.collect_num += 1 : video.collect_num -= 1;
-				}).catch(err => {
-					return uni.showToast({
-						title: err,
-						icon: 'none',
-						duration: 2000
-					});
+			/*
+			 * 保存到手机相册
+			 */
+			// #ifdef MP
+			savePosterPath: function() {
+				let that = this;
+				uni.getSetting({
+					success(res) {
+						if (!res.authSetting['scope.writePhotosAlbum']) {
+							uni.authorize({
+								scope: 'scope.writePhotosAlbum',
+								success() {
+									uni.saveImageToPhotosAlbum({
+										filePath: that.posterImage,
+										success: function(res) {
+											that.posterImageClose();
+											that.$util.Tips({
+												title: '保存成功',
+												icon: 'success'
+											});
+										},
+										fail: function(res) {
+											that.$util.Tips({
+												title: '保存失败'
+											});
+										}
+									})
+								}
+							})
+						} else {
+							uni.saveImageToPhotosAlbum({
+								filePath: that.posterImage,
+								success: function(res) {
+									that.posterImageClose();
+									that.$util.Tips({
+										title: '保存成功',
+										icon: 'success'
+									});
+								},
+								fail: function(res) {
+									that.$util.Tips({
+										title: '保存失败'
+									});
+								},
+							})
+						}
+					}
 				})
 			},
+			// #endif
+			async imgToBase(url) {		
+				let res = await imgToBase({
+					image: url
+				})
+				return res.data.image
+			},
+			cLike(item){
+				if(this.isLogin){
+					let status = item.relevance_id ? 0 : 1
+					graphicStartApi(item.community_id,{status: status}).then(res=>{
+						if(item.relevance_id){
+							item.count_start--;
+							item.count_start = item.count_start == 0 ? 0 : item.count_start
+							item.relevance_id = false
+						}else{
+							item.count_start++;
+							item.relevance_id = true
+						}
+					}).catch(err=>{
+						return uni.showToast({
+								title: err,
+								icon: 'none',
+								duration: 2000
+							});
+					})
+				}else{
+					toLogin()
+				}
+			},
+			/*查看提到的宝贝*/
+			openMore(item){
+				this.$refs.mentioned.showPopup()
+				this.moreList = item.relevance;
+				this.authorUid = item.uid
+			},
+			closePopup(){
+				this.$refs.mentioned.closePopup()
+			},
+			goDetail(item){
+				if (item.product_type === 1) {
+					uni.navigateTo({
+						url: `/pages/activity/goods_seckill_details/index?id=${item.product_id}&time=${item.stop_time}&spid=${this.uid}`
+					})
+				} else if (item.product_type === 2) {
+					uni.navigateTo({
+						url: `/pages/activity/presell_details/index?id=${item.activity_id}&spid=${this.uid}`
+					})
+				} else if (item.product_type === 0) {
+					uni.navigateTo({
+						url: `/pages/goods_details/index?id=${item.product_id}&spid=${this.uid}`
+					})	
+				}else if (item.product_type === 4) {
+					uni.navigateTo({
+						url: `/pages/activity/combination_details/index?id=${item.activity_id}&spid=${this.uid}`
+					})
+				}else if (item.product_type === 40) {
+					uni.navigateTo({
+						url: `/pages/activity/combination_status/index?id=${item.activity_id}&spid=${this.uid}`
+					})
+				}	
+			}
 		}
 	}
 </script>
 
-<style lang="scss">
-	.shares{
-		opacity: 0.9; 
-		margin-top: 17px;
-		image{
-			width: 62rpx; 
-			height: 48rpx; 
-			position: absolute; 
-			left: 50%;
-			margin-left: -31rpx;
-		}
-		text{
-			color: #FFFFFF; 
-			margin-top: 5px; 
-			font-size: 12px; 
-			text-align: center; 
-			margin-top: 30px;
-		}
-	}
-	.comment{
-		image{
-			width: 54rpx; 
-			height: 50rpx; 
-			position: absolute; 
-			left: 50%;
-			margin-left: -27rpx;
-		}
-		text{
-			color: #FFFFFF; 
-			font-size: 12px; 
-			font-weight: 400; 
-			text-align: center; 
-			margin-top: 29px;
-		}
-	}
-	.likes{
-		opacity: 0.9;
-		margin-top: 5px;
-		image{
-			width: 58rpx; 
-			height: 58rpx; 
-			position: absolute; 
-			left: 50%;
-			margin-left: -29rpx;
-		}
-		text{
-			color: #FFFFFF; 
-			margin-top: 5px; 
-			font-size: 12px; 
-			text-align: center; 
-			margin-top: 32px; 
-			font-weight: 400;
-		}
-	}
-	.collects{
-		opacity: 0.9; 
-		margin-top: 18px;
-		image{
-			width: 58rpx; 
-			height: 58rpx; 
-			position: absolute; 
-			left: 50%;
-			margin-left: -29rpx;
-		}
-		text{
-			color: #FFFFFF; 
-			margin-top: 5px; 
-			font-size: 12px; 
-			text-align: center; 
-			margin-top: 36px; 
-			font-weight: 400;
-		}
-	}
-	.shortVideo {
-		height: 100vh;
-		background-color: #000000;
-	}
-
-	.shareImg {
-		z-index: 1000;
-		position: fixed;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-	}
-
-	.container {
-		background-color: #000000;
-	}
-
-	.item {
-		/* width : 750rpx; */
-		background-color: #000000;
-		position: relative;
-	}
-
-	.videoHover {
-		position: absolute;
-		top: 0;
-		left: 0;
-		flex: 1;
-		background-color: rgba(0, 0, 0, 0.1);
-		justify-content: center;
-		align-items: center;
-
-		/* border-style: dashed;
-		border-color: #DD524D;
-		border-width: 1px; */
-	}
-
-	.playState {
-		width: 160rpx;
-		height: 160rpx;
-		opacity: 0.2;
-	}
-
-	.userInfo {
-		position: absolute;
-		bottom: 30px;
-		right: 10px;
-		flex-direction: column;
-
-		.pictrue {
-			width: 92rpx;
-			height: 92rpx;
-			margin-bottom: 15px;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-			position: relative;
-
-			.live {
-				width: 92rpx;
-				height: 92rpx;
-				background: url('../static/img/index/live-avatar.png') no-repeat;
-				background-size: 100% 100%;
-				position: absolute;
-				top: 2rpx;
-				left: 2rpx;
-			}
-		}
-	}
-
-	.userAvatar {
-		border-radius: 500%;
-		border-style: solid;
-		border-width: 2px;
-		border-color: #ffffff;
-		width: 80rpx;
-		height: 80rpx;
-		display: block;
-	}
-
-	.likeIco,
-	.shareIco,
-	.commentIco {
-		width: 60rpx;
-		height: 60rpx;
-		margin-top: 15px;
-	}
-
-	.likeNum,
-	.commentNum,
-	.shareTex {
-		color: #ffffff;
-		font-size: 30rpx;
-		text-align: center;
-		margin: 5px;
-	}
-
-	.likeNumActive {
-		color: red;
-	}
-
-	.noVideo {
-		position: fixed;
-		top: 400rpx;
-		z-index: 9;
-		width: 750rpx;
-		flex-direction: row;
-		justify-content: center;
-
-		.pictrue {
-			width: 414rpx;
-			height: 256rpx;
-		}
-
-		.tips {
-			text-align: center;
-			margin-top: 14rpx;
-			font-size: 26rpx;
-			color: #999;
-		}
-	}
-
-	.footer {
-		flex-direction: row;
-		background-color: #161616;
-		height: 118rpx;
-		position: fixed;
-		bottom: 0;
-		z-index: 9;
-		width: 750rpx;
-		line-height: 100rpx;
-
-		.items {
-			position: relative;
-			color: #999999;
-			font-size: 30rpx;
-
-			.cart {
-				color: #999999;
-				font-size: 30rpx;
-			}
-
-			&.on {
-				color: #fff;
-			}
-			
-			.uni-badge-left-margin{
-				position: absolute;
-				/* #ifdef MP */
-				right: -15px;
-				top: -8px;
-				/* #endif */
-				/* #ifdef H5 */
-				right: -11px;
-				top: 8px;
-				/* #endif */
-			}
-			/deep/.uni-badge{
-				border: 1px solid #e93323;
-				background-color: #e93323;
-			}
-
-			.cartNum {
-				position: absolute;
-				height: 28rpx;
-				background: #E93323;
-				border-radius: 15rpx;
-				color: #fff;
-				line-height: 27rpx;
-				padding: 0 8rpx 0 4rpx;
-				right: -10px;
-				top: 14px;
-				font-size: 22rpx;
-				display: block;
-			}
-		}
-	}
-
+<style lang="scss" scoped>
 	.header {
 		position: fixed;
 		z-index: 9;
@@ -968,118 +1035,350 @@
 		height: 86rpx;
 		flex-direction: row;
 		justify-content: center;
-		top: 36rpx;
-
+		align-items: center;
+		top: 20rpx;
+		.tool-bar{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 60rpx;
+			height: 86rpx;
+			display: flex;
+			justify-content: center;
+			.icon-xiangzuo {
+				margin-right: 40rpx;
+				margin-left: 20rpx;
+				font-size: 26rpx;
+				color: #fff;
+			}
+		}
 		.items {
 			margin: 0 30rpx;
-
 			.tName {
-				color: rgba(255,255,255,0.7);
+				color: #ffffff;
 				font-size: 32rpx;
 				&.on{
-					color: rgba(255,255,255,0.95);
-					font-weight: 600;
+					font-size: 38rpx;
 				}
 			}
-
-			.tLine {
+			
+		}
+	}
+	.shareImg{
+		z-index: 1000;
+		position: fixed;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+	}
+	.shortVideo,.container {background: linear-gradient(180deg, rgba(0,0,0,.8) 0%, #000000 100%);}
+	.item {
+		position: relative;
+	}
+	.video-status{
+		width: 690rpx;
+		position: absolute;
+		left: 30rpx;
+		background: #000;
+		border-radius: 10rpx;
+		top: 60rpx;
+		padding: 30rpx;
+		.status-title{
+			flex-direction: row;
+			align-items: center;
+			.title{
+				margin-left: 20rpx;
+				color: #ffffff;
+				font-size: 28rpx;
+			}
+		}
+		.refusal{
+			color: #ffffff;
+			font-size: 22rpx;
+			margin: 15rpx 0 0 48rpx;
+		}
+		.image{
+		
+			width: 28rpx;
+			height: 28rpx;
+		}
+	}
+	.videoHover{
+		position: absolute;
+		top: 0;
+		left: 0;
+		flex: 1;
+		justify-content: center;
+		align-items: center;
+	}
+	.playState{
+		width:  160rpx;
+		height: 160rpx;
+		opacity: 0.2;
+	}
+	.userInfo{
+		position: absolute;
+		bottom:60rpx;
+		right: 20rpx;
+		flex-direction: column;
+		text-align: center;
+		.pictrue{	
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+			// margin-bottom: 18rpx;
+			image{
+				width: 92rpx;
+				height: 92rpx;
+			}
+			.guanzhu{
+				width: 42rpx;
+				height: 42rpx;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #fff;
+				background: #E93323;
+				border-radius: 100%;
+				position: relative;
+				top: -20rpx;
+				left: 26rpx;
+				.iconfont{
+					font-size: 20rpx;
+				}
+			}
+			.yiguanzhu{
+				width: 42rpx;
+				height: 42rpx;
+			}
+		}
+		.mention{
+			width: 92rpx;
+			height: 92rpx;
+			position: relative;
+			image{
+				width: 58rpx;
+				height: 58rpx;
+				position: absolute;
+				right: 16rpx;
+			}
+			.count{
 				width: 30rpx;
-				height: 4rpx;
-				background: #FFFFFF;
-				border-radius: 2rpx;
-				margin-left: 15rpx;
-				margin-top: 10rpx;
+				height: 30rpx;
+				line-height: 30rpx;
+				background: #fff;
+				border-radius: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #E93323;
+				position: absolute;
+				right: 8rpx;
+				top: -12rpx;
+				font-size: 20rpx;
+			}
+		}
+		.iconfont{
+			color: #ffffff;
+			&.likeNumActive{
+				color: #E93323;
 			}
 		}
 	}
-
-	.content {
-		width: 590rpx;
-		z-index: 99;
-		position: absolute;
-		bottom: 30px;
-		/* justify-content: center; */
-		padding: 15rpx 0;
-		flex-direction: column;
-		justify-content: flex-start;
+	.icon-shipindianzan-yidian{
+		font-size: 64rpx;
+	}
+	.icon-pinglun2{
+		font-size: 59rpx;
+	}
+	.icon-fenxiang3{
+		font-size: 58rpx;
+	}
+	.info-text{
+		margin-top: 10rpx;
 		color: #ffffff;
-		left: 50%;
+		
+	}
+	.userAvatar{
+		border-radius: 500%;
+		border-style: solid;
+		border-width: 2px;
+		border-color: #ffffff;
+		width : 80rpx;
+		height: 80rpx;
+		display: block;
+	}
+	.video-dian{
+		position: relative;
+		width: 66rpx;
+		height: 66rpx;
+		align-items: center;
+		justify-content: center;
+		flex-direction: row;
+		left: 12rpx;
+		.dian{
+			width: 13rpx;
+			height: 13rpx;
+			background-color: #fff;
+			border-radius: 100%;
+			margin-right: 10rpx;
+			&:last-child{
+				margin-right: 0;
+			}
+		}
+	}
+	.manage{
+		width: 210rpx;
+		background: #ffffff;
+		box-shadow: 0 2rpx 15rpx rgba(0, 0, 0, 0.1);
+		padding: 0 15rpx;
+		position: absolute;
+		bottom: -50rpx;
+		right: 110rpx;
+		z-index: 90;
+		border-radius: 16rpx;
+		&::before{
+			content: "";
+			display: inline-block;
+			width: 26rpx;
+			height: 26rpx;
+			background: #ffffff;
+			transform: rotate(140deg);
+			position: absolute;
+			top: 60rpx;
+			right: -14rpx;
+			box-shadow: -1rpx -1rpx 1rpx rgba(0, 0, 0, 0.05);
+		}
+		.items{
+			border-bottom: 1px solid #EEEEEE;
+			color: #282828;
+			font-size: 26rpx;
+			padding: 20rpx 0;
+			display: flex;
+			align-items: center;
+			flex-direction: row;
+			&:last-child{
+				border-bottom: none;
+			}
+			.image{
+				width: 32rpx;
+				height: 32rpx;
+				margin: 0 16rpx 0;
+			}
+		}
+	}
+	.likeNumActive{
+		color: #E93323;
+	}
+	.content{
+	  width: 590rpx;
+	  position: absolute;
+	  bottom: 30rpx;
+	  bottom: calc(30rpx+ constant(safe-area-inset-bottom)); ///兼容 IOS<11.2/
+	  bottom: calc(30rpx + env(safe-area-inset-bottom)); ///兼容 IOS>11.2/
+	  padding: 15rpx 0;
+	  flex-direction: column;
+	  justify-content: flex-start;
+	  color: #ffffff;
+		left:50%;
 		margin-left: -345rpx;
-
-		.time {
+		.time{
 			font-size: 24rpx;
-			color: rgba(255, 255, 255, 0.5);
+			color: rgba(255,255,255,0.5);
 			margin-left: 12rpx;
 		}
-
-		.cart {
-			background: rgba(153, 153, 153, 0.3);
-			width: 376rpx;
+		.cart{
 			height: 48rpx;
-			border-radius: 4rpx;
-			margin-bottom: 22rpx;
-			flex-direction: row;
-			justify-content: center;
-			align-items: center;
-
-			.cartPic {
-				width: 36rpx;
-				height: 36rpx;
-				margin-right: 14rpx;
-			}
-
-			.cartName {
+			flex-direction:row;
+			.cartName{
 				font-size: 24rpx;
 				color: #fff;
 			}
-
-			.line {
-				width: 2rpx;
-				height: 22rpx;
-				background-color: rgba(255, 255, 255, 0.3);
-				margin: 0 12rpx;
-			}
 		}
 	}
-
-	.timeCon {
-		flex-direction: row;
-		align-items: center;
-
-		.userName {
-			font-size: 30rpx;
-			color: #ffffff;
-		}
+	.canvas {
+		z-index: 300;
+		width: 750px;
+		height: 1036px;
 	}
-
+	.poster-pop {
+		width: 600rpx;
+		/*#ifdef H5*/
+		height: 820rpx;
+		/*#endif*/
+		/*#ifndef H5*/
+		height: 910rpx;
+		/*#endif*/
+		position: fixed;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 399;
+		top: 50%;
+		margin-top: -410rpx;
+		border-radius: 30rpx;
+	}
+	
+	.poster-pop .image {
+		width: 100%;
+		height: 100%;
+		display: block;
+		border-radius: 16rpx;
+	}
+	
+	.poster-pop .close {
+		width: 46rpx;
+		height: 75rpx;
+		position: fixed;
+		right: 0;
+		top: -73rpx;
+		display: block;
+	}
+	
+	.poster-pop .keep {
+		text-align: center;
+		width: 600rpx;
+		height: 70rpx;
+		line-height: 70rpx;
+		border-radius: 43rpx;
+		background: #E93323;
+		color: #ffffff;
+		font-size: 25rpx;
+		margin-top: 40rpx;
+	}
+	.mask {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.6);
+		z-index: 9;
+	}
 	.words {
-		margin-top: 20rpx;
-
-		.close {
+		margin-top: 12rpx;
+		.close{
 			display: flex;
 			flex-direction: row;
 			align-items: center;
 			justify-content: flex-end;
 			margin-right: 20rpx;
-
-			.imgClose {
+			.imgClose{
 				width: 18rpx;
 				height: 10rpx;
 				margin-left: 10rpx;
 			}
 		}
-
-		.wordsCon {
+		.wordsCon{
 			position: relative;
-
-			.more {
+			.more{
 				position: absolute;
 				bottom: 0;
 				right: 40rpx;
 				font-size: 26rpx;
 			}
-
-			.img {
+			.img{
 				width: 18rpx;
 				height: 10rpx;
 				margin-left: 4rpx;
@@ -1088,20 +1387,183 @@
 				right: 15rpx;
 			}
 		}
-
-		.info {
+		.info{
 			color: #fff;
 			font-size: 28rpx;
 		}
-
-		.more {
+		.more{
 			font-size: 26rpx;
-			color: #AAAAAA;
+			color: #ffffff;
 			font-weight: 400;
 		}
 	}
-
-	.root {
-		background-color: #000000;
+.product{
+		display: block;
+		margin-top: 27rpx;
+		.product-item{
+			display: inline-block;
+			width: 444rpx;
+			height: 136rpx;
+			background: rgba(0,0,0,.55);
+			border-radius: 12rpx;
+			padding: 16rpx 15rpx;
+			margin-right: 30rpx;	
+		}
+		/deep/uni-swiper,/deep/swiper{
+			display: block;
+			// width: 500rpx!important;
+			height: 136rpx!important;
+			.swiper-count{
+				display: block;
+				width: 444rpx!important;
+				height: 136rpx!important;
+				background: rgba(0,0,0,.55);
+				border-radius: 12rpx;
+				padding: 16rpx 15rpx;
+			}
+			.swiper-item{
+				display: block;
+				width: 480rpx!important;
+			}
+		}
+		.item-count{
+			width: 414rpx;
+			flex-direction: row;
+			justify-content: space-between;
+			border-radius: 12rpx;		
+			.picture{
+				width: 104rpx;
+				height: 104rpx;
+				border-radius: 10rpx;
+				image{
+					width: 104rpx;
+					height: 104rpx;
+					border-radius: 10rpx;
+				}					
+			}
+			.product-text{
+				width: 266rpx;
+				justify-content: space-between;
+				.name{
+					display: inline-block;
+					width: 266rpx;
+				}
+				.product-price{
+					display: flex;
+					flex-direction: row;
+					justify-content: space-between;
+					align-items: center;
+					.price{
+						display: flex;
+						flex-direction: row;
+						align-items: end;
+						text{
+							font-size: 34rpx;
+						}
+					}
+					.buy-btn{
+						width: 89rpx;
+						height: 36rpx;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: #fff;
+						border-radius: 26rpx;
+						background: #E93323;
+						font-size: 20rpx;
+					}
+				}
+			}
+		}
+	}
+	.product_cate{
+		margin: 20rpx 0;
+		flex-direction: row;
+		>view{
+			display: inline-block;
+			flex-direction: row;
+			align-items: center;
+			border-radius: 30rpx;
+			padding: 0 25rpx;
+			line-height: 40rpx;
+			border-radius: 29rpx;
+			border: 1px solid #ffffff;
+			.text{
+				font-size: 24rpx;
+			}
+			.icon{
+				display: inline-block;
+				font-size: 26rpx;
+				font-weight: bold;
+				position: relative;
+				top: 2rpx;
+				margin-right: 8rpx;
+			}
+		}
+	}
+	.generate-posters {
+		width: 100%;
+		height: 170rpx;
+		background-color: #fff;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		z-index: 388;
+		transform: translate3d(0, 100%, 0);
+		transition: all 0.3s cubic-bezier(0.25, 0.5, 0.5, 0.9);
+		border-top: 1px solid #eee;
+		align-content: center;
+		align-items: center;
+		flex-direction: row;
+	}
+	.generate-posters.on {
+		transform: translate3d(0, 0, 0);
+	}
+	.generate-posters .item {
+		/* #ifdef H5 */
+		flex: 100%;
+		/* #endif */
+		/* #ifndef H5 */
+		flex: 33.33%;
+		/* #endif */
+		text-align: center;
+		font-size: 30rpx;
+		&.item3{
+			flex: 33.33%;
+		}
+	}
+	.generate-posters .item .iconfont {
+		font-size: 80rpx;
+		color: #5eae72;
+	}
+	.generate-posters .item .iconfont.icon-haibao {
+		color: #5391f1;
+	}
+	.mask {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.6);
+		z-index: 9;
+	}
+	.noVideo {
+		position: fixed;
+		top: 400rpx;
+		z-index: 9;
+		width: 750rpx;
+		flex-direction: row;
+		justify-content: center;	
+		.pictrue {
+			width: 414rpx;
+			height: 256rpx;
+		}
+		.tips {
+			text-align: center;
+			margin-top: 14rpx;
+			font-size: 26rpx;
+			color: #999;
+		}
 	}
 </style>

@@ -26,7 +26,7 @@
 				</view>
 				<view class="num acea-row row-center-wrapper">
 					<text>{{ orderInfo.order_id }}</text>
-					<view class="views" @click='goOrderDetails(orderInfo.order_id,orderInfo.order_type)'>查看<text
+					<view class="views" @click='goOrderDetails(orderInfo.id,orderInfo.order_type)'>查看<text
 							class='iconfont icon-jiantou views-jian'></text></view>
 				</view>
 				<view class="tip">确定要核销此订单吗？</view>
@@ -74,8 +74,9 @@
 					});
 				}else{
 					uni.navigateTo({
-						url: '/pages/goods/admin_order_detail/index?id=' + id + '&goname=look'
+						url: '/pages/admin/store/orderDetail/index?id=' + id + '&goname=looks'
 					});
+					// '/pages/goods/admin_order_detail/index?id='
 				}
 			},
 			// 立即核销

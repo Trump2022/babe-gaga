@@ -5,7 +5,7 @@
 		  <view class="sys-bar" :style="{height:sysHeight+'px'}"></view>
 		  <!-- #endif -->
 		  <view class="sys-title">
-			  {{type==='privacy'?'隐私协议':'用户协议'}}
+			  {{type==='privacy'?'隐私协议':type==='privacy'?'用户协议':'快游鸭协议'}}
 				<text class="iconfont icon-fanhui1" @click="goBack"></text>
 			</view>
 		</view>

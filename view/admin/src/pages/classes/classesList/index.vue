@@ -286,8 +286,8 @@
         </vxe-column>
         <vxe-column field="action" title="操作" align="center" width="220" fixed="right">
           <template #default="{ row, rowIndex }">
-            <a @click="details(row.id)">详情</a>
-            <Divider type="vertical" />
+            <!-- <a @click="details(row.id)">详情</a>
+            <Divider type="vertical" /> -->
             <a @click="edit(row)">编辑</a>
             <Divider type="vertical" />
             <a @click="lookGoods(row.id)">预览</a>
@@ -304,7 +304,7 @@
                   <Icon type="ios-arrow-down"></Icon>
                 </a>
                 <DropdownMenu slot="list">
-                  <DropdownItem name="1">查看评论</DropdownItem>
+                  <!-- <DropdownItem name="1">查看评论</DropdownItem> -->
                   <DropdownItem name="2" v-if="artFrom.type === '6'"
                   >恢复课程</DropdownItem
                   >
@@ -388,7 +388,7 @@
     </div>
     <stockEdit ref="stock" @stockChange="stockChange"></stockEdit>
     <!-- 课程详情 -->
-    <!-- <classesDetails :visible.sync="detailsVisible" :classes-id="classesId" @saved="getDataList"></classesDetails> -->
+    <classesDetails :visible.sync="detailsVisible" :productId="classesId" @saved="getDataList"></classesDetails>
     <!-- 批量设置 -->
     <Modal v-model="batchModal" title="批量设置" width="750" class-name="batch-modal" @on-visible-change="batchVisibleChange">
       <Alert show-icon>每次只能修改一项，如需修改多项，请多次操作。</Alert>
@@ -581,7 +581,7 @@
 import goodsDetail from "@/pages/kefu/pc/components/goods_detail";
 import stockEdit from "../components/stockEdit.vue";
 import expandRow from "./tableExpand.vue";
-// import classesDetails from '../components/classesDetails.vue';
+import classesDetails from '../components/classesDetails.vue';
 import storeLabelList from "@/components/storeLabelList";
 import userLabel from "@/components/labelList";
 import couponList from "@/components/couponList";
@@ -618,7 +618,7 @@ import exportExcel from "@/utils/newToExcel.js";
 
 export default {
   name: "classes_classesList",
-  components: { expandRow, attribute, taoBao, goodsDetail, stockEdit, storeLabelList, userLabel, couponList },
+  components: { expandRow, attribute, taoBao, goodsDetail, stockEdit, storeLabelList, userLabel, couponList, classesDetails },
   filters: {
     timeFormat: (value) => dayjs(value * 1000).format("YYYY-MM-DD HH:mm"),
   },

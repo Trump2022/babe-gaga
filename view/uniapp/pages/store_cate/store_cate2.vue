@@ -240,7 +240,7 @@
 
 <script>
 	let statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
-  import waterfallsFlow from "@/components/maramlee-waterfalls-flow/maramlee-waterfalls-flow.vue";
+  import waterfallsFlow from "@/pages/goods/components/maramlee-waterfalls-flow/maramlee-waterfalls-flow.vue";
   import filterPopup from "@/components/filterPopup/index.vue";
   import Kefu from "@/components/kefu/index.vue"
   import {

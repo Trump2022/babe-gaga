@@ -4,7 +4,7 @@
         <div class="i-layout-page-header">
             <PageHeader class="product_tabs" hidden-breadcrumb>
                 <div slot="title">
-                    <router-link :to="{ path: `${roterPre}/cms/article/index` }">
+                    <router-link :to="{ path: `${roterPre}/activity/article/index` }">
                         <div class="font-sm after-line">
                             <span class="iconfont iconfanhui"></span>
                             <span class="pl10">返回</span>

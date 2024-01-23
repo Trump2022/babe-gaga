@@ -10,8 +10,8 @@
 					<view class="item">
 						<!-- <view class="iconfont icon-saoma"  @click="scanCode"></view> -->
 						<!-- #ifdef MP || MP-WEIXIN || APP -->
-						<view class="iconfont icon-saoma" @click="scanCode">
-						</view>
+						<!-- <view class="iconfont icon-saoma" @click="scanCode">
+						</view> -->
 						<!-- #endif -->
 						<!-- #ifdef H5 -->
 						<view v-if="isWeixin" class="iconfont icon-saoma" @click="scanCode"></view>

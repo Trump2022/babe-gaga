@@ -640,6 +640,7 @@ export default {
       'supplier_id',
       'store_id',
       'type_id',
+      'is_class'
     ]),
     labelWidth() {
       return this.isMobile ? undefined : 96
@@ -1029,6 +1030,7 @@ export default {
           plat_type: this.currentTab,
           store_id: this.store_id,
           supplier_id: this.supplier_id,
+          is_class: this.is_class,
         })
         .then((res) => {
           this.tablists = res.data
@@ -1248,6 +1250,7 @@ export default {
         plat_type: this.currentTab,
         store_id: this.store_id,
         supplier_id: this.supplier_id,
+        is_class: this.is_class,
       })
         .then(async (res) => {
           let data = res.data

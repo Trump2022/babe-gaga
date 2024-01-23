@@ -70,7 +70,7 @@ export function classesShowApi(data) {
  */
 export function classesUnshowApi(data) {
   return request({
-    url: `classes/classes/classes_unshow`,
+    url: `classes/classes/product_unshow`,
     method: 'put',
     data,
   });
@@ -103,7 +103,7 @@ export function classesReviewApi(id) {
  */
 export function forcedRemovalApi(id) {
   return request({
-    url: `/classes/classes/remove/${id}`,
+    url: `/product/product/remove/${id}`,
     method: 'get',
   });
 }

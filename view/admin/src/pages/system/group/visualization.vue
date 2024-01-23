@@ -645,9 +645,9 @@ export default {
         this.guide = 2;
         this.name = "";
         getOpenAdv().then((res) => {
-          res.data.status = parseInt(res.data.status);
+          res.data.status = parseInt(res.data.status || 0);
           this.formItem = res.data;
-          this.tabList.list = res.data.value;
+          this.tabList.list = res.data.value || [];
         });
       } else {
         this.info();
@@ -695,6 +695,7 @@ export default {
       }
     },
     addBox() {
+        console.log('this.tabList.list', this.tabList.list);
       if (this.tabList.list.length == 0) {
         this.tabList.list.push(this.lastObj);
         this.lastObj = {

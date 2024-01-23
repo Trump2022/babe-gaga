@@ -5,12 +5,12 @@
 			<view class="home" style="position:fixed;" :style="{ top: top + 'px'}" id="right-nav"
 				@touchmove.stop.prevent="setTouchMove">
 				<view class="homeCon bg-color" :class="homeActive === true ? 'on' : ''" v-if="homeActive">
-					<navigator hover-class='none' open-type="switchTab" url='/pages/index/index'
+					<navigator hover-class='none' open-type="switchTab" url='/pages/class/index/index'
 						class='iconfont icon-shouye-xianxing'>
 					</navigator>
-					<navigator hover-class='none' open-type="switchTab" url='/pages/order_addcart/order_addcart'
-						class='iconfont icon-caigou-xianxing'></navigator>
-					<navigator hover-class='none' open-type="switchTab" url='/pages/user/index'
+					<!-- <navigator hover-class='none' open-type="switchTab" url='/pages/order_addcart/order_addcart'
+						class='iconfont icon-caigou-xianxing'></navigator> -->
+					<navigator hover-class='none' url='/pages/user/index'
 						class='iconfont icon-yonghu1'></navigator>
 					<slot name="bottom"></slot>
 				</view>

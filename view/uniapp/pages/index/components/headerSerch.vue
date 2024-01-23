@@ -32,7 +32,8 @@
 	<!-- #endif -->
 	<!-- #ifdef MP || APP-PLUS -->
 	<view v-if="special" class="header"
-		:style="'background: linear-gradient(90deg, '+ bgColor[0].item +' 50%, '+ bgColor[1].item +' 100%);'">
+		:style="'background: linear-gradient(90deg, '+ bgColor[0].item +' 50%, '+ bgColor[1].item +' 100%);'"
+		:class="[isScrolled?'scrollColor':'',special?'on':'']">
 		<view class="serch-wrapper acea-row row-middle"
 			:class="(tabVal===0 || tabVal===1) && txtStyle===1?'center':(tabVal===0 || tabVal===1) && txtStyle===2?'right':''"
 			:style="'padding-left:'+ prConfig*2 +'rpx;padding-right:'+ (tabVal===0 || tabVal===1?prConfig*2:20) +'rpx;'">
@@ -61,7 +62,8 @@
 	</view>
 	<view v-else>
 		<view class="mp-header"
-			:style="'background: linear-gradient(90deg, '+ bgColor[0].item +' 50%, '+ bgColor[1].item +' 100%);'">
+			:style="'background: linear-gradient(90deg, '+ bgColor[0].item +' 50%, '+ bgColor[1].item +' 100%);'"
+			:class="[isScrolled?'scrollColor':'',special?'on':'']">
 			<view class="sys-head" :style="{ height: statusBarHeight + 'px' }"></view>
 			<view class="serch-box" style="height: 43px;">
 				<view class="serch-wrapper acea-row row-middle"
@@ -78,9 +80,11 @@
 						v-if="tabVal===1 || (tabVal===2 && radioVal === 1)">
 						<text class="iconfont icon-dingwei4" v-if="storeVal != 0"></text>
 						<view class="info on" v-if="tabVal===1 && storeVal == 1">{{addressInfos}}</view>
-						<view class="info on" v-if="tabVal===1 && storeVal == 0">{{storeName.slice(0,7) || '选择门店'}}</view>
+						<view class="info on" v-if="tabVal===1 && storeVal == 0">{{storeName.slice(0,7) || '选择门店'}}
+						</view>
 						<view class="info on1" v-if="tabVal===2 && storeVal == 1">{{addressInfo}}</view>
-						<view class="info on1" v-if="tabVal===2 && storeVal == 0">{{storeName.slice(0,4) || '选择门店'}}</view>
+						<view class="info on1" v-if="tabVal===2 && storeVal == 0">{{storeName.slice(0,4) || '选择门店'}}
+						</view>
 						<text class="iconfont icon-xiangxia"></text>
 					</view>
 					<navigator v-if="tabVal===2" url="/pages/goods/goods_search/index"
@@ -95,7 +99,8 @@
 		</view>
 		<view :style="'height:'+(statusBarHeight+43)+'px;'"></view>
 		<!-- #ifdef MP -->
-		<privacyAgreementPopup v-if="canGetPrivacySetting && (tabVal===1 || (tabVal===2 && radioVal === 1))" @onAgree="onAgree">
+		<privacyAgreementPopup v-if="canGetPrivacySetting && (tabVal===1 || (tabVal===2 && radioVal === 1))"
+			@onAgree="onAgree">
 		</privacyAgreementPopup>
 		<!-- #endif -->
 	</view>
@@ -106,8 +111,12 @@
 	import {
 		getGeocoder
 	} from '@/api/user.js';
-	import { getnearbyStore } from '@/api/new_store.js';
-	import { mapMutations } from 'vuex';
+	import {
+		getnearbyStore
+	} from '@/api/new_store.js';
+	import {
+		mapMutations
+	} from 'vuex';
 	let statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 	import privacyAgreementPopup from '@/components/privacyAgreementPopup/index.vue'
 	export default {
@@ -120,6 +129,14 @@
 			special: {
 				type: Number,
 				default: 0
+			},
+			isScrolled: {
+				type: Boolean,
+				default: false
+			},
+			city: {
+				type: String,
+				default: ''
 			}
 		},
 		components: {
@@ -143,8 +160,8 @@
 				textStyle: this.dataConfig.textStyle.list[this.dataConfig.textStyle.type].style,
 				titleConfig: this.dataConfig.titleConfig.value,
 				storeName: '',
-				addressInfo:'选择地址',
-				addressInfos:"获取地址",
+				addressInfo: '选择地址',
+				addressInfos: "选择地址",
 				location: {},
 				canGetPrivacySetting: false,
 			};
@@ -152,12 +169,15 @@
 		watch: {
 			location(value) {
 				this.getnearbyStore(value);
+			},
+			city(value) {
+				this.addressInfos = value
 			}
 		},
 		mounted() {
 			let that = this;
 			// #ifdef MP
-			if (wx.getPrivacySetting){
+			if (wx.getPrivacySetting) {
 				this.canGetPrivacySetting = true
 			}
 			// #endif
@@ -172,19 +192,19 @@
 				}).exec()
 			}, 100)
 			// #endif
-			if(this.tabVal===1 || (this.tabVal===2 && this.radioVal === 1)){
+			if (this.tabVal === 1 || (this.tabVal === 2 && this.radioVal === 1)) {
 				this.selfLocation();
 				let that = this;
 				// #ifdef MP
 				uni.$on('canGetPrivacySetting', function(data) {
-					if(data && !uni.getStorageSync('user_latitude')){
+					if (data && !uni.getStorageSync('user_latitude')) {
 						that.selfLocation();
 					}
 				});
 				// #endif
 			}
 			uni.$on('activeFn', data => {
-				if(data){
+				if (data) {
 					this.storeName = data.name;
 					this.SET_NEARBY(data.id);
 				}
@@ -204,18 +224,26 @@
 						try {
 							uni.setStorageSync('user_latitude', res.latitude);
 							uni.setStorageSync('user_longitude', res.longitude);
-							self.getGeocoderCity(res.latitude,res.longitude);
-							self.location = { latitude: res.latitude, longitude: res.longitude };
+							self.getGeocoderCity(res.latitude, res.longitude);
+							self.location = {
+								latitude: res.latitude,
+								longitude: res.longitude
+							};
 						} catch {}
 					},
-					fail:(res)=>{
-						console.log(res)
+					fail: (res) => {
 						// #ifdef MP
 						uni.getSetting({
-							success: res=>{
-								if(typeof(res.authSetting['scope.userLocation']) != 'undefined' && !res.authSetting['scope.userLocation']){
-								  uni.setStorageSync('refuseLocation', true);
+							success: res => {
+								if (typeof(res.authSetting['scope.userLocation']) != 'undefined' &&
+									!res.authSetting['scope.userLocation']) {
+									uni.setStorageSync('refuseLocation', true);
 								}
+								self.location = {
+									latitude: uni.getStorageSync('user_latitude'),
+									longitude: uni.getStorageSync('user_longitude')
+								};
+								// self.getGeocoderCity(self.location.latitude,self.location.longitude);
 							}
 						})
 						// #endif
@@ -227,7 +255,7 @@
 					this.$wechat.location().then(res => {
 						uni.setStorageSync('user_latitude', res.latitude);
 						uni.setStorageSync('user_longitude', res.longitude);
-						self.getGeocoderCity(res.latitude,res.longitude);
+						self.getGeocoderCity(res.latitude, res.longitude);
 					})
 				} else {
 					uni.getLocation({
@@ -236,37 +264,74 @@
 							try {
 								uni.setStorageSync('user_latitude', res.latitude);
 								uni.setStorageSync('user_longitude', res.longitude);
-								self.getGeocoderCity(res.latitude,res.longitude);
+								self.getGeocoderCity(res.latitude, res.longitude);
 							} catch {}
 						}
 					});
 				}
 				// #endif
 			},
-			getGeocoderCity(latitude,longitude){
+			getGeocoderCity(latitude, longitude) {
 				getGeocoder({
 					lat: latitude,
 					long: longitude
-				}).then(res=>{
+				}).then(res => {
 					let address = res.data.address_component;
-					this.addressInfo = address?address.city.slice(0,4) : '选择地址';
+					this.addressInfo = address ? address.city.slice(0, 4) : '选择地址';
 					// this.addressInfos = address?(address.city+address.district).slice(0,7) : '选择地址';
-					this.addressInfos = address?address.city : '选择地址';
+					this.addressInfos = address ? address.city : '选择地址';
+					uni.setStorageSync('curCity', this.addressInfos)
+					uni.setStorageSync('checkedCity', this.addressInfos)
 				})
 			},
-			goLink(){
+			goLink() {
 				let url = this.dataConfig.linkConfig.value;
 				this.$util.JumpPath(url);
 			},
 			chooseLocation: function() {
 				let that = this;
-				console.log('1111111111')
-				if(that.storeVal == 0){
+				if (that.storeVal == 0) {
 					uni.navigateTo({
-						url:'/pages/store/store_list/index?type=1&isCollage=1'
+						url: '/pages/store/store_list/index?type=1&isCollage=1'
 					})
-				}else{
-					this.selfLocation();
+				} else {
+					console.log('111')
+					if (this.addressInfos == '选择地址') {
+						console.log('222')
+						uni.getSetting({
+							success: (res) => {
+								if (!res.authSetting['scope.userLocation']) {
+									wx.showModal({
+										title: '提示',
+										content: '需要获取您的定位权限',
+										success: (modalRes) => {
+											if (modalRes.confirm) {
+												wx.openSetting({
+													success: (settingRes) => {
+														// 用户在设置页面授权后的回调
+														if (settingRes.authSetting[
+																'scope.userLocation'
+																] === true) {
+															// 用户重新授权了定位权限，可以进行相应操作
+															this.selfLocation()
+														}
+													},
+													complete: e => {
+														this.selfLocation()
+													}
+												});
+											} else {
+												this.selfLocation()
+											}
+										}
+									});
+								}
+							}
+						})
+					} else {
+						console.log('333')
+						this.$emit('selectCity', this.addressInfos)
+					}
 					// uni.chooseLocation({
 					// 	success: (res) => {
 					// 		console.log('1111111111', res)
@@ -293,12 +358,18 @@
 </script>
 
 <style lang="scss">
+	.scrollColor {
+		transition: background-color .5s ease;
+		background-color: #fff !important;
+		color: #333 !important;
+	}
+
 	.serch-wrapper {
-	
+
 		&.center {
 			justify-content: center;
 		}
-	
+
 		&.right {
 			justify-content: flex-end;
 			/* #ifdef MP */
@@ -306,50 +377,53 @@
 			/* #endif */
 		}
 	}
-	
+
 	.title {
 		font-size: 30rpx;
-		&.on{
+
+		&.on {
 			margin-right: 20rpx;
 		}
 	}
-	
+
 	.map {
 		color: #fff;
 		font-size: 30rpx;
 		margin-right: 20rpx;
-	
+
 		.info {
 			&.on {
 				max-width: 260rpx;
 			}
-	
+
 			&.on1 {
 				max-width: 156rpx;
 			}
 		}
-	
+
 		.iconfont {
 			font-size: 32rpx;
 			margin-right: 6rpx;
 		}
-	
-	 .icon-xiangxia {
+
+		.icon-xiangxia {
 			font-size: 28rpx;
 			margin-left: 10rpx;
 		}
 	}
+
 	.header {
 		width: 100%;
 		height: 100rpx;
 		background: linear-gradient(90deg, $bg-star 50%, $bg-end 100%);
-		
+
 		.serch-wrapper {
 			padding: 20rpx 20rpx 0 0;
 
 			.logo {
 				height: 60rpx;
 				margin-right: 20rpx;
+
 				image {
 					width: 100%;
 					height: 100%;

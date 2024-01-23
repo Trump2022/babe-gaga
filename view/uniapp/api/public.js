@@ -206,3 +206,8 @@ export function getSubscribe(){
 		noAuth: true
 	});
 }
+export function getconfig(){
+	return request.get("site_config", {}, {
+		noAuth: true
+	});
+}

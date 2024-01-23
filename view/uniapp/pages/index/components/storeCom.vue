@@ -2,7 +2,7 @@
 	<view class="box">
 		<view class="title">
 			<text>全国门店</text>
-			<view class="more">
+			<view class="more" @click="goto">
 				<text>更多</text>
 				<image src="/static/images/check_more.png" mode="widthFix"></image>
 			</view>
@@ -10,8 +10,13 @@
 		
 		<scroll-view  scroll-x>
 			<view class="list">
-				<view class="item" v-for="item in list" :key="item.id">
-					<image :src="item.image" mode=""></image>
+				<view class="item" v-for="(item, index) in list" :key="item.id" @click="gotoDetail(item.id)">
+					<view class="image-box">
+						<view class="recently" v-if="index == 0">
+							离你最近
+						</view>
+						<image :src="item.image" mode=""></image>
+					</view>
 					<view class="text-box name-box">
 						<text class="name">{{item.name}}</text>
 						<text class="iconfont icon-xiangyou"></text>
@@ -54,6 +59,16 @@
 			this.selfLocation()
 		},
 		methods: {
+			goto() {
+				uni.navigateTo({
+					url: '/pages/classes/storeList/index'
+				})
+			},
+			gotoDetail(id) {
+				uni.navigateTo({
+					url: '/pages/classes/storeDetail/index?id=' + id
+				})
+			},
 			getStoreList() {
 				storeList(this.location).then(res => {
 					console.log(res)
@@ -74,14 +89,14 @@
 						} catch {}
 					},
 					fail:(res)=>{
-						console.log(res)
-						self.getStoreList();
 						// #ifdef MP
 						uni.getSetting({
 							success: res=>{
 								if(typeof(res.authSetting['scope.userLocation']) != 'undefined' && !res.authSetting['scope.userLocation']){
 								  uni.setStorageSync('refuseLocation', true);
 								}
+								self.location = { latitude: uni.getStorageSync('user_latitude'), longitude: uni.getStorageSync('user_longitude') };
+								self.getStoreList(self.location.latitude,self.location.longitude);
 							}
 						})
 						// #endif
@@ -151,10 +166,34 @@
 			.item {
 				margin-right: 30rpx;
 				width: 500rpx;
+				
+				.image-box {
+					position: relative;
+					
+					.recently {
+						position: absolute;
+						left: 0;
+						bottom: 0;
+						z-index: 3;
+						width: 106rpx;
+						height: 42rpx;
+						background-color: #231815;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						color: #fff;
+						font-size: 20rpx;
+						border-radius: 12rpx;
+						border-top-left-radius: 0;
+						border-bottom-right-radius: 0;
+					}
+				}
+				
 				image {
 					width: 500rpx;
 					height: 280rpx;
 					border-radius: 12rpx;
+					display: block;
 				}
 				
 				.text-box {
@@ -166,6 +205,10 @@
 						color: #231815;
 						font-weight: bold;
 						font-size: 32rpx;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						white-space: nowrap;
+						display: block;
 					}
 					
 					text {

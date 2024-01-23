@@ -69,16 +69,6 @@
 										minWidth: 90
 									},
 									{
-										title: "商品条形码",
-										key: "bar_code",
-										minWidth: 35
-									},
-									{
-										title: "商品编码",
-										key: "code",
-										minWidth: 35
-									},
-									{
 										title: "当前库存",
 										key: "stock",
 										minWidth: 10
@@ -152,7 +142,7 @@
 					batchTap(){
 						this.batchShow = !this.batchShow;
 					},
-					productAttrs(data){
+					classesAttrs(data){
 						this.specType = data.spec_type;
 						this.id = data.id;
 						productAttrsApi(data.id).then(res=>{

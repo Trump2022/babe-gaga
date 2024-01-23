@@ -34,7 +34,7 @@
 					nowDate = new Date().getTime();
 				if ((nowDate - tagDate)<=uni.getStorageSync('intervalTime')) {
 					uni.switchTab({
-						url: '/pages/index/index'
+						url: '/pages/class/index/index'
 					});
 					return
 				}
@@ -42,7 +42,8 @@
 				getOpenAdv().then(res => {
 					if (res.data.status == 0 || res.data.value.length == 0) {
 						uni.switchTab({
-							url: '/pages/index/index'
+							// url: '/pages/index/index'
+							url: '/pages/class/index/index'
 						});
 					} else if (res.data.status && (res.data.value.length || res.data.video_link)) {
 						this.advData = res.data
@@ -53,7 +54,7 @@
 					}
 				}).catch(err => {
 					uni.switchTab({
-						url: '/pages/index/index'
+						url: '/pages/class/index/index'
 					});
 				})
 			}

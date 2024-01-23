@@ -330,7 +330,7 @@
 	            "
 	            >发送货</a
 	          >
-	          <a
+	          <!-- <a
 	            @click="bindWrite(row)"
 	            v-if="
 	              row.shipping_type == 2 &&
@@ -340,7 +340,7 @@
 	              row.delete_time == null
 	            "
 	            >立即核销</a
-	          >
+	          > -->
 	          <Divider
 	            type="vertical"
 	            v-if="

@@ -50,29 +50,31 @@
 							</view>
 						</view>
 					</view>
-					<view class="item" v-if="isDelivery">
-						 <view class="title">配送方式</view>
-						 <view class="listn acea-row row-middle">
-							 <view class="itemn" v-if="attr.deliveryType.includes('1')" @click="getstoreInfo('1')" :class="flag==1?'on':isStoreBuy?'on2':''">商城配送</view>
-							 <view class="itemn" v-if="attr.deliveryType.includes('2') && attr.store_self_mention && selfStoreList.length" @click="getstoreInfo('2')" :class="flag==2?'on':''">门店自提</view>
-							 <view class="itemn" v-if="attr.deliveryType.includes('3') && storeList.length" @click="getstoreInfo('3')" :class="flag==3?'on':''">门店配送</view>
-						 </view>
-					</view>
-					<view class="address acea-row row-middle" v-if="flag ==1 && isDelivery" @click="openAddress">
-						<view class="adsInfo">{{addressInfo}}</view>
-						<view class="iconfont icon-gengduo3"></view>
-					</view>
-					<view class="address acea-row row-middle" v-if="flag ==3 && isDelivery" @click="openStore">
-						<view class="adsInfo">{{deliveryName}}{{deliveryAddress}}{{distance}}</view>
-						<view class="iconfont icon-gengduo3" v-if="attr.isType != 1"></view>
-					</view>
-					<view class="address" v-if="flag ==2 && isDelivery"  @click="openStore">
-						<view>{{deliveryName}}</view>
-						<view class="info acea-row row-between-wrapper">
-							<view class="con">{{deliveryAddress}}</view>
-							<view>{{distance}}<text class="iconfont icon-gengduo3" v-if="attr.isType != 1"></text></view>
+					<template v-if="!isClass">
+						<view class="item" v-if="isDelivery">
+							 <view class="title">配送方式</view>
+							 <view class="listn acea-row row-middle">
+								 <view class="itemn" v-if="attr.deliveryType.includes('1')" @click="getstoreInfo('1')" :class="flag==1?'on':isStoreBuy?'on2':''">商城配送</view>
+								 <view class="itemn" v-if="attr.deliveryType.includes('2') && attr.store_self_mention && selfStoreList.length" @click="getstoreInfo('2')" :class="flag==2?'on':''">门店自提</view>
+								 <view class="itemn" v-if="attr.deliveryType.includes('3') && storeList.length" @click="getstoreInfo('3')" :class="flag==3?'on':''">门店配送</view>
+							 </view>
 						</view>
-					</view>
+						<view class="address acea-row row-middle" v-if="flag ==1 && isDelivery" @click="openAddress">
+							<view class="adsInfo">{{addressInfo}}</view>
+							<view class="iconfont icon-gengduo3"></view>
+						</view>
+						<view class="address acea-row row-middle" v-if="flag ==3 && isDelivery" @click="openStore">
+							<view class="adsInfo">{{deliveryName}}{{deliveryAddress}}{{distance}}</view>
+							<view class="iconfont icon-gengduo3" v-if="attr.isType != 1"></view>
+						</view>
+						<view class="address" v-if="flag ==2 && isDelivery"  @click="openStore">
+							<view>{{deliveryName}}</view>
+							<view class="info acea-row row-between-wrapper">
+								<view class="con">{{deliveryAddress}}</view>
+								<view>{{distance}}<text class="iconfont icon-gengduo3" v-if="attr.isType != 1"></text></view>
+							</view>
+						</view>
+					</template>
 				</view>
 				<view class="cart acea-row row-between-wrapper" v-if="type != 'setMeal' && type !='points'">
 				  <view class="title">数量</view>
@@ -213,6 +215,10 @@
 				default: ''
 			},
 			isFooter: {
+			  type: Boolean,
+			  default: false
+			},
+			isClass: {
 			  type: Boolean,
 			  default: false
 			}

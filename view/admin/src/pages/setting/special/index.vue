@@ -358,12 +358,19 @@ import Setting from "@/setting";
       },
       //恢复默认
       getmoren(){
-        recovery(this.pageId).then((res)=>{
-          this.$Message.success(res.msg)
-          this.reload();
-        }).catch(err=>{
-          this.$Message.error(err.msg)
-        })
+        this.$Modal.confirm({
+            title: "提示",
+            content: "<p>是否恢复默认当前页面数据</p>",
+            onOk: () => {
+              recovery(this.pageId).then((res)=>{
+                this.$Message.success(res.msg)
+              }).catch(err=>{
+                this.$Message.error(err.msg)
+              })
+            },
+            onCancel: () => {
+            },
+          });
       },
       // 获取url
       getUrlList() {

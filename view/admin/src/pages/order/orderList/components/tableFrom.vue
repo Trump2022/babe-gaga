@@ -11,6 +11,19 @@
     >
       <Row>
         <Col>
+          <FormItem label="订单：">
+            <Select
+              v-model="orderData.is_class"
+              class="input-add"
+              @on-change="classChange"
+              placeholder="全部"
+            >
+              <Option value="1">课程订单</Option>
+              <Option value="0">商城订单</Option>
+            </Select>
+          </FormItem>
+        </Col>
+        <Col>
           <FormItem label="订单状态：">
             <Select
               v-model="orderData.status"
@@ -21,8 +34,8 @@
             >
               <Option value="">全部</Option>
               <Option value="0">未支付</Option>
-              <Option value="1">未发货</Option>
-              <Option value="2">待收货</Option>
+              <Option value="1">未发货/待使用</Option>
+              <Option value="2">待收货/使用中</Option>
               <Option value="5">待核销</Option>
               <Option value="6">已核销</Option>
               <Option value="3">待评价</Option>
@@ -227,6 +240,7 @@ export default {
         type:'', // 订单类型
         store_id: '',
         supplier_id: '',
+        is_class: '1'
       },
       modalTitleSs: '',
       statusType: '',
@@ -331,6 +345,7 @@ export default {
       'getSupplier_id',
       'getStore_id',
       'getType_id',
+      'getIs_class'
     ]),
     getPath() {
       this.orderData.status = this.$route.query.status.toString()
@@ -392,6 +407,11 @@ export default {
         // 供应商选择
     supplierChange(tab) {
       this.getSupplier_id(tab)
+      this.$emit('getList', 1)
+    },
+        // 供应商选择
+    classChange(tab) {
+      this.getIs_class(tab)
       this.$emit('getList', 1)
     },
 

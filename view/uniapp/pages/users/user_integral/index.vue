@@ -3,13 +3,13 @@
 	<view>
 		<view class='integral-details' :style="colorStyle">
 			<view class='header'>
-				<view class='currentScore'>当前积分</view>
+				<view class='currentScore'>当前gaga币</view>
 				<view class="scoreNum">{{userInfo.integral}}</view>
 				<view class='line'></view>
 				<view class='nav acea-row'>
 					<view class='item'>
 						<view class='num'>{{userInfo.sum_integral}}</view>
-						<view>累计积分</view>
+						<view>累计gaga币</view>
 					</view>
 					<view class='item'>
 						<view class='num'>{{userInfo.deduction_integral}}</view>
@@ -31,10 +31,10 @@
 					
 					<view class='tip acea-row row-between-wrapper' v-if="userInfo.clear_integral>0 && userInfo.clear_time>0">
 						<text class='iconfont icon-shuoming'></text>
-						<text class="tipCon">提示：你有{{userInfo.clear_integral}}积分在{{ userInfo.clear_time | dateFormat }}过期，请尽快使用</text>
+						<text class="tipCon">提示：你有{{userInfo.clear_integral}}gaga币在{{ userInfo.clear_time | dateFormat }}过期，请尽快使用</text>
 					</view>
 					<view class='tip acea-row row-middle' v-else><text
-							class='iconfont icon-shuoming'></text>提示：积分数值的高低会直接影响您的会员等级</view>
+							class='iconfont icon-shuoming'></text>提示：gaga币数值的高低会直接影响您的会员等级</view>
 					<view class='item acea-row row-between-wrapper' v-for="(item,index) in integralList" :key="index">
 						<view>
 							<view class='state'>{{item.mark}}</view>
@@ -47,7 +47,7 @@
 						<text class='loading iconfont icon-jiazai' :hidden='loading==false'></text>{{loadTitle}}
 					</view>
 					<view v-if="integralList.length == 0">
-						<emptyPage title="暂无积分记录哦～"></emptyPage>
+						<emptyPage title="暂无gaga币记录哦～"></emptyPage>
 					</view>
 				</view>
 				<view class='list2' :hidden='current!=1'>
@@ -56,16 +56,16 @@
 						<view class='pictrue'>
 							<image src='../static/score.png'></image>
 						</view>
-						<view class='name'>购买商品可获得积分奖励</view>
-						<view class='earn'>赚积分</view>
+						<view class='name'>购买商品可获得gaga币奖励</view>
+						<view class='earn'>赚gaga币</view>
 					</navigator>
 					<navigator class='item acea-row row-between-wrapper' hover-class='none'
 						url='/pages/users/user_sgin/index'>
 						<view class='pictrue'>
 							<image src='../static/score.png'></image>
 						</view>
-						<view class='name'>每日签到可获得积分奖励</view>
-						<view class='earn'>赚积分</view>
+						<view class='name'>每日签到可获得gaga币奖励</view>
+						<view class='earn'>赚gaga币</view>
 					</navigator>
 				</view>
 			</view>

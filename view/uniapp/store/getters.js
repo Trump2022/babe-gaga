@@ -12,6 +12,7 @@ export default {
   token: state => state.app.token,
   isLogin: state => !!state.app.token,
   backgroundColor: state => state.app.backgroundColor,
+  globalData: state => state.app.globalData,
   userInfo: state => state.app.userInfo || {},
 	uid:state => state.app.uid,
 	homeActive: state => state.app.homeActive,

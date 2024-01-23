@@ -30,7 +30,8 @@ const state = {
 	phoneStatus:true,
 	pageFooter:uni.getStorageSync('pageFoot') || {},
 	autoplay: Cache.get(NON_WIFI_AUTOPLAY) || false,
-	nearbyStore: 0
+	nearbyStore: 0,
+	globalData: uni.getStorageSync('GLOBAL_DATA') || {},
 };
 
 const mutations = {
@@ -80,7 +81,11 @@ const mutations = {
 	},
 	SET_NEARBY(state,data){
 		state.nearbyStore = data
-	}
+	},
+	GLOBAL_DATA(state, key) {
+		uni.setStorageSync('GLOBAL_DATA', key);
+		state.globalData = key;
+	},
 };
 
 const actions = {

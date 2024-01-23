@@ -84,6 +84,8 @@
 			       <Radio :label="1">品类券</Radio>
 			       <Radio :label="2">商品券</Radio>
 			       <Radio :label="3">品牌券</Radio>
+			       <Radio :label="4">品类券(课程)</Radio>
+			       <Radio :label="5">商品券(课程)</Radio>
 			     </RadioGroup>
 			   </FormItem>
 			   <FormItem v-show="formData.type === 2">
@@ -104,16 +106,45 @@
 			     <Icon type="ios-camera-outline" size="26" @click="modals = true" />
 			     <div class="info">选择商品</div>
 			   </FormItem>
+               <FormItem v-show="formData.type === 5">
+			     <template>
+			       <div
+			         class="upload-list"
+			         v-for="item in classList"
+			         :key="item.product_id"
+			       >
+			         <img :src="item.image" />
+			         <Icon
+			           type="ios-close-circle"
+			           size="16"
+			           @click="removeClass(item.product_id)"
+			         />
+			       </div>
+			     </template>
+			     <Icon type="ios-camera-outline" size="26" @click="modalsClass = true" />
+			     <div class="info">选择课程</div>
+			   </FormItem>
 			   <FormItem v-show="formData.type === 1">
 			     <Cascader
 			       :data="categoryList"
-			       placeholder="请选择商品分类"
+			       placeholder="请选择分类"
 			       change-on-select
 			       v-model="formData.category_id"
 			       filterable
 			       style="width: 320px"
 			     ></Cascader>
-			     <div class="info">选择商品的品类</div>
+			     <div class="info">选择品类</div>
+			   </FormItem>
+               <FormItem v-show="formData.type == 4">
+			     <Cascader
+			       :data="cascaderCategoryList"
+			       placeholder="请选择分类"
+			       change-on-select
+			       v-model="formData.category_id"
+			       filterable
+			       style="width: 320px"
+			     ></Cascader>
+			     <div class="info">选择品类</div>
 			   </FormItem>
 			   <FormItem v-show="formData.type === 3">
 			     <Cascader
@@ -303,6 +334,22 @@
         @getProductId="getProductId"
       ></goods-list>
     </Modal>
+    <Modal
+      v-model="modalsClass"
+      title="课程列表"
+      footerHide
+      class="paymentFooter"
+      scrollable
+      width="900"
+      @on-cancel="cancel"
+    >
+      <goods-list
+        v-if="modalsClass"
+        :isClass="true"
+        :ischeckbox="true"
+        @getProductId="getClassId"
+      ></goods-list>
+    </Modal>
 	<Modal v-model="storeModals" title="门店列表" footerHide  scrollable width="900" @on-cancel="cancelStore">
 	  <store-list ref="storelist" @getStoreId="getStoreId" v-if="storeModals"></store-list>
 	</Modal>
@@ -318,6 +365,9 @@ import {
   couponSaveApi,
   couponDetailApi,
 } from "@/api/marketing";
+import {
+  cascaderListApi,
+} from "@/api/classes";
 import { brandList } from "@/api/product";
 // import { formatDate } from '@/utils/validate';
 import Setting from "@/setting";
@@ -359,17 +409,30 @@ export default {
 		applicable_store_id:[]
       },
       categoryList: [],
+      cascaderCategoryList: [],
       brandList: [],
       productList: [],
+      classList: [],
       isMinPrice: 0,
       isCouponTime: 1,
       isReceiveTime: 0,
       modals: false,
+      modalsClass: false,
       datetime1: [],
       datetime2: [],
 	  storeModals: false,
 	  currentTab: '1',
     };
+  },
+  watch: {
+    formData: {
+        handler(newVal, oldVal) {
+            if(newVal.type == 1 || newVal.type == 4) {
+                newVal.formData.category_id = []
+            }
+        },
+        deep: true,
+    }
   },
   computed: {
     ...mapState("admin/layout", ["isMobile", "menuCollapse"]),
@@ -377,6 +440,7 @@ export default {
   created() {
     this.getBrandList();
     this.getCategoryList();
+    this.getCascaderCategoryList()
     if (this.$route.params.id) {
       this.getCouponDetail();
     }
@@ -423,6 +487,15 @@ export default {
         this.categoryList = res.data;
       });
     },
+    // 课程-品类
+    getCascaderCategoryList() {
+      cascaderListApi(1).then(async (res) => {
+        res.data.forEach((val) => {
+          val.cate_name = `${val.html}${val.cate_name}`;
+        });
+        this.cascaderCategoryList = res.data;
+      });
+    },
     //品牌
     getBrandList(){
       brandList().then(res=>{
@@ -453,7 +526,12 @@ export default {
 		  this.formData.applicable_type = data.applicable_type;
 		  this.storesList = data.stores || [];
           if ("productInfo" in data) {
-            this.productList = data.productInfo;
+            if(this.formData.type == 2) {
+                this.productList = data.productInfo;
+            }
+            if(this.formData.type == 5) {
+                this.classList = data.productInfo;
+            }
           }
           if (!data.coupon_time) {
             this.isCouponTime = 0;
@@ -621,8 +699,23 @@ export default {
         }
       });
     },
+    
+    // 选择的商品
+    getClassId(productList) {
+      this.modalsClass = false;
+      this.classList = this.unique(this.productList.concat(productList));
+      this.formData.product_id = "";
+      this.classList.forEach((value) => {
+        if (this.formData.product_id) {
+          this.formData.product_id += `,${value.product_id}`;
+        } else {
+          this.formData.product_id += `${value.product_id}`;
+        }
+      });
+    },
     cancel() {
       this.modals = false;
+      this.modalsClass = false
     },
     // 删除商品
     remove(productId) {
@@ -633,6 +726,22 @@ export default {
       }
       this.formData.product_id = "";
       this.productList.forEach((value) => {
+        if (this.formData.product_id) {
+          this.formData.product_id += `,${value.product_id}`;
+        } else {
+          this.formData.product_id += `${value.product_id}`;
+        }
+      });
+    },
+    // 删除课程
+    removeClass(productId) {
+      for (let index = 0; index < this.classList.length; index++) {
+        if (this.classList[index].product_id == productId) {
+          this.classList.splice(index, 1);
+        }
+      }
+      this.formData.product_id = "";
+      this.classList.forEach((value) => {
         if (this.formData.product_id) {
           this.formData.product_id += `,${value.product_id}`;
         } else {

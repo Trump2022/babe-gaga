@@ -96,7 +96,7 @@
 					</view>
 				</view>
 			</view>
-			<recommend v-if="hostProduct.length" :hostProduct="hostProduct"></recommend>
+			<!-- <recommend v-if="hostProduct.length" :hostProduct="hostProduct"></recommend> -->
 			<view class='growthValue' :class='growthValue==false?"on":""'>
 				<text class='iconfont icon-guanbi3' @click='growthValue = true'></text>
 				<view class='conter'>{{illustrate}}</view>

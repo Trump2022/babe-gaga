@@ -239,14 +239,14 @@
         <Row :gutter="24" type="flex" v-show="currentTab === '2'">
             <Col span="24">
               <FormItem required label="激活时效：">
-                <RadioGroup v-model="oneFormValidate[0].write_valid">
+                <RadioGroup v-model="formValidate.write_valid">
                   <Radio :label="1">永久有效</Radio>
                   <Radio :label="2">购买后几天有效</Radio>
                   <Radio :label="3">固定有效期</Radio>
                 </RadioGroup>
               </FormItem>
             </Col>
-            <Col span="24" v-if="oneFormValidate[0].write_valid==2">
+            <Col span="24" v-if="formValidate.write_valid==2">
               <FormItem
                   label=""
                   prop="freight"
@@ -254,7 +254,7 @@
                 <div class="acea-row row-middle">
                   <InputNumber
                       :min="1"
-                      v-model="oneFormValidate[0].write_days"
+                      v-model="formValidate.write_days"
                       placeholder="请输入有效天数"
                       v-width="'50%'"
                   />
@@ -262,18 +262,18 @@
                 </div>
               </FormItem>
             </Col>
-            <Col span="24" v-if="oneFormValidate[0].write_valid==3">
+            <Col span="24" v-if="formValidate.write_valid==3">
               <FormItem
                   label=""
                   prop="freight"
               >
                 <div class="acea-row row-middle">
                   <DatePicker :editable="false" type="daterange" format="yyyy-MM-dd" placeholder="请选择固定有效期"
-                              @on-change="onchangeTime" v-width="'50%'" :value="oneFormValidate[0].section_time" v-model="oneFormValidate[0].section_time"></DatePicker>
+                              @on-change="onchangeTime" v-width="'50%'" v-model="formValidate.section_time"></DatePicker>
                 </div>
               </FormItem>
             </Col>
-          <Col span="24" v-if="formValidate.product_type != 4">
+          <Col span="24">
             <FormItem label="商品规格：" props="spec_type">
               <RadioGroup
                   v-model="formValidate.spec_type"
@@ -285,7 +285,7 @@
             </FormItem>
           </Col>
           <!-- 多规格添加-->
-          <Col span="24" v-if="formValidate.spec_type === 1 && formValidate.product_type != 4" class="noForm">
+          <Col span="24" v-if="formValidate.spec_type === 1" class="noForm">
             <Col span="24">
               <FormItem label="选择规格：" prop="" >
                 <div class="acea-row row-middle">
@@ -486,11 +486,11 @@
                           class="priceBox"
                       ></InputNumber>
                     </template>
-                    <template slot-scope="{ row, index }" slot="bar_code">
-                      <Input v-model="oneFormBatch[0].bar_code"></Input>
+                    <template slot-scope="{ row, index }" slot="write_times">
+                      <Input v-model="oneFormBatch[0].write_times"></Input>
                     </template>
-                    <template slot-scope="{ row, index }" slot="code">
-                      <Input v-model="oneFormBatch[0].code"></Input>
+                    <template slot-scope="{ row, index }" slot="days">
+                      <Input v-model="oneFormBatch[0].days"></Input>
                     </template>
                     <template slot-scope="{ row, index }" slot="weight">
                       <InputNumber
@@ -620,11 +620,11 @@
                           @click="seeVirtual(row, 'manyFormValidate', index)"
                       >已设置</span>
                     </template>
-                    <template slot-scope="{ row, index }" slot="bar_code">
-                      <Input v-model="manyFormValidate[index].bar_code"></Input>
+                    <template slot-scope="{ row, index }" slot="write_times">
+                      <Input v-model="manyFormValidate[index].write_times"></Input>
                     </template>
-                    <template slot-scope="{ row, index }" slot="code">
-                      <Input v-model="manyFormValidate[index].code"></Input>
+                    <template slot-scope="{ row, index }" slot="days">
+                      <Input v-model="manyFormValidate[index].days"></Input>
                     </template>
                     <template slot-scope="{ row, index }" slot="weight">
                       <InputNumber
@@ -649,8 +649,8 @@
             </Col>
           </Col>
           <!-- 单规格表格-->
-          <div v-if="formValidate.spec_type === 0 || formValidate.product_type == 4" style="width: 100%;">
-            <Col span="24" v-if="formValidate.product_type != 4">
+          <div v-if="formValidate.spec_type === 0" style="width: 100%;">
+            <Col span="24">
               <FormItem label="图片：" prop="pic">
                 <div class="pictrueBox" @click="modalPicTap('dan', 'danTable', 0)">
                   <div class="pictrue" v-if="oneFormValidate[0].pic">
@@ -670,7 +670,7 @@
               <div class="asteriskInfo on3">*</div>
               <FormItem label="使用次数(次)：">
                 <InputNumber
-                    v-model="oneFormValidate[0].bar_code"
+                    v-model="oneFormValidate[0].write_times"
                     :min="1"
                     :max="99999999"
                     :precision="0"
@@ -683,7 +683,7 @@
               <div class="asteriskInfo on3">*</div>
               <FormItem label="使用时效(天)：">
                 <InputNumber
-                    v-model="oneFormValidate[0].code"
+                    v-model="oneFormValidate[0].days"
                     :min="0"
                     :max="99999999"
                     v-width="'50%'"
@@ -870,11 +870,11 @@
                 <template slot-scope="{ row, index }" slot="stock">{{
                     oneFormValidate[0].stock
                   }}</template>
-                <template slot-scope="{ row, index }" slot="bar_code">{{
-                    oneFormValidate[0].bar_code
+                <template slot-scope="{ row, index }" slot="write_times">{{
+                    oneFormValidate[0].write_times
                   }}</template>
-                <template slot-scope="{ row, index }" slot="code">{{
-                    oneFormValidate[0].code
+                <template slot-scope="{ row, index }" slot="days">{{
+                    oneFormValidate[0].days
                   }}</template>
                 <template slot-scope="{ row, index }" slot="weight">{{
                     oneFormValidate[0].weight
@@ -961,11 +961,11 @@
                 <template slot-scope="{ row, index }" slot="stock">{{
                     manyFormValidate[index].stock
                   }}</template>
-                <template slot-scope="{ row, index }" slot="bar_code">{{
-                    manyFormValidate[index].bar_code
+                <template slot-scope="{ row, index }" slot="write_times">{{
+                    manyFormValidate[index].write_times
                   }}</template>
-                <template slot-scope="{ row, index }" slot="code">{{
-                    manyFormValidate[index].code
+                <template slot-scope="{ row, index }" slot="days">{{
+                    manyFormValidate[index].days
                   }}</template>
                 <template slot-scope="{ row, index }" slot="weight">{{
                     manyFormValidate[index].weight
@@ -1116,9 +1116,10 @@
             <RadioGroup v-model="formValidate.applicable_type" class="radioGroup">
               <Radio :label="1">全部门店</Radio>
               <Radio :label="2">部分门店</Radio>
-              <Radio :label="0">仅平台适用</Radio>
+              <!-- <Radio :label="0">仅平台适用</Radio> -->
             </RadioGroup>
-            <div class="tips">可选择将商品同步到哪些门店使用，选择“仅平台适用“则商品不同步任何门店</div>
+            <div class="tips">可选择将商品同步到哪些门店使用</div>
+            <!-- <div class="tips">可选择将商品同步到哪些门店使用，选择“仅平台适用“则商品不同步任何门店</div> -->
           </Col>
           <Col span="24" class="mt20 ml10" v-if="formValidate.applicable_type == 2">
             <Button type="primary" @click="addStore">添加门店</Button>
@@ -1526,8 +1527,10 @@ export default {
           cost: 0,
           ot_price: 0,
           stock: 0,
-          bar_code: "",
-          code: "",
+          write_times: "",
+          days: "",
+          write_times: 0,
+          days: 0,
           weight: 0,
           volume: 0,
           quota: 0
@@ -1580,13 +1583,13 @@ export default {
         },
         {
           title: "使用次数(次)",
-          slot: "bar_code",
+          slot: "write_times",
           align: "center",
           minWidth: 120,
         },
         {
           title: "使用时效(天)",
-          slot: "code",
+          slot: "days",
           align: "center",
           minWidth: 120,
         },
@@ -1648,8 +1651,8 @@ export default {
         unit_name: "",
         specs_id:0,
         store_info: "",
-        bar_code:"",
-        code:"",
+        write_times:"",
+        days:"",
         image: "",
         recommend_image: "",
         slider_image: [],
@@ -1677,8 +1680,8 @@ export default {
             cost: 0,
             ot_price: 0,
             stock: 0,
-            bar_code: "",
-            code: "",
+            write_times: "",
+            days: "",
           },
         ],
         activity: ["默认", "秒杀", "砍价", "拼团"],
@@ -1687,12 +1690,15 @@ export default {
         selectRule: "",
         coupon_ids: [],
         command_word: "",
-        delivery_type: ['1'],
+        delivery_type: ['2'],
         specs:[],
         recommend_list: [],
         brand_id: [],
         product_type:0,
-        store_overview: ''
+        store_overview: '',
+        write_valid: 1,
+        write_days: '',
+        section_time: [],
       },
       ruleList: [],
       templateList: [],
@@ -1708,8 +1714,8 @@ export default {
           cost: 0,
           ot_price: 0,
           stock: 0,
-          bar_code: "",
-          code: "",
+          write_times: "",
+          days: "",
           weight: 0,
           volume: 0,
           brokerage: 0,
@@ -2028,8 +2034,8 @@ export default {
                     cost: 0,
                     ot_price: 0,
                     stock: 0,
-                    bar_code: "",
-                    code: "",
+                    write_times: "",
+                    days: "",
                     weight: 0,
                     volume: 0,
                     brokerage: 0,
@@ -2231,7 +2237,9 @@ export default {
     },
     // 预售具体日期
     onchangeTime(e) {
+    console.log('e====>', e)
       this.formValidate.presale_time = e;
+      this.formValidate.section_time = e;
     },
     //定时上架
     onchangeShow(e){
@@ -2298,8 +2306,8 @@ export default {
       j.cost = 0;
       j.ot_price = 0;
       j.stock = 0;
-      j.bar_code = '';
-      j.code = '';
+      j.write_times = '';
+      j.days = '';
       j.weight = 0;
       j.volume = 0;
       j.virtual_list = []
@@ -2416,36 +2424,36 @@ export default {
         if(this.$route.params.id) return this.$Message.error('商品类型不能切换！');
         this.formValidate.product_type = item.id;
       }
-      if(this.formValidate.product_type && this.formValidate.product_type != 4){
-        this.headTab = [
-          { title: "基础信息", name: "1" },
-          { title: "规格库存", name: "2" },
-          { title: "商品详情", name: "3" },
-          { title: "营销设置", name: "5" },
-          { title: "其他设置", name: "6" },
-        ]
-        this.formValidate.postage = 0;
-        // this.formValidate.supplier_id = 0;
-      }else if(this.formValidate.product_type == 4){
-        this.headTab = [
-          { title: "基础信息", name: "1" },
-          { title: "规格库存", name: "2" },
-          { title: "商品详情", name: "3" },
-          { title: "营销设置", name: "5" },
-          { title: "其他设置", name: "6" },
-          { title: "适用门店", name: "7" },
-        ]
-      }else{
-        this.headTab = [
-          { title: "基础信息", name: "1" },
-          { title: "规格库存", name: "2" },
-          { title: "商品详情", name: "3" },
-          { title: "物流设置", name: "4" },
-          { title: "营销设置", name: "5" },
-          { title: "其他设置", name: "6" },
-          { title: "适用门店", name: "7" },
-        ]
-      }
+    //   if(this.formValidate.product_type && this.formValidate.product_type != 4){
+    //     this.headTab = [
+    //       { title: "基础信息", name: "1" },
+    //       { title: "规格库存", name: "2" },
+    //       { title: "商品详情", name: "3" },
+    //       { title: "营销设置", name: "5" },
+    //       { title: "其他设置", name: "6" },
+    //     ]
+    //     this.formValidate.postage = 0;
+    //     // this.formValidate.supplier_id = 0;
+    //   }else if(this.formValidate.product_type == 4){
+    //     this.headTab = [
+    //       { title: "基础信息", name: "1" },
+    //       { title: "规格库存", name: "2" },
+    //       { title: "商品详情", name: "3" },
+    //       { title: "营销设置", name: "5" },
+    //       { title: "其他设置", name: "6" },
+    //       { title: "适用门店", name: "7" },
+    //     ]
+    //   }else{
+    //     this.headTab = [
+    //       { title: "基础信息", name: "1" },
+    //       { title: "规格库存", name: "2" },
+    //       { title: "商品详情", name: "3" },
+    //       { title: "物流设置", name: "4" },
+    //       { title: "营销设置", name: "5" },
+    //       { title: "其他设置", name: "6" },
+    //       { title: "适用门店", name: "7" },
+    //     ]
+    //   }
     },
     closeLabel(label){
       let index = this.dataLabel.indexOf(this.dataLabel.filter(d=>d.id == label.id)[0]);
@@ -2579,6 +2587,7 @@ export default {
       this.content = data;
     },
     infoData(data){
+        console.log('data============>', data);
       this.storesList = data.stores || [];
       let cate_id = data.cate_id.map(Number);
       this.attrs = data.items || [];
@@ -2638,8 +2647,8 @@ export default {
             cost: 0,
             ot_price: 0,
             stock: 0,
-            bar_code: "",
-            code: "",
+            write_times: "",
+            days: "",
             weight: 0,
             volume: 0,
             brokerage: 0,
@@ -2895,8 +2904,8 @@ export default {
           cost: 0,
           ot_price: 0,
           stock: 0,
-          bar_code: "",
-          code: "",
+          write_times: "",
+          days: "",
           weight: 0,
           volume: 0,
           virtualList:[],
@@ -2974,11 +2983,11 @@ export default {
           if (this.oneFormBatch[0].stock > 0) {
             this.$set(val, "stock", this.oneFormBatch[0].stock);
           }
-          if (this.oneFormBatch[0].bar_code !== "") {
-            this.$set(val, "bar_code", this.oneFormBatch[0].bar_code);
+          if (this.oneFormBatch[0].write_times !== "") {
+            this.$set(val, "write_times", this.oneFormBatch[0].write_times);
           }
-          if (this.oneFormBatch[0].code !== "") {
-            this.$set(val, "code", this.oneFormBatch[0].code);
+          if (this.oneFormBatch[0].days !== "") {
+            this.$set(val, "days", this.oneFormBatch[0].days);
           }
           if (this.oneFormBatch[0].quota > 0) {
             this.$set(val, "quota", this.oneFormBatch[0].quota);
@@ -3023,6 +3032,7 @@ export default {
 		  })
 	  }
       this.manyFormValidate = data;
+      console.log('manyFormValidate=====>', data);
     },
     // 立即生成
     generate(type) {
@@ -3191,7 +3201,7 @@ export default {
             //       cost: 0,
             //       ot_price: 0,
             //       stock: 0,
-            //       bar_code: "",
+            //       write_times: "",
             //       weight: 0,
             //       volume: 0,
             //       brokerage: 0,
@@ -3286,15 +3296,15 @@ export default {
           if(this.off_show == 1 && !this.formValidate.auto_off_time){
             return this.$Message.warning("基础信息-定时下架时间不能为空");
           }
-          if(this.formValidate.product_type == 4 && !this.oneFormValidate[0].write_times){
-            return this.$Message.warning("规格库存-核销次数必须大于0");
-          }
-          if(this.formValidate.product_type == 4 && this.oneFormValidate[0].write_valid==2 && !this.oneFormValidate[0].days){
-            return this.$Message.warning("规格库存-有效天数必须大于0");
-          }
-          if(this.formValidate.product_type == 4 && this.oneFormValidate[0].write_valid==3 && !this.oneFormValidate[0].section_time.length){
-            return this.$Message.warning("规格库存-请输入固定有效期");
-          }
+        //   if(!this.oneFormValidate[0].write_times){
+        //     return this.$Message.warning("规格库存-使用次数必须大于0");
+        //   }
+        //   if(this.oneFormValidate[0].write_valid==2 && !this.oneFormValidate[0].days){
+        //     return this.$Message.warning("规格库存-有效天数必须大于0");
+        //   }
+        //   if(this.oneFormValidate[0].write_valid==3 && !this.oneFormValidate[0].section_time.length){
+        //     return this.$Message.warning("规格库存-请输入固定有效期");
+        //   }
           if(this.formValidate.freight==2&&this.formValidate.product_type == 0&&this.formValidate.postage<=0){
             return this.$Message.warning("物流设置-固定邮费不能为0");
           }
