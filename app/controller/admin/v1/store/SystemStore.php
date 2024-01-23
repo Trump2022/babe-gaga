@@ -260,11 +260,12 @@ class SystemStore extends AuthController
                 if (str_contains($city['name'], '区')) {
                     $key = array_search($city_id, $addressSelect);
                     if ($key >= 1) {
-                        $data['city'] = $addressSelect[$key - 1];
+                        $city_id = $addressSelect[$key - 1];
                     }
                 }
             }
         }
+        $data['city_id'] = $city_id;
         $data['valid_range'] = bcmul($data['valid_range'], '1000', 0);
 		$data['cate_com'] = $data['cate_id'] ? implode(',', $data['cate_id']) : '';
 		$data['cate_id'] = $data['cate_id'] ? end($data['cate_id']) : 0;
