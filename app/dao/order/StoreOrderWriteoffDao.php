@@ -14,6 +14,9 @@ namespace app\dao\order;
 
 use app\dao\BaseDao;
 use app\model\order\StoreOrderWriteoff;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 
 /**
  * 订单核销
@@ -61,12 +64,12 @@ class StoreOrderWriteoffDao extends BaseDao
 	 * @param int $limit
 	 * @param array $with
 	 * @return array
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 */
-	public function getList(array $where, string $field = '*', int $page = 0, int $limit = 0, array $with = [])
-	{
+	public function getList(array $where, string $field = '*', int $page = 0, int $limit = 0, array $with = []): array
+    {
 		return $this->search($where)->field($field)
 			->when($with, function ($query) use ($with) {
 				$query->with($with);

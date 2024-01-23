@@ -24,6 +24,9 @@ use app\services\store\SystemStoreStaffServices;
 use app\services\store\DeliveryServiceServices;
 use app\services\supplier\SystemSupplierServices;
 use app\services\user\UserServices;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 
 /**
@@ -51,9 +54,9 @@ class StoreOrderWriteOffServices extends BaseServices
 	 * 获取核销列表
 	 * @param $where
 	 * @return array
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 */
 	public function writeOffList($where)
 	{
@@ -205,11 +208,11 @@ class StoreOrderWriteOffServices extends BaseServices
     /**核销记录
      * @param array $where
      * @return array
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function userOrderWriteOffRecords(array $where = [])
+    public function userOrderWriteOffRecords(array $where = []): array
     {
         [$page, $limit] = $this->getPageValue();
         $list = $this->dao->getList($where, '*', $page, $limit, ['cartInfo', 'systemStore']);

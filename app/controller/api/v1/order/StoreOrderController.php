@@ -14,6 +14,7 @@ use app\Request;
 use app\services\pay\PayServices;
 use app\services\other\ExpressServices;
 use app\services\product\branch\StoreBranchProductServices;
+use app\services\store\SystemStoreStaffServices;
 use app\services\user\UserAddressServices;
 use app\services\user\UserInvoiceServices;
 use app\services\user\UserServices;
@@ -48,6 +49,10 @@ use app\services\product\product\StoreProductReplyServices;
 use app\services\product\shipping\ShippingTemplatesServices;
 use app\services\store\SystemStoreServices;
 use crmeb\services\CacheService;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
+use think\Response;
 
 /**
  * 订单控制器
@@ -117,9 +122,9 @@ class StoreOrderController
      * @param ShippingTemplatesServices $services
      * @return mixed
      * @throws \Psr\SimpleCache\InvalidArgumentException
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function confirm(Request $request, ShippingTemplatesServices $services)
     {
@@ -149,8 +154,8 @@ class StoreOrderController
      * @param $key
      * @return mixed
      * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function computedOrder(Request $request, StoreOrderComputedServices $computedServices, $key)
@@ -188,9 +193,9 @@ class StoreOrderController
      * @return mixed
      * @throws \Psr\SimpleCache\InvalidArgumentException
      * @throws \think\Exception
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function create(Request $request, StoreOrderCreateServices $createServices, $key)
     {
@@ -574,9 +579,9 @@ class StoreOrderController
      * @param string $key
      * @param string $quitUrl
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function aliPay(OrderPayServices $payServices, OtherOrderServices $services, string $key, string $quitUrl)
     {
@@ -645,9 +650,9 @@ class StoreOrderController
      * @param StoreOrderPromotionsServices $storeOrderPromotiosServices
      * @param $uni
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function detail(Request $request, StoreOrderEconomizeServices $services, StoreOrderPromotionsServices $storeOrderPromotiosServices, $uni)
     {
@@ -982,8 +987,8 @@ class StoreOrderController
      * 订单评价
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function comment(Request $request, StoreOrderCartInfoServices $cartInfoServices, StoreProductReplyServices $replyServices, StoreOrderCommentServices $storeOrderCommentServices, UserCollageServices $collageservices)
@@ -1215,8 +1220,8 @@ class StoreOrderController
      * 订单取消   未支付的订单回退gaga币,回退优惠券,回退库存
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function cancel(Request $request)
@@ -1235,8 +1240,8 @@ class StoreOrderController
      * 订单商品信息
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws ModelNotFoundException
      * @throws \think\exception\DbException
      */
     public function product(Request $request, StoreOrderCartInfoServices $services)
@@ -1268,9 +1273,9 @@ class StoreOrderController
      * 门店线上支付订单详情
      * @param Request $request
      * @return mixed
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
     public function payCashierOrder(Request $request)
     {
@@ -1284,16 +1289,29 @@ class StoreOrderController
     /**订单核销记录
      * @param Request $request
      * @param StoreOrderWriteOffServices $services
-     * @return \think\Response
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
+     * @param mixed $id
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function writeOffRecords(Request $request, StoreOrderWriteOffServices $services, $id)
+    public function writeOffRecords(Request $request, StoreOrderWriteOffServices $services, $id = 0): Response
     {
-        if (!$id) return app('json')->fail('参数错误');
+        //if (!$id) return app('json')->fail('参数错误');
+        $id = is_numeric($id) ? (int) $id : 0;
         $uid = $request->uid();
-        return app('json')->successful($services->userOrderWriteOffRecords(['oid'=>$id, 'uid'=>$uid]));
-    }
 
+        $where = [];
+        /** @var SystemStoreStaffServices  $staffServices */
+        $staffServices = app()->make(SystemStoreStaffServices::class);
+        $staff = $staffServices->getOne(['uid' => $uid], 'store_id');
+        if ($staff) {
+            //是店员
+            $where['store_id'] = $staff['store_id'];
+        } else {
+            $where['uid'] = $uid;
+        }
+        if ($id) $where['id'] = $id;
+        return app('json')->successful($services->userOrderWriteOffRecords($where));
+    }
 }

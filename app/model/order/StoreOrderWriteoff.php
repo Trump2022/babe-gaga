@@ -97,6 +97,27 @@ class StoreOrderWriteoff extends BaseModel
     }
 
     /**
+     * @param $query
+     * @param $value
+     * @param $data
+     * @return void
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/23 18:16
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function searchStoreIdAttr($query, $value, $data)
+    {
+        if ($value) {
+            if (is_array($value)) {
+                $query->whereIn('store_id', $value);
+            } else {
+                $query->where('store_id', $value);
+            }
+        }
+    }
+
+    /**
      * UID搜索器
      * @param Model $query
      * @param $value

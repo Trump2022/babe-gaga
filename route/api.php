@@ -329,7 +329,7 @@ Route::group('api', function () {
         Route::get('order/data', 'v1.order.StoreOrderController/data')->name('orderData'); //订单统计数据
         Route::get('order/list', 'v1.order.StoreOrderController/lst')->name('orderList'); //订单列表
         Route::get('order/detail/:uni', 'v1.order.StoreOrderController/detail')->name('orderDetail'); //订单详情
-        Route::get('order/write/records/:id', 'v1.order.StoreOrderController/writeOffRecords')->name('writeOffRecords'); //订单核销记录
+        Route::get('order/write/records/[:id]', 'v1.order.StoreOrderController/writeOffRecords')->name('writeOffRecords'); //订单核销记录
         Route::get('delivery_order/detail/:id', 'v1.order.StoreOrderController/deliveryOrderDetail')->name('deliveryOrderDetail'); //配送订单详情
         //订单售后
         Route::get('order/refund/reason', 'v1.order.StoreOrderController/refund_reason')->name('orderRefundReason'); //订单退款理由
