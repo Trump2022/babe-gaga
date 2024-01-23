@@ -181,26 +181,26 @@
 					</view>
 				</template>
 				<template v-else>
-					<view class="store" v-if="orderInfo.applicable_stores.length > 0">
+					<view class="store" v-if="storeNewObj.count > 0">
 						<view class="title">
 							<text>适用门店</text>
 							<view class="bath-store" @click="checkStore">
-								{{orderInfo.applicable_stores.length}}家门店适用
+								{{storeNewObj.count}}家门店适用
 								<text class="iconfont icon-xiangyou"></text>
 							</view>
 						</view>
 						<view class="store-list">
 							<view class='address'>
-								<view class='name acea-row' @tap.stop="makePhone(orderInfo.applicable_stores[0].phone)">
-									<view class="nameCon">{{orderInfo.applicable_stores[0].name}}</view>
-									<text class='phone'>{{orderInfo.applicable_stores[0].phone}}</text>
+								<view class='name acea-row' @tap.stop="makePhone(storeNewObj.list[0].phone)">
+									<view class="nameCon">{{storeNewObj.list[0].name}}</view>
+									<text class='phone'>{{storeNewObj.list[0].phone}}</text>
 									<text class="iconfont icon-tonghua font-num"></text>
 								</view>
 								<view class='name acea-row'>
-									{{orderInfo.applicable_stores[0].day_time}}
+									{{storeNewObj.list[0].day_time}}
 								</view>
-								<view class="navigation" @tap="showMapLocation(orderInfo.applicable_stores[0])">
-									<text>{{orderInfo.applicable_stores[0].detailed_address}}</text>
+								<view class="navigation" @tap="showMapLocation(storeNewObj.list[0])">
+									<text>{{storeNewObj.list[0].detailed_address}}</text>
 									<view>
 										导航
 										<text class="iconfont icon-xiangyou"></text>
@@ -1137,7 +1137,8 @@
 <script>
 	// #ifdef MP
 	import {
-		getCodeData
+		getCodeData,
+		goodsStoreList
 	} from '@/api/store.js';
 	// #endif
 	import {
@@ -1263,7 +1264,8 @@
 				// #ifdef MP
 				tableCode: {},
 				// #endif
-				tempFilePath:''
+				tempFilePath:'',
+				storeNewObj: {}
 			};
 		},
 		computed: mapGetters(['isLogin']),
@@ -1308,6 +1310,15 @@
 			// #endif
 		},
 		methods: {
+			getStoreListFn(product_id) {
+				goodsStoreList({
+					product_id,
+					limit: 1,
+					page: 1
+				}).then(res => {
+					this.storeNewObj = res.data
+				})
+			},
 			generate(e){
 				this.tempFilePath = e.img.tempFilePath;
 			},
@@ -1572,6 +1583,7 @@
 					if (that.orderInfo.type == 10) {
 						that.getCodeData();
 					}
+					that.getStoreListFn(res.data.cartInfo[0].product_id)
 					// #endif
 				}).catch(err => {
 					uni.hideLoading();

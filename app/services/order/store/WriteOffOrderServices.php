@@ -592,7 +592,10 @@ class WriteOffOrderServices extends BaseServices
         if ($orderInfo['product_type'] != 4) {
             throw new ValidateException('订单商品不支持此类型核销');
         }
-        $name = ($cartInfo[0]['write_surplus_times'] ?? 0) . '/' . ($cartInfo[0]['write_times'] ?? 0);
+        $write_times = $cartInfo[0]['write_times'] ?? 0;
+        $write_surplus_times = $cartInfo[0]['write_surplus_times'] ?? 0;
+        $write_have_times = $write_times - $write_surplus_times;
+        $name = $write_have_times . '/' . $write_times;
         $f[] = Form::hidden('cart_id', $cartInfo[0]['cart_id'] ?? 0);
         $f[] = Form::input('name', '核销数', $name)->disabled(true);
         $f[] = Form::number('cart_num', '本次核销数量', min(max($cart_num, 1), $cartInfo[0]['write_surplus_times'] ?? 0))->min(1)->max($cartInfo[0]['write_surplus_times'] ?? 1);
@@ -617,6 +620,10 @@ class WriteOffOrderServices extends BaseServices
         $list = $this->writeoffDao->getList(['oid' => $oid], $field = '*', $page = 0, $limit = 0, $with);
         foreach ($list as &$item){
             $item['add_time'] = date('Y-m-d H:i:s', $item['add_time']);
+            if(empty($item['store_id'])){
+                $item['staff_name'] = '平台';
+                $item['store_name'] = '平台';
+            }
         }
         return $list;
     }

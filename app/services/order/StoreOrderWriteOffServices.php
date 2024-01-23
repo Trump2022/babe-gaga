@@ -226,6 +226,10 @@ class StoreOrderWriteOffServices extends BaseServices
                 $value['productInfo']['store_name'] = $value['productInfo']['store_name'] ?? "";
                 $value['productInfo']['store_name'] = substrUTf8($value['productInfo']['store_name'], 10, 'UTF-8', '');
                 $item['cartInfo'] = $value;
+                if(empty($item['store_id'])){
+                    $item['staff_name'] = '平台';
+                    $item['store_name'] = '平台';
+                }
             }
             $times = array_merge(array_unique(array_column($list, 'time_key')));
         }
