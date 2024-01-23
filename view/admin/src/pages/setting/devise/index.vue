@@ -225,6 +225,7 @@
 import {categoryList, diyGetInfo, diySave, getUrl, setDefault, recovery} from "@/api/diy";
 import vuedraggable from "vuedraggable";
 import mPage from "@/components/mobilePage/index.js";
+import mPage1 from "@/components/mobilePage1/index.js";
 import mConfig from "@/components/mobileConfig/index.js";
 import footPage from "@/components/pagesFoot";
 import {mapState} from "vuex";
@@ -239,6 +240,7 @@ export default {
     html2canvas,
     draggable: vuedraggable,
     ...mPage,
+    ...mPage1,
     ...mConfig,
   },
   filters: {
@@ -305,7 +307,8 @@ export default {
     this.pageId = this.$route.query.id;
     this.pageName = this.$route.query.name;
     this.pageType = this.$route.query.type;
-    this.lConfig = this.objToArr(mPage);
+    console.log('mPage1=====>', mPage1);
+    this.lConfig = this.$route.query.type == 1 ? this.objToArr(mPage1) : this.objToArr(mPage);
   },
   mounted() {
     let imgList =  {

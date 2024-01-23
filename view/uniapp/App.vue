@@ -8,7 +8,8 @@
 	import {
 		getShopConfig,
 		silenceAuth,
-		getLogo
+		getLogo,
+		getconfig
 	} from '@/api/public';
 	import Auth from '@/libs/wechat.js';
 	import Routine from './libs/routine.js';
@@ -45,7 +46,10 @@
 			globalData: false,
 			isIframe: false,
 			tabbarShow: true,
-			windowHeight: 0
+			windowHeight: 0,
+			community_reply_status: 0,
+			community_app_switch: [],
+			community_reply_auth: 0,
 		},
 		computed: mapGetters(['isLogin', 'cartNum']),
 		watch: {
@@ -74,6 +78,12 @@
 			}
 		},
 		onLaunch: async function(option) {
+			uni.removeStorageSync('curTabBar')
+			uni.removeStorageSync('tabBar1')
+			uni.removeStorageSync('tabBar2')
+			uni.removeStorageSync('tabBarType')
+			uni.removeStorageSync('crossTabbarList')
+			this.getConfigData()
 			//#ifdef APP
 			plus.screen.lockOrientation("portrait-primary");
 			//#endif
@@ -328,6 +338,24 @@
 			// }, 100)
 		},
 		methods: {
+			// 获取配置
+			getConfigData(){
+				getconfig().then(res => {
+					uni.$emit('update', res.data)
+					this.$store.commit('GLOBAL_DATA', res.data);
+					this.globalData.community_reply_status = res.data.community_reply_status
+					this.globalData.community_app_switch = res.data.community_app_switch
+					this.globalData.community_reply_auth = res.data.community_reply_auth
+					try {
+						uni.setStorageSync('SUBSCRIBE_MESSAGE', res.data.tempid);
+					} catch (e) {
+						// error
+					}
+					// #ifdef H5
+					this.setOpenShare(res.data);
+					// #endif
+				}).catch(err => {});
+			},
 			// 小程序静默授权
 			silenceAuth(code) {
 				let that = this;
@@ -412,6 +440,7 @@
 	@import url('@/plugin/animate/animate.min.css');
 	@import 'static/css/base.css';
 	@import 'static/iconfont/iconfont.css';
+	@import 'static/iconfont/iconfont1.css';
 	@import 'static/css/guildford.css';
 	@import 'static/css/style.scss';
 

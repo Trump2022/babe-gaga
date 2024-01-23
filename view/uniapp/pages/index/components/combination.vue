@@ -5,7 +5,7 @@
 			<view class="hd">
 				<view class="left">
 					<image :src="imgUrl" mode=""v-if="imgUrl" class="icon"></image>
-					<image src="/static/images/group02.gif" class="icon" v-else></image>
+					<image src="https://gaga.fanxinghy.com/images/group02.gif" class="icon" v-else></image>
 					
 					<view class="name" :style="'color:'+titleColor">拼团活动</view>
 					<!-- <image src="/static/images/group01.png" class="title"></image> -->

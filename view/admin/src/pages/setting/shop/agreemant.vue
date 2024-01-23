@@ -54,6 +54,7 @@ export default {
         { label: "用户协议", value: "user" },
 		    { label: "注销协议", value: "cancel" },
         { label: "供应商入住协议", value: "supplier" },
+        { label: "快游鸭协议", value: "buy" },
       ],
       id: 0,
       list: 0,

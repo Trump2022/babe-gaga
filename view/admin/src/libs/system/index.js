@@ -9,48 +9,56 @@ import { cloneDeep } from 'lodash';
  * @param {String} currentPath 当前路径
  * @param {Array} menuList 所有路径
  * */
-function getHeaderName (to, menuList) {
-    const allMenus = [];
-    menuList.forEach(menu => {
-        const headerName = menu.header || '';
-        const menus = transferMenu(menu, headerName);
-        allMenus.push({
-            path: menu.path,
-            header: headerName
-        });
-        menus.forEach(item => allMenus.push(item));
+function getHeaderName(to, menuList) {
+  const allMenus = [];
+  menuList.forEach((menu) => {
+    const headerName = menu.header || '';
+    const menus = transferMenu(menu, headerName);
+    allMenus.push({
+      path: menu.path,
+      header: headerName,
     });
-    const currentMenu = allMenus.find(item => {
-        if (item.path === to.path) { return true; } else { return to.path === getPath(to, item.path); }
-    });
-    return currentMenu ? currentMenu.header : null;
-}
-
-function getPath (to, path) {
-    let params = [];
-    let query = [];
-    Object.keys(to.params).forEach((item) => {
-        params.push(to.params[item])
-    })
-    Object.keys(to.query).forEach((item) => {
-        query.push(item + '=' + to.query[item])
-    })
-    return path + (params.length ? '/' + params.join('/') : '') + (query.length ? '?' + query.join('&') : '');
-}
-
-function transferMenu (menu, headerName) {
-    if (menu.children && menu.children.length) {
-        return menu.children.reduce((all, item) => {
-            all.push({
-                path: item.path,
-                header: headerName
-            });
-            const foundChildren = transferMenu(item, headerName);
-            return all.concat(foundChildren);
-        }, []);
+    menus.forEach((item) => allMenus.push(item));
+  });
+  const currentMenu = allMenus.find((item) => {
+    if (item.path === to.path) {
+      return true;
     } else {
-        return [menu];
+      return to.path === getPath(to, item.path);
     }
+  });
+  return currentMenu ? currentMenu.header : null;
+}
+
+function getPath(to, path) {
+  let params = [];
+  let query = [];
+  Object.keys(to.params).forEach((item) => {
+    params.push(to.params[item]);
+  });
+  Object.keys(to.query).forEach((item) => {
+    query.push(item + '=' + to.query[item]);
+  });
+  return (
+    path +
+    (params.length ? '/' + params.join('/') : '') +
+    (query.length ? '?' + query.join('&') : '')
+  );
+}
+
+function transferMenu(menu, headerName) {
+  if (menu.children && menu.children.length) {
+    return menu.children.reduce((all, item) => {
+      all.push({
+        path: item.path,
+        header: headerName,
+      });
+      const foundChildren = transferMenu(item, headerName);
+      return all.concat(foundChildren);
+    }, []);
+  } else {
+    return [menu];
+  }
 }
 
 export { getHeaderName };
@@ -60,8 +68,8 @@ export { getHeaderName };
  * @param {String} currentPath 当前路径
  * @param {Array} menuList 所有路径
  * */
-function getHeaderSider (menuList) {
-    return menuList.filter(item => item.is_header === 1);
+function getHeaderSider(menuList) {
+  return menuList.filter((item) => item.is_header === 1);
 }
 
 export { getHeaderSider };
@@ -71,12 +79,12 @@ export { getHeaderSider };
  * @param {Array} menuList 所有的二级菜单
  * @param {String} headerName 当前顶栏菜单的 name
  * */
-function getMenuSider (menuList, headerName = '') {
-    if (headerName) {
-        return menuList.filter(item => item.header === headerName);
-    } else {
-        return menuList;
-    }
+function getMenuSider(menuList, headerName = '') {
+  if (headerName) {
+    return menuList.filter((item) => item.header === headerName);
+  } else {
+    return menuList;
+  }
 }
 
 export { getMenuSider };
@@ -100,43 +108,43 @@ export { getMenuSider };
 //     return currentMenu ? currentMenu.openNames : [];
 // }
 
-function getSiderSubmenu (to, menuList) {
-    const allMenus = [];
-    menuList.forEach(menu => {
-        const menus = transferSubMenu(menu, []);
-        allMenus.push({
-            path: menu.path,
-            openNames: []
-        });
-        menus.forEach(item => allMenus.push(item));
+function getSiderSubmenu(to, menuList) {
+  const allMenus = [];
+  menuList.forEach((menu) => {
+    const menus = transferSubMenu(menu, []);
+    allMenus.push({
+      path: menu.path,
+      openNames: [],
     });
-    const currentMenu = allMenus.find(item =>{
-        if(item.openNames.length){
-            return item.path === to.path || to.path === getPath(to, item.path)
-        }
-    });
-    return currentMenu ? currentMenu.openNames : [];
+    menus.forEach((item) => allMenus.push(item));
+  });
+  const currentMenu = allMenus.find((item) => {
+    if (item.openNames.length) {
+      return item.path === to.path || to.path === getPath(to, item.path);
+    }
+  });
+  return currentMenu ? currentMenu.openNames : [];
 }
 
-function transferSubMenu (menu, openNames) {
-    if (menu.children && menu.children.length) {
-        const itemOpenNames = openNames.concat([menu.path]);
-        return menu.children.reduce((all, item) => {
-            all.push({
-                path: item.path,
-                openNames: itemOpenNames
-            });
-            const foundChildren = transferSubMenu(item, itemOpenNames);
-            return all.concat(foundChildren);
-        }, []);
-    } else {
-        return [menu].map(item => {
-            return {
-                path: item.path,
-                openNames: openNames
-            }
-        });
-    }
+function transferSubMenu(menu, openNames) {
+  if (menu.children && menu.children.length) {
+    const itemOpenNames = openNames.concat([menu.path]);
+    return menu.children.reduce((all, item) => {
+      all.push({
+        path: item.path,
+        openNames: itemOpenNames,
+      });
+      const foundChildren = transferSubMenu(item, itemOpenNames);
+      return all.concat(foundChildren);
+    }, []);
+  } else {
+    return [menu].map((item) => {
+      return {
+        path: item.path,
+        openNames: openNames,
+      };
+    });
+  }
 }
 
 export { getSiderSubmenu };
@@ -144,30 +152,30 @@ export { getSiderSubmenu };
 /**
  * @description 递归获取所有子菜单
  * */
-function getAllSiderMenu (menuList) {
-    let allMenus = [];
+function getAllSiderMenu(menuList) {
+  let allMenus = [];
 
-    menuList.forEach(menu => {
-        if (menu.children && menu.children.length) {
-            const menus = getMenuChildren(menu);
-            menus.forEach(item => allMenus.push(item));
-        } else {
-            allMenus.push(menu);
-        }
-    });
+  menuList.forEach((menu) => {
+    if (menu.children && menu.children.length) {
+      const menus = getMenuChildren(menu);
+      menus.forEach((item) => allMenus.push(item));
+    } else {
+      allMenus.push(menu);
+    }
+  });
 
-    return allMenus;
+  return allMenus;
 }
 
-function getMenuChildren (menu) {
-    if (menu.children && menu.children.length) {
-        return menu.children.reduce((all, item) => {
-            const foundChildren = getMenuChildren(item);
-            return all.concat(foundChildren);
-        }, []);
-    } else {
-        return [menu];
-    }
+function getMenuChildren(menu) {
+  if (menu.children && menu.children.length) {
+    return menu.children.reduce((all, item) => {
+      const foundChildren = getMenuChildren(item);
+      return all.concat(foundChildren);
+    }, []);
+  } else {
+    return [menu];
+  }
 }
 
 export { getAllSiderMenu };
@@ -175,16 +183,16 @@ export { getAllSiderMenu };
 /**
  * @description 将菜单转为平级
  * */
-function flattenSiderMenu (menuList, newList) {
-    menuList.forEach(menu => {
-        let newMenu = {};
-        for (let i in menu) {
-            if (i !== 'children') newMenu[i] = cloneDeep(menu[i]);
-        }
-        newList.push(newMenu);
-        menu.children && flattenSiderMenu(menu.children, newList);
-    });
-    return newList;
+function flattenSiderMenu(menuList, newList) {
+  menuList.forEach((menu) => {
+    let newMenu = {};
+    for (let i in menu) {
+      if (i !== 'children') newMenu[i] = cloneDeep(menu[i]);
+    }
+    newList.push(newMenu);
+    menu.children && flattenSiderMenu(menu.children, newList);
+  });
+  return newList;
 }
 
 export { flattenSiderMenu };
@@ -193,18 +201,18 @@ export { flattenSiderMenu };
  * @description 判断列表1中是否包含了列表2中的某一项
  * 因为用户权限 access 为数组，includes 方法无法直接得出结论
  * */
-function includeArray (list1, list2) {
-    let status = false;
-    if (list1 === true) {
-        return true
-    } else {
-        if (typeof list2 !== 'object') {
-            return false;
-        }
-        list2.forEach(item => {
-            if (list1.includes(item)) status = true;
-        });
-        return status;
+function includeArray(list1, list2) {
+  let status = false;
+  if (list1 === true) {
+    return true;
+  } else {
+    if (typeof list2 !== 'object') {
+      return false;
     }
+    list2.forEach((item) => {
+      if (list1.includes(item)) status = true;
+    });
+    return status;
+  }
 }
 export { includeArray };

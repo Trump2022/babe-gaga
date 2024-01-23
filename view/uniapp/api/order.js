@@ -241,7 +241,7 @@ export function orderConfirm(cartId, news, addressId, shippingType, store_id, co
  * 
  */
 export function getCouponsOrderPrice(price, data) {
-	return request.get('coupons/order/' + price, data)
+	return request.get('coupons/order', data)
 }
 
 /**

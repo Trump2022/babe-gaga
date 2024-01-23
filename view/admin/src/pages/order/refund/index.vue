@@ -12,6 +12,12 @@
           :label-position="labelPosition"
           @submit.native.prevent
         >
+        <FormItem label="订单：">
+            <Select v-model="pagination.is_class" class="input-add">
+              <Option value="1">课程订单</Option>
+              <Option value="0">商城订单</Option>
+            </Select>
+          </FormItem>
           <FormItem label="订单状态：">
             <Select v-model="pagination.refund_type" class="input-add">
               <Option
@@ -302,6 +308,7 @@ export default {
         order_id: "",
         time: "",
         refund_type: 0,
+        is_class: '1'
       },
       options: timeOptions,
       timeVal: [],

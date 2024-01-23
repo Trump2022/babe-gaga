@@ -58,7 +58,7 @@
 						这里 update 用于刷新视图
 
 						-->
-						<block v-for="(li,inde) in list.reply" v-if="list.isShow">
+						<block v-for="(li,inde) in list.reply" :key="inde" v-if="list.isShow">
 							<view :style="'width: '+ (Width*0.8) +'px; display: flex; flex-direction: row;'">
 								<!-- 9.子评论 用户头像 -->
 								<image :src="li.avatar" mode="aspectFill" class="childrenPic"></image>

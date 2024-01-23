@@ -5,7 +5,7 @@
 			<view class="hd">
 				<view class="left">
 					<image :src="imgUrl" class="icon" v-if="imgUrl"></image>
-					<image src="/static/images/spike-icon-002.gif" class="icon" v-else></image>
+					<image src="https://gaga.fanxinghy.com/images/spike-icon-002.gif" class="icon" v-else></image>
 					
 					<view class="name" :style="'color:'+titleColor">限时秒杀</view>
 					<!-- <image src="/static/images/spike-icon-001.png" class="title"></image> -->

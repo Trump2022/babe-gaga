@@ -1,10 +1,32 @@
 <template>
 	<view :style="colorStyle">
-		<view v-if="records.length" class="verify-wrapper">
-			<view v-for="section in records" :key="section.time" class="section">
-				<view class="head">{{ section.time }}</view>
+		<!-- <view v-if="records.length" class="verify-wrapper">
+			<view v-for="section in records.list" :key="item.id" class="section">
+				<view class="head">
+					<text class="store-name">{{ section.store_name }}</text>
+					<text>{{ section.time }}</text>
+				</view>
 				<view class="body">
-					<view v-for="item in section.list" :key="item.id" class="item">
+					<view class="item">
+						<image class="image" :src="item.cartInfo.attrInfo.image" mode=""></image>
+						<view class="detail">
+							<view class="title">{{ item.cartInfo.productInfo.store_name }}</view>
+							<view class="attribute">{{ item.cartInfo.attrInfo.suk }}</view>
+							<view class="money">￥{{ item.cartInfo.attrInfo.price }}</view>
+						</view>
+						<view class="count">x {{ item.writeoff_num }}</view>
+					</view>
+				</view>
+			</view>
+		</view> -->
+		<view v-if="recordsList.length" class="verify-wrapper">
+			<view v-for="item in recordsList" :key="item.id" class="section">
+				<view class="head">
+					<text class="store-name">{{ item.store_name }}</text>
+					<text>{{ item.add_time }}</text>
+				</view>
+				<view class="body">
+					<view class="item">
 						<image class="image" :src="item.cartInfo.attrInfo.image" mode=""></image>
 						<view class="detail">
 							<view class="title">{{ item.cartInfo.productInfo.store_name }}</view>
@@ -48,7 +70,8 @@
 				loadend: false,
 				list: [],
 				time: [],
-				records: []
+				records: [],
+				recordsList: []
 			}
 		},
 		onLoad(options) {
@@ -81,6 +104,7 @@
 					}));
 					this.loading = false;
 					this.loadend = this.list.length === count;
+					this.recordsList = res.data.list
 				}).catch(err => {
 					this.loading = false;
 					this.$util.Tips({
@@ -105,10 +129,15 @@
 		.head {
 			display: flex;
 			align-items: center;
+			justify-content: space-between;
 			padding: 22rpx 30rpx;
 			font-size: 28rpx;
 			line-height: 42rpx;
 			color: #999999;
+			
+			.store-name {
+				color: #222;
+			}
 		}
 
 		.body {

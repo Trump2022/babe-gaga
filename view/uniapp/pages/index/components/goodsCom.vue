@@ -2,23 +2,23 @@
 	<view class="box">
 		<view class="title">
 			<text>{{item.cate_name}}</text>
-			<view class="more">
+			<view class="more" @click="gotoList(item.id)">
 				<text>更多</text>
 				<image src="/static/images/check_more.png" mode="widthFix"></image>
 			</view>
 		</view>
 		
 		<view class="cate">
-			<view class="cate-list">
+			<scroll-view scroll-x enable-flex class="cate-list">
 				<view class="cate-item" v-for="(item, index) in item.children" :key="item.id" :class="index == active ? 'active' : ''" @click="swtichCate(index)">
 					{{item.cate_name}}
 				</view>
-			</view>
+			</scroll-view>
 		</view>
 		
-		<scroll-view  scroll-x :scroll-into-view="scrollIndex">
+		<scroll-view  scroll-x :scroll-into-view="scrollIndex" @scroll="onScroll">
 			<view class="list">
-				<view class="item" v-for="(item, index) in goodsList" :key="item.id" :id="'scroll'+index">
+				<view class="item" v-for="(item, i) in goodsList" :key="item.product_id" :id="'scroll'+index+i" @click="goto(item.product_id)">
 					<image :src="item.image"></image>
 					<view class="text-box">
 						<text class="name">{{item.store_name}}</text>
@@ -48,6 +48,10 @@
 			item: {
 				type: Object,
 				default: () => {}
+			},
+			index: {
+				type: Number,
+				default: () => 0
 			}
 		},
 		data() {
@@ -72,8 +76,24 @@
 		},
 		methods: {
 			swtichCate(index) {
-				this.scrollIndex = 'scroll' + index
+				this.scrollIndex = 'scroll' + this.index + index
 				this.active = index
+			},
+			onScroll({ detail }) {
+				const offsetLeft = detail.scrollLeft; // 获取滚动条相对于顶部的偏移量
+				this.active = Math.floor(offsetLeft * 2 / 430); // 根据偏移量计算当前所处的索引
+				this.scrollIndex = 'scroll' + this.active
+			},
+			goto(id) {
+				uni.navigateTo({
+					url: `/pages/class_details/index?id=${id}`
+					// url: `/pages/goods_details/index?id=${id}`
+				})
+			},
+			gotoList(id) {
+				uni.navigateTo({
+					url: `/pages/classes/list/list?id=${id}`
+				})
 			}
 		}
 	}
@@ -85,6 +105,7 @@
 		border-radius: 18rpx;
 		margin: 48rpx 18rpx;
 		padding-bottom: 30rpx;
+		overflow: hidden;
 		
 		.title {
 			padding: 30rpx;
@@ -110,11 +131,16 @@
 		
 		.list {
 			display: flex;
-			padding: 0 30rpx;
+			padding-right: 0;
 			
 			.item {
-				margin-right: 30rpx;
+				padding-left: 30rpx;
 				width: 400rpx;
+				box-sizing: content-box;
+				
+				&:last-child {
+					padding-right: 30rpx;
+				}
 				image {
 					width: 400rpx;
 					height: 400rpx;
@@ -126,6 +152,10 @@
 						color: #231815;
 						font-weight: bold;
 						font-size: 34rpx;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						white-space: nowrap;
+						display: block;
 					}
 					
 					text {
@@ -164,21 +194,23 @@
 					text-overflow: ellipsis;
 					font-size: 24rpx;
 					color: #97A1AB;
+					height: 34rpx;
 				}
 			}
-			
-			
 		}
 		
 		.cate {
-			margin-bottom: 36rpx;
+			margin-bottom: 20rpx;
 			// overflow-x: auto;
 			.cate-list {
 				display: flex;
 				padding: 0 30rpx;
+				height: 60rpx;
 				
 				.cate-item {
 					margin-right: 30rpx;
+					white-space: nowrap;
+					height: 44rpx;
 				}
 				
 				.active {

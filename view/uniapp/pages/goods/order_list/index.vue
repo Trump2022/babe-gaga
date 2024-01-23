@@ -22,11 +22,11 @@
 					<view class="num">{{ orderData.unpaid_count || 0 }}</view>
 				</view>
 				<view class="item" :class="orderStatus == 1 ? 'on' : ''" @click="statusClick(1)">
-					<view>待发货</view>
+					<view>待发货/待核销</view>
 					<view class="num">{{ orderData.unshipped_count || 0 }}</view>
 				</view>
 				<view class="item" :class="orderStatus == 2 ? 'on' : ''" @click="statusClick(2)">
-					<view>待收货</view>
+					<view>待收货/使用中</view>
 					<view class="num ">{{ orderData.received_count || 0 }}</view>
 				</view>
 				<view class="item" :class="orderStatus == 3 ? 'on' : ''" @click="statusClick(3)">
@@ -60,14 +60,14 @@
 							</view>
 							<view v-if="item._status._type == 9" class="font-color">线下付款,未支付</view>
 							<view v-else-if="item._status._type == 0" class="font-color">待付款</view>
-							<view v-else-if="item._status._type == 1 && (item.shipping_type == 1 || item.shipping_type == 3)" class="font-color">待发货
+							<view v-else-if="item._status._type == 1 && (item.shipping_type == 1 || item.shipping_type == 3)" class="font-color">{{item.is_class == 1 ? '待使用' : '待发货'}}
 							   <text v-if="item.refund.length">{{item.is_all_refund?'，退款中':'，部分退款中'}}</text>
 							</view>
 							<view v-else-if="item._status._type == 1 && (item.shipping_type == 2 || item.shipping_type == 4)"  class="font-color">
 								{{item.shipping_type == 2?'待核销':'待收货'}}
 								 <text v-if="item.refund.length">{{item.is_all_refund?'，退款中':'，部分退款中'}}</text>
 							</view>
-							<view v-else-if="item._status._type == 2" class="font-color">待收货
+							<view v-else-if="item._status._type == 2" class="font-color">{{item.is_class == 1 ? '使用中' : '待收货'}}
 							   <text v-if="item.refund.length">{{item.is_all_refund?'，退款中':'，部分退款中'}}</text>
 							</view>
 							<view v-else-if="item._status._type == 3" class="font-color">待评价

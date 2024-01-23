@@ -40,32 +40,65 @@
 		props: {},
 		computed: mapGetters(['isLogin', 'cartNum']),
 		created() {
+			this.type = uni.getStorageSync('tabBarType')
+			this.crossTabbarList = uni.getStorageSync('crossTabbarList')
 			let routes = getCurrentPages(); //获取当前打开过的页面路由数组
 			let curRoute = routes[routes.length - 1].route //获取当前页面路由
 			this.activeRouter = '/' + curRoute
 		},
 		mounted() {
-			this.navigationInfo();
 			if (this.isLogin) {
 				this.getCartNum()
 			}
+			this.navigationInfo();
 		},
 		data() {
 			return {
 				newData: {},
-				activeRouter:''
+				activeRouter:'',
+				type: 0,
+				crossTabbarList: []
 			}
 		},
 		methods: {
-			navigationInfo(){
-				getNavigation({type: 2}).then(res => {
+			navigationInfo(type = 1){
+				const curTabBar = uni.getStorageSync('curTabBar')
+				const tabBar1 = uni.getStorageSync('tabBar1')
+				const tabBar2 = uni.getStorageSync('tabBar2')
+				if(tabBar1 && tabBar2) {
+					if(tabBar1.includes(this.activeRouter)) {
+						type = 1
+					}
+					if(tabBar2.includes(this.activeRouter)) {
+						type = 2
+					}
+				}
+				if(this.crossTabbarList.includes(this.activeRouter) && this.crossTabbarList.length) {
+					console.log('进来判断')
+					type = this.type
+				}
+				getNavigation({type}).then(res => {
 					this.newData = res.data
 					this.$emit('newDataStatus', this.newData.status?this.newData.status.status:false)
+					if(!tabBar1) {
+						uni.setStorageSync('tabBar1', this.newData.menuList.map(item => item.link))
+					}
+					uni.setStorageSync('curTabBar', this.newData.menuList.map(item => item.link))
 					if (this.newData.status && this.newData.status.status) {
 						uni.hideTabBar()
 					} else {
 						uni.showTabBar()
 					}
+					if(type == 2) {
+						uni.setStorageSync('tabBar2', this.newData.menuList.map(item => item.link))
+					}
+					if(!tabBar2) {
+						this.navigationInfo(2)
+					}
+					if(tabBar1 && tabBar2) {
+						uni.setStorageSync('crossTabbarList', tabBar1.filter(item => tabBar2.includes(item)))
+					}
+					uni.setStorageSync('tabBarType', type)
 				})
 			},
 			goRouter(item) {

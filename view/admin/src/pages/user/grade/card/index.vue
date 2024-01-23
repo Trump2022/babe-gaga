@@ -49,7 +49,7 @@
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <template>
-            <Dropdown @on-click="changeMenu(row, $event, index)">
+            <Dropdown transfer @on-click="changeMenu(row, $event, index)">
               <a href="javascript:void(0)">
                 更多
                 <Icon type="ios-arrow-down"></Icon>

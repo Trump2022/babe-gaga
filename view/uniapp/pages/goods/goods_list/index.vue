@@ -270,7 +270,7 @@
 	import home from '@/components/home';
 	import homeList from '@/components/homeList'
 	import productWindow from '@/components/productWindow';
-	import waterfallsFlow from "@/components/maramlee-waterfalls-flow/maramlee-waterfalls-flow.vue";
+	import waterfallsFlow from "../components/maramlee-waterfalls-flow/maramlee-waterfalls-flow.vue";
 	import {
 		getProductslist,
 		getProductHot,

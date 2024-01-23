@@ -48,7 +48,7 @@
 						</view>
 						<view :class="status.type == 2 ? 'on':''"
 							v-if="(orderInfo.shipping_type == 1 || orderInfo.shipping_type == 3) && orderInfo.type != 10">待收货</view>
-						<view v-if="orderInfo.type != 8" :class="status.type == 3 ? 'on':''">待评价</view>
+						<view v-if="orderInfo.type != 8 && orderInfo.is_class == 0" :class="status.type == 3 ? 'on':''">待评价</view>
 						<view :class="status.type == 4 ? 'on':''">已完成</view>
 					</view>
 					<view class='progress acea-row row-between-wrapper'>
@@ -94,28 +94,30 @@
 					</view>
 					<view class="num">{{orderInfo._verify_code}}</view>
 					<view class="rules">
-						<view class="item" v-if="orderInfo.shipping_type == 2 && orderInfo.product_type==4"> 
-							<view class="rulesTitle acea-row row-middle">
-								<text class="iconfont icon-tishi"></text>核销信息
+						<template v-if="orderInfo.is_class == 0">
+							<view class="item" v-if="orderInfo.shipping_type == 2 && orderInfo.product_type==4">
+								<view class="rulesTitle acea-row row-middle">
+									<text class="iconfont icon-tishi"></text>核销信息
+								</view>
+								<view class="info">
+									核销次数：<text class="font-num">{{orderInfo.write_off}}</text>/{{orderInfo.write_times}}
+								</view>
 							</view>
-							<view class="info">
-								核销次数：<text class="font-num">{{orderInfo.write_off}}</text>/{{orderInfo.write_times}}
+							<view class="item" v-if="orderInfo.shipping_type == 2 && orderInfo.product_type==4">
+								<view class="rulesTitle acea-row row-middle">
+									<text class="iconfont icon-shijian"></text>核销时间
+								</view>
+								<view class="info">{{orderInfo.write_day}}</view>
 							</view>
-						</view>
-						<view class="item" v-if="orderInfo.shipping_type == 2 && orderInfo.product_type==4">
-							<view class="rulesTitle acea-row row-middle">
-								<text class="iconfont icon-shijian"></text>核销时间
+							<view class="item" v-if="orderInfo.shipping_type == 2">
+								<view class="rulesTitle acea-row row-middle">
+									<text class="iconfont icon-shijian"></text>营业时间
+								</view>
+								<view class="info">
+									每日：{{orderInfo.system_store.day_time}}
+								</view>
 							</view>
-							<view class="info">{{orderInfo.write_day}}</view>
-						</view>
-						<view class="item" v-if="orderInfo.shipping_type == 2">
-							<view class="rulesTitle acea-row row-middle">
-								<text class="iconfont icon-shijian"></text>营业时间
-							</view>
-							<view class="info">
-								每日：{{orderInfo.system_store.day_time}}
-							</view>
-						</view>
+						</template>
 						<view class="item">
 							<view class="rulesTitle acea-row row-middle">
 								<text class="iconfont icon-shuoming1"></text>使用说明
@@ -125,27 +127,89 @@
 						</view>
 					</view>
 				</view>
-				<view class="map acea-row row-between-wrapper" v-if="orderInfo.shipping_type == 2">
-					<view>自提地址信息</view>
-					<view class="place cart-color acea-row row-center-wrapper" @tap="showMaoLocation">
-						<text class="iconfont icon-weizhi"></text>查看位置
+				
+				<template v-if="orderInfo.is_class == 1">
+					<view class='wrapper'>
+						<view class='item acea-row row-between'>
+							<view>使用时效：</view>
+							<view class='conter'>{{orderInfo.cartInfo[0].write_days}}天</view>
+						</view>
+						<view class='item acea-row row-between'>
+							<view>使用次数：</view>
+							<view class='conter'>{{orderInfo.used_times_str}}</view>
+						</view>
+						<template v-if="orderInfo.used_times == 0">
+							<view class='item acea-row row-between'>
+								<view>激活时间：</view>
+								<view class='conter'>{{orderInfo.active_time.length == 0 ? '不限时' : orderInfo.active_time.length == 1 ? `请${orderInfo.active_time[0]}前进行激活` : `请${orderInfo.active_time[0]}至${orderInfo.active_time[1]}内进行激活`}}</view>
+							</view>
+						</template>
+						<template v-else>
+							<view class='item acea-row row-between'>
+								<view>激活时间：</view>
+								<view class='conter'>{{orderInfo.active_time[0]}}</view>
+							</view>
+						</template>
+						<view class='item acea-row row-between'>
+							<view>使用期限：</view>
+							<view class='conter'>{{orderInfo.use_expire_time || '激活后开始计算'}}</view>
+						</view>
 					</view>
-				</view>
-				<view class='address' v-if="(orderInfo.shipping_type === 1 || orderInfo.shipping_type === 3) && orderInfo.product_type==0 && orderInfo.type != 10">
-					<view class='name'>{{orderInfo.real_name}}<text class='phone'>{{orderInfo.user_phone}}</text></view>
-					<view>{{orderInfo.user_address}}</view>
-				</view>
-				<view class='address' v-if="(orderInfo.shipping_type === 2 || orderInfo.shipping_type === 4) && (orderInfo.product_type==0 || orderInfo.product_type==4)">
-					<view class='name acea-row' @tap="makePhone">
-						<view class="nameCon">{{orderInfo.system_store.name}}</view>
-						<text class='phone'>{{orderInfo.system_store.phone}}</text>
-						<text class="iconfont icon-tonghua font-num"></text>
+				</template>
+				
+				<template v-if="orderInfo.is_class == 0">
+					<view class="map acea-row row-between-wrapper" v-if="orderInfo.shipping_type == 2">
+						<view>自提地址信息</view>
+						<view class="place cart-color acea-row row-center-wrapper" @tap="showMaoLocation">
+							<text class="iconfont icon-weizhi"></text>查看位置
+						</view>
 					</view>
-					<view>{{orderInfo.system_store.detailed_address}}</view>
-				</view>
-				<view class='line' v-if="orderInfo.shipping_type === 1 && orderInfo.type != 10">
-					<image src='@/static/images/line.jpg'></image>
-				</view>
+					<view class='address' v-if="(orderInfo.shipping_type === 1 || orderInfo.shipping_type === 3) && orderInfo.product_type==0 && orderInfo.type != 10">
+						<view class='name'>{{orderInfo.real_name}}<text class='phone'>{{orderInfo.user_phone}}</text></view>
+						<view>{{orderInfo.user_address}}</view>
+					</view>
+					<view class='address' v-if="(orderInfo.shipping_type === 2 || orderInfo.shipping_type === 4) && (orderInfo.product_type==0 || orderInfo.product_type==4)">
+						<view class='name acea-row' @tap.stop="makePhone">
+							<view class="nameCon">{{orderInfo.system_store.name}}</view>
+							<text class='phone'>{{orderInfo.system_store.phone}}</text>
+							<text class="iconfont icon-tonghua font-num"></text>
+						</view>
+						<view>{{orderInfo.system_store.detailed_address}}</view>
+					</view>
+					<view class='line' v-if="orderInfo.shipping_type === 1 && orderInfo.type != 10">
+						<image src='@/static/images/line.jpg'></image>
+					</view>
+				</template>
+				<template v-else>
+					<view class="store" v-if="orderInfo.applicable_stores.length > 0">
+						<view class="title">
+							<text>适用门店</text>
+							<view class="bath-store" @click="checkStore">
+								{{orderInfo.applicable_stores.length}}家门店适用
+								<text class="iconfont icon-xiangyou"></text>
+							</view>
+						</view>
+						<view class="store-list">
+							<view class='address'>
+								<view class='name acea-row' @tap.stop="makePhone(orderInfo.applicable_stores[0].phone)">
+									<view class="nameCon">{{orderInfo.applicable_stores[0].name}}</view>
+									<text class='phone'>{{orderInfo.applicable_stores[0].phone}}</text>
+									<text class="iconfont icon-tonghua font-num"></text>
+								</view>
+								<view class='name acea-row'>
+									{{orderInfo.applicable_stores[0].day_time}}
+								</view>
+								<view class="navigation" @tap="showMapLocation(orderInfo.applicable_stores[0])">
+									<text>{{orderInfo.applicable_stores[0].detailed_address}}</text>
+									<view>
+										导航
+										<text class="iconfont icon-xiangyou"></text>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</template>
 			</view>
 			<view class="delivery acea-row row-between-wrapper" v-if="orderInfo.delivery_type == 'city_delivery' || orderInfo.delivery_type == 'send'">
 				<view class="text acea-row row-middle">
@@ -163,10 +227,10 @@
 			<orderGoods v-for="(item,index) in split" :key="item.id" :evaluate='item._status._type == 3 ? 3 : 0'
 				:orderId="item.order_id" :cartInfo="item.cartInfo" :jump="false" :jumpDetail='true' :pid="item.pid"
 				:split="true" :status_type="item._status._type" :index="index" :refund_status="item.refund_status"
-				:delivery_type="item.delivery_type" @confirmOrder="confirmOrder" @openSubcribe="openSubcribe">
+				:delivery_type="item.delivery_type" :is_class="orderInfo.is_class" @confirmOrder="confirmOrder" @openSubcribe="openSubcribe">
 			</orderGoods>
 			<orderGoods :evaluate='evaluate' :giveData="giveData" :deliveryType="orderInfo.shipping_type" :statusType="status.type"  
-				:sendType="orderInfo.delivery_type" :orderId="order_id" :oid="Number(orderInfo.id)" :cartInfo="cartInfo" :pid="pid" :jump="true" :refund_status="orderInfo.refund_status" :paid="Number(orderInfo.paid)" :productType="orderInfo.product_type" :giveCartInfo="giveCartInfo">
+				:sendType="orderInfo.delivery_type" :orderId="order_id" :oid="Number(orderInfo.id)" :cartInfo="cartInfo" :pid="pid" :jump="true" :refund_status="orderInfo.refund_status" :paid="Number(orderInfo.paid)" :productType="orderInfo.product_type" :giveCartInfo="giveCartInfo" :is_class="orderInfo.is_class">
 			</orderGoods>
 			<!-- #ifdef H5 || APP-PLUS -->
 			<div class="goodCall" @click="goGoodCall">
@@ -268,6 +332,28 @@
 					<view class='conter'>{{orderInfo.refund_goods_explain}}</view>
 				</view>
 			</view>
+			
+			<view class='wrapper' v-if="orderInfo.is_class==1">
+				<view class='item acea-row row-between'>
+					<view>上课人姓名：</view>
+					<view class='conter'>{{orderInfo.order_info.user_name}}</view>
+				</view>
+				<view class='item acea-row row-between'>
+					<view>手机号码：</view>
+					<view class='conter'>{{orderInfo.order_info.phone}}</view>
+				</view>
+				<view class='item acea-row row-between'>
+					<view>年龄：</view>
+					<view class='conter'>{{orderInfo.order_info.age}}</view>
+				</view>
+				<view class='item acea-row row-between'>
+					<view>性别：</view>
+					<view class='conter'>{{orderInfo.order_info.sex == 0 ? '未知' : orderInfo.order_info.sex == 1 ? '男' : '女'}}</view>
+				</view>
+			</view>
+			
+			
+			
 			<!-- 退款订单详情 -->
 			<view class='wrapper' v-if="isGoodsReturn && orderInfo.product_type==0">
 				<view class='item acea-row row-between'>
@@ -426,7 +512,7 @@
 				</template>
 			</view>
 		</view>
-		<home v-show="!aleartStatus && !invShow && navigation"></home>
+		<!-- <home v-show="!aleartStatus && !invShow && navigation"></home> -->
 		<view class="mask" v-if="refund_close" @click="refund_close = false"></view>
 		<payment :payMode='payMode' :pay_close="pay_close" @onChangeFun='onChangeFun' :order_id="pay_order_id"
 			:totalPrice='totalPrice'></payment>
@@ -695,7 +781,6 @@
 
 	.order-details .address {
 		font-size: 26rpx;
-		color: #868686;
 		background-color: #fff;
 		margin-top: 13rpx;
 		padding: 35rpx 30rpx;
@@ -709,6 +794,7 @@
 	
 	.order-details .address .name .nameCon{
 		max-width: 410rpx;
+		font-weight: bold;
 	}
 
 	.order-details .address .name .phone {
@@ -1321,9 +1407,9 @@
 			/**
 			 * 拨打电话
 			 */
-			makePhone: function() {
+			makePhone: function(phone) {
 				uni.makePhoneCall({
-					phoneNumber: this.system_store.phone
+					phoneNumber: phone ? phone : this.system_store.phone
 				})
 			},
 			/**
@@ -1342,6 +1428,21 @@
 					address: this.system_store.address + this.system_store.detailed_address,
 					success: function() {
 
+					},
+				});
+			},
+			showMapLocation(item) {
+				if (!item.latitude || !item.longitude) return this.$util.Tips({
+					title: '缺少经纬度信息无法查看地图！'
+				});
+				uni.openLocation({
+					latitude: parseFloat(item.latitude),
+					longitude: parseFloat(item.longitude),
+					scale: 8,
+					name: item.name,
+					address: item.address + item.detailed_address,
+					success: function() {
+				
 					},
 				});
 			},
@@ -1564,13 +1665,37 @@
 			copy: function() {
 				let that = this;
 				uni.setClipboardData({
-					data: this.orderInfo.order_id
+					data: this.orderInfo.order_id,
+					success: res => {
+						uni.showToast({
+							title: '复制成功',
+							icon: 'success'
+						})
+					},
+					fail: res => {
+						uni.showToast({
+							title: '复制失败，请联系管理员',
+							icon: 'none'
+						})
+					}
 				});
 			},
 			copyKm: function() {
 				let that = this;
 				uni.setClipboardData({
-					data: this.orderInfo.virtual_info
+					data: this.orderInfo.virtual_info,
+					success: res => {
+						uni.showToast({
+							title: '复制成功',
+							icon: 'success'
+						})
+					},
+					fail: res => {
+						uni.showToast({
+							title: '复制失败，请联系管理员',
+							icon: 'none'
+						})
+					}
 				});
 			},
 			// #endif
@@ -1660,10 +1785,19 @@
 					}else if(shippingType == 1 && storeId > 0){
 						deliveryType = 3
 					}
+					let url = null
+					if(this.orderInfo.is_class) {
+						url = '/pages/classes/order_confirm/index?new=1&cartId=' + res.data.cateId +
+								'&delivery_type=' + deliveryType +
+								'&store_id=' + storeId + '&store_name=' + storeName
+					} else {
+						url = '/pages/goods/order_confirm/index?new=1&cartId=' + res.data.cateId + '&delivery_type=' + deliveryType + '&store_id='+storeId+'&store_name='+storeName
+					}
 					return uni.navigateTo({
-						url: '/pages/goods/order_confirm/index?new=1&cartId=' + res.data.cateId + '&delivery_type=' + deliveryType + '&store_id='+storeId+'&store_name='+storeName
+						url
 					});
 				}).catch(err=>{
+					console.log('err=====>', err)
 					return that.$util.Tips({
 						title: err
 					});
@@ -1796,6 +1930,11 @@
 						}
 					}
 				});
+			},
+			checkStore() {
+				uni.navigateTo({
+					url: '/pages/classes/goodsStoreList/goodsStoreList?id=' + this.orderInfo.cartInfo[0].product_id
+				})
 			}
 		}
 	}
@@ -1915,7 +2054,6 @@
 
 	.order-details .address {
 		font-size: 26rpx;
-		color: #868686;
 		background-color: #fff;
 		margin-top: 13rpx;
 		padding: 35rpx 30rpx;
@@ -2193,6 +2331,63 @@
 
 		.refund-address {
 			color: #868686;
+		}
+	}
+	
+	.store {
+		margin-top: 13rpx;
+		background-color: #fff;
+		.title {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			padding: 0 30rpx;
+			border-bottom: 2rpx solid #f0f0f0;
+			font-size: 30rpx;
+			color: #282828;
+			line-height: 86rpx;
+			box-sizing: border-box;
+			font-weight: bold;
+			
+			.bath-store {
+				display: flex;
+				align-items: center;
+				font-size: 28rpx;
+				font-weight: normal;
+				
+				.iconfont {
+					color: #A3ABB8;
+					margin-left: 12rpx;
+				}
+			}
+		}
+			
+		.address {
+			margin-top: 0;
+			
+			.navigation {
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				width: 100%;
+				font-size: 28rpx;
+				
+				.iconfont {
+					color: #A3ABB8;
+					margin-left: 12rpx;
+				}
+				
+				view {
+					width: 100rpx;
+					flex-shrink: 0;
+					color: #868686;
+					margin-left: 30rpx;
+					justify-content: space-around;
+					display: flex;
+					align-items: center;
+				}
+			}
 		}
 	}
 </style>

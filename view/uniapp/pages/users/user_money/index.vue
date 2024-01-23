@@ -54,15 +54,15 @@
 					</navigator>
 					<navigator class='item' hover-class='none' url='/pages/users/user_integral/index'>
 						<view class='iconfont icon-jifenzhongxin'></view>
-						<view>积分中心</view>
+						<view>gaga币中心</view>
 					</navigator>
 				</view>
 				<view class='advert acea-row row-between-wrapper'>
 					<navigator class='item acea-row row-between-wrapper' hover-class='none'
 						url='/pages/users/user_sgin/index'>
 						<view class='text'>
-							<view class='name'>签到领积分</view>
-							<view>赚积分抵现金</view>
+							<view class='name'>签到领gaga币</view>
+							<view>赚gaga币抵现金</view>
 						</view>
 						<view class='pictrue'>
 							<image src='../static/gift.png'></image>
@@ -79,7 +79,7 @@
 						</view>
 					</navigator>
 				</view>
-				<view class='list'>
+				<!-- <view class='list'>
 					<view class='item acea-row row-between-wrapper'>
 						<view class='picTxt acea-row row-between-wrapper'>
 							<view class='iconfont icon-hebingxingzhuang'></view>
@@ -116,9 +116,9 @@
 							v-if="activity.is_bargin">立即参与</navigator>
 						<view class='bnt acea-row row-center-wrapper end' v-else>已结束</view>
 					</view>
-				</view>
+				</view> -->
 			</view>
-			<recommend :hostProduct="hostProduct"></recommend>
+			<!-- <recommend :hostProduct="hostProduct"></recommend> -->
 		</view>
 		<home v-if="navigation"></home>
 		<!-- #ifdef MP -->

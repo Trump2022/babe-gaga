@@ -178,7 +178,7 @@
 		}
 		.item {
 			margin-top: 30rpx;
-			width: 150rpx;
+			width: 140rpx;
 			text-align: center;
 			font-size: 24rpx;
 			display: inline-block;

@@ -577,7 +577,7 @@
                     ￥{{ orderDatalist.orderInfo.first_order_price }}
                   </div>
                 </li>
-                <li
+                <!-- <li
                   class="item"
                   v-if="
                     orderDatalist.orderInfo.shipping_type === 2 &&
@@ -589,7 +589,7 @@
                   <div class="value">
                     {{ orderDatalist.orderInfo._store_name || '-' }}
                   </div>
-                </li>
+                </li> -->
                 <li
                   class="item"
                   v-if="
@@ -638,6 +638,77 @@
                   <div>{{ item.title }}：</div>
                   <div class="value">
                     ￥{{ parseFloat(item.promotions_price).toFixed(2) }}
+                  </div>
+                </li>
+                <template v-if="orderData.cartInfo && orderData.is_class == 1">
+                    <li class="item">
+                        <div>使用时效：</div>
+                        <div class="value">
+                            {{ orderData.cartInfo[0].write_days }}天
+                        </div>
+                    </li>
+                    <li class="item">
+                        <div>使用次数：</div>
+                        <div class="value">
+                            {{ orderData.cartInfo[0].write_times - orderData.cartInfo[0].write_surplus_times }}/{{orderData.cartInfo[0].write_times}}
+                        </div>
+                    </li>
+                    <li class="item" v-if="orderData.used_times == 0">
+                        <div>激活时间：</div>
+                        <div class="value">
+                            {{orderData.active_time.length == 0 ? '不限时' : orderData.active_time.length == 1 ? `请${orderData.active_time[0]}前进行激活` : `请${orderData.active_time[0]}至${orderData.active_time[1]}内进行激活`}}
+                        </div>
+                    </li>
+                    <li class="item" v-else>
+                        <div>激活时间：</div>
+                        <div class="value">
+                            {{`${orderData.active_time[0]}`}}
+                        </div>
+                    </li>
+                    <li class="item" v-if="orderData.use_expire_time">
+                        <div>使用期限：</div>
+                        <div class="value">
+                            {{ orderData.use_expire_time + '到期' }}
+                        </div>
+                    </li>
+                    <li class="item" v-else>
+                        <div>使用期限：</div>
+                        <div class="value">
+                            激活后开始计算
+                        </div>
+                    </li>
+                </template>
+              </ul>
+            </div>
+            <div class="section" v-if="orderData.is_class == 1">
+              <div class="title">下单信息</div>
+              <ul class="list">
+                <li class="item">
+                  <div>上课人姓名：</div>
+                  <div class="value">
+                    {{
+                      orderData.storeOrderInfo.user_name
+                    }}
+                  </div>
+                </li>
+                <li class="item">
+                  <div>手机号码：</div>
+                  <div class="value">
+                    {{
+                      orderData.storeOrderInfo.phone
+                    }}
+                  </div>
+                </li>
+                <li class="item">
+                  <div>年龄：</div>
+                  <div class="value">
+                    {{ orderData.storeOrderInfo.age }}
+                  </div>
+                </li>
+                <li class="item">
+                  <div>性别：</div>
+                  <div class="value">
+                    {{ orderData.storeOrderInfo.sex == 2 ? '女' : orderData.storeOrderInfo.sex == 1 ? '男' : '未知' }}
                   </div>
                 </li>
               </ul>
@@ -838,6 +909,20 @@
               no-filtered-data-text="暂无筛选结果"
             ></Table>
           </TabPane>
+          <TabPane label="核销记录" name="writeoff_list" v-if="orderData.writeoff_list.length">
+            <Table
+              :columns="columns3"
+              :data="orderData.writeoff_list"
+              :loading="loading"
+              no-data-text="暂无数据"
+              highlight-row
+              no-filtered-data-text="暂无筛选结果"
+            >
+                <template slot-scope="{ row, index }" slot="staff_num">
+                    <div>{{ orderData.writeoff_list.length - index }}/{{orderData.cartInfo[0].write_times}}</div>
+                </template>
+            </Table>
+          </TabPane>
           <TabPane label="发货记录" name="recordList" v-if="splitList.length">
             <Table
               :columns="columnSplit"
@@ -967,19 +1052,6 @@
                   v-if="row.supplier_name && row.status_name.status_name == '未发货'"
                   >提醒发货</a
                 >
-                <!-- <Divider type="vertical" v-if="row.supplier_name "/> -->
-                <!--     <Divider
-                        type="vertical"
-                        v-if="
-            (((row._status === 2 || row._status === 8 || row.status === 4) &&
-              row.shipping_type === 1 &&
-              (row.pinkStatus === null || row.pinkStatus === 2)) ||
-              (row.shipping_type == 2 && row.status == 0)) &&
-            row.split.length
-          "
-                />
-                <a @click="splitOrderDetail(row)" v-if="row.split.length">查看子订单</a> -->
-
                 <Divider
                   type="vertical"
                   v-if="
@@ -1016,7 +1088,6 @@
                         "
                         >立即支付</DropdownItem
                       >
-                      <!-- <DropdownItem name="2">订单详情</DropdownItem> -->
                       <DropdownItem :disabled="openErp" name="3"
                         >订单记录</DropdownItem
                       >
@@ -1344,6 +1415,24 @@ export default {
           key: 'change_time',
           minWidth: 100,
         },
+      ],
+      columns3: [
+        {
+          title: '核销门店',
+          key: 'store_name',
+        },
+        {
+          title: '核销时间',
+          key: 'add_time',
+        },
+        {
+          title: '核销次数',
+          slot: 'staff_num',
+        },
+        {
+          title: '核销人',
+          key: 'staff_name',
+        }
       ],
       columnSplit: [
         {

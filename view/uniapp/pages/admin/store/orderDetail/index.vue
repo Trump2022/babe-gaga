@@ -23,11 +23,11 @@
 				<span class="phone">{{ orderInfo.user_phone }}</span>
 				<!-- #ifdef H5 -->
 				<span class="copy copy-data"
-					:data-clipboard-text="`${orderInfo.real_name} ${orderInfo.user_phone} ${orderInfo.user_address}`">复制</span>
+					:data-clipboard-text="`${orderInfo.real_name} ${orderInfo.user_phone} ${orderInfo.user_address}`" v-if="goname != 'looks'">复制</span>
 				<!-- #endif -->
 				<!-- #ifdef MP -->
 				<span class="copy copy-data"
-					@click="copyNum(`${orderInfo.real_name} ${orderInfo.user_phone} ${orderInfo.user_address}`)">复制</span>
+					@click="copyNum(`${orderInfo.real_name} ${orderInfo.user_phone} ${orderInfo.user_address}`)" v-if="goname != 'looks'">复制</span>
 				<!-- #endif -->
 			</view>
 			<view>{{ orderInfo.user_address }}</view>
@@ -165,10 +165,10 @@
 					{{ orderInfo.order_id
           }}
 					<!-- #ifdef H5 -->
-					<span class="copy copy-data" :data-clipboard-text="orderInfo.order_id">复制</span>
+					<span class="copy copy-data" :data-clipboard-text="orderInfo.order_id" v-if="goname != 'looks'">复制</span>
 					<!-- #endif -->
 					<!-- #ifdef MP -->
-					<span class="copy copy-data" @click="copyNum(orderInfo.order_id)">复制</span>
+					<span class="copy copy-data" @click="copyNum(orderInfo.order_id)" v-if="goname != 'looks'">复制</span>
 					<!-- #endif -->
 				</view>
 			</view>
@@ -271,16 +271,63 @@
 				<view class="conter">
 					{{ orderInfo.delivery_id}}
 					<!-- #ifdef H5 -->
-					<span class="copy copy-data" :data-clipboard-text="orderInfo.delivery_id">复制</span>
+					<span class="copy copy-data" :data-clipboard-text="orderInfo.delivery_id" v-if="goname != 'looks'">复制</span>
 					<!-- #endif -->
 					<!-- #ifdef MP -->
-					<span class="copy copy-data" @click="copyNum(orderInfo.delivery_id)">复制</span>
+					<span class="copy copy-data" @click="copyNum(orderInfo.delivery_id)" v-if="goname != 'looks'">复制</span>
 					<!-- #endif -->
 				</view>
 			</view>
 		</view>
+		
+		<template v-if="orderInfo.is_class == 1">
+			<view class='wrapper'>
+				<view class='item acea-row row-between'>
+					<view>使用时效：</view>
+					<view class='conter'>{{orderInfo.cartInfo[0].write_days}}天</view>
+				</view>
+				<view class='item acea-row row-between'>
+					<view>使用次数：</view>
+					<view class='conter'>{{orderInfo.used_times_str}}</view>
+				</view>
+				<template v-if="orderInfo.used_times == 0">
+					<view class='item acea-row row-between'>
+						<view>激活时间：</view>
+						<view class='conter'>{{orderInfo.active_time.length == 0 ? '不限时' : orderInfo.active_time.length == 1 ? `请${orderInfo.active_time[0]}前进行激活` : `请${orderInfo.active_time[0]}至${orderInfo.active_time[1]}内进行激活`}}</view>
+					</view>
+				</template>
+				<template v-else>
+					<view class='item acea-row row-between'>
+						<view>激活时间：</view>
+						<view class='conter'>{{orderInfo.active_time[0]}}</view>
+					</view>
+				</template>
+				<view class='item acea-row row-between'>
+					<view>使用期限：</view>
+					<view class='conter'>{{orderInfo.use_expire_time || '激活后开始计算'}}</view>
+				</view>
+			</view>
+		</template>
+		<view class='wrapper' v-if="orderInfo.is_class==1">
+			<view class='item acea-row row-between'>
+				<view>上课人姓名：</view>
+				<view class='conter'>{{orderInfo.order_info.user_name}}</view>
+			</view>
+			<view class='item acea-row row-between'>
+				<view>手机号码：</view>
+				<view class='conter'>{{orderInfo.order_info.phone}}</view>
+			</view>
+			<view class='item acea-row row-between'>
+				<view>年龄：</view>
+				<view class='conter'>{{orderInfo.order_info.age}}</view>
+			</view>
+			<view class='item acea-row row-between'>
+				<view>性别：</view>
+				<view class='conter'>{{orderInfo.order_info.sex == 0 ? '未知' : orderInfo.order_info.sex == 1 ? '男' : '女'}}</view>
+			</view>
+		</view>
 		<view class="height-add"></view>
-		<view class="footer acea-row row-right row-middle">
+		<view class="footer acea-row row-right row-middle" v-if="goname != 'looks'">
 			<view v-if="(types == 0 || types == 9) && orderInfo.is_del == 0 && !openErp" class="more btn cancel" @click="more">
 				更多
 				<view class="more-box" v-if="moreBtn">

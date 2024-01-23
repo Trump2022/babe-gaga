@@ -26,6 +26,14 @@
                                 </RadioGroup>
                         </FormItem>
                     </Col>
+                    <Col span="24">
+                        <FormItem label="状态：" prop="cate_id">
+                                <RadioGroup v-model="formValidate.status">
+                                    <Radio :label="0">隐藏</Radio>
+                                    <Radio :label="1">显示</Radio>
+                                </RadioGroup>
+                        </FormItem>
+                    </Col>
                     <Col span="24" v-for="(item, index) in formValidate.typelist" :key="index">
                         <Col v-bind="grid">
                             <FormItem :label="'字段' + (index+1)+'：'"  :prop="'typelist.' + index + '.name.value'" :rules="{required: true, message: '请输入字段名称：姓名', trigger: 'blur'}">

@@ -134,6 +134,9 @@
 				<!-- #ifdef APP-PLUS -->
 				<view class="logOut cartcolor acea-row row-center-wrapper" @click="outLogin">退出登录</view>
 				<!-- #endif -->
+				<!-- #ifdef MP -->
+				<view class="logOut cartcolor acea-row row-center-wrapper" @click="outLogin">退出登录</view>
+				<!-- #endif -->
 			</view>
 		</form>
 		<canvas canvas-id="canvas" v-if="canvasStatus"
@@ -367,26 +370,27 @@
 			 */
 			outLogin: function() {
 				let that = this;
-				if (that.loginType == 'h5') {
-					uni.showModal({
-						title: '提示',
-						content: '确认退出登录?',
-						success: function(res) {
-							if (res.confirm) {
-								getLogout()
-									.then(res => {
-										that.$store.commit("LOGOUT");
-										uni.reLaunch({
-											url: '/pages/index/index'
-										})
+				// if (that.loginType == 'h5') {
+					
+				// }
+				uni.showModal({
+					title: '提示',
+					content: '确认退出登录?',
+					success: function(res) {
+						if (res.confirm) {
+							getLogout()
+								.then(res => {
+									that.$store.commit("LOGOUT");
+									uni.reLaunch({
+										url: '/pages/class/index/index'
 									})
-									.catch(err => {});
-							} else if (res.cancel) {
-								console.log('用户点击取消');
-							}
+								})
+								.catch(err => {});
+						} else if (res.cancel) {
+							console.log('用户点击取消');
 						}
-					});
-				}
+					}
+				});
 			},
 			/**
 			 * 获取用户详情

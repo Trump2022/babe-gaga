@@ -79,7 +79,7 @@
 	// import mobileLogin from '../components/loginMobile/index.vue';
 	// import routinePhone from '../components/loginMobile/routine_phone.vue';
 	import editUserModal from '@/components/eidtUserModal/index.vue'
-	import privacyAgreementPopup from '@/components/privacyAgreementPopup/index.vue'
+	import privacyAgreementPopup from '@/components/privacyAgreementPopup/index.vue' 
 	import {
 		getLogo,
 		silenceAuth,

@@ -75,12 +75,12 @@
 				</view>
 			</view>
 		</view>
-		<view class='noCommodity' v-else-if="!collectProductList.length && page > 1">
+		<!-- <view class='noCommodity' v-else-if="!collectProductList.length && page > 1">
 			<view class='pictrue'>
 				<image :src="imgHost + '/statics/images/noCollection.png'"></image>
 			</view>
 			<recommend :hostProduct="hostProduct"></recommend>
-		</view>
+		</view> -->
 		<view></view>
 		<home v-if="navigation"></home>
 		<!-- #ifdef MP -->

@@ -416,7 +416,7 @@
             </div>
           </template>
         </vxe-column>
-        <vxe-column field="uid" title="UID" width="60"></vxe-column>
+        <vxe-column field="uid" title="UID" width="80"></vxe-column>
         <vxe-column field="avatars" title="头像" width="50">
           <template v-slot="{ row }">
             <viewer>

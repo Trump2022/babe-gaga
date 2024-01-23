@@ -54,7 +54,7 @@
 				isLeft: 0, //导航栏下划线位置
 				bgColor: this.dataConfig.bgColor.color,
 				mbConfig: this.dataConfig.mbConfig.val,
-				pbConfig: this.dataConfig.pbConfig.val,
+				pbConfig: this.dataConfig.pbConfig ? this.dataConfig.pbConfig.val : 0,
 				txtColor: this.dataConfig.txtColor.color[0].item,
 				fixedTop: 0,
 				isTop: 0,
@@ -70,6 +70,7 @@
 					that.isWidth = e.windowWidth / 5
 				}
 			})
+			console.log('this.bgColor=====>', this.bgColor)
 		},
 		methods: {
 			// 导航栏点击

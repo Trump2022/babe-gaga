@@ -30,10 +30,10 @@
               <span class="iconfont iconerweima"></span>
               门店码</span
             >
-            <span class="cashier" @click="goCashier">
+            <!-- <span class="cashier" @click="goCashier">
               <span class="iconfont iconshouyintai"></span>
               收银台</span
-            >
+            > -->
             <i-header-fullscreen v-if="isDesktop && showFullscreen" />
             <!--<i-menu-head v-if="headerMenu && isMobile" />-->
             <i-header-notice v-if="showNotice" />

@@ -220,7 +220,7 @@
 			 */
 			goIndex: function(e) {
 				uni.switchTab({
-					url: '/pages/index/index'
+					url: '/pages/class/index/index'
 				});
 			},
 			// 去参团页面；

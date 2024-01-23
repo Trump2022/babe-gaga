@@ -326,7 +326,7 @@
                             </Col>
                             <Col span="20" class="slider-box">
                                 <div class="info">建议尺寸：86 * 86px，拖拽图片可调整图片显示顺序哦，最多添加五张</div>
-                                <uploadPic :listData="storeMenu" :type="1"></uploadPic>
+                                <uploadPic :listData="storeMenu"></uploadPic>
                             </Col>
                         </div>
                     </div>

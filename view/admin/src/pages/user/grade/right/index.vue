@@ -67,7 +67,7 @@
                     <Input
                         v-model="form.explain"
                         type="textarea"
-                        maxlength="8"
+                        maxlength="20"
                         :autosize="{ minRows: 2, maxRows: 10 }"
                         placeholder="请输入权益简介"
                     ></Input>

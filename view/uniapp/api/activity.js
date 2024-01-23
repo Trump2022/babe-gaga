@@ -342,3 +342,11 @@ export function seckillQRCode(id) {
 export function combinationQRCode(id) {
   return request.get(`combination/detail_code/${id}`);
 }
+
+/**
+ * 活动详情
+ * @param {Object} id
+ */
+export function activityDetails(id) {
+  return request.get(`activity/details/${id}`);
+}

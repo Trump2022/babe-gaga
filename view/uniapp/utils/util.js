@@ -176,7 +176,7 @@ export default {
 					url: `/pages/annex/web_view/index?url=${url}`
 				});
 			} else {
-				if (['/pages/goods_cate/goods_cate', '/pages/order_addcart/order_addcart', '/pages/user/index', '/pages/index/index','/pages/store_cate/store_cate']
+				if (['/pages/index/index', '/pages/class/index/index']
 					.indexOf(url.split('?')[0]) == -1) {
 					uni.navigateTo({
 						url: url
@@ -646,54 +646,40 @@ export default {
 			count: count, //最多可以选择的图片总数  
 			sizeType: sizeType, // 可以指定是原图还是压缩图，默认二者都有  
 			sourceType: sourceType, // 可以指定来源是相册还是相机，默认二者都有  
-			success: function(res) {
-				//启动上传等待中...  
-				uni.showLoading({
-					title: '图片上传中',
-				});
-				uni.uploadFile({
-					url: HTTP_REQUEST_URL + '/api/' + uploadUrl,
-					filePath: res.tempFilePaths[0],
-					fileType: fileType,
-					name: inputName,
-					formData: {
-						'filename': inputName
-					},
-					header: {
-						// #ifdef MP
-						"Content-Type": "multipart/form-data",
-						// #endif
-						[TOKENNAME]: 'Bearer ' + store.state.app.token
-					},
-					success: function(res) {
-						uni.hideLoading();
-						if (res.statusCode == 403) {
-							that.Tips({
-								title: res.data
-							});
-						} else if (res.statusCode == 413) {
-							that.Tips({
-								title: '上传图片失败,请重新上传小尺寸图片'
-							});
+			success: async function(res) {
+				let image = [];
+				let filesLen = res.tempFiles.length;
+				let exceeded_list = [];
+				let uploadMaxSize = 10;
+				let imageList = [];
+				if (count === 1) {
+					successCallback && successCallback(await that.uploadImg(res.tempFilePaths[0], opt.url, fileType, inputName))
+				} else {
+					for (let i = 0; i < res.tempFiles.length; i++) {
+						if (Math.ceil(res.tempFiles[i].size / 1024) < uploadMaxSize * 1024) {
+							image.push(res.tempFiles[i].path);
 						} else {
-							let data = res.data ? JSON.parse(res.data) : {};
-							if (data.status == 200) {
-								successCallback && successCallback(data)
-							} else {
-								errorCallback && errorCallback(data);
-								that.Tips({
-									title: data.msg
-								});
-							}
+							exceeded_list.push(i + 1);
+							filesLen = filesLen - 1;
+							// #ifdef APP-PLUS
+							plus.nativeUI.alert(
+								`第${[...new Set(exceeded_list)].join(',')}张图片超出限制${uploadMaxSize}MB,已过滤`
+							);
+							// #endif
+							// #ifndef APP-PLUS
+							uni.showModal({
+								content: `第${[...new Set(exceeded_list)].join(',')}张图片超出限制${uploadMaxSize}MB,已过滤`
+							});
+							// #endif
+							continue;
 						}
-					},
-					fail: function(res) {
-						uni.hideLoading();
-						that.Tips({
-							title: '上传图片失败'
-						});
 					}
-				})
+					for (const key in image) {
+						let data = await that.uploadImg(image[key], opt.url, fileType, inputName)
+						imageList.push(data.data.url)
+					}
+					successCallback && successCallback(imageList)
+				}
 			}
 		})
 	},
@@ -733,7 +719,7 @@ export default {
 								title: '图片上传中',
 							});
 							if (res.tempFiles[0].size <= 2097152) {
-								uploadImg(ress.path)
+								that.uploadImg(ress.path, uploadUrl, fileType, inputName, successCallback, errorCallback)
 								return
 							}
 							// uploadImg(canvasPath.tempFilePath)
@@ -767,9 +753,10 @@ export default {
 										quality: 0.7,
 										success: function(
 											canvasPath) {
-											uploadImg(
+											that.uploadImg(
 												canvasPath
-												.tempFilePath
+												.tempFilePath,
+												uploadUrl, fileType, inputName, successCallback, errorCallback
 												)
 										}
 									})
@@ -780,8 +767,10 @@ export default {
 				})
 			}
 		})
-
-		function uploadImg(filePath) {
+	},
+	
+	uploadImg(filePath, uploadUrl, fileType, inputName, successCallback, errorCallback) {
+		return new Promise((resolve, reject) => {
 			uni.uploadFile({
 				url: HTTP_REQUEST_URL + '/api/' + uploadUrl,
 				filePath,
@@ -806,6 +795,7 @@ export default {
 						let data = res.data ? JSON.parse(res.data) : {};
 						if (data.status == 200) {
 							successCallback && successCallback(data)
+							resolve(data)
 						} else {
 							errorCallback && errorCallback(data);
 							that.Tips({
@@ -821,7 +811,7 @@ export default {
 					});
 				}
 			})
-		}
+		})
 	},
 
 	/**

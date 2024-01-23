@@ -1,20 +1,28 @@
+/*
+ * @Author: 默°
+ * @Date: 2023-12-29 18:02:42
+ * @LastEditTime: 2024-01-13 14:40:23
+ * @LastEditors: 默°
+ * @Description: 搬什么砖，摸鱼吧
+ * 舒适圈那么舒服为什么要离开
+ */
 //注册组件
 export default {
-    components:{
-        cardBuild: () => import('./cardBuild'),
-        inputBuild: () => import('./inputBuild'),
-        inputNumberBuild: () => import('./inputNumberBuild'),
-        radioBuild: () => import('./radioBuild'),
-        selectBuild: () => import('./selectBuild'),
-        switchBuild: () => import('./switchBuild'),
-        uploadImageBuild: () => import('./uploadImageBuild'),
-        uploadFrameBuild: () => import('./uploadFrameBuild'),
-        tabsBuild: () => import('./tabsBuild'),
-        alertBuild: () => import('./alertBuild'),
-        diyTableBuild: () => import('./diyTableBuild'),
-        timeBuild:() => import('./timeBuild'), // 时间选择
-        addressBuild:() => import('./addressBuild.vue'), // 地址选择
-        mapBuild:() => import ('./mapBuild.vue') // 地图选择
-       
-    },
-}
+  components: {
+    cardBuild: () => import('./cardBuild'),
+    inputBuild: () => import('./inputBuild'),
+    inputNumberBuild: () => import('./inputNumberBuild'),
+    radioBuild: () => import('./radioBuild'),
+    checkboxBuild: () => import('./checkboxBuild'),
+    selectBuild: () => import('./selectBuild'),
+    switchBuild: () => import('./switchBuild'),
+    uploadImageBuild: () => import('./uploadImageBuild'),
+    uploadFrameBuild: () => import('./uploadFrameBuild'),
+    tabsBuild: () => import('./tabsBuild'),
+    alertBuild: () => import('./alertBuild'),
+    diyTableBuild: () => import('./diyTableBuild'),
+    timeBuild: () => import('./timeBuild'), // 时间选择
+    addressBuild: () => import('./addressBuild.vue'), // 地址选择
+    mapBuild: () => import('./mapBuild.vue'), // 地图选择
+  },
+};

@@ -65,11 +65,12 @@ export default {
     };
   },
   mounted() {
-    if(this.product){
-      this.getInfoApi();
-    }else {
-      this.getInfo();
-    }
+    // if(this.product){
+    //   this.getInfoApi();
+    // }else {
+    //   this.getInfo();
+    // }
+    this.getInfoApi();
   },
   methods: {
     getInfo() {
