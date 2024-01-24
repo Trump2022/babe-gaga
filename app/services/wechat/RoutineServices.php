@@ -73,7 +73,6 @@ class RoutineServices extends BaseServices
 		$userInfo['spared_code'] = $spread_code;
 		$userInfo['session_key'] = $userInfoConfig['session_key'] ?? '';
 		$userInfo['login_type'] = 'routine';
-		$userInfo['sex'] = $userInfoConfig['gender'] ?? '';
 		[$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $createData = $this->routineOauth($userInfo);
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
@@ -168,7 +167,7 @@ class RoutineServices extends BaseServices
 		$wechatInfo['phone'] = $userInfo['purePhoneNumber'];
 		$createData = $this->routineOauth($wechatInfo);
 		$wechatInfo = $createData[1] ?? [];
-        $wechatInfo['sex'] = $userInfo['gender'] ?? 0;
+        $wechatInfo['sex'] = $wechatInfo['gender'] = $userInfo['gender'] ?? 0;
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
 		//写入用户信息
@@ -411,7 +410,6 @@ class RoutineServices extends BaseServices
         $routineInfo['spread_uid'] = $spread_uid;
         $routineInfo['spread_code'] = $spread_code;
         $routineInfo['headimgurl'] = sys_config('h5_avatar');
-        $routineInfo['sex'] = $userInfoConfig['gender'] ?? '';
 
         [$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $createData = $this->routineOauth($routineInfo);
         /** @var WechatUserServices $wechatUserServices */
@@ -487,7 +485,6 @@ class RoutineServices extends BaseServices
         if (!$userInfo || !isset($userInfo['purePhoneNumber'])) {
             throw new ValidateException('获取用户信息失败');
         }
-        $str = ($wechatInfo['sex'] ?? '').'|'.($wechatInfo['gender'] ?? '').'|'.($userInfo['sex'] ?? '').'|'.($userInfo['gender'] ?? '');
 
         $openid = $userInfoConfig['openid'];
         $wechatInfo['openid'] = $openid;
@@ -496,16 +493,13 @@ class RoutineServices extends BaseServices
         $wechatInfo['spread_code'] = $spread_code;
         $wechatInfo['session_key'] = $userInfoConfig['session_key'] ?? '';
         $wechatInfo['phone'] = $userInfo['purePhoneNumber'];
-        $wechatInfo['sex'] = $userInfo['gender'] ?? 0;
+        $wechatInfo['sex'] = $wechatInfo['gender'] = $userInfo['gender'] ?? 0;
         $createData = $this->routineOauth($wechatInfo);
         $wechatInfo = $createData[1] ?? [];
         /** @var WechatUserServices $wechatUserServices */
         $wechatUserServices = app()->make(WechatUserServices::class);
         //写入用户信息
         $user = $wechatUserServices->wechatOauthAfter([$openid, $wechatInfo, $spread_uid, $login_type, $userType]);
-        $res = $this->getReturnInfo($user);
-        $res['str'] = $str;
-        return $res;
         return $this->getReturnInfo($user);
     }
 

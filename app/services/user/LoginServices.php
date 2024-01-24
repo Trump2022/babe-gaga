@@ -112,6 +112,8 @@ class LoginServices extends BaseServices
 
         if (isset($user['sex']) && $user['sex'] && ! $userInfo->sex) {
             $data['sex'] = $user['sex'];
+        }else if (isset($user['gender']) && $user['gender'] && ! $userInfo->sex) {
+            $data['sex'] = $user['gender'];
         }
 
         $data['last_time'] = time();
