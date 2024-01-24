@@ -208,7 +208,7 @@ class AuthController
             return app('json')->fail('参数有误');
         $token = $this->services->authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_spid, $key);
 
-        return app('json')->success($token, $token);
+        return app('json')->success($token, []);
         if ($token) {
             return app('json')->success('登录成功', $token);
         } else
