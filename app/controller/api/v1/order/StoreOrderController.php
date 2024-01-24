@@ -254,8 +254,8 @@ class StoreOrderController
         } elseif ($shipping_type == 4) {
             $addressInfo = $this->addressInfo;
         } else {
-            if ( !$cartInfo[0]['productInfo']['is_class'] && (!$real_name || !$phone) ) {
-                return app('json')->fail('请填写姓名和电话');
+            if ( !$cartInfo[0]['productInfo']['is_class'] && (!$real_name || !$phone || !preg_match('/^1\d{10}$/', $phone)) ) {
+                return app('json')->fail('请填写姓名和手机号');
             }
             $addressInfo = $this->addressInfo;
             $addressInfo['real_name'] = $real_name;
