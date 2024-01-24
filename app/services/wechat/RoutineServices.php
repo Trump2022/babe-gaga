@@ -470,7 +470,7 @@ class RoutineServices extends BaseServices
 	 * @param $spread_code
 	 * @param $spread_uid
 	 * @param $key
-	 * @return array
+
 	 * @throws InvalidArgumentException
 	 * @throws DataNotFoundException
 	 * @throws ModelNotFoundException
