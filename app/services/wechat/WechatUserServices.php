@@ -474,9 +474,13 @@ class WechatUserServices extends BaseServices
 
             } else {
                 //如果该手机号用户存在
-                //如果小程序授权账号不存在,或小程序账号的uid与手机号账号的uid不相同,说明是手机号用户直接登录或小程序用户切换账号登录
-                if ( ( ! $routineUserInfo) || ($routineUserInfo['uid'] != $userInfo['uid']) )
+
+                //如果小程序授权账号不存在
+                if ( ( ! $routineUserInfo) )
                 {
+                    //手机号登录
+                } else if ( $routineUserInfo['uid'] != $userInfo['uid'] ){
+                    //如果小程序账号的uid与手机号账号的uid不相同,切换账号登录
                     //此处清除微信信息,后面就不创建wechat_user
                     $wechatInfo['unionid'] = '';
                     $wechatInfo['openid'] = '';
