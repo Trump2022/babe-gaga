@@ -73,6 +73,7 @@ class RoutineServices extends BaseServices
 		$userInfo['spared_code'] = $spread_code;
 		$userInfo['session_key'] = $userInfoConfig['session_key'] ?? '';
 		$userInfo['login_type'] = 'routine';
+		$userInfo['sex'] = $userInfoConfig['gender'] ?? '';
 		[$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $createData = $this->routineOauth($userInfo);
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
@@ -410,6 +411,7 @@ class RoutineServices extends BaseServices
         $routineInfo['spread_uid'] = $spread_uid;
         $routineInfo['spread_code'] = $spread_code;
         $routineInfo['headimgurl'] = sys_config('h5_avatar');
+        $routineInfo['sex'] = $userInfoConfig['gender'] ?? '';
 
         [$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $createData = $this->routineOauth($routineInfo);
         /** @var WechatUserServices $wechatUserServices */
