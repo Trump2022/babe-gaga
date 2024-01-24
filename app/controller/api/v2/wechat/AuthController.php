@@ -51,7 +51,9 @@ class AuthController
 		$data = $this->services->authType($code, $spread_spid, $spread_code);
 
         //For Test
-        return app('json')->fail(($data['gender'] ?? '').'|||'.($data['sex'] ?? ''));
+        //return app('json')->fail(($data['gender'] ?? '').'|||'.($data['sex'] ?? ''));
+
+		return app('json')->success($data);
 	}
 
     /**
