@@ -454,16 +454,13 @@ class WechatUserServices extends BaseServices
                         //将手机号绑定到该授权账号,此处重置用户信息,后续续逻辑不变,updateUserInfo方法会更新phone字段
                         $userInfo = $routineUserInfo;
                     } else {
-                        //注册新账号并登录,此处清除微信信息,后面就不创建wechat_user
+                        //用手机号注册新账号并登录,此处清除微信信息,后面就不创建wechat_user
                         $wechatInfo['unionid'] = '';
                         $wechatInfo['openid'] = '';
                         $openid = '';
                     }
                 } else {
-                    //注册新账号并登录,此处清除微信信息,后面就不创建wechat_user
-                    $wechatInfo['unionid'] = '';
-                    $wechatInfo['openid'] = '';
-                    $openid = '';
+                    //注册新账号并登录
                 }
 
                 //            if (isset($wechatInfo['unionid']) && $wechatInfo['unionid']) {
