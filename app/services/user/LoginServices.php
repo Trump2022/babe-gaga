@@ -110,6 +110,10 @@ class LoginServices extends BaseServices
             $data['phone'] = $user['phone'];
         }
 
+        if (isset($user['sex']) && $user['sex'] && ! $userInfo->sex) {
+            $data['sex'] = $user['sex'];
+        }
+
         $data['last_time'] = time();
         $data['last_ip'] = app()->request->ip();
         //永久绑定

@@ -167,6 +167,7 @@ class RoutineServices extends BaseServices
 		$wechatInfo['phone'] = $userInfo['purePhoneNumber'];
 		$createData = $this->routineOauth($wechatInfo);
 		$wechatInfo = $createData[1] ?? [];
+        $wechatInfo['sex'] = $userInfo['gender'] ?? 0;
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
 		//写入用户信息
@@ -218,11 +219,6 @@ class RoutineServices extends BaseServices
      */
     public function getUserInfoByCode(string $code)
     {
-        //        $userInfoConfig = [];
-        //        $userInfoConfig['session_key'] = '';
-        //        $userInfoConfig['openid'] = 'ocTW36-qRDex7leJhH4DoQaWsgP4';
-        //        $userInfoConfig['unionid'] = '';
-        //        return $userInfoConfig;
         if (!$code)
             throw new ValidateException('授权失败,参数有误');
         try {
@@ -496,6 +492,7 @@ class RoutineServices extends BaseServices
         $wechatInfo['spread_code'] = $spread_code;
         $wechatInfo['session_key'] = $userInfoConfig['session_key'] ?? '';
         $wechatInfo['phone'] = $userInfo['purePhoneNumber'];
+        $wechatInfo['sex'] = $userInfo['gender'] ?? 0;
         $createData = $this->routineOauth($wechatInfo);
         $wechatInfo = $createData[1] ?? [];
         /** @var WechatUserServices $wechatUserServices */

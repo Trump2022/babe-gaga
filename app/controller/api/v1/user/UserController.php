@@ -90,16 +90,17 @@ class UserController
      */
     public function edit(Request $request)
     {
-        [$avatar, $nickname, $extend_info] = $request->postMore([
+        [$avatar, $nickname, $sex, $extend_info] = $request->postMore([
             ['avatar', ''],
             ['nickname', ''],
+            ['sex', 0],
             ['extend_info', []]
         ], true);
         if (!$avatar && $nickname == '') {
             return app('json')->fail('请输入昵称或者选择头像');
         }
         $uid = (int)$request->uid();
-        $this->services->saveExtendForm($uid, $extend_info, ['avatar' => $avatar, 'nickname' => $nickname], true);
+        $this->services->saveExtendForm($uid, $extend_info, ['avatar' => $avatar, 'nickname' => $nickname, 'sex' => $sex], true);
         return app('json')->success('修改成功');
     }
 
