@@ -163,6 +163,7 @@ class UserRelationServices extends BaseServices
 							'ot_price'  => $product['ot_price'] ?? 0,
 							'sales'  => $product['sales'] ?? 0,
 							'image' => get_thumb_water($product['image'] ?? 0),
+							'recommend_image'  => $product['recommend_image'] ?? '',
 							'is_del'  => $product['is_del'] ?? 0,
 							'is_show'  => $product['is_show'] ?? 0,
 							'is_fail'  => ($product['is_del'] ?? 1) && !($product['is_show'] ?? 0),
