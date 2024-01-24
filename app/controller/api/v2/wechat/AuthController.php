@@ -49,10 +49,6 @@ class AuthController
 	{
 		if (!$code) return app('json')->fail('参数有误');
 		$data = $this->services->authType($code, $spread_spid, $spread_code);
-
-        //For Test
-        //return app('json')->fail(($data['gender'] ?? '').'|||'.($data['sex'] ?? ''));
-
 		return app('json')->success($data);
 	}
 
