@@ -470,7 +470,7 @@ class RoutineServices extends BaseServices
 	 * @param $spread_code
 	 * @param $spread_uid
 	 * @param $key
-
+	 * @return array
 	 * @throws InvalidArgumentException
 	 * @throws DataNotFoundException
 	 * @throws ModelNotFoundException
@@ -487,8 +487,8 @@ class RoutineServices extends BaseServices
         if (!$userInfo || !isset($userInfo['purePhoneNumber'])) {
             throw new ValidateException('获取用户信息失败');
         }
-return ($wechatInfo['sex'] ?? '').'|||'.($wechatInfo['gender'] ?? '').'|||'.($userInfo['sex'] ?? '').'|||'.($userInfo['gender'] ?? '');
-        throw new ValidateException(($wechatInfo['sex'] ?? '').'|||'.($wechatInfo['gender'] ?? '').'|||'.($userInfo['sex'] ?? '').'|||'.($userInfo['gender'] ?? ''));
+        $str = ($wechatInfo['sex'] ?? '').'|||'.($wechatInfo['gender'] ?? '').'|||'.($userInfo['sex'] ?? '').'|||'.($userInfo['gender'] ?? '');
+
         $openid = $userInfoConfig['openid'];
         $wechatInfo['openid'] = $openid;
         $wechatInfo['unionid'] = $userInfoConfig['unionid'] ?? '';
@@ -503,6 +503,9 @@ return ($wechatInfo['sex'] ?? '').'|||'.($wechatInfo['gender'] ?? '').'|||'.($us
         $wechatUserServices = app()->make(WechatUserServices::class);
         //写入用户信息
         $user = $wechatUserServices->wechatOauthAfter([$openid, $wechatInfo, $spread_uid, $login_type, $userType]);
+        $res = $this->getReturnInfo($user);
+        $res['str'] = $str;
+        return $res;
         return $this->getReturnInfo($user);
     }
 
