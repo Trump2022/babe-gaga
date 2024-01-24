@@ -1,14 +1,14 @@
 <template>
 	<view class="collection" :style="colorStyle">
 		<view class="nav acea-row row-center-wrapper">
-			<view class="item" :class="active == index?'on':''" v-for="(item,index) in navList" :key="index" @click="navTap(index)">{{item.name}}</view>
+			<view class="item acea-row row-center-wrappe" :class="active == index?'on':''" v-for="(item,index) in navList" :key="index" @click="navTap(index)">{{item.name}}</view>
 		</view>
-		<view class="manage acea-row row-between-wrapper" v-if="collectProductList.length">
+		<view class="manage acea-row row-between-wrapper" v-if="collectProductList.length && active">
 			<view>当前共 <text class="num">{{count}}</text> {{!active ? '件商品':'条视频'}}</view>
 			<view class="close"  @click="manageTap" v-if="administer">取消</view>
 			<view class="font-num" @click="manageTap" v-else>管理</view>
 		</view>
-		<view class="collectList" v-if="collectProductList.length && !active">
+		<view class="collectList" v-if="collectProductList.length && active">
 			<checkbox-group @change="checkboxChange">
 			  <view class="item acea-row row-between-wrapper" v-for="(item,index) in collectProductList" :key="index" @click="goGoods(item.product_id)">
 					<view class="pictrue">
@@ -45,34 +45,26 @@
 		  	</view>
 		  </view> 
 		</view>
-		<view class="videoList" v-if="collectProductList.length && active">
-			<checkbox-group @change="checkboxChange">
-				<view class="acea-row row-middle">
-					<view class="item" v-for="(item,index) in collectProductList" :key="index" @click="goVideo(item.video_id)">
-						<!-- #ifndef MP -->
-						<checkbox class="checkbox" v-if="administer" :value="(item.id).toString()" :checked="item.checked" />
-						<!-- #endif -->
-						<!-- #ifdef MP -->
-						<checkbox class="checkbox" v-if="administer" :value="item.id" :checked="item.checked" />
-						<!-- #endif -->
-						<image :src="item.image" mode="aspectFill"></image>
-						<view class="like acea-row row-bottom">
-							<text class="iconfont icon-shipindianzan-weidian1"></text>{{item.like_num}}
+		<view class="scroll-y" v-if="!active">
+			<view class="class-item" v-for="item in collectProductList" :key="item.id"  @click="goto(item.product_id)">
+				<image :src="item.recommend_image" mode="widthFix"></image>
+				<view class="store-name">
+					{{item.store_name}}
+				</view>
+				<view class="bottom">
+					<view class="price">
+						<view class="salc-price">
+							<text>￥</text>
+							{{item.price}}
 						</view>
+						<text class="del">￥{{item.ot_price}}</text>
 					</view>
+					<text>{{item.sales}}人付款</text>
 				</view>
-			</checkbox-group>
-			<view class='loadingicon acea-row row-center-wrapper'>
-				<text class='loading iconfont icon-jiazai' :hidden='loading==false'></text>{{loadTitle}}
 			</view>
-			<view class="footer acea-row row-between-wrapper" v-if="administer">
-				<checkbox-group @change="checkboxAllChange">
-					<checkbox value="all" :checked="isAllSelect" />
-					<text class='checkAll'>全选</text>
-				</checkbox-group>
-				<view class="acea-row row-middle">
-					<view class="bnt on acea-row row-center-wrapper" @click="del('video')">取消收藏</view>
-				</view>
+			
+			<view class="loadTitle">
+				{{loadTitle}}
 			</view>
 		</view>
 		<!-- <view class='noCommodity' v-else-if="!collectProductList.length && page > 1">
@@ -116,10 +108,10 @@
 			return{
 				navList:[
 					{
-						name:'商品'
+						name:'课程'
 					},
 					{
-						name:'视频'
+						name:'潮玩商品'
 					}
 				],
 				active:0,
@@ -137,7 +129,8 @@
 				administer:0,
 				isAllSelect: false,
 				count:0,
-				isShowAuth: false
+				isShowAuth: false,
+				is_class: 1
 			}
 		},
 		onLoad() {},
@@ -246,9 +239,12 @@
 				this.active = index;
 				let type = 'product'
 				if(index){
-					type = 'video'
-				}else{
 					type = 'product'
+					this.is_class = 0
+				}else{
+					type = 'video'
+					type = 'product'
+					this.is_class = 1
 				}
 				this.isAllSelect = false;
 				this.forGoods(0);
@@ -269,7 +265,8 @@
 				getCollectUserList({
 					page: that.page,
 					limit: that.limit,
-					category:type
+					category:type,
+					is_class: this.is_class
 				}).then(res => {
 					let collectProductList = res.data.list;
 					collectProductList.forEach(item=>{
@@ -303,13 +300,17 @@
 					that.hotScroll = res.data.length<that.hotLimit
 					that.hostProduct = that.hostProduct.concat(res.data)
 				});
-			}
+			},
+			goto(id) {
+				uni.navigateTo({
+					url: `/pages/class_details/index?id=${id}`
+					// url: `/pages/goods_details/index?id=${id}`
+				})
+			},
 		},
 		onReachBottom() {
-			if(this.collectProductList.length){
+			if(!this.loadend) {
 				this.get_user_collect_product('product');
-			}else{
-				// this.get_host_product();
 			}
 		}
 	}
@@ -321,7 +322,9 @@
 			background-color: #fff;
 			height: 88rpx;
 			.item{
-				margin: 0 48rpx;
+				flex: 1;
+				justify-content: center;
+				// margin: 0 48rpx;
 				font-weight: 400;
 				color: #282828;
 				font-size: 30rpx;
@@ -336,6 +339,7 @@
 						height: 3rpx;
 						background: var(--view-theme);
 						bottom: -28rpx;
+						// transform: translate(50%, 0);
 					}
 				}
 			}
@@ -500,5 +504,77 @@
 				}
 			}
 		}
+	}
+	
+	.scroll-y {
+		margin-top: 18rpx;
+	}
+	
+	.class-item {
+		padding: 24rpx;
+		padding-bottom: 36rpx;
+		border-radius: 24rpx;
+		margin: 0 18rpx 24rpx;
+		background-color: #fff;
+		
+		image {
+			width: 100%;
+			border-radius: 12rpx;
+		}
+		
+		.store-name {
+			font-size: 28rpx;
+			color: #231815;
+			font-weight: bold;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			margin: 12rpx 0;
+		}
+		
+		.bottom {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+			
+			text {
+				font-size: 22rpx;
+				color: #97A1AB;
+			}
+			
+			.price {
+				font-weight: bold;
+				display: flex;
+				align-items: flex-end;
+				color: #FB4095;
+				
+				text {
+					color: #97A1AB;
+				}
+				
+				.salc-price {
+					margin-right: 12rpx;
+					font-size: 46rpx;
+					height: 52rpx;
+					
+					text {
+						font-weight: normal;
+						font-size: 20rpx;
+						color: #FB4095;
+					}
+				}
+				
+				.del {
+					text-decoration: line-through;
+				}
+			}
+		}
+	}
+	
+	.loadTitle {
+		text-align: center;
+		color: #97A1AB;
+		font-size: 24rpx;
+		margin: 30rpx 0;
 	}
 </style>

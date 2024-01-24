@@ -7,7 +7,10 @@
       <view class="sys-head">
         <view class="sys-bar" :style="{height:sysHeight}"></view>
         <!-- #ifdef MP -->
-        <view class="sys-title" :style="member_style==3?'color:#333':''">个人中心</view>
+        <!-- <view class="sys-title" :style="member_style==3?'color:#333':''">个人中心</view> -->
+		<view class="sys-title">
+			<image src="https://gaga.fanxinghy.com/images/user_logo.png" style="width: 250rpx;" mode="widthFix"></image>
+		</view>
         <!-- #endif -->
         <view class="bg" :style="member_style==3?'background:#f5f5f5':''"></view>
       </view>
@@ -17,151 +20,180 @@
     <view class="mid style-add" :style="colorStyle">
       <scroll-view scroll-y="true" class="height-add">
         <view class="head">
-          <view class="user-card" :class="member_style==3?'unBg':''"
-            :style="{backgroundImage:'url('+imgHost+'/statics/images/user01.png'+')'}">
-            <view class="bg"></view>
-            <!-- 个人资料展示 -->
-            <view class="user-info">
-              <view>
-                <!-- 公众号未授权时显示 -->
-                <!-- #ifdef H5 -->
-                <button class="bntImg" v-if="userInfo.is_complete == 0 && isWeixin && !isLogin" @click="getWechatuserinfo">
-                  <image class="avatar" src='/static/images/f.png'></image>
-                  <view class="avatarName">获取头像</view>
-                </button>
-                <!-- #endif -->
-                <!-- #ifdef MP -->
-                <!-- <button class="bntImg" v-if="userInfo.is_complete == 0" @tap="getUserProfile">
-                  <image class="avatar" src='/static/images/f.png'></image>
-                  <view class="avatarName">获取头像</view>
-                </button> -->
-                <!-- #endif -->
-                <!-- #ifndef APP-PLUS -->
-                <view class="avatar-box" :class="{on:userInfo.is_money_level}">
-                  <image class="avatar" :src='userInfo.avatar' v-if="userInfo.avatar" @click="goEdit()">
-                  </image>
-                  <image v-else class="avatar" src="/static/images/f.png" mode="" @click="goEdit()">
-                  </image>
-                  <view class="headwear" v-if="userInfo.is_money_level && stu">
-                    <image src="/static/images/headwear.png"></image>
-                  </view>
-                </view>
-                <!-- #endif -->
-                <!-- #ifdef APP-PLUS -->
-                <view class="avatar-box" :class="{on:userInfo.is_money_level}">
-                  <image class="avatar" :src='userInfo.avatar' v-if="userInfo.avatar" @click="goEdit()">
-                  </image>
-                  <image v-else class="avatar" src="/static/images/f.png" mode="" @click="goEdit()">
-                  </image>
-                  <view class="headwear" v-if="userInfo.is_money_level && stu">
-                    <image src="/static/images/headwear.png"></image>
-                  </view>
-                </view>
-                <!-- #endif -->
-              </view>
-              <view class="info">
-                <view class="name display-add" v-if="!userInfo.uid" @click="openAuto">
-                  请点击授权
-                </view>
-                <view class="name" v-if="userInfo.uid">
-				  <view class="nickname line1">{{userInfo.nickname}}</view>
-                  <image class="live" :src="userInfo.vip_icon" v-if="parseInt(userInfo.vip_id)"></image>
-                  <view class="vip" v-if="userInfo.is_money_level> 0 && stu">
-                    <image src="/static/images/svip.png"></image>
-                  </view>
-                </view>
-                <view class="num" v-if="userInfo.phone">
-                  <view class="num-txt">{{userInfo.phone}}</view>
-                  <!-- <view class="icon">
-                    <image src="/static/images/edit.png" mode=""></image>
-                  </view> -->
-                </view>
-                <view class="phone" v-if="!userInfo.phone && isLogin && userInfo.uid" @tap="bindPhone">绑定手机号</view>
-              </view>
-              <!-- <view v-if="isLogin" class="qrCode message iconfont icon-erweima-xingerenzhongxin" @click="tapQrCode">
-              </view> -->
-              <view class="message">
-                <view @click="intoPage('/pages/users/user_set/index')">
-                  <view class="iconfont icon-shezhi"></view>
-                </view>
-              </view>
-              <view class="message">
-                <view @click="intoPage('/pages/users/message_center/index')">
-                 <!-- <view v-if="userInfo.service_num" class="num">
-                    {{userInfo.service_num >= 100 ? '99+' : userInfo.service_num}}
-                  </view> -->
-				  <uni-badge class="uni-badge-left-margin" :text="userInfo.service_num >= 100 ? '99+' : userInfo.service_num" absolute="rightTop">
-				    <view class="iconfont icon-s-kefu"></view>
-				  </uni-badge>
-                </view>
-              </view>
-              <!-- #ifdef MP -->
-              <!-- <view class="setting" @click="Setting"><text class="iconfont icon-shezhi"></text></view> -->
-              <!-- #endif -->
-
-            </view>
-            <view class="achsac">
-            </view>
-            <!-- <view class="sign" @click="goSignIn">签到</view> -->
-            <!-- 会员权益 -->
-            <view class="cardVipA acea-row row-between-wrapper" v-if="member_style==1 && stu && vip_type==2"
-              :style="{backgroundImage:'url('+imgHost+'/statics/images/member.png'+')'}">
-              <view class="left-box">
-                <view v-if="vipStatus == 1" class="small">永久</view>
-                <view v-else-if="vipStatus == 3" class="small">会员到期
-                  {{ userInfo.overdue_time | dateFormat }}
-                </view>
-                <view v-else-if="vipStatus == -1" class="small">已过期</view>
-                <view v-else-if="vipStatus == 2" class="small">未开通会员</view>
-              </view>
-              <view class="acea-row row-middle">
-                <navigator v-if="vipStatus == 1" url="/pages/annex/vip_paid/index" hover-class="none" class="btn">查看会员权益
-                </navigator>
-                <navigator v-else url="/pages/annex/vip_paid/index" hover-class="none" class="btn">
-                  {{ userInfo.overdue_time ? '立即续费' : '立即激活' }}
-                </navigator>
-                <text class="iconfont icon-xiangyou"></text>
-              </view>
-            </view>
-            <view class="cardVipB acea-row row-between" v-if="member_style==3 && stu && vip_type==2">
-              <view class="left-box acea-row">
-                <view class="pictrue">
-                  <image src="../../static/images/member01.png"></image>
-                </view>
-                <view v-if="vipStatus == 1" class="small">永久</view>
-                <view v-else-if="vipStatus == 3" class="small">会员到期
-                  {{ userInfo.overdue_time | dateFormat }}
-                </view>
-                <view v-else-if="vipStatus == -1" class="small">已过期</view>
-                <view v-else-if="vipStatus == 2" class="small">未开通会员</view>
-              </view>
-              <view class="acea-row">
-                <navigator v-if="vipStatus == 1" url="/pages/annex/vip_paid/index" hover-class="none" class="btn">
-                  会员可享多项权益</navigator>
-                <navigator v-else url="/pages/annex/vip_paid/index" hover-class="none" class="btn">
-                  {{ userInfo.overdue_time ? '立即续费' : '立即激活' }}
-                </navigator>
-                <text class="iconfont icon-xiangyou btn"></text>
-              </view>
-            </view>
-						<view class="cardVipA acea-row row-between-wrapper" :style="{backgroundImage:'url('+imgHost+'/statics/images/grade.png'+')'}" v-if="member_style==1 && memberStatus && vip_type==1">
-							<view class="left-box on">
-								<view class="small">{{userInfo.level_status==1?userInfo.vip_name:'激活会员卡 解锁更多权益'}}</view>
+			<view class="user-card-box">
+				<view class="user-card" :class="member_style==3?'unBg':''"
+				  :style="{backgroundImage:'url('+imgHost+'/images/user_bg.png'+')'}">
+				  <view class="bg"></view>
+				  <!-- 个人资料展示 -->
+				  <view class="user-info">
+				    <view>
+				      <!-- 公众号未授权时显示 -->
+				      <!-- #ifdef H5 -->
+				      <button class="bntImg" v-if="userInfo.is_complete == 0 && isWeixin && !isLogin" @click="getWechatuserinfo">
+				        <image class="avatar" src='/static/images/f.png'></image>
+				        <view class="avatarName">获取头像</view>
+				      </button>
+				      <!-- #endif -->
+				      <!-- #ifdef MP -->
+				      <!-- <button class="bntImg" v-if="userInfo.is_complete == 0" @tap="getUserProfile">
+				        <image class="avatar" src='/static/images/f.png'></image>
+				        <view class="avatarName">获取头像</view>
+				      </button> -->
+				      <!-- #endif -->
+				      <!-- #ifndef APP-PLUS -->
+				      <view class="avatar-box" :class="{on:userInfo.is_money_level}">
+				        <image class="avatar" :src='userInfo.avatar' v-if="userInfo.avatar" @click="goEdit()">
+				        </image>
+				        <image v-else class="avatar" src="/static/images/f.png" mode="" @click="goEdit()">
+				        </image>
+				        <view class="headwear" v-if="userInfo.is_money_level && stu">
+				          <image src="/static/images/headwear.png"></image>
+				        </view>
+						<image class="sex-image" :src="`${imgHost}/images/sex${userInfo.sex}.png`" v-if="userInfo.sex > 0" mode=""></image>
+				      </view>
+				      <!-- #endif -->
+				      <!-- #ifdef APP-PLUS -->
+				      <view class="avatar-box" :class="{on:userInfo.is_money_level}">
+				        <image class="avatar" :src='userInfo.avatar' v-if="userInfo.avatar" @click="goEdit()">
+				        </image>
+				        <image v-else class="avatar" src="/static/images/f.png" mode="" @click="goEdit()">
+				        </image>
+				        <view class="headwear" v-if="userInfo.is_money_level && stu">
+				          <image src="/static/images/headwear.png"></image>
+				        </view>
+				      </view>
+				      <!-- #endif -->
+				    </view>
+				    <view class="info">
+				      <view class="name display-add" v-if="!userInfo.uid" @click="openAuto">
+				        请点击授权
+				      </view>
+				      <view class="name" v-if="userInfo.uid">
+								  <view class="nickname line1">{{userInfo.nickname}}</view>
+				        <image class="live" :src="userInfo.vip_icon" v-if="parseInt(userInfo.vip_id)"></image>
+				        <view class="vip" v-if="userInfo.is_money_level> 0 && stu">
+				          <image src="/static/images/svip.png"></image>
+				        </view>
+				      </view>
+				      <view class="num" v-if="userInfo.phone">
+				        <view class="num-txt">{{userInfo.phone}}</view>
+				        <!-- <view class="icon">
+				          <image src="/static/images/edit.png" mode=""></image>
+				        </view> -->
+				      </view>
+				      <view class="phone" v-if="!userInfo.phone && isLogin && userInfo.uid" @tap="bindPhone">绑定手机号</view>
+				    </view>
+				    <!-- <view v-if="isLogin" class="qrCode message iconfont icon-erweima-xingerenzhongxin" @click="tapQrCode">
+				    </view> -->
+				    <view class="message">
+				      <view @click="intoPage('/pages/users/user_set/index')">
+				        <view class="iconfont icon-shezhi"></view>
+				      </view>
+				    </view>
+				    <view class="message">
+				      <view @click="intoPage('/pages/users/message_center/index')">
+				       <!-- <view v-if="userInfo.service_num" class="num">
+				          {{userInfo.service_num >= 100 ? '99+' : userInfo.service_num}}
+				        </view> -->
+								  <uni-badge class="uni-badge-left-margin" :text="userInfo.service_num >= 100 ? '99+' : userInfo.service_num" absolute="rightTop">
+								    <view class="iconfont icon-s-kefu"></view>
+								  </uni-badge>
+				      </view>
+				    </view>
+				    <!-- #ifdef MP -->
+				    <!-- <view class="setting" @click="Setting"><text class="iconfont icon-shezhi"></text></view> -->
+				    <!-- #endif -->
+				
+				  </view>
+				  <view class="achsac">
+				  </view>
+							<view class="num-wrapper"
+							  :class="[member_style==3?'unNum-wrapper':member_style==2?'Tnum-wrapper':'',((vip_type==2 && stu) || (vip_type==1 && memberStatus))?'':'height']"
+							  v-if="userInfo.uid">
+							  <view class="num-item" v-show="userInfo.balance_func_status"
+							    @click="goMenuPage('/pages/users/user_money/index')">
+							    <text class="num">{{userInfo.now_money || 0}}</text>
+							    <view class="txt">余额</view>
+							  </view>
+							  <view class="num-item" @click="goMenuPage('/pages/users/user_coupon/index')">
+							    <text class="num">{{userInfo.couponCount || 0}}</text>
+							    <view class="txt">优惠券</view>
+							  </view>
+							  <view class="num-item" @click="goMenuPage('/pages/users/user_integral/index')">
+							    <text class="num">{{userInfo.integral || 0}}</text>
+							    <view class="txt">gaga币</view>
+							  </view>
+							  <view class="num-item" @click="goMenuPage('/pages/users/user_goods_collection/index')">
+							    <text class="num">{{userInfo.collectCount || 0}}</text>
+							    <view class="txt">收藏</view>
+							  </view>
+							  <view class="num-item" @click="goMenuPage('/pages/users/visit_list/index')">
+							    <text class="num">{{userInfo.visit_num || 0}}</text>
+							    <view class="txt">浏览记录</view>
+							  </view>
 							</view>
-							<view class="acea-row row-middle">
-								<!-- 去激活 -->
-								<navigator :url="userInfo.level_status==1?'/pages/annex/vip_grade/index':'/pages/annex/vip_grade_active/index'" hover-class="none" class="btn on">{{userInfo.level_status==1?'查看会员卡':'去激活'}}</navigator>
-								<text class="iconfont icon-xiangyou on"></text>
-							</view>
-						</view>
-						<view class="cardVipB acea-row row-between on" :style="{backgroundImage:'url('+imgHost+'/statics/images/grade01.png'+')'}" v-if="member_style==3 && memberStatus && vip_type==1">
-							<view class="small">{{userInfo.level_status==1?userInfo.vip_name:'激活会员卡 解锁更多权益'}}</view>
-							<view class="acea-row">
-								<navigator :url="userInfo.level_status==1?'/pages/annex/vip_grade/index':'/pages/annex/vip_grade_active/index'" hover-class="none" class="btn on">{{userInfo.level_status==1?'查看会员卡':'去激活'}}</navigator>
-								<text class="iconfont icon-xiangyou"></text>
-							</view>
-						</view>
-          </view>
+				  <!-- <view class="sign" @click="goSignIn">签到</view> -->
+				  <!-- 会员权益 -->
+				  <view class="cardVipA acea-row row-between-wrapper" v-if="member_style==1 && stu && vip_type==2"
+				    :style="{backgroundImage:'url('+imgHost+'/statics/images/member.png'+')'}">
+				    <view class="left-box">
+				      <view v-if="vipStatus == 1" class="small">永久</view>
+				      <view v-else-if="vipStatus == 3" class="small">会员到期
+				        {{ userInfo.overdue_time | dateFormat }}
+				      </view>
+				      <view v-else-if="vipStatus == -1" class="small">已过期</view>
+				      <view v-else-if="vipStatus == 2" class="small">未开通会员</view>
+				    </view>
+				    <view class="acea-row row-middle">
+				      <navigator v-if="vipStatus == 1" url="/pages/annex/vip_paid/index" hover-class="none" class="btn">查看会员权益
+				      </navigator>
+				      <navigator v-else url="/pages/annex/vip_paid/index" hover-class="none" class="btn">
+				        {{ userInfo.overdue_time ? '立即续费' : '立即激活' }}
+				      </navigator>
+				      <text class="iconfont icon-xiangyou"></text>
+				    </view>
+				  </view>
+				  <view class="cardVipB acea-row row-between" v-if="member_style==3 && stu && vip_type==2">
+				    <view class="left-box acea-row">
+				      <view class="pictrue">
+				        <image src="../../static/images/member01.png"></image>
+				      </view>
+				      <view v-if="vipStatus == 1" class="small">永久</view>
+				      <view v-else-if="vipStatus == 3" class="small">会员到期
+				        {{ userInfo.overdue_time | dateFormat }}
+				      </view>
+				      <view v-else-if="vipStatus == -1" class="small">已过期</view>
+				      <view v-else-if="vipStatus == 2" class="small">未开通会员</view>
+				    </view>
+				    <view class="acea-row">
+				      <navigator v-if="vipStatus == 1" url="/pages/annex/vip_paid/index" hover-class="none" class="btn">
+				        会员可享多项权益</navigator>
+				      <navigator v-else url="/pages/annex/vip_paid/index" hover-class="none" class="btn">
+				        {{ userInfo.overdue_time ? '立即续费' : '立即激活' }}
+				      </navigator>
+				      <text class="iconfont icon-xiangyou btn"></text>
+				    </view>
+				  </view>
+										<view class="cardVipA acea-row row-between-wrapper" :style="{backgroundImage:'url('+imgHost+'/statics/images/grade.png'+')'}" v-if="member_style==1 && memberStatus && vip_type==1">
+											<view class="left-box on">
+												<view class="small">{{userInfo.level_status==1?userInfo.vip_name:'激活会员卡 解锁更多权益'}}</view>
+											</view>
+											<view class="acea-row row-middle">
+												<!-- 去激活 -->
+												<navigator :url="userInfo.level_status==1?'/pages/annex/vip_grade/index':'/pages/annex/vip_grade_active/index'" hover-class="none" class="btn on">{{userInfo.level_status==1?'查看会员卡':'去激活'}}</navigator>
+												<text class="iconfont icon-xiangyou on"></text>
+											</view>
+										</view>
+										<view class="cardVipB acea-row row-between on" :style="{backgroundImage:'url('+imgHost+'/statics/images/grade01.png'+')'}" v-if="member_style==3 && memberStatus && vip_type==1">
+											<view class="small">{{userInfo.level_status==1?userInfo.vip_name:'激活会员卡 解锁更多权益'}}</view>
+											<view class="acea-row">
+												<navigator :url="userInfo.level_status==1?'/pages/annex/vip_grade/index':'/pages/annex/vip_grade_active/index'" hover-class="none" class="btn on">{{userInfo.level_status==1?'查看会员卡':'去激活'}}</navigator>
+												<text class="iconfont icon-xiangyou"></text>
+											</view>
+										</view>
+				</view>
+			</view>
+          
           <view class="card-vip" v-if="member_style==2 && stu && vip_type==2">
             <view class="left-box">
               <!-- <view class="big">会员可享多项权益</view> -->
@@ -190,7 +222,7 @@
 							<text class="iconfont icon-xiangyou"></text>
 						</view>
 					</view>
-          <view class="num-wrapper"
+          <!-- <view class="num-wrapper"
             :class="[member_style==3?'unNum-wrapper':member_style==2?'Tnum-wrapper':'',((vip_type==2 && stu) || (vip_type==1 && memberStatus))?'':'height']"
             v-if="userInfo.uid">
             <view class="num-item" v-show="userInfo.balance_func_status"
@@ -214,7 +246,7 @@
               <text class="num">{{userInfo.visit_num || 0}}</text>
               <view class="txt">浏览记录</view>
             </view>
-          </view>
+          </view> -->
           <!-- 新人礼物 -->
           <view class="num-wrapper on" v-if="!userInfo.uid">
             <image :src="giftPic" mode="" class="img"></image>
@@ -1374,15 +1406,15 @@
   }
 
   .num-wrapper {
-    background-color: #fff;
+    // background-color: #fff;
     z-index: 29;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 22rpx;
-    color: #333;
-    margin: 30rpx 30rpx 25rpx 30rpx;
+    color: #fff;
+    // margin: 30rpx 30rpx 25rpx 30rpx;
     border-radius: 16rpx;
     height: 160rpx;
 		
@@ -1451,7 +1483,7 @@
       .txt {
         margin-top: 8rpx;
         font-size: 26rpx;
-        color: #555;
+        // color: #555;
       }
     }
   }
@@ -1674,11 +1706,11 @@
     position: absolute;
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    width: 750rpx;
+    width: calc(100% - 48rpx);
     height: 84rpx;
-    bottom: -2rpx;
-    left: 0;
-    padding: 0 56rpx 0 135rpx;
+    bottom: 24rpx;
+    left: 24rpx;
+    padding: 0 30rpx 0 135rpx;
 
     .left-box {
       font-size: 26rpx;
@@ -1725,7 +1757,7 @@
         width: 100%;
         height: 100%;
         // background: url("~@/static/images/user-sys.png") no-repeat;
-        background: var(--view-theme);
+        background: #71D7F6;
         background-size: 100% auto;
         background-position: left bottom;
       }
@@ -1734,24 +1766,35 @@
         z-index: 10;
         position: relative;
         height: 43px;
-        text-align: center;
-        line-height: 43px;
-        font-size: 34rpx;
-        color: #FFFFFF;
+        // text-align: center;
+        // line-height: 43px;
+        // font-size: 34rpx;
+        // color: #FFFFFF;
+		display: flex;
+		align-items: center;
+		padding-left: 24rpx;
       }
     }
 
     .head {
       // background: #fff;
-
+	  // background: #71D7F6;
+		
+		.user-card-box {
+			background: #71D7F6;
+			padding: 10rpx 18rpx;
+		}
+		
       .user-card {
         position: relative;
-        width: 100%;
-        height: 270rpx;
+        // width: 100%;
+        height: 420rpx;
         margin: 0 auto;
-        padding: 35rpx 28rpx;
         background-size: 100% auto;
-        background-color: var(--view-theme);
+		padding: 24rpx;
+		background-repeat: no-repeat;
+		
+        // background-color: var(--view-theme);
 
         .user-info {
           z-index: 20;
@@ -1817,6 +1860,15 @@
 				box-sizing: border-box;
               }
             }
+			
+			.sex-image {
+				width: 30rpx;
+				height: 30rpx;
+				border-radius: 50%;
+				position: absolute;
+				right: 0;
+				bottom: 0;
+			}
           }
 
           .avatar {

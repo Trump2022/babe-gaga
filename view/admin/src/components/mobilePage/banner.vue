@@ -135,9 +135,32 @@ export default {
         },
         // 文本
         textConfig: {
-          title: "文本展示",
-          val: '',
-          place: '显示的文本，多文本以逗号分隔',
+        //   title: "文本展示",
+        //   val: '',
+        //   place: '显示的文本，多文本以逗号分隔',
+            title:
+            "最多可添加4张图片，建议宽高24px；鼠标拖拽左侧圆点可调整图片 顺序",
+          maxList: 4,
+          list: [
+            {
+              img: "",
+              info: [
+                {
+                  title: "标题",
+                  value: "",
+                  tips: "选填，不超过4个字",
+                  max: 4
+                },
+                {
+                  title: "标题",
+                  value: "",
+                  tips: "选填，不超过4个字",
+                  max: 4,
+                  hide: true
+                },
+              ],
+            },
+          ],
         },
         isShow: {
           title: '是否显示背景色',

@@ -63,6 +63,13 @@
 						<view class='input acea-row row-between-wrapper'>
 							<input type='text' :value='userInfo.uid' disabled='true' class='id'></input>
 							<text class='iconfont icon-suozi'></text>
+						</view> 
+					</view>
+					<view class='item acea-row row-between-wrapper'>
+						<view>性别</view>
+						<view class='input acea-row row-between-wrapper' @click="showActionSheet">
+							<input type='text' :value='userInfo.sex == 1 ? "男" : userInfo.sex == 2 ? "女" : "未知"' disabled='true' class='id'></input>
+							<text class='iconfont icon-xiangyou'></text>
 						</view>
 					</view>
 					<view class='item acea-row row-between-wrapper'  v-for="(item,index) in userInfo.register_extend_info" :key="index">
@@ -552,6 +559,7 @@
 					}
 				}
 				value.extend_info = that.userInfo.register_extend_info;
+				value.sex = that.userInfo.sex;
 				userEdit(value).then(res => {
 					return that.$util.Tips({
 						title: res.msg,
@@ -562,7 +570,16 @@
 						title: msg || '保存失败，您并没有修改'
 					});
 				});
-			}
+			},
+			showActionSheet(type) {
+				const sexList = ['未知', '男', '女']
+				uni.showActionSheet({
+					itemList: sexList,
+					success: (res) => {
+						this.userInfo.sex = res.tapIndex
+					},
+				})
+			},
 		}
 	}
 </script>

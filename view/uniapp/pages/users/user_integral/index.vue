@@ -52,7 +52,7 @@
 				</view>
 				<view class='list2' :hidden='current!=1'>
 					<navigator class='item acea-row row-between-wrapper' hover-class='none' open-type="switchTab"
-						url='/pages/index/index'>
+						url='/pages/class/index/index'>
 						<view class='pictrue'>
 							<image src='../static/score.png'></image>
 						</view>

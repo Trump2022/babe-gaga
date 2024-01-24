@@ -102,7 +102,7 @@
 							<view class="title">购买商品<text class="mark">+{{taskInfo.order || 0}}点经验/元</text></view>
 							<view class="info">购买商品可获得对应的经验值</view>
 						</view>
-						<navigator class="link" open-type="switchTab" url="/pages/goods_cate/goods_cate"
+						<navigator class="link" open-type="switchTab" url="/pages/class/index/index"
 							hover-class="none">去购买</navigator>
 					</view>
 					<view class="item acea-row row-middle">

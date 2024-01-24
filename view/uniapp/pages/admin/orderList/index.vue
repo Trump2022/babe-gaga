@@ -7,26 +7,26 @@
 					v-model="where.keyword" @confirm="searchSubmit"></input>
 			</view>
 		</view>
-		<view class="nav acea-row row-around row-middle">
-			<view class="item" :class="where.status == 0 ? 'on' : ''" @click="changeStatus(0)">
+		<scroll-view scroll-x enable-flex :scroll-into-view="scrollIndex" class="nav">
+			<view class="item" id="status0" :class="where.status == 0 ? 'on' : ''" @click="changeStatus(0)">
 				待付款
 			</view>
-			<view class="item" :class="where.status == 1 ? 'on' : ''" @click="changeStatus(1)">
-				待发货
+			<view class="item" id="status1" :class="where.status == 1 ? 'on' : ''" @click="changeStatus(1)">
+				待发货/待核销
 			</view>
-			<view class="item" :class="where.status == 2 ? 'on' : ''" @click="changeStatus(2)">
-				待收货
+			<view class="item" id="status2" :class="where.status == 2 ? 'on' : ''" @click="changeStatus(2)">
+				待收货/使用中
 			</view>
-			<view class="item" :class="where.status == 3 ? 'on' : ''" @click="changeStatus(3)">
+			<view class="item" id="status3" :class="where.status == 3 ? 'on' : ''" @click="changeStatus(3)">
 				待评价
 			</view>
-			<view class="item" :class="where.status == 4 ? 'on' : ''" @click="changeStatus(4)">
+			<view class="item" id="status4" :class="where.status == 4 ? 'on' : ''" @click="changeStatus(4)">
 				已完成
 			</view>
-			<view class="item" :class="where.status == -3 ? 'on' : ''" @click="changeStatus(-3)">
+			<view class="item" id="status-3" :class="where.status == -3 ? 'on' : ''" @click="changeStatus(-3)">
 				退款
 			</view>
-		</view>
+		</scroll-view>
 		<view class="list" v-if="list.length">
 			<view class="item" v-for="(item, index) in list" :key="index">
 				<view class="order-num acea-row row-between-wrapper" @click="toDetail(item)">
@@ -154,12 +154,14 @@
 				orderInfo: {},
 				status: "",
 				isRefund:0, //1是仅退款;0是退货退款
-				imgHost:HTTP_REQUEST_URL
+				imgHost:HTTP_REQUEST_URL,
+				scrollIndex: 'status0'
 			};
 		},
 		onLoad(option) {
 			let type = option.types;
 			this.where.status = type;
+			this.scrollIndex = 'status' + type;
 			this.getErpConfig();
 		},
 		onShow(){
@@ -424,6 +426,13 @@
 		top: 0;
 		left: 0;
 		z-index: 99;
+		display: flex;
+		
+		view {
+			padding: 0 12rpx;
+			flex-shrink: 0;
+			line-height: 96upx;
+		}
 	}
 
 	.pos-order-list .nav .item.on {

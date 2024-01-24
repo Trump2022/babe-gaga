@@ -8,7 +8,7 @@
 		             <view class='pictrue'><image :src='userInfo.avatar'></image></view>
 		             <view class='text'>
 		                 <view class='line1'>{{userInfo.nickname}}</view>
-		                 <view class='integral acea-row'><text>积分: {{userInfo.integral}}</text></view>
+		                 <view class='integral acea-row'><text>gaga币: {{userInfo.integral}}</text></view>
 		             </view>
 		          </view>
 		          <navigator class='right acea-row row-middle' hover-class='none' url='/pages/users/user_sgin_list/index'>
@@ -40,7 +40,7 @@
 		         <view class='item'>{{signCount[3] || 0}}</view>
 		         <view class='data'>天</view>
 		      </view>
-		      <view class='tip2'>据说连续签到第{{day}}天可获得超额积分，一定要坚持签到哦~~~</view>
+		      <view class='tip2'>据说连续签到第{{day}}天可获得超额gaga币，一定要坚持签到哦~~~</view>
 		      <view class='list3'>
 		         <view class='item acea-row' v-for="(item,index) in signList" :key="index">
 		            <view>
@@ -59,7 +59,7 @@
 				  	<image src="../static/signH.png"></image>
 				  </view>
 		        <view class='state'>签到成功</view>
-		        <view class='integral'>获得{{integral}}积分</view>
+		        <view class='integral'>获得{{integral}}gaga币</view>
 		        <view class='signTipBnt' @click='close'>好的</view>
 		      </view>
 		   </view>

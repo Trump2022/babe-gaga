@@ -57,8 +57,8 @@
                     if (nVal == 0) {
                         let tempArr = [
                             {
-                                components: toolCom.c_input_item,
-                                configNme: 'textConfig'
+                                components: toolCom.c_menu_list,
+                                configNme: 'textConfig',
                             },
                             {
                                 components: toolCom.c_menu_list,

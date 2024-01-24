@@ -28,10 +28,12 @@
 					<view class="instruct">{{current}}/{{imgUrls.length}}</view>
 				</view>
 				<view class="show-text" v-if="textConfig">
-					<view class="show-text-item" v-for="(item, index) in textConfig.split(',')" :key="index">
-						<view class="show-text-item-dot"></view>
-						<text>{{item}}</text>
+					<view class="show-text-item" v-for="(item, index) in textConfig.list" :key="index">
+						<!-- <view></view> -->
+						<image class="show-text-item-dot" :src="item.img" mode=""></image>
+						<text>{{item.info[0].value}}</text>
 					</view>
+					<view class="show-text-item no-text" v-for="(item, index) in (4 - textConfig.list.length)" :key="index"></view>
 				</view>
 			</view>
 		</block>
@@ -63,7 +65,7 @@
 				paddinglr: (this.dataConfig.lrConfig.val)*2, //轮播左右边距
 				docConfig: this.dataConfig.docConfig.type, //指示点样式
 				imgConfig: this.dataConfig.imgConfig.type, //是否为圆角
-				textConfig: this.dataConfig.textConfig ? this.dataConfig.textConfig.value : '', //显示的文本
+				textConfig: this.dataConfig.textConfig, //显示的文本
 				imageH: 0,
 				isColor: this.dataConfig.isShow.val,
 				txtStyle: this.dataConfig.txtStyle.type,
@@ -255,6 +257,10 @@
 				background-color: #fff;
 				margin-right: 6rpx;
 			}
+		}
+		
+		.no-text {
+			height: 0;
 		}
 	}
 </style>

@@ -31,7 +31,7 @@
 					<view class="info">
 						<view class="title line1">{{ item.title }}</view>
 						<view class="price-box">
-							<text v-if="parseFloat(item.integral)">{{ item.integral }}积分</text>
+							<text v-if="parseFloat(item.integral)">{{ item.integral }}gaga币</text>
 							<text v-if="parseFloat(item.integral) && parseFloat(item.price)">+</text>
 							<text v-if="parseFloat(item.price)">{{ item.price }}元</text>
 						</view>
@@ -45,7 +45,7 @@
 			</view>
 			<view class="footer">
 				<view class="body-title">
-					<text class="title">轻松赚积分</text>
+					<text class="title">轻松赚gaga币</text>
 					<text></text>
 				</view>
 				<view class="footer-list">
@@ -56,11 +56,11 @@
 								购买商品
 							</view>
 							<view class="trip">
-								购买商品可获得积分奖励
+								购买商品可获得gaga币奖励
 							</view>
 						</view>
 					</view>
-					<navigator url="/pages/index/index" open-type="switchTab">
+					<navigator url="/pages/class/index/index" open-type="switchTab">
 						<text class="go-jump">
 							去完成
 						</text>
@@ -74,7 +74,7 @@
 								每日签到活动
 							</view>
 							<view class="trip">
-								每日签到可获得积分奖励
+								每日签到可获得gaga币奖励
 							</view>
 						</view>
 					</view>
@@ -84,7 +84,7 @@
 						</text>
 					</view>
 				</view>
-				<view class="footer-list">
+				<!-- <view class="footer-list">
 					<view class="list-left">
 						<image class="icon-sty" src="static/luck-draw.png" mode=""></image>
 						<view class="list-left-right">
@@ -92,7 +92,7 @@
 								九宫格抽奖活动
 							</view>
 							<view class="trip">
-								幸运抽奖可获得积分奖励
+								幸运抽奖可获得gaga币奖励
 							</view>
 						</view>
 					</view>
@@ -101,7 +101,7 @@
 							去完成
 						</text>
 					</view>
-				</view>
+				</view> -->
 			</view>
 		</view>
 		<!-- #ifdef MP -->
@@ -140,7 +140,7 @@
 				imgUrls: [],
 				goodList: [],
 				modelList: [{
-						title: '我的积分',
+						title: '我的',
 						imgUrl: 'static/my-point.png',
 						url: "/pages/users/user_integral/index"
 					},
@@ -148,11 +148,13 @@
 						title: '每日签到',
 						imgUrl: 'static/sign-in.png',
 						url: '/pages/users/user_sgin/index'
-					}, {
-						title: '积分抽奖',
-						imgUrl: 'static/points-lottery.png',
-						url: '/pages/goods/lottery/grids/index?type=1'
-					}, {
+					}, 
+					// {
+					// 	title: 'gaga币抽奖',
+					// 	imgUrl: 'static/points-lottery.png',
+					// 	url: '/pages/goods/lottery/grids/index?type=1'
+					// }, 
+					{
 						title: '兑换记录',
 						imgUrl: 'static/exchange.png',
 						url: "/pages/points_mall/exchange_record"

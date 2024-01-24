@@ -81,8 +81,8 @@
             </i-switch>
           </template>
           <template slot-scope="{ row, index }" slot="action">
-            <a @click="goCashier(row)" v-if="row.status == 1 && row.delete_time == null">进入收银台</a>
-            <Divider type="vertical" v-if="row.status == 1 && row.delete_time == null" />
+            <!-- <a @click="goCashier(row)" v-if="row.status == 1 && row.delete_time == null">进入收银台</a>
+            <Divider type="vertical" v-if="row.status == 1 && row.delete_time == null" /> -->
             <a @click="edit(row.id)" v-if="row.delete_time == null">编辑</a>
             <Divider type="vertical" v-if="row.delete_time == null" />
             <a @click="del(row.id, '删除该店员', index)" v-if="row.level > 0">删除</a>

@@ -66,9 +66,10 @@
 		<!-- 结束 -->
 		<!-- 未拆单时，正常单 -->
 		<view class="pos-order-goods split" v-if="orderInfo.cartInfo && orderInfo.cartInfo.length">
-			<view class="title acea-row row-between-wrapper" v-if="orderInfo.status == 4">
+			<view class="title acea-row row-between-wrapper">
 				<text>共{{totalNmu}}件商品</text>
 			<!-- 	<navigator class="bnt" :url="'/pages/admin/store/deliverGoods/index?id='+orderInfo.order_id+'&listId='+orderInfo.id+'&totalNum='+orderInfo.total_num+'&orderStatus='+orderInfo.status+'&comeType=2'">去发货</navigator> -->
+			<navigator v-if="[1,2,3,4,5].includes(orderInfo._status._type) && (orderInfo.shipping_type==2 || orderInfo.delivery_type=='send')" class="navigator" :url="`/pages/goods/verify_record/index?oid=${orderInfo.id}`" hover-class="none">核销记录<text class="iconfont icon-xiangyou"></text></navigator>
 			</view>
 			<view class="goods acea-row row-between-wrapper" v-for="(item, index) in orderInfo.cartInfo" :key="index">
 				<view class="picTxt acea-row row-between-wrapper">

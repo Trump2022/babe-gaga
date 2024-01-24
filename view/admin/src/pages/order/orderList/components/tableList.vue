@@ -13,10 +13,10 @@
         <TabPane :label="'所有订单 (' + (tablists.all || 0) + ')'" name="-1" />
         <TabPane :label="'平台订单 (' + (tablists.plat || 0) + ')'" name="0" />
         <TabPane :label="'门店订单 (' + (tablists.store || 0) + ')'" name="1" />
-        <TabPane
+        <!-- <TabPane
           :label="'供应商订单 (' + (tablists.supplier || 0) + ')'"
           name="2"
-        />
+        /> -->
       </Tabs>
     </div>
     <div class="acea-row row-between">

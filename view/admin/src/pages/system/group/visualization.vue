@@ -87,7 +87,7 @@
 					<div class="pcmoddile_goods">
 						<div class="nofont" v-if="tabList.list == ''">暂无照片，请添加~</div>
 						<swiper v-else :options="swiperOption" class="pcswiperimg_goods">
-						    <swiper-slide class="spcwiperimg_goods" v-for="(item,index) in tabList.list">
+						    <swiper-slide class="spcwiperimg_goods" v-for="(item,index) in tabList.list" :key="index">
 								<img :src="item.slide" >
 							</swiper-slide>
 						</swiper>
@@ -99,7 +99,7 @@
 						<div class="moddile_goods">
 							<div class="nofonts" v-if="tabList.list == ''">暂无照片，请添加~</div>
 							<swiper v-else :options="swiperOption" class="pcswiperimg_goods">
-							    <swiper-slide class="swiperimg_goods" v-for="(item,index) in tabList.list">
+							    <swiper-slide class="swiperimg_goods" v-for="(item,index) in tabList.list" :key="index">
 									<img :src="item.img" >
 								</swiper-slide>
 							</swiper>

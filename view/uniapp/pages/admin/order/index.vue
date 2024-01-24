@@ -8,11 +8,11 @@
 				</navigator>
 				<navigator class="item" url="/pages/admin/orderList/index?types=1" hover-class="none">
 					<view class="num">{{ census.unshipped_count }}</view>
-					<view>待发货</view>
+					<view>待发货/待核销</view>
 				</navigator>
 				<navigator class="item" url="/pages/admin/orderList/index?types=2" hover-class="none">
 					<view class="num">{{ census.received_count }}</view>
-					<view>待收货</view>
+					<view>待收货/使用中</view>
 				</navigator>
 				<navigator class="item" url="/pages/admin/orderList/index?types=3" hover-class="none">
 					<view class="num">{{ census.evaluated_count }}</view>
@@ -163,7 +163,7 @@
 		-o-flex: 1;
 		-ms-flex: 1;
 		text-align: center;
-		font-size: 24upx;
+		font-size: 22upx;
 		color: #fff;
 	}
 

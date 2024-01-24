@@ -121,9 +121,9 @@
     <Card :bordered="false" dis-hover class="mt15">
       <div class="product_tabs tabbox mb20" v-if="Object.keys(tablists).length">
         <Tabs v-model="currentTab" @on-click="onClickTab">
+          <TabPane :label="'核销订单（' + tablists.writeoff + '）'" name="5" />
           <TabPane :label="'收银台订单（' + tablists.cashier + '）'" name="6" />
           <TabPane :label="'配送订单（' + tablists.delivery + '）'" name="7" />
-          <TabPane :label="'核销订单（' + tablists.writeoff + '）'" name="5" />
         </Tabs>
       </div>
       <Row type="flex">
@@ -574,9 +574,9 @@ export default {
         time: '',
         real_name: '',
         staff_id: '',
-        order_type: 6,
+        order_type: 5,
       },
-      currentTab: '6',
+      currentTab: '5',
       tableList: [],
       total: 0,
       loading: false,
@@ -1221,7 +1221,7 @@ export default {
         status: '',
         time: '',
         real_name: '',
-        order_type: 6,
+        order_type: 5,
       }
       this.rechargeData = {
         nickname: '',

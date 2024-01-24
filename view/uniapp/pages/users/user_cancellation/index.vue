@@ -71,7 +71,7 @@
 				cancelUser().then(res => {
 					this.$store.commit("LOGOUT");
 					uni.reLaunch({
-						url: '/pages/index/index'
+						url: '/pages/class/index/index'
 					})
 				}).catch(msg => {
 					return this.$util.Tips({

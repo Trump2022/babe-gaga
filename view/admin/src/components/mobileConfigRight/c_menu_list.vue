@@ -21,11 +21,13 @@
                     </div>
                     <div class="info">
                         <div class="info-item" v-for="(infos,key) in item.info" :key="key">
-                            <span>{{infos.title}}</span>
-                            <div class="input-box" @click="getLink(index,key,item.info)">
-                                <Input :icon="key==item.info.length-1?'ios-arrow-forward':''" v-model="infos.value" :readonly="key==item.info.length-1?true:false" :placeholder="infos.tips" :maxlength="infos.max" v-if="configData.isCube" @on-blur="onBlur" />
-                                <Input :icon="key==item.info.length-1?'ios-arrow-forward':''" v-model="infos.value" :readonly="key==item.info.length-1?true:false" :placeholder="infos.tips" :maxlength="infos.max" v-else />
-                            </div>
+                            <template v-if="!infos.hide">
+                                <span>{{infos.title}}</span>
+                                <div class="input-box" @click="getLink(index,key,item.info)">
+                                    <Input :icon="key==item.info.length-1?'ios-arrow-forward':''" v-model="infos.value" :readonly="key==item.info.length-1?true:false" :placeholder="infos.tips" :maxlength="infos.max" v-if="configData.isCube" @on-blur="onBlur" />
+                                    <Input :icon="key==item.info.length-1?'ios-arrow-forward':''" v-model="infos.value" :readonly="key==item.info.length-1?true:false" :placeholder="infos.tips" :maxlength="infos.max" v-else />
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </div>
