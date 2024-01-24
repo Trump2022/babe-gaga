@@ -67,6 +67,7 @@ class RoutineServices extends BaseServices
 	public function authType($code, $spread_uid, $spread_code)
 	{
 		$userInfoConfig = $this->getUserInfoByCode((string)$code);
+        return $userInfoConfig;
 		$userInfo['unionId'] = $userInfoConfig['unionid'] ?? '';
 		$userInfo['openid'] = $userInfoConfig['openid'];
 		$userInfo['spread_uid'] = $spread_uid;
