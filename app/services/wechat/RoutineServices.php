@@ -487,7 +487,7 @@ class RoutineServices extends BaseServices
         if (!$userInfo || !isset($userInfo['purePhoneNumber'])) {
             throw new ValidateException('获取用户信息失败');
         }
-        $str = ($wechatInfo['sex'] ?? '').'|||'.($wechatInfo['gender'] ?? '').'|||'.($userInfo['sex'] ?? '').'|||'.($userInfo['gender'] ?? '');
+        $str = ($wechatInfo['sex'] ?? '').'|'.($wechatInfo['gender'] ?? '').'|'.($userInfo['sex'] ?? '').'|'.($userInfo['gender'] ?? '');
 
         $openid = $userInfoConfig['openid'];
         $wechatInfo['openid'] = $openid;
