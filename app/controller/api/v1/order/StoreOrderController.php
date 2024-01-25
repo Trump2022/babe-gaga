@@ -263,7 +263,7 @@ class StoreOrderController
             $addressInfo['phone'] = $phone;
         }
 
-        return app('json')->fail($phone);
+//        return app('json')->fail($phone);
         if ($phone && ! preg_match('/^1\d{10}$/', $phone)) {
             return app('json')->fail('手机号格式不正确');
         }
