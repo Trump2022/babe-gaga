@@ -235,7 +235,7 @@ class StoreOrderController
         if (!$cartInfo) {
             return app('json')->fail('订单已过期或提交的商品不在送达区域,请刷新当前页面或重新选择商品下单!');
         }
-        return app('json')->fail($shipping_type);
+
         $payType = strtolower($payType);
         if ($shipping_type == 1) {
             $cartInfo = $cartGroup['cartInfo'];
