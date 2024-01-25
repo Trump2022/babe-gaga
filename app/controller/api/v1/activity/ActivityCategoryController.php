@@ -52,7 +52,7 @@ class ActivityCategoryController
                 $activityServicess = app()->make(ActivityServices::class);
                 foreach ($cateInfo as &$itme){
                     $cid = $itme['id'];
-                    $itme['activity_list'] = $activityServicess->cidByActivityList(['cid' => $cid], 1, 1, "id,title,image_input,visit,from_unixtime(add_time,'%Y-%m-%d %H:%i') as add_time,synopsis,url");
+                    $itme['activity_list'] = $activityServicess->cidByActivityList(['cid' => $cid], 1, 2, "id,title,image_input,visit,from_unixtime(add_time,'%Y-%m-%d %H:%i') as add_time,synopsis,url");
                 }
             }
         }
