@@ -263,11 +263,6 @@ class StoreOrderController
             $addressInfo['phone'] = $phone;
         }
 
-//        return app('json')->fail($phone);
-        if ($phone && ! preg_match('/^1\d{10}$/', $phone)) {
-            return app('json')->fail('手机号格式不正确');
-        }
-
         //下单前砍价验证
         if ($bargainId) {
             /** @var StoreBargainServices $bargainServices */

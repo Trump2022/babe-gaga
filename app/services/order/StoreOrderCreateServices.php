@@ -281,6 +281,11 @@ class StoreOrderCreateServices extends BaseServices
             $tmp['sex'] = isset($orderInfos['sex']) ? trim($orderInfos['sex']) : '';
             $tmp['store_id'] = isset($orderInfos['store_id']) ? trim($orderInfos['store_id']) : '';
             $tmp['store_address'] = isset($orderInfos['store_address']) ? trim($orderInfos['store_address']) : '';
+
+            if ($tmp['phone'] && ! preg_match('/^1\d{10}$/', $tmp['phone'])) {
+                throw new ValidateException('手机号格式不正确');
+            }
+
             if (empty($tmp['user_name'])) {
                 throw new ValidateException('请填写下单信息的上课人姓名');
             }
