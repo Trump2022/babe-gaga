@@ -257,7 +257,7 @@ Route::group('api', function () {
         Route::get('logout', 'v1.LoginController/logout')->name('logout');// 退出登录
         Route::post('switch_h5', 'v1.LoginController/switch_h5')->name('switch_h5');// 切换账号
         //商品类
-        Route::get('product/code/:id', 'v1.product.StoreProductController/code')->name('productCode');//商品分享二维码 推广员
+        Route::get('product/code/:id', 'v1.product.StoreProductController/code')->name('productCode');//商品分享二维码 海报 推广员
 
         //公共类
         Route::post('upload/image', 'v1.PublicController/upload_image')->name('apiUploadImage');//图片上传
