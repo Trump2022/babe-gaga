@@ -246,6 +246,8 @@ class CommunityServices extends BaseServices
 
     /**
      * @param array $where
+     * @param int $page
+     * @param int $limit
      * @param $userInfo
      * @return array
      * @throws DataNotFoundException
@@ -256,7 +258,7 @@ class CommunityServices extends BaseServices
      * @author: QSW
      * @email: qsw2012@outlook.com
      */
-    public function getApiList(array $where, $userInfo): array
+    public function getApiList(array $where, int $page, int $limit, $userInfo): array
     {
         [$page, $limit] = $this->getPageValue();
         $config = sys_config("community_app_switch");
@@ -360,10 +362,10 @@ class CommunityServices extends BaseServices
         }
 
         unset($where['community_id']);
-        $data = $this->getApiList($where, $userInfo);
+        $data = $this->getApiList($where, $page, $limit, $userInfo);
         if (empty($data['list']) && isset($where['topic_id'])) {
             unset($where['topic_id']);
-            $data = $this->getApiList($where, $userInfo);
+            $data = $this->getApiList($where, $page, $limit, $userInfo);
         }
 
         if ($first) {
