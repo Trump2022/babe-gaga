@@ -740,7 +740,7 @@ class CommunityServices extends BaseServices
         $qrcodeService = app()->make(QrcodeServices::class);
 
         if ($type == 'routine') {
-            return $qrcodeService->getRoutineQrcodePath($id, $user['uid'], 11, ['is_promoter' => $user['is_promoter']]);
+            return $qrcodeService->getRoutineQrcodePath($id, $user['uid'], 11, []);
         } else {
             $name = md5('cwx' . $id . $type . $user->uid . $user['is_promoter'] . date('Ymd')) . '.jpg';
             $link = 'pages/short_video/nvueSwiper/index';
