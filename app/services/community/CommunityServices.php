@@ -21,7 +21,6 @@ use app\services\store\product\SpuServices;
 use app\services\user\UserBillServices;
 use app\services\user\UserServices;
 use crmeb\basic\BaseModel;
-use crmeb\services\QrcodeService;
 use app\services\store\order\StoreOrderProductServices;
 use FormBuilder\Exception\FormBuilderException;
 use FormBuilder\Factory\Elm;
