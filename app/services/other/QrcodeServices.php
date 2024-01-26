@@ -254,7 +254,7 @@ class QrcodeServices extends BaseServices
                 $namePath = 'routine_store_cate_id_' . $id . '.jpg';
                 $data = 'id=' . $id;
                 break;
-            case 11:
+            case 11://社区图文二维码
                 $page = 'pages/short_video/nvueSwiper/index';
                 $namePath = 'routine_short_video_code_id_'.$id.'.jpg';
                 $data = 'id=' . $id;
