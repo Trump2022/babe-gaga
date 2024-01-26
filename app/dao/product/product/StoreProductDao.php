@@ -14,6 +14,7 @@ namespace app\dao\product\product;
 
 use app\dao\BaseDao;
 use app\model\product\product\StoreProduct;
+use think\db\exception\DbException;
 use think\facade\Config;
 
 /**
@@ -148,7 +149,7 @@ class StoreProductDao extends BaseDao
      * @param array $with
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getList(array $where, int $page = 0, int $limit = 0, string $order = '', array $with = [])
@@ -184,7 +185,7 @@ class StoreProductDao extends BaseDao
      * @param int $id
      * @return array|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getInfo(int $id)
@@ -197,7 +198,7 @@ class StoreProductDao extends BaseDao
      * @param $where
      * @return array|\think\Model|null
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getBranchProduct($where)
@@ -215,7 +216,7 @@ class StoreProductDao extends BaseDao
      * @param array $with
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getSearchList(array $where, int $page = 0, int $limit = 0, array $field = ['*'], string $order = '', array $with = ['couponId', 'descriptions'])
@@ -276,7 +277,7 @@ class StoreProductDao extends BaseDao
      * @param $field
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getProductLimit(array $where, $limit, $field, $order = ['val', 'desc'])
@@ -291,7 +292,7 @@ class StoreProductDao extends BaseDao
      * @param string $field
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function idByProductList(array $ids, string $field)
@@ -309,7 +310,7 @@ class StoreProductDao extends BaseDao
 	 * @param array $with
 	 * @return array
 	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
+	 * @throws DbException
 	 * @throws \think\db\exception\ModelNotFoundException
 	 */
     public function getRecommendProduct(array $where, array $field = ['*'], int $num = 0, int $page = 0, int $limit = 0, array $with = ['couponId', 'star'])
@@ -333,7 +334,7 @@ class StoreProductDao extends BaseDao
      * @param int $limit
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getProductCartList(array $where, int $page, int $limit, array $field = ['*'])
@@ -347,12 +348,29 @@ class StoreProductDao extends BaseDao
     }
 
     /**
+     * @param array $where
+     * @return int
+     * @throws DbException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/26 9:35
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getProductCartCount(array $where): int
+    {
+        $where['is_verify'] = 1;
+        $where['is_show'] = 1;
+        $where['is_del'] = 0;
+        return $this->search($where)->count();
+    }
+
+    /**
      * 获取用户购买热销榜单
      * @param array $where
      * @param int $limit
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getUserProductHotSale(array $where, int $limit = 20)
@@ -365,7 +383,7 @@ class StoreProductDao extends BaseDao
      * @param array $productIds
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function productIdByCateId(array $productIds)
@@ -378,7 +396,7 @@ class StoreProductDao extends BaseDao
      * @param $field
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getProductListByWhere(array $where, $field)
@@ -436,7 +454,7 @@ class StoreProductDao extends BaseDao
      * @param string $field
      * @return array
      * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
+     * @throws DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function getPresaleList(array $where, int $page, int $limit, string $field = '*')

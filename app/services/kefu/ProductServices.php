@@ -57,6 +57,35 @@ class ProductServices extends BaseServices
 			$where['store_name'] = $storeName;
 			$where['pid'] = 0;
 		}
+        $list = $this->dao->getProductCartList($where, $page, $limit, ['id', 'id product_id', 'id spu_id','product_type','IFNULL(sales,0) + IFNULL(ficti,0) as sales', 'store_name', 'image', 'stock', 'price']);
+        $count = $this->dao->getProductCartCount($where);
+        return compact('list', 'count');
+    }
+
+    /**
+     * @param int $uid
+     * @param string $storeName
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @descr: I am on my way to future,where you are there.
+     * @date : 2024/1/26 9:35
+     * @author: QSW
+     * @email: qsw2012@outlook.com
+     */
+    public function getProductCartCount(int $uid, string $storeName = '')
+    {
+        [$page, $limit] = $this->getPageValue();
+        $where = [];
+        if (!$storeName) {//搜索不局限加入购物车｜浏览
+            /** @var StoreOrderStoreOrderCartInfoServices $services */
+            $services = app()->make(StoreOrderStoreOrderCartInfoServices::class);
+            $where['id'] = $services->getUserCartProductIds(['uid' => $uid]);
+        } else {
+            $where['store_name'] = $storeName;
+            $where['pid'] = 0;
+        }
         return $this->dao->getProductCartList($where, $page, $limit, ['id', 'id product_id', 'id spu_id','product_type','IFNULL(sales,0) + IFNULL(ficti,0) as sales', 'store_name', 'image', 'stock', 'price']);
     }
 
