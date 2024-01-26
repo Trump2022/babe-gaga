@@ -138,6 +138,7 @@ class QrcodeServices extends BaseServices
      * @param string $name
      * @param string $link
      * @param bool $force
+     * @param bool $isSaveAttach
      * @return bool|mixed|string
      */
     public function getWechatQrcodePath(string $name, string $link, bool $force = false, bool $isSaveAttach = true)
@@ -251,6 +252,11 @@ class QrcodeServices extends BaseServices
             case 10: //门店二维码
                 $page = 'pages/store_cate/store_cate';
                 $namePath = 'routine_store_cate_id_' . $id . '.jpg';
+                $data = 'id=' . $id;
+                break;
+            case 11:
+                $page = 'pages/short_video/nvueSwiper/index';
+                $namePath = 'routine_short_video_code_id_'.$id.'.jpg';
                 $data = 'id=' . $id;
                 break;
         }

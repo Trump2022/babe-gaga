@@ -15,6 +15,7 @@ namespace app\services\community;
 use app\dao\community\CommunityDao;
 use app\services\BaseServices;
 //use app\services\user\UserBrokeragesServices;
+use app\services\other\QrcodeServices;
 use app\services\system\RelevanceServices;
 use app\services\store\product\SpuServices;
 use app\services\user\UserBillServices;
@@ -735,18 +736,17 @@ class CommunityServices extends BaseServices
     {
         $res = $this->dao->search(['is_type' => self::COMMUNIT_TYPE_VIDEO,'community_id' => $id, 'status' => 1, 'is_show' => 1])->find();
         if (!$res) return false;
-        $make = app()->make(QrcodeService::class);
+
+        /** @var QrcodeServices $qrcodeService */
+        $qrcodeService = app()->make(QrcodeServices::class);
+
         if ($type == 'routine') {
-            $name = md5('rcwx' . $id . $type . $user->uid . $user['is_promoter'] . date('Ymd')) . '.jpg';
-            $params = 'id=' . $id . '&spid=' . $user['uid'];
-            $link = 'pages/short_video/nvueSwiper/index';
-            return $make->getRoutineQrcodePath($name, $link, $params);
+            return $qrcodeService->getRoutineQrcodePath($id, $user['uid'], 11, ['is_promoter' => $user['is_promoter']]);
         } else {
             $name = md5('cwx' . $id . $type . $user->uid . $user['is_promoter'] . date('Ymd')) . '.jpg';
             $link = 'pages/short_video/nvueSwiper/index';
             $link = $link . '?id=' . $id . '&spid=' . $user['uid'];
-            $key = 'com' . $type . '_' . $id . '_' . $user['uid'];
-            return $make->getWechatQrcodePath($name, $link, false, $key);
+            return $qrcodeService->getWechatQrcodePath($name, $link, false, false);
         }
     }
 }
