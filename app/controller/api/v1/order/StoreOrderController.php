@@ -1312,7 +1312,7 @@ class StoreOrderController
         } else {
             $where['uid'] = $uid;
         }
-        if ($id) $where['id'] = $id;
+        if ($id) $where['oid'] = $id;
         return app('json')->successful($services->userOrderWriteOffRecords($where));
     }
 }
