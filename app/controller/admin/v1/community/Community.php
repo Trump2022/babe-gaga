@@ -163,7 +163,7 @@ class Community extends AuthController
             ['refusal', ''],
         ]);
 
-        if ( ! in_array($data['status'],[0,1,-1,-2])) return app('json')->fail('状态类型错误');
+        if ( ! is_numeric($data['status']) || ! in_array($data['status'],[0,1,-1,-2])) return app('json')->fail('状态类型错误');
         $data['is_show'] = ($data['status'] == 1) ?  1 : 0;
         if ($data['status'] == -1 && empty($data['refusal'])) return app('json')->fail('请填写拒绝理由');
         if ($data['status'] == -2 && empty($data['refusal'])) return app('json')->fail('请填写下架原因');

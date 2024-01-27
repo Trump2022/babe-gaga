@@ -147,7 +147,7 @@ class SystemStoreStaff extends BaseModel
     /**
      * 是否有核销权限搜索器
      * @param Model $query
-     * @param $value 用户uid
+     * @param $value | 用户uid
      */
     public function searchIsStatusAttr($query, $value)
     {
