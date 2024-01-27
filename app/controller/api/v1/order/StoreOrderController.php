@@ -1298,7 +1298,7 @@ class StoreOrderController
      */
     public function writeOffRecords(Request $request, StoreOrderWriteOffServices $services, $id = 0): Response
     {
-        //if (!$id) return app('json')->fail('参数错误');
+        if (!$id) return app('json')->fail('参数错误');
         $id = is_numeric($id) ? (int) $id : 0;
         $uid = $request->uid();
 
@@ -1311,7 +1311,7 @@ class StoreOrderController
         } else {
             $where['uid'] = $uid;
         }
-        if ($id) $where['oid'] = $id;
+        $where['oid'] = $id;
         return app('json')->successful($services->userOrderWriteOffRecords($where));
     }
 }
