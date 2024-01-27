@@ -1308,7 +1308,6 @@ class StoreOrderController
         $staff = $staffServices->getOne(['uid' => $uid], 'store_id');
         if ($staff) {
             //是店员
-            $where['store_id'] = $staff['store_id'];
         } else {
             $where['uid'] = $uid;
         }
