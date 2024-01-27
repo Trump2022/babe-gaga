@@ -203,7 +203,7 @@ class QrcodeServices extends BaseServices
         $namePath = '';
         $data = 'id=' . $id . '&spid=' . $uid;
         switch ($type) {
-            case 0:
+            case 0://商品二维码
                 $page = 'pages/goods_details/index';
                 $namePath = $id . '_' . $uid . '_' . $parame['is_promoter'] . '_product.jpg';
                 break;
@@ -258,6 +258,10 @@ class QrcodeServices extends BaseServices
                 $page = 'pages/short_video/nvueSwiper/index';
                 $namePath = 'routine_short_video_code_id_'.$id.'.jpg';
                 $data = 'id=' . $id;
+                break;
+            case 12://课程二维码
+                $page = 'pages/class_details/index';
+                $namePath = $id . '_' . $uid . '_' . $parame['is_promoter'] . '_product.jpg';
                 break;
         }
         if (!$page || !$namePath) {

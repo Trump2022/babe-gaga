@@ -136,7 +136,8 @@ class StoreProductController
         $id = (int)$id;
         /** @var SystemAttachmentServices $attach */
         $attach = app()->make(SystemAttachmentServices::class);
-        if (!$id || !$this->services->isValidProduct($id)) {
+        $product = $this->services->isValidProduct($id);
+        if (!$id || !$product) {
             return app('json')->fail('商品不存在或已下架');
         }
         $userType = $request->get('user_type', 'wechat');
@@ -152,7 +153,8 @@ class StoreProductController
                     if (sys_config('share_qrcode', 0) && request()->isWechat()) {
                         $url = $qrcodeService->getTemporaryQrcode('product-' . $id, $user['uid'])->url;
                     } else {
-                        $url = $qrcodeService->getWechatQrcodePath($name, '/pages/goods_details/index?id=' . $id . '&spread=' . $user['uid']);
+                        $_url = $product['is_class'] ? '/pages/class_details/index' : '/pages/goods_details/index';
+                        $url = $qrcodeService->getWechatQrcodePath($name, $_url.'?id=' . $id . '&spread=' . $user['uid']);
                     }
 
                     if ($url === false)
@@ -170,7 +172,8 @@ class StoreProductController
                 case 'routine':
                     /** @var QrcodeServices $qrcodeService */
                     $qrcodeService = app()->make(QrcodeServices::class);
-                    $url = $qrcodeService->getRoutineQrcodePath($id, $user['uid'], 0, ['is_promoter' => $user['is_promoter']]);
+                    $type = $product['is_class'] ? 12 : 0;
+                    $url = $qrcodeService->getRoutineQrcodePath($id, $user['uid'], $type, ['is_promoter' => $user['is_promoter']]);
                     if ($url === false)
                         return app('json')->fail('二维码生成失败');
                     else
