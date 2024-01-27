@@ -1299,7 +1299,21 @@ class StoreOrderController
     public function writeOffRecords(Request $request, StoreOrderWriteOffServices $services, $id = 0): Response
     {
         if (!$id) return app('json')->fail('参数错误');
+        $id = is_numeric($id) ? (int) $id : 0;
         $uid = $request->uid();
-        return app('json')->successful($services->userOrderWriteOffRecords(['oid'=>$id, 'uid'=>$uid]));
+
+        $where = [];
+        /** @var SystemStoreStaffServices  $staffServices */
+        $staffServices = app()->make(SystemStoreStaffServices::class);
+        $staff = $staffServices->getOne(['uid' => $uid], 'store_id');
+        if ($staff) {
+            //是店员
+            $where['store_id'] = $staff['store_id'];
+            $where['staff_uid'] = $uid;
+        } else {
+            $where['uid'] = $uid;
+        }
+        $where['oid'] = $id;
+        return app('json')->successful($services->userOrderWriteOffRecords($where));
     }
 }

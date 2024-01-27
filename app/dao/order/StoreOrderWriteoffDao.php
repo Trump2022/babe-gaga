@@ -53,7 +53,18 @@ class StoreOrderWriteoffDao extends BaseDao
 							$order->name('store_order')->field('id')->whereLike('order_id|uid|user_phone|staff_id', '%' . $where['keyword'] . '%');
 						});
 				});
-			});
+			})
+
+            ->when(isset($where['store_id']) && $where['store_id'] && isset($where['oid']) && $where['oid'] && isset($where['staff_uid']) && $where['staff_uid'], function ($query) use ($where){
+                $query->where(function ($que) use ($where) {
+
+                    //在自己门店核销过的订单
+                    $que->where('oid', 'IN', function ($q) use ($where) {
+                        $q->name('store_order_writeoff')->where('oid', $where['oid'])->where('store_id', $where['store_id'])->field('oid')->select();
+                    })->whereOr('uid', $where['staff_uid']);//或者自己的订单
+
+                });
+            });
 	}
 
 	/**
