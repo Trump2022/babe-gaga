@@ -352,7 +352,7 @@ class CommunityServices extends BaseServices
         $first = $this->getFirstVideo($where,$userInfo);
 
         if ( ! $type) { // 条件视频
-            if ( ! isset($where['uid']) && $first) $where['topic_id'] = $first['topic_id'];
+            if ( ! isset($where['uid']) && $first && $first['topic_id']) $where['topic_id'] = $first['topic_id'];
         }
 
         if ($first) {

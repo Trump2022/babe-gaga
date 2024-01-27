@@ -84,7 +84,7 @@ class CommunityDao extends BaseDao
             ->when(isset($where['topic_id']) && $where['topic_id'] !==  '', function ($query) use($where) {
                 $query->where('Community.topic_id',$where['topic_id']);
             })
-            ->when(isset($where['community_id']) && $where['community_id'] !==  '', function ($query) use($where) {
+            ->when(isset($where['community_id']) && $where['community_id'], function ($query) use($where) {
                 $query->where('Community.community_id',$where['community_id']);
             })
             ->when(isset($where['not_id']) && $where['not_id'], function ($query) use($where) {
