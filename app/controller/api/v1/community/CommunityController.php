@@ -89,7 +89,8 @@ class CommunityController
             unset($where['category_id']);
         }
         $where = array_merge($where,CommunityServices::IS_SHOW_WHERE);
-        return app('json')->success($this->services->getApiList($where, $this->user));
+        [$page, $limit] = $this->services->getPageValue();
+        return app('json')->success($this->services->getApiList($where, $page, $limit, $this->user));
     }
 
     /**
@@ -270,7 +271,8 @@ class CommunityController
         if ($type) {
             $where['is_type'] = CommunityServices::COMMUNIT_TYPE_VIDEO;
         }
-        return app('json')->success($this->services->getApiList($where, $this->user));
+        [$page, $limit] = $this->services->getPageValue();
+        return app('json')->success($this->services->getApiList($where, $page, $limit, $this->user));
     }
 
     /**
@@ -290,7 +292,8 @@ class CommunityController
             $where = CommunityServices::IS_SHOW_WHERE;
         }
         $where['uid'] = $id;
-        return app('json')->success($this->services->getApiList($where, $this->user));
+        [$page, $limit] = $this->services->getPageValue();
+        return app('json')->success($this->services->getApiList($where, $page, $limit, $this->user));
     }
 
     /**

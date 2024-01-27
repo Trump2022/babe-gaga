@@ -260,7 +260,6 @@ class CommunityServices extends BaseServices
      */
     public function getApiList(array $where, int $page, int $limit, $userInfo): array
     {
-        [$page, $limit] = $this->getPageValue();
         $config = sys_config("community_app_switch");
         if (!isset($where['is_type']) && $config) $where['is_type'] = $config;
         $where['is_del'] = 0;
