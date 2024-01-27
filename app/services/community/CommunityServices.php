@@ -95,6 +95,7 @@ class CommunityServices extends BaseServices
                     $this->decIntegral($ret['uid'], $id);
                 }
             }
+            app()->make(CommunityTopicServices::class)->sumCountUse(null);
             //event('community.status',compact('id'));
         });
     }
@@ -132,15 +133,13 @@ class CommunityServices extends BaseServices
      * @param $id
      * @param $user
      * @return void
-     * @descr: I am on my way to future,where you are there.
-     * @date : 2024/1/9 15:47
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @throws DbException
      */
     public function destroy($id, $user = null)
     {
         //event('community.delete.before',compact('id','user'));
         $this->dao->update($id,  ['is_del' =>  1]);
+        app()->make(CommunityTopicServices::class)->sumCountUse(null);
         //event('community.delete',compact('id', 'user'));
     }
 
@@ -253,10 +252,6 @@ class CommunityServices extends BaseServices
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
-     * @descr: I am on my way to future,where you are there.
-     * @date : 2024/1/10 18:14
-     * @author: QSW
-     * @email: qsw2012@outlook.com
      */
     public function getApiList(array $where, int $page, int $limit, $userInfo): array
     {
@@ -291,10 +286,17 @@ class CommunityServices extends BaseServices
         return compact('count','list');
     }
 
+    /**
+     * @param $where
+     * @param $userInfo
+     * @return array|mixed|BaseQuery|Model|null
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     */
     public function getFirstVideo($where, $userInfo)
     {
         $where['is_del'] = 0;
-//        $where['community_id'] = $community_id;
         $where['is_type'] = self::COMMUNIT_TYPE_VIDEO;
         $info = $this->dao->search($where)
             ->with([
@@ -501,6 +503,8 @@ class CommunityServices extends BaseServices
             }
             if ($data['spu_id']) $this->joinProduct($community->community_id,$data['spu_id']);
             //event('community.create',compact('community'));
+
+            if ($data['topic_id']) app()->make(CommunityTopicServices::class)->sumCountUse($data['topic_id']);
             return $community->community_id;
         });
     }
@@ -583,6 +587,7 @@ class CommunityServices extends BaseServices
             unset($data['spu_id']);
             $community = $this->dao->update($id, $data);
             if ($spuId) $this->joinProduct($id, $spuId);
+            app()->make(CommunityTopicServices::class)->sumCountUse(null);
             //event('community.update.before',compact('id','community'));
         });
     }

@@ -25,6 +25,8 @@ use app\services\user\UserServices;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\DbException;
 use think\db\exception\ModelNotFoundException;
+use think\Response;
+use throwable;
 
 /**
  * 商品类
@@ -209,10 +211,14 @@ class StoreProductController
      * 商品详情
      * @param Request $request
      * @param $id
-     * @param int $type
-     * @return mixed
+     * @param mixed $type
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
+     * @throws throwable
      */
-    public function detail(Request $request, $id, $type = 0)
+    public function detail(Request $request, $id, $type = 0): Response
     {
         [$promotions_type] = $request->getMore([
             [['promotions_type', 'd'], 0]

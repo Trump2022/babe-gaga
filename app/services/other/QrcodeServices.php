@@ -193,6 +193,8 @@ class QrcodeServices extends BaseServices
      * @param int $id
      * @param int $uid
      * @param int $type 1 = 拼团,2 = 秒杀
+     * @param array $parame
+     * @param bool $isSaveAttach
      * @return bool|string
      */
     public function getRoutineQrcodePath(int $id, int $uid, int $type, array $parame = [], bool $isSaveAttach = true)
