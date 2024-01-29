@@ -100,6 +100,7 @@ class RoutineServices extends BaseServices
         }
         //For Test
         //throw new ValidateException('Test-'.$spread_uid);
+
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
 
