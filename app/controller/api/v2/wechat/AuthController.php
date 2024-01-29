@@ -218,12 +218,12 @@ class AuthController
     public function authBindingPhone(Request $request): Response
     {
         [$key, $iv, $encryptedData, $spread_code, $spread_spid, $code] = $request->postMore([
-            ['code', ''],
+            ['key', ''],
             ['iv', ''],
             ['encryptedData', ''],
             ['spread_code', 0],
             ['spread_spid', 0],
-            ['key', ''],
+            ['code', ''],
         ], true);
 
         //For Test
