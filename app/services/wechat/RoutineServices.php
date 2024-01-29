@@ -77,7 +77,7 @@ class RoutineServices extends BaseServices
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
 		$user = $wechatUserServices->getAuthUserInfo($openid, $userType);
-		$userInfoKey = md5($openid . '_' . time() . '_rouine');
+		$userInfoKey = md5($openid . '_' . time() . '_routine');
 		CacheService::setTokenBucket($userInfoKey, $createData, 7200);
 		$bindPhone = false;
 		if (sys_config('store_user_mobile') && (($user && $user['phone'] == '') || !$user)) $bindPhone = true;
@@ -384,7 +384,7 @@ class RoutineServices extends BaseServices
         //获取是否强制绑定手机号
         $storeUserMobile = sys_config('store_user_mobile');
         if ($storeUserMobile && !$user) {
-            $userInfoKey = md5($openid . '_' . time() . '_rouine');
+            $userInfoKey = md5($openid . '_' . time() . '_routine');
             CacheService::setTokenBucket($userInfoKey, $createData, 7200);
             return ['key' => $userInfoKey];
         } else if (!$user) {
