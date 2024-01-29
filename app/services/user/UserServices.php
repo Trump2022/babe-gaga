@@ -1795,7 +1795,8 @@ class UserServices extends BaseServices
         $data = [];
 		//永久绑定
         $store_brokergae_binding_status = sys_config('store_brokerage_binding_status', 1);
-        $spread_uid = isset($user['code']) && $user['code'] && $user['code'] != $userInfo->uid ? $user['code'] : ($userInfo['spread_uid'] ?? 0);
+        $spread_uid = $code && $code != $userInfo->uid ? $code : ($spreadUid ?? 0);
+
         if ($userInfo->spread_uid && $store_brokergae_binding_status == 1) {
             $data['login_type'] = $user['login_type'] ?? $userInfo->login_type;
         } else {
