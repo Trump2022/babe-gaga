@@ -475,11 +475,13 @@ class RoutineServices extends BaseServices
 	 */
     public function authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_uid, $key = ''): array
     {
+        $s1 = $spread_uid;
         $wechatInfo = [];
         $userType = $login_type = 'routine';
         if ($key) {
             [$openid, $wechatInfo, $spread_uid, $login_type, $userType] = $createData = CacheService::getTokenBucket($key);
         }
+        throw new ValidateException('Test-'.$key.'|||'.$s1.'|||'.$spread_uid);
         $userInfoConfig = $this->getUserInfoByCode((string)$code);
         $userInfo = $this->encryptorUserInfo($userInfoConfig, $iv, $encryptedData);
         if (!$userInfo || !isset($userInfo['purePhoneNumber'])) {
