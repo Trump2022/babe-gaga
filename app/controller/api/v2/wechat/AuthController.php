@@ -47,7 +47,8 @@ class AuthController
 	 */
 	public function authType($code, $spread_code = '', $spread_spid = '')
 	{
-        return app('json')->fail('sss'.$spread_spid);
+        //For Test
+        //return app('json')->fail('Test-'.$spread_spid);
 		if (!$code) return app('json')->fail('参数有误');
 		$data = $this->services->authType($code, $spread_spid, $spread_code);
 		return app('json')->success($data);
@@ -87,7 +88,7 @@ class AuthController
         ], true);
 
         //For Test
-        return app('json')->fail($phone. '|||'.$spread_spid);
+        return app('json')->fail('Test-'.$phone. '|||'.$spread_spid);
 
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
@@ -213,8 +214,17 @@ class AuthController
      * @param $encryptedData
      * @return mixed
      */
-    public function authBindingPhone($code = '', $iv = '', $encryptedData = '', $spread_code = '', $spread_spid = '', $key = '')
+    public function authBindingPhone(Request $request)
     {
+        [$key, $iv, $encryptedData, $spread_code, $spread_spid, $code] = $request->postMore([
+            ['code', ''],
+            ['iv', ''],
+            ['encryptedData', ''],
+            ['spread_code', 0],
+            ['spread_spid', 0],
+            ['key', ''],
+        ], true);
+        return app('json')->fail('Test-'.$spread_spid);
         if (!$code || !$iv || !$encryptedData)
             return app('json')->fail('参数有误');
         $token = $this->services->authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_spid, $key);
