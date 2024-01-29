@@ -78,7 +78,9 @@ class AuthController
 	 * @throws InvalidArgumentException
 	 */
 	public function phoneLogin($key = '', $phone = '', $captcha = '', $spread_code = '', $spread_spid = '', $code = '')
-	{
+	{return app('json')->fail('..'.substr($key,0,1).'|'.substr($phone,0,1).
+        '|'.substr($captcha,0,1).'|'.substr($spread_code,0,1).'|'.substr($spread_spid,0,1).
+        '|'.substr($code,0,1));
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
 		if (!$verifyCode)
