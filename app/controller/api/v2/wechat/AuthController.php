@@ -76,8 +76,8 @@ class AuthController
      * @throws InvalidArgumentException
      * @throws ModelNotFoundException
      */
-	public function phoneLogin(Request $request)
-	{
+	public function phoneLogin(Request $request): Response
+    {
         [$key, $phone, $captcha, $spread_code, $spread_spid, $code] = $request->postMore([
             ['key', ''],
             ['phone', ''],
@@ -88,7 +88,7 @@ class AuthController
         ], true);
 
         //For Test
-        return app('json')->fail('Test-'.$phone. '|||'.$spread_spid);
+        //return app('json')->fail('Test-'.$phone. '|||'.$spread_spid);
 
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
@@ -209,12 +209,13 @@ class AuthController
 
     /**
      * 授权获取小程序用户手机号 直接绑定
-     * @param $code
-     * @param $iv
-     * @param $encryptedData
-     * @return mixed
+     * @param Request $request
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws InvalidArgumentException
+     * @throws ModelNotFoundException
      */
-    public function authBindingPhone(Request $request)
+    public function authBindingPhone(Request $request): Response
     {
         [$key, $iv, $encryptedData, $spread_code, $spread_spid, $code] = $request->postMore([
             ['code', ''],
@@ -224,7 +225,10 @@ class AuthController
             ['spread_spid', 0],
             ['key', ''],
         ], true);
-        return app('json')->fail('Test-'.$spread_spid);
+
+        //For Test
+        //return app('json')->fail('Test-'.$spread_spid);
+
         if (!$code || !$iv || !$encryptedData)
             return app('json')->fail('参数有误');
         $token = $this->services->authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_spid, $key);
