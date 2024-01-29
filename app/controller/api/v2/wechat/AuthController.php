@@ -48,7 +48,7 @@ class AuthController
 	public function authType($code, $spread_code = '', $spread_spid = '')
 	{
         //For Test
-        //return app('json')->fail('Test-'.$spread_spid);
+        return app('json')->fail('Test-'.$spread_spid);
 		if (!$code) return app('json')->fail('参数有误');
 		$data = $this->services->authType($code, $spread_spid, $spread_code);
 		return app('json')->success($data);
