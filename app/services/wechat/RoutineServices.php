@@ -98,7 +98,8 @@ class RoutineServices extends BaseServices
         if (!$createData) {
             throw new ValidateException('请刷新页面或者重新授权');
         }
-        throw new ValidateException('Test-'.$spread_uid);
+        //For Test
+        //throw new ValidateException('Test-'.$spread_uid);
 		/** @var WechatUserServices $wechatUserServices */
 		$wechatUserServices = app()->make(WechatUserServices::class);
 
