@@ -52,7 +52,7 @@ class AuthController
         ], true);
 
         //For Test
-        return app('json')->fail('Test-'.$spread_spid);
+        //return app('json')->fail('Test|||'.$spread_spid);
 
 		if (!$code) return app('json')->fail('参数有误');
 		$data = $this->services->authType($code, $spread_spid, $spread_code);
@@ -93,7 +93,7 @@ class AuthController
         ], true);
 
         //For Test
-        //return app('json')->fail('Test-'.$phone. '|||'.$spread_spid);
+        return app('json')->fail('Test|||'.$phone. '|||'.$spread_spid);
 
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
@@ -232,7 +232,7 @@ class AuthController
         ], true);
 
         //For Test
-        //return app('json')->fail('Test-'.$spread_spid);
+        //return app('json')->fail('Test|||'.$spread_spid);
 
         if (!$code || !$iv || !$encryptedData)
             return app('json')->fail('参数有误');
