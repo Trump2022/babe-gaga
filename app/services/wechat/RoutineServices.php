@@ -467,13 +467,13 @@ class RoutineServices extends BaseServices
 	 * @param $encryptedData
 	 * @param $spread_code
 	 * @param $spread_uid
-	 * @param $key
+	 * @param mixed $key
 	 * @return array
 	 * @throws InvalidArgumentException
 	 * @throws DataNotFoundException
 	 * @throws ModelNotFoundException
 	 */
-    public function authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_uid, $key = '')
+    public function authBindingPhone($code, $iv, $encryptedData, $spread_code, $spread_uid, $key = ''): array
     {
         $wechatInfo = [];
         $userType = $login_type = 'routine';
