@@ -38,17 +38,22 @@ class AuthController
         $this->services = $services;
     }
 
-	/**
-	 * 返回用户信息的缓存key，返回是否强制绑定手机号
-	 * @param $code
-	 * @param $spread_code
-	 * @param $spread_spid
-	 * @return Response
-	 */
-	public function authType($code, $spread_code = '', $spread_spid = '')
+    /**
+     * 返回用户信息的缓存key，返回是否强制绑定手机号
+     * @param Request $request
+     * @return Response
+     */
+	public function authType(Request $request)
 	{
+        [$code, $spread_code, $spread_spid] = $request->postMore([
+            ['code', ''],
+            ['spread_code', 0],
+            ['spread_spid', 0],
+        ], true);
+
         //For Test
         return app('json')->fail('Test-'.$spread_spid);
+
 		if (!$code) return app('json')->fail('参数有误');
 		$data = $this->services->authType($code, $spread_spid, $spread_code);
 		return app('json')->success($data);
