@@ -71,6 +71,7 @@ class OrderCreateAfterJob extends BaseJobs
             $cartInfo = $data['cartInfo'] ?? [];
             $priceData = $data['priceData'] ?? [];
             $addressId = $data['addressId'] ?? 0;
+
             /** @var StoreOrderCreateServices $createService */
             $createService = app()->make(StoreOrderCreateServices::class);
             $spread_ids = [];
@@ -80,6 +81,7 @@ class OrderCreateAfterJob extends BaseJobs
                 [$cartInfo, $spread_ids] = $createService->computeOrderProductTruePrice($orderInfo, $cartInfo, $priceData, $addressId, $uid, $userInfo);
                 $cartServices->updateCartInfo($orderId, $cartInfo);
             }
+
             $orderData = [];
             /** @var UserServices $userServices */
             $userServices = app()->make(UserServices::class);

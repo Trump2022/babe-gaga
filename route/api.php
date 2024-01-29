@@ -297,12 +297,15 @@ Route::group('api', function () {
 
         Route::get('brokerage_rank', 'v1.user.UserBrokerageController/brokerage_rank')->name('brokerageRank');//佣金排行
         Route::get('rank', 'v1.user.UserController/rank')->name('rank');//推广人排行
+
         //用戶类 分享
         Route::post('user/share', 'v1.PublicController/user_share')->name('user_share');//记录用户分享
         Route::get('user/share/words', 'v1.PublicController/copy_share_words')->name('user_share_words');//关键字分享
+
         //用户类 点赞
-//    Route::post('like/add', 'user.UserController/like_add')->name('likeAdd');//添加点赞
-//    Route::post('like/del', 'user.UserController/like_del')->name('likeDel');//取消点赞
+        //    Route::post('like/add', 'user.UserController/like_add')->name('likeAdd');//添加点赞
+        //    Route::post('like/del', 'user.UserController/like_del')->name('likeDel');//取消点赞
+
         //用户类 签到
         Route::get('sign/config', 'v1.user.UserSignController/sign_config')->name('signConfig');//签到配置
         Route::get('sign/list', 'v1.user.UserSignController/sign_list')->name('signList');//签到列表
@@ -577,6 +580,7 @@ Route::group('api', function () {
             //优惠活动赠品信息
             Route::get('promotions/give_info/:id', 'v2.activity.StorePromotions/getPromotionsGive');
         });
+
         //需要授权
         Route::group(function () {
             Route::post('reset_cart', 'v2.order.StoreCartController/resetCart')->name('resetCart');

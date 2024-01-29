@@ -156,7 +156,8 @@ class AuthController
     /**
      * 静默授权 不登录
      * @param $code
-     * @param $spread
+     * @param string $spread_code
+     * @param string $spread_spid
      * @return mixed
      */
     public function silenceAuthNoLogin($code, $spread_code = '', $spread_spid = '')

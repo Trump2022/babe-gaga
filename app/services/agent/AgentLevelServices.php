@@ -265,7 +265,7 @@ class AgentLevelServices extends BaseServices
         //获取上级uid ｜｜ 开启自购返回自己uid
         $spread_uid = $userServices->getSpreadUid($uid, $userInfo);
         $one_agent_level = 0;
-        $two_agent_level = 0;;
+        $two_agent_level = 0;
         if ($spread_uid > 0 && $one_user_info = $userServices->getUserInfo($spread_uid)) {
             $one_agent_level = $one_user_info['agent_level'] ?? 0;
             $spread_two_uid = $userServices->getSpreadUid($spread_uid, $one_user_info, false);
