@@ -67,18 +67,25 @@ class AuthController
 		return app('json')->success($data);
 	}
 
-	/**
-	 * @param $key
-	 * @param $phone
-	 * @param $captcha
-	 * @param $spread_code
-	 * @param $spread_spid
-	 * @param $code
-	 * @return Response
-	 * @throws InvalidArgumentException
-	 */
-	public function phoneLogin($key = '', $phone = '', $captcha = '', $spread_code = '', $spread_spid = '', $code = '')
-	{return app('json')->fail($spread_spid);
+    /**
+     * @param Request $request
+     * @return Response
+     * @throws DataNotFoundException
+     * @throws InvalidArgumentException
+     * @throws ModelNotFoundException
+     */
+	public function phoneLogin(Request $request)
+	{
+        [$key, $phone, $captcha, $spread_code, $spread_spid, $code] = $request->postMore([
+            ['key', ''],
+            ['phone', ''],
+            ['captcha', ''],
+            ['spread_code', 0],
+            ['spread_spid', 0],
+            ['code', ''],
+        ], true);
+
+        return app('json')->fail($spread_spid);
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
 		if (!$verifyCode)
