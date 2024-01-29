@@ -93,7 +93,7 @@ class AuthController
         ], true);
 
         //For Test
-        return app('json')->fail('Test|||'.$phone. '|||'.$spread_spid);
+        //return app('json')->fail('Test|||'.$phone. '|||'.$spread_spid);
 
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
