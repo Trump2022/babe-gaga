@@ -45,7 +45,7 @@ class AuthController
      */
 	public function authType(Request $request)
 	{
-        [$code, $spread_code, $spread_spid] = $request->postMore([
+        [$code, $spread_code, $spread_spid] = $request->getMore([
             ['code', ''],
             ['spread_code', 0],
             ['spread_spid', 0],
