@@ -93,9 +93,10 @@ class AuthController
             ['spread_spid', 0],
             ['code', ''],
         ], true);
-
+//        echo '<pre>';
+//var_dump($key, $phone, $captcha, $spread_code, $spread_spid, $code);
         //For Test
-        //return app('json')->fail('Test|||'.$phone. '|||'.$spread_spid);
+        return app('json')->fail('Test|||'.$phone. '|||'.$spread_spid);
 
 		//验证验证码
 		$verifyCode = CacheService::get('code_' . $phone);
