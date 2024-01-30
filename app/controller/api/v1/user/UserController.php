@@ -158,6 +158,7 @@ class UserController
             ['code', 0]
         ], true);
         $uid = (int)$request->uid();
+        return app('json')->fail('Test|||'.$spreadUid);
         $this->services->spread($uid, (int)$spreadUid, $code);
         return app('json')->success();
     }
