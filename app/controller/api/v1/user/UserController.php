@@ -160,7 +160,7 @@ class UserController
         $uid = (int)$request->uid();
         \think\facade\Log::write('AAATestSpreadUID|||'.$spreadUid);
         //return app('json')->fail('Test|||'.$spreadUid);
-        $this->services->spread($uid, (int)$spreadUid, $code);
+        $this->services->spread($uid, (int) $spreadUid, $code);
         return app('json')->success();
     }
 
