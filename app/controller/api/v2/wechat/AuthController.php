@@ -71,6 +71,7 @@ class AuthController
     {
         //For Test
         //return app('json')->fail($key);
+        \think\facade\Log::write('AAATestAuthLogin|||'.$key);
 		if (!$key) return app('json')->fail('参数有误');
 		$data = $this->services->authLogin($key);
 		return app('json')->success($data);

@@ -158,7 +158,7 @@ class UserController
             ['code', 0]
         ], true);
         $uid = (int)$request->uid();
-        \think\facade\Log::write('AAATest|||'.$spreadUid);
+        \think\facade\Log::write('AAATestSpreadUID|||'.$spreadUid);
         //return app('json')->fail('Test|||'.$spreadUid);
         $this->services->spread($uid, (int)$spreadUid, $code);
         return app('json')->success();
