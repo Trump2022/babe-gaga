@@ -120,7 +120,7 @@ class LoginServices extends BaseServices
         $data['last_ip'] = app()->request->ip();
         //永久绑定
         $store_brokergae_binding_status = sys_config('store_brokerage_binding_status', 1);
-        $spread_uid = isset($user['spread_uid']) && $user['spread_uid'] && $user['spread_uid'] != $userInfo->uid ? $user['spread_uid'] : ($userInfo['spread_uid'] ?? 0);
+        $spread_uid = isset($user['spread_uid']) && $user['spread_uid'] && $user['spread_uid'] != $userInfo->uid && !$userInfo['spread_uid'] ? $user['spread_uid'] : ($userInfo['spread_uid'] ?? 0);
         if ($userInfo->spread_uid && $store_brokergae_binding_status == 1) {
             $data['login_type'] = $user['login_type'] ?? $userInfo->login_type;
         } else {
