@@ -234,7 +234,7 @@ class AuthController
         ], true);
 
         //For Test
-        //return app('json')->fail('Test|||'.$spread_spid);
+        return app('json')->fail('Test|||'.$spread_spid);
 
         if (!$code || !$iv || !$encryptedData)
             return app('json')->fail('参数有误');
