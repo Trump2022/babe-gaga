@@ -139,7 +139,7 @@ export function communityAuditApi(id, data) {
   return request({
     url: `community/community/status/${id}`,
     method: 'post',
-    params: { data },
+    data,
   });
 }
 /**

@@ -349,7 +349,7 @@
 			},
 			home() {
 				uni.switchTab({
-					url: '/pages/index/index'
+					url: '/pages/class/index/index'
 				})
 			},
 			// 弹窗关闭
@@ -608,12 +608,12 @@
 				this.$Cache.clear('snsapiKey');
 				if (this.options.back_url) {
 					let url = uni.getStorageSync('snRouter');
-					url = url.indexOf('/pages/index/index') != -1 ? '/' : url;
+					url = url.indexOf('/pages/class/index/index') != -1 ? '/' : url;
 					if (url.indexOf('/pages/users/wechat_login/index') !== -1) {
 						url = '/';
 					}
 					if (!url) {
-						url = '/pages/index/index';
+						url = '/pages/class/index/index';
 					}
 					let self = this;
 					this.isUp = false;

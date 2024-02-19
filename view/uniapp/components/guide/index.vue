@@ -73,7 +73,7 @@
 			launchFlag() {
 				clearInterval(this.timecount)
 				uni.switchTab({
-					url: '/pages/index/index'
+					url: '/pages/class/index/index'
 				});
 			},
 			jump(url) {

@@ -59,7 +59,7 @@
 				</view>
 			</scroll-view>
 			<view class='footer acea-row row-between-wrapper'>
-				<navigator hover-class="none" open-type="switchTab" class="item" url="/pages/index/index">
+				<navigator hover-class="none" open-type="switchTab" class="item" url="/pages/class/index/index">
 					<view class="iconfont icon-shouye6"></view>
 					<view class="p_center">首页</view>
 				</navigator>

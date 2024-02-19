@@ -1194,6 +1194,122 @@ export default {
 			}
 			return status;
 		},
-	}
-
+	},
+	/**
+	 * 获取视频分享海报
+	 * @param array arr2 海报素材
+	 * @param string store_name 素材文字
+	 * @param string price 价格
+	 * @param function successFn 回调函数
+	 * 
+	 * 
+	 */
+	videoPosterCanvas: function(arr2, content, nickname, successFn, errFun) {
+		let that = this;
+		const ctx = uni.createCanvasContext('myCanvas');
+		ctx.clearRect(0, 0, 0, 0);
+		/**
+		 * 只能获取合法域名下的图片信息,本地调试无法获取
+		 * 
+		 */
+		uni.getImageInfo({			
+			src: arr2[0],
+			success: function(res) {
+				const WIDTH = res.width;
+				const HEIGHT = res.height;
+				let r = 90;
+				let d = r * 2;
+				let cx = 40;
+				let cy = 760;
+				let ux = 50;
+				let uy = 700;
+				ctx.drawImage(arr2[0], 0, 0, WIDTH, HEIGHT);
+				ctx.drawImage(arr2[1], 32, 32, WIDTH-64, WIDTH-64);
+				ctx.strokeStyle = "#ffffff";
+				ctx.save();
+				ctx.arc(cx + r, cy + r, r, 0, 2 * Math.PI);
+				ctx.drawImage(arr2[2], 530, 760, d, d);
+				that.handleBorderRect(ctx, ux, uy, r, r, 45);
+				ctx.clip();
+				ctx.stockStyle ="#ffffff";
+				ctx.drawImage(arr2[3], ux, uy, r, r);
+				ctx.restore();
+				ctx.setTextAlign('left')
+				ctx.setFontSize(28);
+				ctx.setFillStyle('#282828');
+				ctx.fillText(nickname, r+60, 760);
+				ctx.setTextAlign('left')
+				ctx.setFontSize(28);
+				ctx.setFillStyle('#282828');
+				const CONTENT_ROW_LENGTH = 25;
+				let [contentLeng, contentArray, contentRows] = that.textByteLength(content, CONTENT_ROW_LENGTH);
+				if (contentRows > 2) {
+					contentRows = 2;
+					let textArray = contentArray.slice(0, 2);
+					textArray[textArray.length - 1] += '……';
+					contentArray = textArray;
+				}
+				ctx.setTextAlign('left');
+				ctx.font = 'bold 32px Arial';	
+				let contentHh = 32 * 1.3;
+				for (let m = 0; m < contentArray.length; m++) {
+					ctx.fillText(contentArray[m], 55, 850 + contentHh * m);
+				}		
+				ctx.draw(true, function() {
+					uni.canvasToTempFilePath({
+						canvasId: 'myCanvas',
+						fileType: 'png',
+						destWidth: WIDTH,
+						destHeight: HEIGHT,
+						success: function(res) {
+							uni.hideLoading();
+							successFn && successFn(res.tempFilePath);
+						},
+						fail: function(err) {
+							uni.hideLoading();
+							errFun && errFun(err);
+						}
+					})
+				});
+			},
+			fail: function(err) {
+				uni.hideLoading();
+				that.Tips({
+					title: '无法获取图片信息'
+				});
+				errFun && errFun(err);
+			}
+		})
+	},
+	/**
+	  * 图片圆角设置
+	  * @param string x x轴位置
+	  * @param string y y轴位置
+	  * @param string w 图片宽
+	  * @param string y 图片高
+	  * @param string r 圆角值
+	  */
+	 handleBorderRect(ctx, x, y, w, h, r) {
+	  ctx.beginPath();
+	  // 左上角
+	  ctx.arc(x + r, y + r, r, Math.PI, 1.5 * Math.PI);
+	  ctx.moveTo(x + r, y);
+	  ctx.lineTo(x + w - r, y);
+	  ctx.lineTo(x + w, y + r);
+	  // 右上角
+	  ctx.arc(x + w - r, y + r, r, 1.5 * Math.PI, 2 * Math.PI);
+	  ctx.lineTo(x + w, y + h - r);
+	  ctx.lineTo(x + w - r, y + h);
+	  // 右下角
+	  ctx.arc(x + w - r, y + h - r, r, 0, 0.5 * Math.PI);
+	  ctx.lineTo(x + r, y + h);
+	  ctx.lineTo(x, y + h - r);
+	  // 左下角
+	  ctx.arc(x + r, y + h - r, r, 0.5 * Math.PI, Math.PI);
+	  ctx.lineTo(x, y + r);
+	  ctx.lineTo(x + r, y);
+	
+	  ctx.fill();
+	  ctx.closePath();
+	 },
 }

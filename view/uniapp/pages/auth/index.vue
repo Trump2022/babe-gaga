@@ -139,7 +139,7 @@
 							icon: 'success'
 						}, {
 							tab: 4,
-							url: '/pages/index/index'
+							url: '/pages/class/index/index'
 						});
 					}
 				}).catch(err => {

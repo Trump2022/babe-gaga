@@ -50,7 +50,7 @@
 		data: function() {
 			return {
 				selectNavList:[
-					{name:'首页',icon:'icon-shouye8',url:'/pages/index/index',after:'dialog_after'},
+					{name:'首页',icon:'icon-shouye8',url:'/pages/class/index/index',after:'dialog_after'},
 					{name:'搜索',icon:'icon-sousuo6',url:'/pages/goods/goods_search/index',after:'dialog_after'},
 					{name:'购物车',icon:'icon-gouwuche7',url:'/pages/order_addcart/order_addcart',after:'dialog_after'},
 					{name:'我的收藏',icon:'icon-shoucang3',url:'/pages/users/user_goods_collection/index',after:'dialog_after'},
@@ -60,7 +60,7 @@
 		},
 		methods: {
 			linkPage(url){
-				if (['/pages/goods_cate/goods_cate', '/pages/order_addcart/order_addcart', '/pages/user/index', '/pages/index/index']
+				if (['/pages/goods_cate/goods_cate', '/pages/order_addcart/order_addcart', '/pages/user/index', '/pages/class/index/index']
 					.indexOf(url) == -1) {
 					uni.navigateTo({
 						url: url

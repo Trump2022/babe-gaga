@@ -167,7 +167,7 @@
 			return {
 				title: this.userInfo.nickname + '-分销海报',
 				imageUrl: this.spreadList[0],
-				path: '/pages/index/index?spid=' + this.userInfo.uid,
+				path: '/pages/class/index/index?spid=' + this.userInfo.uid,
 			};
 		},
 		// #endif
@@ -343,7 +343,7 @@
 							let configAppMessage = {
 								desc: '分销海报',
 								title: res.data.nickname + '-分销海报',
-								link: '/pages/index/index?spid=' + res.data.uid,
+								link: '/pages/class/index/index?spid=' + res.data.uid,
 								imgUrl: this.spreadList[0]
 							};
 							this.$wechat.wechatEvevt(["updateAppMessageShareData", "updateTimelineShareData"],

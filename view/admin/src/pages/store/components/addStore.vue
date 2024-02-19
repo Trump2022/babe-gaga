@@ -63,6 +63,7 @@
                             		<FormItem label="门店简介：" label-for="introduction" prop="introduction">
                                         <wangeditor
                                             style="width: 100%"
+                                            :content="contents"
                                             @editorContent="data => formItem.introduction = data"
                                         ></wangeditor>
                             			<!-- <Input v-model="formItem.introduction"  maxlength="100" show-word-limit :rows="4" :autosize="{maxRows:4,minRows: 4}" type="textarea"   placeholder="请输入门店简介" /> -->
@@ -259,6 +260,7 @@
         goodsList:[],
         modals:false,
         treeSelect:[],
+        contents: '',
 				modalErp:false,
 				openErp:false,
 				isTemplate: false,
@@ -456,10 +458,12 @@
           product_verify_status:0,
           product_status:1,
           type:1,
-          applicable_type:1
+          applicable_type:1,
+          
 				}
 				this.add = 0;
 				this.isApi = 0;
+                this.contents = ''
 			},
 			cancel () {
 				this.isTemplate = false;
@@ -530,6 +534,7 @@
 					let addressSelect = [];
 					this.formItem = res.data.info;
 					this.formItem.erp_shop_id = res.data.info.erp_shop_id || 0;
+                    this.contents = res.data.info.introduction
 					let a = []
 					a.push(res.data.info.day_start)
 					a.push(res.data.info.day_end)

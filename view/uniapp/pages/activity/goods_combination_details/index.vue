@@ -213,7 +213,7 @@
 					<view class="p_center">客服</view>
 				</navigator> -->
 				<!-- #endif -->
-				<navigator hover-class="none" class="item skeleton-rect" open-type="switchTab" url="/pages/index/index">
+				<navigator hover-class="none" class="item skeleton-rect" open-type="switchTab" url="/pages/class/index/index">
 					<view class="iconfont icon-shouye6"></view>
 					<view class="p_center">首页</view>
 				</navigator>

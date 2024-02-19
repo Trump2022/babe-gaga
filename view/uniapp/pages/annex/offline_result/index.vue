@@ -6,7 +6,7 @@
 			</view>
 			<view class="text">支付成功</view>
 		</view>
-		<navigator class="link"  url="/pages/index/index" open-type="switchTab">进入商城</navigator>
+		<navigator class="link"  url="/pages/class/index/index" open-type="switchTab">返回首页</navigator>
 	</view>
 </template>
 

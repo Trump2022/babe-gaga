@@ -112,11 +112,11 @@
                     //     key: 'store_name',
                     //     minWidth: 130
                     // },
-                    // {
-                    //     title: '排序',
-                    //     key: 'sort',
-                    //     minWidth: 60
-                    // },
+                    {
+                        title: '排序',
+                        key: 'sort',
+                        minWidth: 60
+                    },
                     {
                         title: '浏览量',
                         key: 'visit',

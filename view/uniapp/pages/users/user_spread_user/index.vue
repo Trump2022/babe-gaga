@@ -327,7 +327,7 @@
 							title: "您目前暂无推广权限"
 						}, {
 							tab: 4,
-							url: '/pages/index/index'
+							url: '/pages/class/index/index'
 						});
 					}
 				});

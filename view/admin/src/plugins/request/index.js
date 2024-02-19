@@ -52,7 +52,7 @@ function errorLog(err) {
 // 创建一个 axios 实例
 const service = axios.create({
   baseURL: Setting.apiBaseURL,
-  timeout: 10000, // 请求超时时间
+  timeout: 60000, // 请求超时时间
 });
 
 axios.defaults.withCredentials = true; // 携带cookie

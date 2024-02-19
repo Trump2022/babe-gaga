@@ -284,7 +284,7 @@
 				if (this.backUrl) {
 					let url = uni.getStorageSync('snRouter');
 					if (!url) {
-						url = '/pages/index/index';
+						url = '/pages/class/index/index';
 					}
 					this.$util.Tips({
 						title: '登录成功',

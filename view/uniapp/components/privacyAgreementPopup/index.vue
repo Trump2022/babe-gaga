@@ -70,7 +70,7 @@
 			rejectAgreement() {
 				this.isShow = false
 				uni.switchTab({
-					url: '/pages/index/index'
+					url: '/pages/class/index/index'
 				})
 				this.$emit('onReject');
 			},

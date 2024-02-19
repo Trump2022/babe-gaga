@@ -5,20 +5,38 @@
 </template>
 
 <script>
+	let app = getApp();
 	import guide from '@/components/guide/index.vue'
 	import Cache from '@/utils/cache';
+	import shareScence from "@/libs/spread";
 	import {
 		getOpenAdv
 	} from '@/api/api.js'
+	import {
+		mapGetters
+	} from 'vuex';
 	export default {
 		components: {
 			guide
 		},
+		computed: mapGetters(['isLogin']),
 		data() {
 			return {
 				guidePages: false,
 				advData: []
 			}
+		},
+		onLoad(options) {
+			let that = this
+			//扫码携带参数处理
+			// #ifdef MP
+			if (options.scene) {
+				let value = that.$util.getUrlParams(decodeURIComponent(options.scene));
+				//记录推广人uid
+				if (value.spid) app.globalData.spid = value.spid;
+			}
+			shareScence({puid: app.globalData.spid}, that.isLogin)
+			// #endif
 		},
 		onShow() {
 			// #ifdef H5

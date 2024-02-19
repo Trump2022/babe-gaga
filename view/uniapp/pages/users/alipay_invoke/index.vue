@@ -83,14 +83,14 @@
 					});
 					setTimeout(() => {
 						uni.redirectTo({
-							url: '/pages/index/index'
+							url: '/pages/class/index/index'
 						});
 					}, 2000);
 				}
 				uni.showLoading({
 					title: '正在支付中'
 				});
-				aliPay(this.payKey, location.protocol + '//' + window.location.host + '/pages/index/index')
+				aliPay(this.payKey, location.protocol + '//' + window.location.host + '/pages/class/index/index')
 					.then(res => {
 						uni.hideLoading();
 						this.formContent = res.data.pay_content;
@@ -106,7 +106,7 @@
 						});
 						setTimeout(() => {
 							uni.redirectTo({
-								url: '/pages/index/index'
+								url: '/pages/class/index/index'
 							});
 						}, 2000);
 					});

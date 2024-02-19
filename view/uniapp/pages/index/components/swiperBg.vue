@@ -254,7 +254,6 @@
 				width: 24rpx;
 				height: 24rpx;
 				border-radius: 50%;
-				background-color: #fff;
 				margin-right: 6rpx;
 			}
 		}

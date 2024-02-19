@@ -65,6 +65,11 @@
                         <Input v-model="formValidate.synopsis" type="textarea" placeholder="请输入"  class="width-add" />
                     </FormItem>
                     </Col>
+                    <Col v-bind="grid" class="mr50">
+                        <FormItem label="排序：" prop="sort" label-for="sort">
+                            <InputNumber :min="1" placeholder="输入值越大越靠前" v-model="formValidate.sort" ></InputNumber>
+                        </FormItem>
+                    </Col>
                 </Row>
                 <FormItem label="活动内容：" prop="content" v-show="current == 1">
                     <WangEditor  class="width-add" :content="formValidate.content" @editorContent="getEditorContent"></WangEditor>
@@ -171,7 +176,8 @@ export default {
                 is_hot: 0,
                 is_banner: 0,
                 cid: '',
-                visit: 0
+                visit: 0,
+                sort: 0
             },
             content: '',
             ruleValidate: {
@@ -189,7 +195,10 @@ export default {
                 ],
                 content: [
                     { required: true, message: '请输入活动内容', trigger: 'change' }
-                ]
+                ],
+                sort: [
+                    { required: true, message: "请输入排序", trigger: 'blur', type: 'number' }
+                ],
             },
             value: '',
             modalPic: false,

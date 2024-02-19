@@ -2,6 +2,8 @@
 	<view :style="colorStyle">
 		<!-- 优惠券弹窗 -->
 		<view class='coupon-window' :class='window==true?"on":""'>
+			
+			{{HTTP_REQUEST_URL}}
 			<image class="co-bag" :src="imgHost + '/statics/images/co-bag.png'" mode=""></image>
 			<view class='couponWinList'>
 				<view class='item acea-row row-between-wrapper' v-for="(item,index) in couponList" :key="index">

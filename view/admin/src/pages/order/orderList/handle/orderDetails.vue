@@ -909,7 +909,7 @@
               no-filtered-data-text="暂无筛选结果"
             ></Table>
           </TabPane>
-          <TabPane label="核销记录" name="writeoff_list" v-if="orderData.writeoff_list.length">
+          <TabPane label="核销记录" name="writeoff_list" v-if="orderData.writeoff_list && orderData.writeoff_list.length">
             <Table
               :columns="columns3"
               :data="orderData.writeoff_list"

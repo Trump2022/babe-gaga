@@ -69,7 +69,7 @@
 						title: '您抽奖的有效时间已到期'
 					},function(){
 						uni.switchTab({
-							url: '/pages/index/index'
+							url: '/pages/class/index/index'
 						})
 					});
 				}

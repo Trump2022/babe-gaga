@@ -157,20 +157,22 @@
 				return false;
 			}
 			if (option.query.hasOwnProperty('scene')) {
-
+				let val = that.$util.getUrlParams(decodeURIComponent(option.query.scene));
 				switch (option.scene) {
 					//扫描小程序码
 					case 1047:
-						let val = that.$util.getUrlParams(decodeURIComponent(option.query.scene));
 						that.globalData.code = val.spid === undefined ? val : val.spid;
+						that.globalData.spid = val.spid === undefined ? val : val.spid;
 						break;
 						//长按图片识别小程序码
 					case 1048:
-						that.globalData.code = option.query.scene;
+						that.globalData.code = val.spid === undefined ? val : val.spid;
+						that.globalData.spid = val.spid === undefined ? val : val.spid;
 						break;
 						//手机相册选取小程序码
 					case 1049:
-						that.globalData.code = option.query.scene;
+						that.globalData.code = val.spid === undefined ? val : val.spid;
+						that.globalData.spid = val.spid === undefined ? val : val.spid;
 						break;
 						//直接进入小程序
 					case 1001:
@@ -301,15 +303,27 @@
 			// #endif
 			// #ifdef MP
 			// 小程序静默授权
-			if (!this.$store.getters.isLogin) {
-				Routine.getCode()
-					.then(code => {
-						this.silenceAuth(code);
-					})
-					.catch(res => {
-						uni.hideLoading();
-					});
-			}
+			// if (!this.$store.getters.isLogin) {
+			// 	Routine.getCode()
+			// 		.then(code => {
+			// 			this.silenceAuth(code);
+			// 		})
+			// 		.catch(res => {
+			// 			uni.hideLoading();
+			// 		});
+			// }
+			// uni.showModal({
+			// 	title: 'spid',
+			// 	content: JSON.stringify(that.globalData.spid)
+			// })
+			// shareScence({puid: that.globalData.spid}, that.globalData.spid)
+			// Routine.getCode()
+			// 	.then(code => {
+			// 		this.silenceAuth(code);
+			// 	})
+			// 	.catch(res => {
+			// 		uni.hideLoading();
+			// 	});
 			// #endif
 		},
 		onShow(options) {

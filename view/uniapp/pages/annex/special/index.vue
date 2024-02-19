@@ -620,7 +620,7 @@
 		onShareAppMessage() {
 			return {
 				title: this.shareInfo.title,
-				path: '/pages/index/index',
+				path: '/pages/class/index/index',
 				imageUrl: this.storeInfo.img,
 			};
 		},

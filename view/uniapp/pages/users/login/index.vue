@@ -277,7 +277,7 @@
 							'token': data.token,
 							'time': data.expires_time - self.$Cache.time()
 						});
-						let backUrl = self.$Cache.get(BACK_URL) || "/pages/index/index";
+						let backUrl = self.$Cache.get(BACK_URL) || "/pages/class/index/index";
 						self.$Cache.clear(BACK_URL);
 						self.$store.commit("SETUID", data.userInfo.uid);
 						self.$store.commit("UPDATE_USERINFO", data.userInfo);
@@ -371,7 +371,7 @@
 							'token': data.token,
 							'time': data.expires_time - self.$Cache.time()
 						});
-						let backUrl = self.$Cache.get(BACK_URL) || "/pages/index/index";
+						let backUrl = self.$Cache.get(BACK_URL) || "/pages/class/index/index";
 						self.$Cache.clear(BACK_URL);
 						self.$store.commit("SETUID", data.userInfo.uid);
 						self.$store.commit("UPDATE_USERINFO", data.userInfo);
@@ -490,14 +490,14 @@
 								'token': data.token,
 								'time': data.expires_time - this.$Cache.time()
 							});
-							let backUrl = that.$Cache.get(BACK_URL) || "/pages/index/index";
+							let backUrl = that.$Cache.get(BACK_URL) || "/pages/class/index/index";
 							that.$Cache.clear(BACK_URL);
 							getUserInfo().then(res => {
 								this.keyLock = true
 								that.$store.commit("SETUID", res.data.uid);
 								that.$store.commit("UPDATE_USERINFO", res.data);
 								if (backUrl.indexOf('/pages/users/login/index') !== -1) {
-									backUrl = '/pages/index/index';
+									backUrl = '/pages/class/index/index';
 								}
 								uni.reLaunch({
 									url: backUrl
@@ -620,7 +620,7 @@
 							'token': data.token,
 							'time': data.expires_time - this.$Cache.time()
 						});
-						let backUrl = that.$Cache.get(BACK_URL) || "/pages/index/index";
+						let backUrl = that.$Cache.get(BACK_URL) || "/pages/class/index/index";
 						that.$Cache.clear(BACK_URL);
 						getUserInfo().then(res => {
 							this.keyLock = true

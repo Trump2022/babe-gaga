@@ -391,7 +391,7 @@
 					<view>客服</view>
 				</button> -->
 							<navigator hover-class="none" class="item skeleton-rect" open-type="switchTab"
-								url="/pages/index/index">
+								url="/pages/class/index/index">
 								<view class="iconfont icon-shouye6"></view>
 								<view class="p_center">首页</view>
 							</navigator>
@@ -1203,7 +1203,7 @@
 			returns: function() {
 				if (this.isShow) {
 					uni.reLaunch({
-						url: '/pages/index/index'
+						url: '/pages/class/index/index'
 					})
 				} else {
 					if (this.fromType) {

@@ -82,7 +82,7 @@
 			onScroll({ detail }) {
 				const offsetLeft = detail.scrollLeft; // 获取滚动条相对于顶部的偏移量
 				this.active = Math.floor(offsetLeft * 2 / 430); // 根据偏移量计算当前所处的索引
-				this.scrollIndex = 'scroll' + this.active
+				// this.scrollIndex = 'scroll' + this.active
 			},
 			goto(id) {
 				uni.navigateTo({

@@ -334,7 +334,7 @@
 					delta: 1,
 					fail(){
 						uni.switchTab({
-						  url: '/pages/index/index'
+						  url: '/pages/class/index/index'
 						})
 					}
 				});

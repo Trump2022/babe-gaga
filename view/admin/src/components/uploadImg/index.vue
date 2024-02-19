@@ -3,6 +3,7 @@
     :value="visible"
     title="上传图片"
     width="960"
+    transfer
     class-name="upload-img-modal"
     @on-cancel="cancel"
     @on-visible-change="visibleChange"
@@ -172,7 +173,7 @@ export default {
   },
   data() {
     return {
-      action: `${Setting.apiBaseURL}file/upload`,
+      action: `${Setting.apiBaseURL}/file/upload`,
       formData: {
         type: 0,
         region: [],

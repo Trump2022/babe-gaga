@@ -3,11 +3,11 @@
 		<view class="nav acea-row row-center-wrapper">
 			<view class="item acea-row row-center-wrappe" :class="active == index?'on':''" v-for="(item,index) in navList" :key="index" @click="navTap(index)">{{item.name}}</view>
 		</view>
-		<view class="manage acea-row row-between-wrapper" v-if="collectProductList.length && active">
+		<!-- <view class="manage acea-row row-between-wrapper" v-if="collectProductList.length && active">
 			<view>当前共 <text class="num">{{count}}</text> {{!active ? '件商品':'条视频'}}</view>
 			<view class="close"  @click="manageTap" v-if="administer">取消</view>
 			<view class="font-num" @click="manageTap" v-else>管理</view>
-		</view>
+		</view> -->
 		<view class="collectList" v-if="collectProductList.length && active">
 			<checkbox-group @change="checkboxChange">
 			  <view class="item acea-row row-between-wrapper" v-for="(item,index) in collectProductList" :key="index" @click="goGoods(item.product_id)">
