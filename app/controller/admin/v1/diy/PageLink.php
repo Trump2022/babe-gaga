@@ -71,7 +71,15 @@ class PageLink extends AuthController
 				], true);
                 /** @var StoreProductCategoryServices $storeCategoryServices */
                 $storeCategoryServices = app()->make(StoreProductCategoryServices::class);
-                $data = $storeCategoryServices->getList(['pid' => $pid, 'is_show' => 1]);
+                $data = $storeCategoryServices->getList(['pid' => $pid, 'is_show' => 1, 'is_class'=> 0]);
+                break;
+            case 'class_category'://课程分类
+                [$pid] = $this->request->getMore([
+                    ['pid', 0]
+                ], true);
+                /** @var StoreProductCategoryServices $storeCategoryServices */
+                $storeCategoryServices = app()->make(StoreProductCategoryServices::class);
+                $data = $storeCategoryServices->getList(['pid' => $pid, 'is_show' => 1, 'is_class'=> 1]);
                 break;
 			case 'store_home'://门店首页
 				$where = $this->request->getMore([
