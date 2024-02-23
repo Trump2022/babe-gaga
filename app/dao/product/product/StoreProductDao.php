@@ -228,7 +228,7 @@ class StoreProductDao extends BaseDao
             if ((isset($where['priceOrder']) && $where['priceOrder'] != '') || (isset($where['salesOrder']) && $where['salesOrder'] != '')) {
                 $query->whereIn('id', $where['ids']);
             } else {
-                $query->whereIn('id', $where['ids'])->orderField('sort', $where['ids'], 'desc');
+                $query->whereIn('id', $where['ids'])->orderField('id', $where['ids'], 'asc');
             }
         })->when(isset($where['not_ids']) && $where['not_ids'], function ($query) use ($where) {
             $query->whereNotIn('id', $where['not_ids']);
@@ -252,6 +252,8 @@ class StoreProductDao extends BaseDao
             } else {
                 $query->order("sales asc");
             }
+        })->when( ! (isset($where['priceOrder']) && $where['priceOrder'] != '' && isset($where['salesOrder']) && $where['salesOrder'] != ''), function ($query) use ($where) {
+            $query->order("sort desc");
         })->when(!isset($where['ids']), function ($query) use ($where, $order) {
             if (isset($where['timeOrder']) && $where['timeOrder'] == 1) {
                 $query->order('id desc');
