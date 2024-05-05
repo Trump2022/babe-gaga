@@ -42,7 +42,7 @@ class SpliteStoreOrderJob extends BaseJobs
             $orderInfo['send_name'] = $orderInfo['real_name'];
 
             //分配完成用户推送消息事件（门店小票打印）
-            event('notice.notice', [$orderInfo, 'order_pay_success']);//移到付款成功那里去
+            //event('notice.notice', [$orderInfo, 'order_pay_success']);//移到付款成功那里去
         }
         if (isset($orderInfo['store_id']) && $orderInfo['store_id']) {
             //记录门店用户
