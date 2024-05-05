@@ -490,32 +490,32 @@ class StoreOrderController
             return app('json')->fail('该订单已失效!');
         }
 
-//        $isChannel = $this->getChennel[$from] ?? ($request->isApp() ? 4 : 1);
-        //缓存不存在 ｜｜ 切换另一端支付
-//        if (!CacheService::get('pay_' . $order['order_id']) || $isChannel != $order['is_channel']) {
-//            mt_srand();
-//            switch ($from) {
-//                case 'weixin':
-//                    if (in_array($order->is_channel, [1, 2, 3, 4])) {//0
-//                        $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
-//                    }
-//                    break;
-//                case 'weixinh5':
-//                    if (in_array($order->is_channel, [0, 1, 3, 4])) {
-//                        $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
-//                    }
-//                    break;
-//                case 'routine':
-//                    if (in_array($order->is_channel, [0, 2, 3, 4])) {
-//                        $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
-//                    }
-//                    break;
-//                case 'pc':
-//                case 'aliapy':
-//                    $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
-//                    break;
-//            }
-//        }
+        //        $isChannel = $this->getChennel[$from] ?? ($request->isApp() ? 4 : 1);
+                //缓存不存在 ｜｜ 切换另一端支付
+        //        if (!CacheService::get('pay_' . $order['order_id']) || $isChannel != $order['is_channel']) {
+        //            mt_srand();
+        //            switch ($from) {
+        //                case 'weixin':
+        //                    if (in_array($order->is_channel, [1, 2, 3, 4])) {//0
+        //                        $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
+        //                    }
+        //                    break;
+        //                case 'weixinh5':
+        //                    if (in_array($order->is_channel, [0, 1, 3, 4])) {
+        //                        $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
+        //                    }
+        //                    break;
+        //                case 'routine':
+        //                    if (in_array($order->is_channel, [0, 2, 3, 4])) {
+        //                        $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
+        //                    }
+        //                    break;
+        //                case 'pc':
+        //                case 'aliapy':
+        //                    $order['order_id'] = mt_rand(100, 999) . '_' . $order['order_id'];
+        //                    break;
+        //            }
+        //        }
 
         //只要重新支付就更新订单号
         if (in_array($paytype, [PayServices::ALIAPY_PAY, PayServices::WEIXIN_PAY])) {
