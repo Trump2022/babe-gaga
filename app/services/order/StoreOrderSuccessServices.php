@@ -89,13 +89,15 @@ class StoreOrderSuccessServices extends BaseServices
             $luckLotteryServices = app()->make(LuckLotteryServices::class);
             $luckLotteryServices->setCacheLotteryNum((int)$orderInfo['uid'], 'order');
         }
+
         //门店
-//        if ($orderInfo['shipping_type'] == 4) {
-//            //订单发货
-//            OrderDeliveryJob::dispatch([$orderInfo, [], 4]);
-//            //订单收货
-//            OrderTakeJob::dispatch([$orderInfo]);
-//        }
+       // if ($orderInfo['shipping_type'] == 4) {
+       //     //订单发货
+       //     OrderDeliveryJob::dispatch([$orderInfo, [], 4]);
+       //     //订单收货
+       //     OrderTakeJob::dispatch([$orderInfo]);
+       // }
+
         //订单支付成功事件
         $userInfo = app()->make(UserServices::class)->get($orderInfo['uid']);
         event('order.pay', [$orderInfo, $userInfo]);

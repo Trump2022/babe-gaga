@@ -43,6 +43,8 @@ class Pay implements ListenerInterface
     {
         [$orderInfo, $userInfo] = $event;
 
+        event('notice.notice', [$orderInfo, 'order_pay_success']);
+
         if ($orderInfo['activity_id'] && !$orderInfo['refund_status']) {
             switch ($orderInfo['type']) {
                 case 3://拼团
