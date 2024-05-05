@@ -40,8 +40,9 @@ class SpliteStoreOrderJob extends BaseJobs
             $storeName = $orderInfoServices->getCarIdByProductTitle((int)$orderInfo['id']);
             $orderInfo['storeName'] = substrUTf8($storeName, 20, 'UTF-8', '');
             $orderInfo['send_name'] = $orderInfo['real_name'];
+
             //分配完成用户推送消息事件（门店小票打印）
-            event('notice.notice', [$orderInfo, 'order_pay_success']);
+            //event('notice.notice', [$orderInfo, 'order_pay_success']);//移到付款成功那里去
         }
         if (isset($orderInfo['store_id']) && $orderInfo['store_id']) {
             //记录门店用户
