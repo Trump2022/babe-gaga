@@ -101,6 +101,10 @@ class StoreOrderSuccessServices extends BaseServices
         //订单支付成功事件
         $userInfo = app()->make(UserServices::class)->get($orderInfo['uid']);
         event('order.pay', [$orderInfo, $userInfo]);
+
+        //用户推送消息事件
+        event('notice.notice', [$orderInfo, 'order_pay_success']);
+
         $res = $res1;
         return false !== $res;
     }
