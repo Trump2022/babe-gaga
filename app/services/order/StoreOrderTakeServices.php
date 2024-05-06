@@ -281,7 +281,7 @@ class StoreOrderTakeServices extends BaseServices
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
         $integral_ratio = sys_config('integral_ratio');
         $integral_ratio = $integral_ratio > 0 ? $integral_ratio : 0.01;//必须大于0
-        $brokeragePrice = round(($brokeragePrice / $integral_ratio), 1);//1RMB对应的gaga数量
+        $brokeragePrice = round(($brokeragePrice / $integral_ratio), 1);//佣金RMB对应的gaga币数量
 
         // 上级推广员返佣之后的金额
         $balance = bcadd($spreadPrice, $brokeragePrice, 2);
