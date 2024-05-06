@@ -1526,7 +1526,7 @@ WSS;
                         ->type('file')->icon('md-add')->info($data['pay_weixin_client_key']['desc']),
                 ])->info($data['brokerage_type']['desc']),
                 Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
-                Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
+                // Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
 
                 // [
                 //     'title' => 'Test', 'value' => 1233, 'type' => '', 'filed' => 'user_extract_min_price', 'prefix' => '', 'suffix' => '', 'info' => '用户提现最低金额限制',
