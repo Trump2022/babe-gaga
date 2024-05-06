@@ -65,6 +65,7 @@ class Refund extends AuthController
     {
         $order = $this->services->refundDetail($id);
 		$order['total_price'] = floatval(bcadd((string)$order['total_price'], (string)$order['vip_true_price'], 2));
+        $order['writeoff_list'] = $order['writeoff_list'] ?? [];
         $data['orderInfo'] = $order;
         $userInfo = ['spread_uid' => '', 'spread_name' => '无'];
         if ($order['uid']) {

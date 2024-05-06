@@ -147,6 +147,7 @@ class StoreOrderTakeServices extends BaseServices
             $res = $this->transaction(function () use ($order, $userInfo, $storeTitle) {
                 //赠送gaga币
                 $res1 = $this->gainUserIntegral($order, $userInfo, $storeTitle);
+
                 //返佣
                 //次卡商品不直接返佣（修改为全部核销或者核销后使用时间到期才返佣）
                 if($order['product_type'] != 4){

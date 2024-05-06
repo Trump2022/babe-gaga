@@ -1526,6 +1526,14 @@ WSS;
                         ->type('file')->icon('md-add')->info($data['pay_weixin_client_key']['desc']),
                 ])->info($data['brokerage_type']['desc']),
                 Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
+                Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
+
+                // [
+                //     'title' => 'Test', 'value' => 1233, 'type' => '', 'filed' => 'user_extract_min_price', 'prefix' => '', 'suffix' => '', 'info' => '用户提现最低金额限制',
+                //     'min' => null,
+                //     'max' => 99999999, 'name' => 'inputNumber', 'validate' => []
+                // ],
+
                 Build::inputNum('withdraw_fee', $data['withdraw_fee']['info'], $data['withdraw_fee']['value'])->info($data['withdraw_fee']['desc']),
                 Build::switch('user_extract_bank_status', $data['user_extract_bank_status']['info'], (int)$data['user_extract_bank_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->control(1, [
                     Build::input('user_extract_bank', $data['user_extract_bank']['info'], $data['user_extract_bank']['value'])->type('textarea')->rows(6)->info($data['user_extract_bank']['desc'])
@@ -1534,6 +1542,8 @@ WSS;
                 Build::switch('user_extract_alipay_status', $data['user_extract_alipay_status']['info'], (int)$data['user_extract_alipay_status']['value'])->info($data['user_extract_alipay_status']['desc'])->trueValue('开启', 1)->falseValue('关闭', 0),
             ]),
         ]);
+        // echo '<pre>';
+        // var_dump($build->toArray());exit;
 
         return $build->toArray();
     }
