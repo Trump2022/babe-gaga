@@ -277,6 +277,12 @@ class StoreOrderTakeServices extends BaseServices
 		/** @var UserServices $userServices */
 		$userServices = app()->make(UserServices::class);
         $spreadPrice = $userServices->value(['uid' => $one_spread_uid], 'brokerage_price');
+
+        //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+        $integral_ratio = sys_config('integral_ratio');
+        $integral_ratio = $integral_ratio > 0 ? $integral_ratio : 0.01;//必须大于0
+        $brokeragePrice = round(($brokeragePrice / $integral_ratio), 1);//1RMB对应的gaga数量
+
         // 上级推广员返佣之后的金额
         $balance = bcadd($spreadPrice, $brokeragePrice, 2);
         // 添加佣金记录
@@ -341,8 +347,15 @@ class StoreOrderTakeServices extends BaseServices
         }
         // 获取上上级推广员信息
         $spreadPrice = $userServices->value(['uid' => $spread_two_uid], 'brokerage_price');
+
+        //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+        $integral_ratio = sys_config('integral_ratio');
+        $integral_ratio = $integral_ratio > 0 ? $integral_ratio : 0.01;//必须大于0
+        $brokeragePrice = round(($brokeragePrice / $integral_ratio), 1);//1RMB对应的gaga数量
+
         // 获取上上级推广员返佣之后余额
         $balance = bcadd($spreadPrice, $brokeragePrice, 2);
+
         // 添加佣金记录
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
