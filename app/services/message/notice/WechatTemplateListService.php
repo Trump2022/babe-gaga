@@ -399,7 +399,7 @@ class WechatTemplateListService extends NoticeService
         return $this->sendTemplate('ORDER_BROKERAGE', $uid, [
             'first' => '亲，您有一笔佣金入账!',
             'keyword1' => $brokeragePrice. 'gaga币',//分销佣金
-//            'keyword2' => $goodsPrice . 'gaga币',//交易金额
+            // 'keyword2' => $goodsPrice . 'gaga币',//交易金额
             'keyword2' => date('Y-m-d H:i:s', $orderTime),//结算时间
             'remark' => '点击查看订单详情'
         ], '/pages/users/user_spread_user/index');
