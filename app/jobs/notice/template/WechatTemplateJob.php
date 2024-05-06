@@ -436,7 +436,7 @@ class WechatTemplateJob extends BaseJobs
             'first' => '亲，您有一笔佣金入账!',
             'keyword1' => $goodsName,
             'keyword2' => $goodsPrice . "元",
-            'keyword3' => $brokeragePrice . "元",
+            'keyword3' => $brokeragePrice . "gaga币",
             'keyword4' => date('Y-m-d H:i:s', $orderTime),
             'remark' => '点击查看订单详情'
         ], sys_config('site_url') . Route::buildUrl('/pages/users/user_spread_user/index')->suffix('')->domain(false)->build());

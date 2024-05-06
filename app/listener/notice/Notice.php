@@ -124,8 +124,10 @@ class Notice implements ListenerInterface
                         $isGive = 0;
                         //站内信
                         $SystemMsg->sendMsg($orderInfo['uid'], ['nickname' => $nickname, 'store_name' => $store_name, 'order_id' => $orderInfo['order_id'], 'delivery_name' => $datas['delivery_name'] ?? '', 'delivery_id' => $datas['delivery_id'] ?? '', 'user_address' => $orderInfo['user_address']]);
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderDeliver($orderInfo['uid'], $store_name, $orderInfo, $datas);
+
+                       //  模板消息公众号模版消息
+                       // $WechatTemplateList->sendOrderDeliver($orderInfo['uid'], $store_name, $orderInfo, $datas);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendOrderPostage($orderInfo['uid'], $orderInfo, $store_name, $datas, $isGive);
                         break;
@@ -244,8 +246,10 @@ class Notice implements ListenerInterface
                         $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
                         //短信
                         $NoticeSms->sendSms($order['user_phone'], ['gain_integral' => $data['give_integral'], 'integral' => $data['integral']], 'INTEGRAL_ACCOUT');
+
                         //模板消息公众号模版消息
-//                        $WechatTemplateList->sendUserIntegral($order['uid'], $order, $data);
+                        // $WechatTemplateList->sendUserIntegral($order['uid'], $order, $data);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendUserIntegral($order['uid'], $data['order'], $storeTitle, $data['give_integral'], $data['integral']);
                         break;
@@ -263,8 +267,10 @@ class Notice implements ListenerInterface
                             //短信
                             $NoticeSms->sendSms($phone, ['brokerage_price' => $brokeragePrice], 'ORDER_BROKERAGE');
                         }
+
                         //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderBrokerageSuccess($spread_uid, $brokeragePrice, $goodsName, $goodsPrice, $add_time);
+                        // $WechatTemplateList->sendOrderBrokerageSuccess($spread_uid, $brokeragePrice, $goodsName, $goodsPrice, $add_time);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendOrderBrokerageSuccess($spread_uid, $brokeragePrice, $goodsName);
                         break;
@@ -280,8 +286,10 @@ class Notice implements ListenerInterface
                         if ($phone) {
                             $NoticeSms->sendSms($phone, ['title' => substrUTf8($bargainInfo['title'], 20, 'UTF-8', ''), 'min_price' => $bargainInfo['min_price']], 'BARGAIN_SUCCESS');
                         }
+
                         //模板消息公众号模版消息
-//                        $WechatTemplateList->sendBargainSuccess($uid, $bargainInfo, $bargainUserInfo, $uid);
+                        // $WechatTemplateList->sendBargainSuccess($uid, $bargainInfo, $bargainUserInfo, $uid);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendBargainSuccess($uid, $bargainInfo, $bargainUserInfo, $uid);
                         break;
@@ -299,7 +307,8 @@ class Notice implements ListenerInterface
                             $NoticeSms->sendSms($phone, ['title' => $title, 'nickname' => $nickname], 'ORDER_USER_GROUPS_SUCCESS');
                         }
                         //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderPinkSuccess($list['uid'], $list, $title);
+                        // $WechatTemplateList->sendOrderPinkSuccess($list['uid'], $list, $title);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendPinkSuccess($list['uid'], $title, $nickname, $list['add_time'], $list['people'], $url);
                         break;
@@ -314,8 +323,9 @@ class Notice implements ListenerInterface
                         if ($phone) {
                             $NoticeSms->sendSms($phone, ['title' => $title], 'SEND_ORDER_PINK_CLONE');
                         }
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderPinkClone($uid, $pink, $pink->title);
+                        //  模板消息公众号模版消息
+                        // $WechatTemplateList->sendOrderPinkClone($uid, $pink, $pink->title);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendPinkFail($uid, $title, $pink->people, '亲，您的拼团取消，点击查看订单详情', '/pages/goods/order_details/index?order_id=' . $pink->order_id);
                         break;
@@ -330,8 +340,10 @@ class Notice implements ListenerInterface
                         if ($phone) {
                             $NoticeSms->sendSms($phone, ['title' => $title], 'SEND_ORDER_PINK_FIAL');
                         }
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderPinkFial($uid, $pink, $pink->title);
+
+                       //  模板消息公众号模版消息
+                       // $WechatTemplateList->sendOrderPinkFial($uid, $pink, $pink->title);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendPinkFail($uid, $title, $pink->people, '亲，您拼团失败，自动为您申请退款，退款金额为：' . $pink->price, '/pages/goods/order_details/index?order_id=' . $pink->order_id);
                         break;
@@ -345,8 +357,10 @@ class Notice implements ListenerInterface
                         $SystemMsg->sendMsg($orderInfo['uid'], ['title' => $title, 'nickname' => $nickname, 'count' => $pink['people'], 'pink_time' => date('Y-m-d H:i:s', $pink['add_time'])]);
                         //短信
                         $NoticeSms->sendSms($orderInfo['user_phone'], ['order_id' => $orderInfo['order_id'], 'title' => $title], 'CAN_PINK_SUCCESS');
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderPinkUseSuccess($orderInfo['uid'], $orderInfo, $title);
+
+                       //  模板消息公众号模版消息
+                       // $WechatTemplateList->sendOrderPinkUseSuccess($orderInfo['uid'], $orderInfo, $title);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendPinkSuccess($orderInfo['uid'], $title, $nickname, $pink['add_time'], $pink['people'], '/pages/goods/order_details/index?order_id=' . $pink['order_id']);
                         break;
@@ -360,8 +374,10 @@ class Notice implements ListenerInterface
                         $SystemMsg->sendMsg($orderInfo['uid'], ['title' => $title, 'nickname' => $nickname, 'count' => $pink['people'], 'pink_time' => date('Y-m-d H:i:s', $pink['add_time'])]);
                         //短信
                         $NoticeSms->sendSms($orderInfo['user_phone'], ['title' => $title], 'OPEN_PINK_SUCCESS');
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendOrderPinkOpenSuccess($orderInfo['uid'], $pink, $title);
+
+                       //  模板消息公众号模版消息
+                       // $WechatTemplateList->sendOrderPinkOpenSuccess($orderInfo['uid'], $pink, $title);
+
                         //模板消息小程序订阅消息
                         //$RoutineTemplateList->sendPinkSuccess($orderInfo['uid'], $title, $nickname, $pink['add_time'], $pink['people'], '/pages/goods/order_details/index?order_id=' . $pink['order_id']);
                         $RoutineTemplateList->sendPinkFail($orderInfo['uid'], $title, $pink['people'], '亲，您已开团成功，可以查看详情邀请好友一起参与拼团', '/pages/goods/order_details/index?order_id=' . $pink['order_id']);
@@ -396,8 +412,10 @@ class Notice implements ListenerInterface
                         if ($phone) {
                             $NoticeSms->sendSms($phone, ['extract_number' => $extract_number], 'USER_EXTRACT_FAIL');
                         }
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendExtractFail($uid, $extract_number, $message);
+
+                       //  模板消息公众号模版消息
+                       // $WechatTemplateList->sendExtractFail($uid, $extract_number, $message);
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendExtractFail($uid, $message, $extract_number, $nickname);
                         break;
@@ -428,8 +446,10 @@ class Notice implements ListenerInterface
                         $SystemMsg->kefuSystemSend(['order_id' => $order['order_id']], $store_id);
                         //短信
                         $NoticeSms->sendAdminRefund($order, $store_id);
-                        //公众号
-//                        $WechatTemplateList->sendAdminNewRefund($order, $store_id);
+
+                       //  公众号
+                       // $WechatTemplateList->sendAdminNewRefund($order, $store_id);
+
                         //企业微信通知
                         $NoticeService->EnterpriseWechatSend(['order_id' => $order['order_id']]);
                         break;
@@ -450,8 +470,10 @@ class Notice implements ListenerInterface
                         $SystemMsg->kefuSystemSend(['order_id' => $order['order_id']], $store_id);
                         //短信
                         $NoticeSms->sendAdminPaySuccess($order, $store_id);
-                        //公众号
-//                        $WechatTemplateList->sendAdminNewOrder($order, $store_id);
+
+                       //  公众号
+                       // $WechatTemplateList->sendAdminNewOrder($order, $store_id);
+
                         //企业微信通知
                         $NoticeService->EnterpriseWechatSend(['order_id' => $order['order_id']]);
                         break;
@@ -490,13 +512,15 @@ class Notice implements ListenerInterface
                             //短信
                             $NoticeSms->sendSms($phone, compact('order_id', 'value', 'url'), 'KAMI_DELIVER_GOODS_CODE');
                         }
-//                        if ($data['is_integral']) {
-//                            $templateUrl = $siteUrl . '/pages/points_mall/integral_order_details?order_id=' . $order_id;
-//                        } else {
-//                            $templateUrl = $siteUrl . '/pages/goods/order_details/index?order_id=' . $order_id;
-//                        }
-                        //模板消息公众号模版消息
-//                        $WechatTemplateList->sendKamiDeliverGoods($data['uid'], $value, $templateUrl);
+
+                       //                         if ($data['is_integral']) {
+                       //     $templateUrl = $siteUrl . '/pages/points_mall/integral_order_details?order_id=' . $order_id;
+                       // } else {
+                       //     $templateUrl = $siteUrl . '/pages/goods/order_details/index?order_id=' . $order_id;
+                       // }
+                       //  模板消息公众号模版消息
+                       // $WechatTemplateList->sendKamiDeliverGoods($data['uid'], $value, $templateUrl);
+
                         //发送站内行
                         $SystemMessageServices->systemSend($data['uid'], [
                             'mark' => 'virtual_info',

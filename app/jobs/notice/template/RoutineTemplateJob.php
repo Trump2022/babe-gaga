@@ -362,7 +362,7 @@ class RoutineTemplateJob extends BaseJobs
     {
         return $this->sendTemplate('ORDER_BROKERAGE', $openid, [
             'thing2' => $goods_name,
-            'amount4' => $brokeragePrice . '元',
+            'amount4' => $brokeragePrice . 'gaga币',
             'time1' => date('Y-m-d H:i:s', time())
         ], '/pages/users/user_spread_user/index');
     }

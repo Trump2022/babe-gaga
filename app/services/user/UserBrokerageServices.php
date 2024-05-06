@@ -44,21 +44,21 @@ class UserBrokerageServices extends BaseServices
         'get_brokerage' => [
             'title' => '获得下级推广订单佣金',
             'type' => 'one_brokerage',
-            'mark' => '{%nickname%}成功消费{%pay_price%}元,奖励推广佣金{%number%}',
+            'mark' => '{%nickname%}成功消费{%pay_price%}元,奖励推广佣金{%number%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
         'get_two_brokerage' => [
             'title' => '获得推广订单佣金',
             'type' => 'two_brokerage',
-            'mark' => '二级推广人{%nickname%}成功消费{%pay_price%}元,奖励推广佣金{%number%}',
+            'mark' => '二级推广人{%nickname%}成功消费{%pay_price%}元,奖励推广佣金{%number%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
         'get_user_brokerage' => [
             'title' => '获得推广用户佣金',
             'type' => 'brokerage_user',
-            'mark' => '成功推广用户：{%nickname%},奖励推广佣金{%number%}',
+            'mark' => '成功推广用户：{%nickname%},奖励推广佣金{%number%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
