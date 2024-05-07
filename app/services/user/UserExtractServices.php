@@ -406,18 +406,25 @@ class UserExtractServices extends BaseServices
             throw new ValidateException('提现佣金不足' . $data['money']);
         }
         if ($data['money'] <= 0) {
-            throw new ValidateException('提现佣金大于0');
+            throw new ValidateException('提现佣金必须大于0');
         }
-        $extract_fee = bcmul((string)$data['money'], bcdiv(sys_config('withdraw_fee'), '100', 2), 2);
+
+        //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+        $integral_ratio = sys_config('integral_ratio');
+        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+
+        $extract_fee = bcmul((string) ($data['money'] * $ratio), bcdiv(sys_config('withdraw_fee'), '100', 2), 2);
         $insertData = [
             'uid' => $user['uid'],
             'extract_type' => $data['extract_type'],
-            'extract_price' => bcsub((string)$data['money'], (string)$extract_fee, 2),
+            'extract_price' => bcsub((string) ($data['money'] * $ratio), (string)$extract_fee, 2),
             'extract_fee' => $extract_fee,
             'add_time' => time(),
             'balance' => $user['brokerage_price'],
             'status' => 0
         ];
+
+        $mark = '';
         if (isset($data['name']) && strlen(trim($data['name']))) $insertData['real_name'] = $data['name'];
         else $insertData['real_name'] = $user['nickname'];
         if (isset($data['cardnum'])) $insertData['bank_code'] = $data['cardnum'];
@@ -444,6 +451,7 @@ class UserExtractServices extends BaseServices
                 }
             }
         }
+
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
         $res1 = $this->transaction(function () use ($insertData, $data, $uid, $userService, $user, $userBrokerageServices, $mark) {
