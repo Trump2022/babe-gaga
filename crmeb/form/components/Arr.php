@@ -41,6 +41,7 @@ class Arr extends BaseComponent implements BuildInterface
      * @var array
      */
     protected $rule = [
+        'type' => 'group',
         'title' => '',
         'field' => '',
         'value' => [],
