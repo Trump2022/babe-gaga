@@ -364,6 +364,7 @@ class UserExtractServices extends BaseServices
         $extractBank = str_replace("\r\n", "\n", $extractBank);//防止不兼容
         $data['extractBank'] = explode("\n", is_array($extractBank) ? (isset($extractBank[0]) ? $extractBank[0] : $extractBank) : $extractBank);
         $data['minPrice'] = sys_config('user_extract_min_price');//提现最低金额
+        $data['user_extract_price_values'] = sys_config('user_extract_price_values');//提现面额
         $data['withdraw_fee'] = sys_config('withdraw_fee');//提现手续费
         $data['extract_wechat_type'] = sys_config('brokerage_type');//微信提现到账方式
         return $data;
