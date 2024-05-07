@@ -62,6 +62,7 @@ class Checkbox extends BaseComponent implements BuildInterface
         return $this;
     }
 
+
     /**
      * 组件联动
      * @param $value

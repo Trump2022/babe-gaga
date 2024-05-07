@@ -27,6 +27,7 @@ use crmeb\form\components\Tabs;
 use crmeb\form\components\Time;
 use crmeb\form\components\UploadFrame;
 use crmeb\form\components\UploadImage;
+use crmeb\form\components\Arr;
 
 /**
  * Class Build
@@ -36,6 +37,7 @@ use crmeb\form\components\UploadImage;
  * @method Card card(string $title)
  * @method InputNumber inputNum(string $field, string $title, $value = null)
  * @method Select select(string $field, string $title, $value = null)
+ * @method Arr arr(string $field, string $title, $value = null)
  * @method UploadFrame uploadFrame(string $field, string $title, $value = null)
  * @method UploadImage uploadImage(string $field, string $title, $value = null)
  * @method Radio radio(string $field, string $title, $value = null)
@@ -55,6 +57,7 @@ class Build
      * @var string[]
      */
     protected static $components = [
+        'arr' => Arr::class,
         'input' => Input::class,
         'tabs' => Tabs::class,
         'card' => Card::class,

@@ -32,6 +32,7 @@ use crmeb\services\wechat\contract\ServeConfigInterface;
 use crmeb\traits\ServicesTrait;
 use think\exception\ValidateException;
 use think\facade\Log;
+use think\validate\ValidateRule;
 
 /**
  * 系统配置
@@ -1480,11 +1481,10 @@ WSS;
             'brokerage_func_status', 'store_brokerage_statu', 'store_brokerage_price', 'brokerage_bindind',
             'store_brokerage_binding_status', 'store_brokerage_binding_time', 'spread_banner', 'store_brokerage_ratio',
             'store_brokerage_two', 'extract_time', 'is_self_brokerage', 'brokerage_user_status', 'uni_brokerage_price',
-            'day_brokerage_price_upper', 'brokerage_type', 'user_extract_min_price', 'user_extract_bank_status',
+            'day_brokerage_price_upper', 'brokerage_type', 'user_extract_min_price', 'user_extract_price_values', 'user_extract_bank_status',
             'user_extract_wechat_status', 'user_extract_alipay_status', 'user_extract_bank',
             'pay_weixin_client_cert', 'pay_weixin_client_key', 'withdraw_fee', 'brokerage_level', 'brokerage_compute_type'
         ]);
-
         $build->rule([
             Build::tabs()->option('分销模式', [
                 Build::switch('brokerage_func_status', $data['brokerage_func_status']['info'], (int)$data['brokerage_func_status']['value'])
@@ -1534,6 +1534,8 @@ WSS;
                 //     'max' => 99999999, 'name' => 'inputNumber', 'validate' => []
                 // ],
 
+                Build::arr('user_extract_price_values', '提现面额', $data['user_extract_price_values']['value'])->info($data['user_extract_price_values']['desc'])->props($this->getArrProps($data['user_extract_price_values']['value'], 'user_extract_price_values', '请输入数字')),
+
                 Build::inputNum('withdraw_fee', $data['withdraw_fee']['info'], $data['withdraw_fee']['value'])->info($data['withdraw_fee']['desc']),
                 Build::switch('user_extract_bank_status', $data['user_extract_bank_status']['info'], (int)$data['user_extract_bank_status']['value'])->trueValue('开启', 1)->falseValue('关闭', 0)->control(1, [
                     Build::input('user_extract_bank', $data['user_extract_bank']['info'], $data['user_extract_bank']['value'])->type('textarea')->rows(6)->info($data['user_extract_bank']['desc'])
@@ -1543,9 +1545,22 @@ WSS;
             ]),
         ]);
         // echo '<pre>';
-        // var_dump($build->toArray());exit;
+        // var_dump($build);exit;
 
         return $build->toArray();
+    }
+
+
+    public function getArrProps(array $values = [], string $field = '',  string $title = '')
+    {
+        $props = [];
+        $list = [];
+        foreach ($values as $v) {
+            $list[] = ['type' => 'input', 'field' => $field.'[]', 'title' => $title];
+        }
+        $props['rule'] = $list;
+        $props['field'] = $field;
+        return $props;
     }
 
     /**
