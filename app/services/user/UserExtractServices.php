@@ -195,7 +195,7 @@ class UserExtractServices extends BaseServices
 					/** @var StoreOrderCreateServices $services */
                     $services = app()->make(StoreOrderCreateServices::class);
                     $wechat_order_id = $services->getNewOrderId();
-                    $res = Payment::merchantPay($openid, $wechat_order_id, $extractNumber, '提现佣金到零钱', $type);
+                    $res = Payment::merchantPay($openid, $wechat_order_id, $extractNumber, '提现gaga币到零钱', $type);
                     if (!$res) {
                         throw new ValidateException('企业付款到零钱失败，请稍后再试');
                     }

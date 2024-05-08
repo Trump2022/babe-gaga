@@ -269,10 +269,10 @@ class WechatTemplateJob extends BaseJobs
      * @param $fail_msg
      * @return bool|mixed
      */
-    public function sendUserBalanceChangeFial($openid, $extract_number, $fail_msg)
+    public function sendUserBalanceChangeFail($openid, $extract_number, $fail_msg)
     {
         return $this->sendTemplate('USER_BALANCE_CHANGE', $openid, [
-            'first' => '提现失败,退回佣金' . $extract_number . '元',
+            'first' => '提现失败,退回佣金' . $extract_number . 'gaga币',
             'keyword1' => '佣金提现',
             'keyword2' => date('Y-m-d H:i:s', time()),
             'keyword3' => $extract_number,
@@ -435,7 +435,7 @@ class WechatTemplateJob extends BaseJobs
         return $this->sendTemplate('ORDER_BROKERAGE', $openid, [
             'first' => '亲，您有一笔佣金入账!',
             'keyword1' => $goodsName,
-            'keyword2' => $goodsPrice . "元",
+            'keyword2' => $goodsPrice . "gaga币",
             'keyword3' => $brokeragePrice . "gaga币",
             'keyword4' => date('Y-m-d H:i:s', $orderTime),
             'remark' => '点击查看订单详情'

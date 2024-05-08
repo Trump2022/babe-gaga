@@ -77,9 +77,9 @@ class UserMoneyServices extends BaseServices
             'pm' => 0
         ],
         'brokerage_to_nowMoney' => [
-            'title' => '佣金提现到余额',
+            'title' => 'gaga币提现到余额',
             'type' => 'extract',
-            'mark' => '佣金提现到余额{%num%}元',
+            'mark' => 'gaga币提现到余额{%num%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
@@ -131,7 +131,7 @@ class UserMoneyServices extends BaseServices
 		'system_sub' => '系统扣除',
 		'recharge' => '用户充值',
 		'recharge_refund' => '用户充值退款',
-		'extract' => '佣金提现充值',
+		'extract' => 'gaga币提现充值',
 		'lottery_use' => '抽奖使用',
 		'lottery_add' => '抽奖中奖充值',
 		'newcomer_add' => '新人礼赠送充值',

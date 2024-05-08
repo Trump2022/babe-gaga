@@ -143,7 +143,7 @@ class AgentManageServices extends BaseServices
                 'col' => 6,
             ],
             [
-                'name' => '未提现金额(元)',
+                'name' => '未提现金额(gaga币)',
                 'count' => $data['extract_price'],
                 'className' => 'ios-at-outline',
                 'col' => 6,

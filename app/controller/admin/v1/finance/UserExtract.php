@@ -73,6 +73,10 @@ class UserExtract extends AuthController
      */
     public function update(Request $request, $id)
     {
+        //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+        $integral_ratio = sys_config('integral_ratio');
+        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+
         if (!$id) return $this->fail('缺少参数!');
         $id = (int)$id;
         $UserExtract = $this->services->getExtract($id);
@@ -84,6 +88,7 @@ class UserExtract extends AuthController
                 'extract_price',
                 'alipay_code',
             ]);
+            $data['extract_price'] *= $ratio;
             if (!$data['real_name']) return $this->fail('请输入姓名');
             if ($data['extract_price'] <= -1) return $this->fail('请输入提现金额');
             if (!$data['alipay_code']) return $this->fail('请输入支付宝账号');
@@ -94,6 +99,7 @@ class UserExtract extends AuthController
                 'extract_price',
                 'wechat',
             ]);
+            $data['extract_price'] *= $ratio;
             if ($data['extract_price'] <= -1) return $this->fail('请输入提现金额');
             if (!$data['wechat']) return $this->fail('请输入微信账号');
         } else {
@@ -104,6 +110,7 @@ class UserExtract extends AuthController
                 'bank_code',
                 'bank_address',
             ]);
+            $data['extract_price'] *= $ratio;
             if (!$data['real_name']) return $this->fail('请输入姓名');
             if ($data['extract_price'] <= -1) return $this->fail('请输入提现金额');
             if (!$data['bank_code']) return $this->fail('请输入银行卡号');

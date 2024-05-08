@@ -72,11 +72,13 @@ class SupplierExtractServices extends BaseServices
         $where['status'] = 1;
         $where['pay_status'] = 0;
         $extract_statistics['unPayPrice'] = $this->dao->getExtractMoneyByWhere($where, 'extract_price');
+
         //累计提现
         $where['status'] = 1;
         $where['pay_status'] = 1;
         $extract_statistics['paidPrice'] = $this->dao->getExtractMoneyByWhere($where, 'extract_price');
         $extract_statistics['price_count'] = 0;
+
         //未提现金额
         /** @var SupplierFlowingWaterServices $financeFlowServices */
         $financeFlowServices = app()->make(SupplierFlowingWaterServices::class);

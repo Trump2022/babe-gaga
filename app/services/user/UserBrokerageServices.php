@@ -37,7 +37,7 @@ class UserBrokerageServices extends BaseServices
         'get_self_brokerage' => [
             'title' => '获得自购订单佣金',
             'type' => 'self_brokerage',
-            'mark' => '您成功消费{%pay_price%}元,奖励自购佣金{%number%}',
+            'mark' => '您成功消费{%pay_price%}元,奖励自购佣金{%number%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
@@ -65,28 +65,28 @@ class UserBrokerageServices extends BaseServices
         'extract' => [
             'title' => '佣金提现',
             'type' => 'extract',
-            'mark' => '{%mark%},佣金提现{%number%}元',
+            'mark' => '{%mark%},佣金提现{%number%}gaga币',
             'status' => 1,
             'pm' => 0
         ],
         'extract_fail' => [
             'title' => '提现失败',
             'type' => 'extract_fail',
-            'mark' => '提现失败,退回佣金{%num%}元',
+            'mark' => '提现失败,退回佣金{%num%}gaga币',
             'status' => 1,
             'pm' => 1
         ],
         'brokerage_to_nowMoney' => [
             'title' => '佣金提现到余额',
             'type' => 'extract_money',
-            'mark' => '佣金提现到余额{%num%}元',
+            'mark' => '佣金提现到余额{%num%}gaga币',
             'status' => 1,
             'pm' => 0
         ],
         'brokerage_refund' => [
             'title' => '退款退佣金',
             'type' => 'refund',
-            'mark' => '订单退款扣除佣金{%num%}元',
+            'mark' => '订单退款扣除佣金{%num%}gaga币',
             'status' => 1,
             'pm' => 0
         ],
@@ -260,6 +260,11 @@ class UserBrokerageServices extends BaseServices
         $userUserBrokerage = app()->make(UserUserBrokerageServices::class);
         [$count, $list] = $userUserBrokerage->getBrokerageList($where_data, 'b.type,b.pm,sum(IF(b.pm = 1, b.number, 0)) as income,sum(IF(b.pm = 0, b.number, 0)) as pay,u.nickname,u.phone,u.uid,u.now_money,u.brokerage_price,u.delete_time,b.add_time as time', $order_string, $limit);
         $uids = array_unique(array_column($list, 'uid'));
+
+        //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+        $integral_ratio = sys_config('integral_ratio');
+        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+
         /** @var UserExtractServices $userExtract */
         $userExtract = app()->make(UserExtractServices::class);
         $extractSumList = $userExtract->getUsersSumList($uids);
@@ -267,7 +272,7 @@ class UserBrokerageServices extends BaseServices
             // $item['sum_number'] = $item['income'] > $item['pay'] ? bcsub($item['income'], $item['pay'], 2) : 0;
             $item['nickname'] = $item['nickname'] . "|" . ($item['phone'] ? $item['phone'] . "|" : '') . $item['uid'];
             $item['extract_price'] = $extractSumList[$item['uid']] ?? 0;
-            $item['sum_number'] = bcadd((string)$item['extract_price'], (string)$item['brokerage_price'], 2);
+            $item['sum_number'] = bcadd((string)$item['extract_price'], (string) ($item['brokerage_price'] * $ratio), 2);
             $item['time'] = $item['time'] ? date('Y-m-d H:i:s', $item['time']) : '';
         }
         return compact('count', 'list');

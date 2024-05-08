@@ -81,7 +81,7 @@ class StoreExtractServices extends BaseServices
         $storeFinanceFlowServices = app()->make(StoreFinanceFlowServices::class);
 		$price_not = $storeFinanceFlowServices->getSumFinance(['store_id' => isset($where['store_id']) && $where['store_id'] ? $where['store_id'] : 0], $whereData);
         $extract_statistics['price_not'] = max($price_not, 0);
-//        $extract_statistics['price_not'] = $extract_statistics['price_count'] > $extract_statistics['paidPrice'] ? bcsub((string)$extract_statistics['price_count'], (string)$extract_statistics['paidPrice'], 2) : 0.00;
+        // $extract_statistics['price_not'] = $extract_statistics['price_count'] > $extract_statistics['paidPrice'] ? bcsub((string)$extract_statistics['price_count'], (string)$extract_statistics['paidPrice'], 2) : 0.00;
 
 		$extract_statistics['extract_min_price'] = sys_config('store_extract_min_price');
 		$extract_statistics['extract_max_price'] = sys_config('store_extract_max_price');
@@ -131,6 +131,10 @@ class StoreExtractServices extends BaseServices
      */
     public function cash(int $store_id, int $store_staff_id, array $data)
     {
+        //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+        $integral_ratio = sys_config('integral_ratio');
+        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+
         /** @var SystemStoreServices $systemStore */
         $systemStore = app()->make(SystemStoreServices::class);
         $storeInfo = $systemStore->getStoreInfo($store_id);
@@ -138,6 +142,7 @@ class StoreExtractServices extends BaseServices
         $systemStoreStaff = app()->make(SystemStoreStaffServices::class);
         $staffInfo = $systemStoreStaff->getStaffInfo($store_staff_id);
 
+        $data['money'] *= $ratio;
         $userExtractMinPrice = sys_config('user_extract_min_price');
         if ($data['money'] < $userExtractMinPrice) {
             throw new ValidateException('提现金额不能小于' . $userExtractMinPrice . '元');
