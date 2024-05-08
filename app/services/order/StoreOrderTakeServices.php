@@ -280,7 +280,7 @@ class StoreOrderTakeServices extends BaseServices
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
         $integral_ratio = sys_config('integral_ratio');
-        $ratio = $integral_ratio > 0 ? $integral_ratio : 1;//必须大于0
+        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
         $brokeragePrice = round( $brokeragePrice / $ratio, 1);//佣金RMB对应的gaga币数量
 
         // 上级推广员返佣之后的金额
@@ -288,6 +288,7 @@ class StoreOrderTakeServices extends BaseServices
         // 添加佣金记录
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
+
         //自购返佣 ｜｜ 上级
         $type = $one_spread_uid == $orderInfo['uid'] ? 'get_self_brokerage' : 'get_brokerage';
         $res1 = $userBrokerageServices->income($type, $one_spread_uid, [
@@ -296,12 +297,14 @@ class StoreOrderTakeServices extends BaseServices
             'number' => floatval($brokeragePrice),
             'frozen_time' => $frozen_time
         ], $balance, $orderInfo['id']);
+
         // 添加用户佣金
         $res2 = $userServices->bcInc($one_spread_uid, 'brokerage_price', $brokeragePrice, 'uid');
+        $res3 = $userServices->bcInc($one_spread_uid, 'integral', $brokeragePrice, 'uid');//积分/gaga币
         //给上级发送获得佣金的模板消息
         $this->sendBackOrderBrokerage($orderInfo, $one_spread_uid, $brokeragePrice);
         // 一级返佣成功 跳转二级返佣
-        $res = $res1 && $res2 && $this->backOrderBrokerageTwo($orderInfo, $userInfo, $isSelfBrokerage, $frozen_time);
+        $res = $res1 && $res2 && $res3 && $this->backOrderBrokerageTwo($orderInfo, $userInfo, $isSelfBrokerage, $frozen_time);
         return $res;
     }
 
@@ -350,7 +353,7 @@ class StoreOrderTakeServices extends BaseServices
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
         $integral_ratio = sys_config('integral_ratio');
-        $ratio = $integral_ratio > 0 ? $integral_ratio : 1;//必须大于0
+        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
         $brokeragePrice = round( $brokeragePrice / $ratio, 1);//佣金RMB对应的gaga币数量
 
         // 获取上上级推广员返佣之后余额
@@ -367,9 +370,10 @@ class StoreOrderTakeServices extends BaseServices
         ], $balance, $orderInfo['id']);
         // 添加用户佣金
         $res2 = $userServices->bcInc($spread_two_uid, 'brokerage_price', $brokeragePrice, 'uid');
+        $res3 = $userServices->bcInc($spread_two_uid, 'integral', $brokeragePrice, 'uid');
         //给上级发送获得佣金的模板消息
         $this->sendBackOrderBrokerage($orderInfo, $spread_two_uid, $brokeragePrice);
-        return $res1 && $res2;
+        return $res1 && $res2 && $res3;
     }
 
     /**

@@ -1524,7 +1524,8 @@ class UserServices extends BaseServices
         $info['broken_commission'] = bcsub($brokerage_commission, $refund_commission, 2);
         if ($info['broken_commission'] < 0)
             $info['broken_commission'] = 0;
-        $info['commissionCount'] = bcsub($info['brokerage_price'], $info['broken_commission'], 2);
+        // $info['commissionCount'] = bcsub($info['brokerage_price'], $info['broken_commission'], 2);
+        $info['commissionCount'] = bcsub($info['integral'], $info['broken_commission'], 2);
         if ($info['commissionCount'] < 0)
             $info['commissionCount'] = 0;
         return $info;
@@ -1604,7 +1605,8 @@ class UserServices extends BaseServices
         $user['recharge'] = $userMoneyServices->getRechargeSum($uid);//累计充值
         $user['orderStatusSum'] = (float)$userMoneyServices->sum(['uid' => $uid, 'pm' => 0, 'status' => 1], 'number', true);
         $user['extractTotalPrice'] = $userExtract->getExtractSum(['uid' => $uid, 'status' => 1]);//累计提现
-        $user['extractPrice'] = $user['brokerage_price'];//可提现
+        // $user['extractPrice'] = $user['brokerage_price'];//可提现
+        $user['extractPrice'] = $user['integral'];//可提现
         $user['statu'] = (int)($configData['store_brokerage_statu'] ?? 0);
         $orderStatusSum = (float)$storeOrder->sum(['pid' => 0, 'paid' => 1, 'refund_status' => [0, 3], 'uid' => $user['uid'], 'is_del' => 0], 'pay_price', true);//累计有效消费
         $user['spread_status'] = ($configData['brokerage_func_status'] ?? 1) && $this->checkUserPromoter($user['uid'], $user, $orderStatusSum);
@@ -1621,7 +1623,8 @@ class UserServices extends BaseServices
         $user['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
         if ($user['broken_commission'] < 0)
             $user['broken_commission'] = 0;
-        $user['commissionCount'] = bcsub($user['brokerage_price'], $user['broken_commission'], 2);
+        // $user['commissionCount'] = bcsub($user['brokerage_price'], $user['broken_commission'], 2);
+        $user['commissionCount'] = bcsub($user['integral'], $user['broken_commission'], 2);
         if ($user['commissionCount'] < 0)
             $user['commissionCount'] = 0;
         //用户等级信息
@@ -2267,11 +2270,12 @@ class UserServices extends BaseServices
             ], $balance, $uid);
             // 添加用户余额
             $res2 = $this->dao->bcInc($spread_uid, 'brokerage_price', $brokerage_price, 'uid');
+            $res3 = $this->dao->bcInc($spread_uid, 'integral', $brokerage_price, 'uid');
             //给上级发送获得佣金的模板消息
             /** @var StoreOrderTakeServices $storeOrderTakeServices */
             $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
             $storeOrderTakeServices->sendBackOrderBrokerage([], $spread_uid, $brokerage_price, 'user');
-            return $res1 && $res2;
+            return $res1 && $res2 && $res3;
         });
     }
 

@@ -264,7 +264,7 @@ class UserBrokerageServices extends BaseServices
         $userExtract = app()->make(UserExtractServices::class);
         $extractSumList = $userExtract->getUsersSumList($uids);
         foreach ($list as &$item) {
-//            $item['sum_number'] = $item['income'] > $item['pay'] ? bcsub($item['income'], $item['pay'], 2) : 0;
+            // $item['sum_number'] = $item['income'] > $item['pay'] ? bcsub($item['income'], $item['pay'], 2) : 0;
             $item['nickname'] = $item['nickname'] . "|" . ($item['phone'] ? $item['phone'] . "|" : '') . $item['uid'];
             $item['extract_price'] = $extractSumList[$item['uid']] ?? 0;
             $item['sum_number'] = bcadd((string)$item['extract_price'], (string)$item['brokerage_price'], 2);
@@ -342,6 +342,7 @@ class UserBrokerageServices extends BaseServices
                 }
                 if ($item['number'] <= 0) continue;
                 $res = $res && $userServices->bcDec($item['uid'], 'brokerage_price', (string)$item['number'], 'uid');
+                $res = $res && $userServices->bcDec($item['uid'], 'integral', (string)$item['number'], 'uid');
                 $brokerageData[] = [
                     'title' => '退款退佣金',
                     'uid' => $item['uid'],
@@ -351,7 +352,7 @@ class UserBrokerageServices extends BaseServices
                     'number' => $item['number'],
                     'link_id' => $id,
                     'balance' => bcsub((string)$usermoney, (string)$item['number'], 2),
-                    'mark' => '订单退款扣除佣金' . floatval($item['number']) . '元'
+                    'mark' => '订单退款扣除佣金' . floatval($item['number']) . 'gaga币'
                 ];
             }
             if ($brokerageData) {

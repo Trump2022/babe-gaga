@@ -58,11 +58,13 @@ class AgentManageServices extends BaseServices
             if ($item['broken_commission'] < 0)
                 $item['broken_commission'] = 0;
             $item['brokerage_money'] = $item['brokerage'][0]['brokerage_money'] ?? 0;
-            if ($item['brokerage_price'] > $item['broken_commission'])
-                $item['brokerage_money'] = bcsub($item['brokerage_price'], $item['broken_commission'], 2);
+            // if ($item['brokerage_price'] > $item['broken_commission'])
+            if ($item['integral'] > $item['broken_commission'])
+                // $item['brokerage_money'] = bcsub($item['brokerage_price'], $item['broken_commission'], 2);
+                $item['brokerage_money'] = bcsub($item['integral'], $item['broken_commission'], 2);
             else
                 $item['brokerage_money'] = 0;
-            $item['new_money'] = $item['brokerage_price'];
+            $item['new_money'] = $item['integral'];
             unset($item['extract'], $item['order'], $item['bill'], $item['spreadUser'], $item['spreadCount']);
         }
         return $data;

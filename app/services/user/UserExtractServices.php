@@ -121,7 +121,7 @@ class UserExtractServices extends BaseServices
     {
         $fail_time = time();
         $extract_number = bcadd((string)$userExtract['extract_price'], (string)$userExtract['extract_fee'], 2);
-        $mark = '提现失败,退回佣金' . $extract_number . '元';
+        // $mark = '提现失败,退回佣金' . $extract_number . '元';
         $uid = $userExtract['uid'];
         $status = -1;
         /** @var UserServices $userServices */
@@ -133,16 +133,28 @@ class UserExtractServices extends BaseServices
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
         $this->transaction(function () use ($user, $userBrokerageServices, $uid, $id, $extract_number, $message, $userServices, $status, $fail_time) {
-            $now_brokerage = bcadd((string)$user['brokerage_price'], (string)$extract_number, 2);
+
+            //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+            $integral_ratio = sys_config('integral_ratio');
+            $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+            $brokeragePrice = round( $extract_number / $ratio, 1);//RMB对应的gaga币数量
+
+            // $now_brokerage = bcadd((string)$user['brokerage_price'], (string)$brokeragePrice, 2);
+            $now_integral = bcadd((string)$user['integral'], (string)$brokeragePrice, 2);
+
             //增加佣金记录
-            $userBrokerageServices->income('extract_fail', $uid, $extract_number, $now_brokerage, $id);
+            $userBrokerageServices->income('extract_fail', $uid, $brokeragePrice, $now_integral, $id);
+
             //修改用户佣金
-            if (!$userServices->update($uid, ['brokerage_price' => $now_brokerage], 'uid'))
-                throw new AdminException('增加用户佣金失败');
+            // if (!$userServices->update($uid, ['brokerage_price' => $now_brokerage], 'uid'))
+            // if (!$userServices->update($uid, ['integral' => $now_integral], 'uid'))
+            if ( ! $userServices->bcInc($uid, 'integral', (string) $brokeragePrice, 'uid') )
+                throw new AdminException('增加用户gaga币失败');
             if (!$this->dao->update($id, ['fail_time' => $fail_time, 'fail_msg' => $message, 'status' => $status])) {
                 throw new AdminException('修改失败');
             }
         });
+
         //消息推送
         event('notice.notice', [['uid' => $uid, 'userType' => strtolower($user['user_type']), 'extract_number' => $extract_number, 'nickname' => $user['nickname'], 'message' => $message], 'user_balance_change']);
         return true;
@@ -352,13 +364,16 @@ class UserExtractServices extends BaseServices
         if (!$user) {
             throw new ValidateException('数据不存在');
         }
+
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
         $data['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
         if ($data['broken_commission'] < 0)
             $data['broken_commission'] = '0';
-        $data['brokerage_price'] = $user['brokerage_price'];
-        //可提现佣金
+        // $data['brokerage_price'] = $user['brokerage_price'];
+        $data['brokerage_price'] = $user['integral'];
+
+        //可提现gaga币
         $data['commissionCount'] = bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
         $extractBank = sys_config('user_extract_bank') ?? []; //提现银行
         $extractBank = str_replace("\r\n", "\n", $extractBank);//防止不兼容
@@ -388,26 +403,28 @@ class UserExtractServices extends BaseServices
         $data['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
         if ($data['broken_commission'] < 0)
             $data['broken_commission'] = 0;
-        $data['brokerage_price'] = $user['brokerage_price'];
+        // $data['brokerage_price'] = $user['brokerage_price'];
+        $data['brokerage_price'] = $user['integral'];
         //可提现佣金
         $commissionCount = (float)bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
         if ($data['money'] > $commissionCount) {
-            throw new ValidateException('可提现佣金不足');
+            throw new ValidateException('可提现gaga币不足');
         }
 
-        $extractPrice = $user['brokerage_price'];
+        // $extractPrice = $user['brokerage_price'];
+        $extractPrice = $user['integral'];
         $userExtractMinPrice = sys_config('user_extract_min_price');
         if ($data['money'] < $userExtractMinPrice) {
-            throw new ValidateException('提现金额不能小于' . $userExtractMinPrice . '元');
+            throw new ValidateException('提现gaga币数量不能低于' . $userExtractMinPrice);
         }
         if ($extractPrice < 0) {
-            throw new ValidateException('提现佣金不足' . $data['money']);
+            throw new ValidateException('提现gaga币不足' . $data['money']);
         }
         if ($data['money'] > $extractPrice) {
-            throw new ValidateException('提现佣金不足' . $data['money']);
+            throw new ValidateException('提现gaga币不足' . $data['money']);
         }
         if ($data['money'] <= 0) {
-            throw new ValidateException('提现佣金必须大于0');
+            throw new ValidateException('提现gaga币必须大于0');
         }
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
@@ -459,13 +476,17 @@ class UserExtractServices extends BaseServices
             if (!$res1 = $this->dao->save($insertData)) {
                 throw new ValidateException('提现失败');
             }
+
             //修改用户佣金
-            $balance = bcsub((string)$user['brokerage_price'], (string)$data['money'], 2) ?? 0;
-            if (!$userService->update($uid, ['brokerage_price' => $balance], 'uid')) {
+            $brokerage_price = bcsub((string)$user['brokerage_price'], (string)$data['money'], 2) ?? 0;
+            $brokerage_price = max($brokerage_price, 0);
+            $integral = bcsub((string)$user['integral'], (string)$data['money'], 2) ?? 0;
+            if (!$userService->update($uid, ['brokerage_price' => $brokerage_price, 'integral' => $integral], 'uid')) {
                 throw new ValidateException('修改用户信息失败');
             }
+
             //保存佣金记录
-            $userBrokerageServices->income('extract', $uid, ['mark' => $mark, 'number' => $data['money']], $balance, $res1['id']);
+            $userBrokerageServices->income('extract', $uid, ['mark' => $mark, 'number' => $data['money']], $integral, $res1['id']);
             return $res1;
         });
         //用户申请体现事件

@@ -383,9 +383,15 @@ class UserRechargeServices extends BaseServices
             throw new ValidateException('转入金额不能大于可提现佣金！');
         }
         return $this->transaction(function () use ($uid, $user, $price, $userServices) {
+            //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+            $integral_ratio = sys_config('integral_ratio');
+            $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+
             $edit_data = [];
-            $edit_data['now_money'] = bcadd((string)$user['now_money'], (string)$price, 2);
+            $edit_data['now_money'] = bcadd((string)$user['now_money'], (string) ($price * $ratio), 2);
             $edit_data['brokerage_price'] = $user['brokerage_price'] > $price ? bcsub((string)$user['brokerage_price'], (string)$price, 2) : 0;
+            $edit_data['integral'] = $user['integral'] > $price ? bcsub((string)$user['integral'], (string)$price, 2) : 0;
+
             //修改用户佣金、余额信息
             $userServices->update($uid, $edit_data, 'uid');
             //写入充值记录
@@ -399,25 +405,31 @@ class UserRechargeServices extends BaseServices
                 'pay_time' => time(),
                 'add_time' => time()
             ];
+
             //写入充值记录
             $re = $this->dao->save($rechargeInfo);
+
             /** @var UserMoneyServices $userMoneyServices */
             $userMoneyServices = app()->make(UserMoneyServices::class);
+
             //余额记录
-            $userMoneyServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['now_money'], $re['id']);
+            $userMoneyServices->income('brokerage_to_nowMoney', $uid, $price * $ratio, $edit_data['now_money'], $re['id']);
+
             $extractInfo = [
                 'uid' => $uid,
                 'real_name' => $user['nickname'],
                 'extract_type' => 'balance',
-                'extract_price' => $price,
+                'extract_price' => $price * $ratio,
                 'balance' => $edit_data['brokerage_price'],
                 'add_time' => time(),
                 'status' => 1
             ];
             /** @var UserExtractServices $userExtract */
             $userExtract = app()->make(UserExtractServices::class);
+
             //写入提现记录
             $userExtract->save($extractInfo);
+
             //佣金提现记录
             /** @var UserBrokerageServices $userBrokerageServices */
             $userBrokerageServices = app()->make(UserBrokerageServices::class);
