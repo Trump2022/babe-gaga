@@ -384,7 +384,7 @@ class UserExtractServices extends BaseServices
         $data['extract_wechat_type'] = sys_config('brokerage_type');//微信提现到账方式
         $data['withdraw_fee'] = sys_config('withdraw_fee');//提现手续费
         $data['user_extract_min_price'] = sys_config('user_extract_min_price');//最低提现金额(元)
-        $data['integral_ratio'] = sys_config('user_extract_min_price');//最低提现金额(元)
+        $data['integral_ratio'] = sys_config('integral_ratio');//最低提现金额(元)
         return $data;
     }
 
