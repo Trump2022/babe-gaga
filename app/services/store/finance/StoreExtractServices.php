@@ -143,9 +143,13 @@ class StoreExtractServices extends BaseServices
         $staffInfo = $systemStoreStaff->getStaffInfo($store_staff_id);
 
         $data['money'] *= $ratio;
+        if ($data['money'] <= 0) {
+            throw new ValidateException('提现金额必须大于0');
+        }
+
         $userExtractMinPrice = sys_config('user_extract_min_price');
         if ($data['money'] < $userExtractMinPrice) {
-            throw new ValidateException('提现金额不能小于' . $userExtractMinPrice . '元');
+            // throw new ValidateException('提现金额不能小于' . $userExtractMinPrice . '元');
         }
         $insertData = [];
         switch ($data['extract_type']) {

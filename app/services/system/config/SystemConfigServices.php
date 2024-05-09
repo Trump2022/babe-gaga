@@ -1525,7 +1525,8 @@ WSS;
                         ->url('/file/upload/1?type=1')->format(config('upload.fileExt'))->headers(['Authori-zation' => app()->request->header('Authori-zation')])
                         ->type('file')->icon('md-add')->info($data['pay_weixin_client_key']['desc']),
                 ])->info($data['brokerage_type']['desc']),
-                Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
+
+                // Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
                 // Build::inputNum('user_extract_min_price', $data['user_extract_min_price']['info'], $data['user_extract_min_price']['value'])->info($data['user_extract_min_price']['desc']),
 
                 // [

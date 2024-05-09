@@ -420,7 +420,7 @@ class UserExtractServices extends BaseServices
         $extractPrice = $user['integral'];
         $userExtractMinPrice = sys_config('user_extract_min_price');
         if ($data['money'] < $userExtractMinPrice) {
-            throw new ValidateException('提现gaga币数量不能低于' . $userExtractMinPrice);
+            // throw new ValidateException('提现gaga币数量不能低于' . $userExtractMinPrice);
         }
         if ($extractPrice < 0) {
             throw new ValidateException('提现gaga币不足' . $data['money']);
