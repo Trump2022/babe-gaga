@@ -442,6 +442,7 @@ class UserExtractServices extends BaseServices
         $insertData = [
             'uid' => $user['uid'],
             'extract_type' => $data['extract_type'],
+            'number' => $data['money'],//提现的积分/gaga币数量
             'extract_price' => bcsub((string) ($data['money'] * $ratio), $extract_fee, 2),
             'extract_fee' => $extract_fee,
             'add_time' => time(),
