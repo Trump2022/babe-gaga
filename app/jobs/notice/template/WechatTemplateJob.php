@@ -273,7 +273,7 @@ class WechatTemplateJob extends BaseJobs
     {
         return $this->sendTemplate('USER_BALANCE_CHANGE', $openid, [
             'first' => '提现失败,退回佣金' . $extract_number . 'gaga币',
-            'keyword1' => '佣金提现',
+            'keyword1' => 'gaga币现',
             'keyword2' => date('Y-m-d H:i:s', time()),
             'keyword3' => $extract_number,
             'remark' => '错误原因:' . $fail_msg
@@ -290,7 +290,7 @@ class WechatTemplateJob extends BaseJobs
     {
         return $this->sendTemplate('USER_BALANCE_CHANGE', $openid, [
             'first' => '成功提现佣金' . $extractNumber . '元',
-            'keyword1' => '佣金提现',
+            'keyword1' => 'gaga币提现',
             'keyword2' => date('Y-m-d H:i:s', time()),
             'keyword3' => $extractNumber,
             'remark' => '点击查看我的佣金明细'

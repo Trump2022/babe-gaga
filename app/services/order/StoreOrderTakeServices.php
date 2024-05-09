@@ -273,10 +273,12 @@ class StoreOrderTakeServices extends BaseServices
         if ($brokeragePrice <= 0) {//直接二级返佣
 			return $this->backOrderBrokerageTwo($orderInfo, $userInfo, $isSelfBrokerage, $frozen_time);
         }
+
         // 获取上级推广员信息
 		/** @var UserServices $userServices */
 		$userServices = app()->make(UserServices::class);
-        $spreadPrice = $userServices->value(['uid' => $one_spread_uid], 'brokerage_price');
+        // $spreadPrice = $userServices->value(['uid' => $one_spread_uid], 'brokerage_price');
+        $spreadPrice = $userServices->value(['uid' => $one_spread_uid], 'integral');
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
         $integral_ratio = sys_config('integral_ratio');
@@ -285,6 +287,7 @@ class StoreOrderTakeServices extends BaseServices
 
         // 上级推广员返佣之后的金额
         $balance = bcadd($spreadPrice, $brokeragePrice, 2);
+
         // 添加佣金记录
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
@@ -348,8 +351,10 @@ class StoreOrderTakeServices extends BaseServices
         if ($brokeragePrice <= 0) {
             return true;
         }
+
         // 获取上上级推广员信息
-        $spreadPrice = $userServices->value(['uid' => $spread_two_uid], 'brokerage_price');
+        // $spreadPrice = $userServices->value(['uid' => $spread_two_uid], 'brokerage_price');
+        $spreadPrice = $userServices->value(['uid' => $spread_two_uid], 'integral');
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
         $integral_ratio = sys_config('integral_ratio');
@@ -368,6 +373,7 @@ class StoreOrderTakeServices extends BaseServices
             'number' => floatval($brokeragePrice),
             'frozen_time' => $frozenTime
         ], $balance, $orderInfo['id']);
+
         // 添加用户佣金
         $res2 = $userServices->bcInc($spread_two_uid, 'brokerage_price', $brokeragePrice, 'uid');
         $res3 = $userServices->bcInc($spread_two_uid, 'integral', $brokeragePrice, 'uid');

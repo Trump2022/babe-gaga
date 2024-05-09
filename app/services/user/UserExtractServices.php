@@ -370,11 +370,11 @@ class UserExtractServices extends BaseServices
         $data['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
         if ($data['broken_commission'] < 0)
             $data['broken_commission'] = '0';
-        // $data['brokerage_price'] = $user['brokerage_price'];
-        $data['brokerage_price'] = $user['integral'];
+        $data['brokerage_price'] = $user['brokerage_price'];
+        $data['integral'] = $user['integral'];
 
         //可提现gaga币
-        $data['commissionCount'] = bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
+        $data['commissionCount'] = bcsub((string)$data['integral'], (string)$data['broken_commission'], 2);
         if ($data['commissionCount'] < 0)
             $data['commissionCount'] = 0;
         $extractBank = sys_config('user_extract_bank') ?? []; //提现银行
@@ -384,9 +384,8 @@ class UserExtractServices extends BaseServices
         $data['user_extract_price_values'] = sys_config('user_extract_price_values');//提现面额
         $data['withdraw_fee'] = sys_config('withdraw_fee');//提现手续费
         $data['extract_wechat_type'] = sys_config('brokerage_type');//微信提现到账方式
-        $data['withdraw_fee'] = sys_config('withdraw_fee');//提现手续费
         $data['user_extract_min_price'] = sys_config('user_extract_min_price');//最低提现金额(元)
-        $data['integral_ratio'] = sys_config('integral_ratio');//最低提现金额(元)
+        $data['integral_ratio'] = sys_config('integral_ratio');//积分/gaga币折算比例,例如0.1, 1gaga币折合0.1元RMB
         return $data;
     }
 
@@ -408,10 +407,13 @@ class UserExtractServices extends BaseServices
         $data['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
         if ($data['broken_commission'] < 0)
             $data['broken_commission'] = 0;
+
         // $data['brokerage_price'] = $user['brokerage_price'];
-        $data['brokerage_price'] = $user['integral'];//
+        $data['integral'] = $user['integral'];
+
         //可提现佣金
-        $commissionCount = (float)bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
+        // $commissionCount = (float)bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
+        $commissionCount = (float)bcsub((string)$data['integral'], (string)$data['broken_commission'], 2);
         if ($data['money'] > $commissionCount) {
             throw new ValidateException('可提现gaga币不足');
         }
@@ -443,7 +445,8 @@ class UserExtractServices extends BaseServices
             'extract_price' => bcsub((string) ($data['money'] * $ratio), $extract_fee, 2),
             'extract_fee' => $extract_fee,
             'add_time' => time(),
-            'balance' => $user['brokerage_price'],
+            // 'balance' => $user['brokerage_price'],
+            // 'balance' => $integral,
             'status' => 0
         ];
 
@@ -477,15 +480,20 @@ class UserExtractServices extends BaseServices
 
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
-        $res1 = $this->transaction(function () use ($insertData, $data, $uid, $userService, $user, $userBrokerageServices, $mark) {
-            if (!$res1 = $this->dao->save($insertData)) {
+        $res1 = $this->transaction(function () use ($insertData, $data, $uid, $userService, $userBrokerageServices, $mark) {
+            $user = $userService->getUserInfo($uid);
+            $integral = bcsub((string)$user['integral'], (string)$data['money'], 2) ?? 0;
+            $insertData['balance'] = $integral;
+            if ( ! $res1 = $this->dao->save($insertData)) {
                 throw new ValidateException('提现失败');
             }
 
             //修改用户佣金
             // $brokerage_price = bcsub((string)$user['brokerage_price'], (string)$data['money'], 2) ?? 0;
             // $brokerage_price = max($brokerage_price, 0);
-            $integral = bcsub((string)$user['integral'], (string)$data['money'], 2) ?? 0;
+            // $integral = bcsub((string)$user['integral'], (string)$data['money'], 2) ?? 0;
+
+            //改剩余积分/gaga币
             if (!$userService->update($uid, ['integral' => $integral], 'uid')) {
                 throw new ValidateException('修改用户信息失败');
             }

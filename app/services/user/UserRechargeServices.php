@@ -362,7 +362,7 @@ class UserRechargeServices extends BaseServices
     }
 
     /**
-     * 导入佣金到余额
+     * 导入佣金(gaga币)到余额
      * @param int $uid
      * @param $price
      * @return bool
@@ -378,7 +378,8 @@ class UserRechargeServices extends BaseServices
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
         $broken_commission = $userBrokerageServices->getUserFrozenPrice($uid);
-        $commissionCount = bcsub((string)$user['brokerage_price'], (string)$broken_commission, 2);
+        // $commissionCount = bcsub((string)$user['brokerage_price'], (string)$broken_commission, 2);
+        $commissionCount = bcsub((string)$user['integral'], (string)$broken_commission, 2);
         if ($price > $commissionCount) {
             throw new ValidateException('转入金额不能大于可提现佣金！');
         }
@@ -389,7 +390,7 @@ class UserRechargeServices extends BaseServices
 
             $edit_data = [];
             $edit_data['now_money'] = bcadd((string)$user['now_money'], (string) ($price * $ratio), 2);
-            $edit_data['brokerage_price'] = $user['brokerage_price'] > $price ? bcsub((string)$user['brokerage_price'], (string)$price, 2) : 0;
+            // $edit_data['brokerage_price'] = $user['brokerage_price'] > $price ? bcsub((string)$user['brokerage_price'], (string)$price, 2) : 0;
             $edit_data['integral'] = $user['integral'] > $price ? bcsub((string)$user['integral'], (string)$price, 2) : 0;
 
             //修改用户佣金、余额信息
@@ -420,7 +421,8 @@ class UserRechargeServices extends BaseServices
                 'real_name' => $user['nickname'],
                 'extract_type' => 'balance',
                 'extract_price' => $price * $ratio,
-                'balance' => $edit_data['brokerage_price'],
+                // 'balance' => $edit_data['brokerage_price'],
+                'balance' => $edit_data['integral'],
                 'add_time' => time(),
                 'status' => 1
             ];
@@ -433,7 +435,8 @@ class UserRechargeServices extends BaseServices
             //佣金提现记录
             /** @var UserBrokerageServices $userBrokerageServices */
             $userBrokerageServices = app()->make(UserBrokerageServices::class);
-            $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['brokerage_price'], $re['id']);
+            // $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['brokerage_price'], $re['id']);
+            $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['integral'], $re['id']);
         });
     }
 

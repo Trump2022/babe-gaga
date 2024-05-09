@@ -21,7 +21,7 @@ class CapitalFlowServices extends BaseServices
 		3 => '用户充值',
 		4 => '用户充值退款',
 		5 => '抽奖中奖',
-		6 => '佣金提现',
+		6 => 'gaga币提现',
 		7 => '购买会员',
 		8 => '线下支付',
 	];
@@ -88,7 +88,7 @@ class CapitalFlowServices extends BaseServices
         $export = $where['export'] ?? 0;
         unset($where['export']);
         [$page, $limit] = $this->getPageValue();
-        $status = ['未知', '支付订单', '订单退款', '充值订单', '充值退款', '抽奖红包', '佣金提现', '购买会员', '线下收银'];
+        $status = ['未知', '支付订单', '订单退款', '充值订单', '充值退款', '抽奖红包', 'gaga币提现', '购买会员', '线下收银'];
         $pay_type = ['weixin' => '微信支付', 'routine' => '小程序', 'alipay' => '支付宝', 'offline' => '线下支付', 'bank' => '银行'];
         $list = $this->dao->getList($where, '*', $page, $limit);
 		if ($list) {

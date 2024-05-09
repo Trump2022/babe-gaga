@@ -250,8 +250,8 @@ class WechatTemplateListService extends NoticeService
     public function sendUserBalanceChangeFail($uid, $extract_number, $fail_msg)
     {
         return $this->sendTemplate('USER_BALANCE_CHANGE', $uid, [
-            'first' => '提现失败,退回佣金' . $extract_number . 'gaga币',
-            'keyword1' => '佣金提现',
+            'first' => '提现失败,退回' . $extract_number . 'gaga币',
+            'keyword1' => 'gaga币提现',
             'keyword2' => date('Y-m-d H:i:s', time()),
             'keyword3' => $extract_number,
             'remark' => '错误原因:' . $fail_msg
@@ -267,8 +267,8 @@ class WechatTemplateListService extends NoticeService
     public function sendUserBalanceChangeSuccess($uid, $extractNumber)
     {
         return $this->sendTemplate('USER_BALANCE_CHANGE', $uid, [
-            'first' => '成功提现佣金' . $extractNumber . 'gaga币',
-            'keyword1' => '佣金提现',
+            'first' => '成功提现' . $extractNumber . 'gaga币',
+            'keyword1' => 'gaga币提现',
             'keyword2' => date('Y-m-d H:i:s', time()),
             'keyword3' => $extractNumber,
             'remark' => '点击查看我的佣金明细'

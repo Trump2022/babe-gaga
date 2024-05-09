@@ -2216,14 +2216,18 @@ class UserServices extends BaseServices
         if (!$uid || !$spread_uid) {
             return false;
         }
+
         //商城分销功能是否开启 0关闭1开启
         if (!sys_config('brokerage_func_status')) return true;
+
         //获取设置推广佣金单价
         $brokerage_price = sys_config('uni_brokerage_price', 0);
+
         //推广佣金是否开启
         if (!sys_config('brokerage_user_status', 0)) {
             return true;
         }
+
         //获取推广佣金当日限额
         $day_brokerage_price_upper = sys_config('day_brokerage_price_upper', 0);
         if (!floatval($brokerage_price) || !floatval($day_brokerage_price_upper)) {
@@ -2259,7 +2263,8 @@ class UserServices extends BaseServices
                 }
             }
         }
-        $spreadPrice = $spread_user['brokerage_price'];
+        // $spreadPrice = $spread_user['brokerage_price'];
+        $spreadPrice = $spread_user['integral'];
         // 上级推广员返佣之后的金额
         $balance = bcadd($spreadPrice, $brokerage_price, 2);
         return $this->transaction(function () use ($uid, $spread_uid, $brokerage_price, $userInfo, $balance, $userBrokerageServices) {
@@ -2268,9 +2273,11 @@ class UserServices extends BaseServices
                 'nickname' => $userInfo['nickname'],
                 'number' => floatval($brokerage_price)
             ], $balance, $uid);
+
             // 添加用户余额
             $res2 = $this->dao->bcInc($spread_uid, 'brokerage_price', $brokerage_price, 'uid');
             $res3 = $this->dao->bcInc($spread_uid, 'integral', $brokerage_price, 'uid');
+
             //给上级发送获得佣金的模板消息
             /** @var StoreOrderTakeServices $storeOrderTakeServices */
             $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
