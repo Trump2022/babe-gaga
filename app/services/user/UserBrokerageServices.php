@@ -453,6 +453,8 @@ class UserBrokerageServices extends BaseServices
         $data['pm'] = 0;
         $data['commissionRefund'] = $this->getUsersBokerageSum($data);
         $data['commissionCount'] = $data['commissionSum'] > $data['commissionRefund'] ? bcsub((string)$data['commissionSum'], (string)$data['commissionRefund'], 2) : 0.00;
+        if ($data['commissionCount'] < 0)
+            $data['commissionCount'] = 0;
         $data['lastDayCount'] = $this->getUsersBokerageSum($data, 'yesterday');//昨天的佣金
         $data['extractCount'] = $userExtract->getUserExtract($uid);//累计提现金额
 

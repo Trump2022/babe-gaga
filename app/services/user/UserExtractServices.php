@@ -375,6 +375,8 @@ class UserExtractServices extends BaseServices
 
         //可提现gaga币
         $data['commissionCount'] = bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
+        if ($data['commissionCount'] < 0)
+            $data['commissionCount'] = 0;
         $extractBank = sys_config('user_extract_bank') ?? []; //提现银行
         $extractBank = str_replace("\r\n", "\n", $extractBank);//防止不兼容
         $data['extractBank'] = explode("\n", is_array($extractBank) ? (isset($extractBank[0]) ? $extractBank[0] : $extractBank) : $extractBank);
