@@ -61,7 +61,7 @@ class UserBillServices extends BaseServices
             'type' => 'create_community_sub',
             'mark' => '种草图文撤销审核扣除{%num%}gaga币',
             'status' => 1,
-            'pm' => 1
+            'pm' => 0
         ],
         'pay_give_integral' => [
             'title' => '购买商品赠送gaga币',
