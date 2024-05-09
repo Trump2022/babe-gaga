@@ -409,7 +409,7 @@ class UserExtractServices extends BaseServices
         if ($data['broken_commission'] < 0)
             $data['broken_commission'] = 0;
         // $data['brokerage_price'] = $user['brokerage_price'];
-        $data['brokerage_price'] = $user['integral'];
+        $data['brokerage_price'] = $user['integral'];//
         //可提现佣金
         $commissionCount = (float)bcsub((string)$data['brokerage_price'], (string)$data['broken_commission'], 2);
         if ($data['money'] > $commissionCount) {
@@ -440,7 +440,7 @@ class UserExtractServices extends BaseServices
         $insertData = [
             'uid' => $user['uid'],
             'extract_type' => $data['extract_type'],
-            'extract_price' => bcsub((string) ($data['money'] * $ratio), (string)$extract_fee, 2),
+            'extract_price' => bcsub((string) ($data['money'] * $ratio), $extract_fee, 2),
             'extract_fee' => $extract_fee,
             'add_time' => time(),
             'balance' => $user['brokerage_price'],
@@ -483,17 +483,18 @@ class UserExtractServices extends BaseServices
             }
 
             //修改用户佣金
-            $brokerage_price = bcsub((string)$user['brokerage_price'], (string)$data['money'], 2) ?? 0;
-            $brokerage_price = max($brokerage_price, 0);
+            // $brokerage_price = bcsub((string)$user['brokerage_price'], (string)$data['money'], 2) ?? 0;
+            // $brokerage_price = max($brokerage_price, 0);
             $integral = bcsub((string)$user['integral'], (string)$data['money'], 2) ?? 0;
-            if (!$userService->update($uid, ['brokerage_price' => $brokerage_price, 'integral' => $integral], 'uid')) {
+            if (!$userService->update($uid, ['integral' => $integral], 'uid')) {
                 throw new ValidateException('修改用户信息失败');
             }
 
-            //保存佣金记录
+            //保存佣金记录/gaga币提现记录
             $userBrokerageServices->income('extract', $uid, ['mark' => $mark, 'number' => $data['money']], $integral, $res1['id']);
             return $res1;
         });
+
         //用户申请体现事件
         event('user.extract', [$user, $data, $res1]);
         return true;

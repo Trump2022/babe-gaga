@@ -63,7 +63,7 @@ class UserBrokerageServices extends BaseServices
             'pm' => 1
         ],
         'extract' => [
-            'title' => '佣金提现',
+            'title' => 'gaga币提现',
             'type' => 'extract',
             'mark' => '{%mark%},佣金提现{%number%}gaga币',
             'status' => 1,
