@@ -162,6 +162,7 @@ class UserBrokerageServices extends BaseServices
             }, $key);
             $value = array_values($number);
             $data['number'] = $number['number'] ?? 0;
+            $data['amount_received'] = $number['amount_received'] ?? 0;
             $data['frozen_time'] = $number['frozen_time'] ?? 0;
             $data['mark'] = str_replace($key, $value, $data['mark']);
         } else {
