@@ -138,7 +138,7 @@ class AgentLevelServices extends BaseServices
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
         $user['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
         // $user['commissionCount'] = bcsub($user['brokerage_price'], $user['broken_commission'], 2);
-        $user['commissionCount'] = bcsub($user['integral'], $user['broken_commission'], 2);
+        $user['commissionCount'] = bcsub((string)$user['integral'], $user['broken_commission'], 2);
 
         //佣金排行
         $user['position_count'] = $userBrokerageServices->getUserBrokerageRank($uid, 'week');

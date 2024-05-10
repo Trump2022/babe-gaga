@@ -182,7 +182,7 @@ class StoreIntegralOrderServices extends BaseServices
         }
 
         $total_price = bcmul($productInfo['attrInfo']['price'], $num, 2);
-        $total_integral = bcmul($productInfo['attrInfo']['integral'], $num, 2);
+        $total_integral = bcmul((string)$productInfo['attrInfo']['integral'], $num, 2);
         if ($total_integral > $userInfo['integral']) throw new ValidateException('gaga币不足!');
         if ($total_price <= 0) {
             $paid = 1;
@@ -555,7 +555,7 @@ class StoreIntegralOrderServices extends BaseServices
         $data['pay_weixin_open'] = (int)sys_config('pay_weixin_open') ?? 0;//微信支付 1 开启 0 关闭
         $data['ali_pay_status'] = (bool)sys_config('ali_pay_status');//支付包支付 1 开启 0 关闭
         $data['num'] = $num;
-        $data['total_integral'] = bcmul($num, $attrValue['integral'], 0);
+        $data['total_integral'] = bcmul((string)$num, $attrValue['integral'], 0);
         $data['total_price'] = bcmul($num, $attrValue['price'], 2);
         $data['productInfo'] = $productInfo;
         $data['custom_form'] = [];

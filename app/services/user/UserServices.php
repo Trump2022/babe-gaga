@@ -1536,7 +1536,7 @@ class UserServices extends BaseServices
         if ($info['broken_commission'] < 0)
             $info['broken_commission'] = 0;
         // $info['commissionCount'] = bcsub($info['brokerage_price'], $info['broken_commission'], 2);
-        $info['commissionCount'] = bcsub($info['integral'], $info['broken_commission'], 2);
+        $info['commissionCount'] = bcsub((string)$info['integral'], $info['broken_commission'], 2);
         if ($info['commissionCount'] < 0)
             $info['commissionCount'] = 0;
         return $info;
@@ -1635,7 +1635,7 @@ class UserServices extends BaseServices
         if ($user['broken_commission'] < 0)
             $user['broken_commission'] = 0;
         // $user['commissionCount'] = bcsub($user['brokerage_price'], $user['broken_commission'], 2);
-        $user['commissionCount'] = bcsub($user['integral'], $user['broken_commission'], 2);
+        $user['commissionCount'] = bcsub((string)$user['integral'], $user['broken_commission'], 2);
         if ($user['commissionCount'] < 0)
             $user['commissionCount'] = 0;
         //用户等级信息

@@ -91,13 +91,13 @@ class UserServices extends BaseServices
                 /** @var UserBillServices $userBill */
                 $userBill = app()->make(UserBillServices::class);
                 if ($data['integration_status'] == 1) {//增加
-                    $edit['integral'] = bcadd($user['integral'], $data['integration'], 2);
+                    $edit['integral'] = bcadd((string)$user['integral'], $data['integration'], 2);
                     $integral_data['title'] = '系统增加gaga币';
                     $integral_data['mark'] = '系统增加了' . floatval($data['integration']) . 'gaga币';
 					$type = 'system_add';
 					$pm = 1;
                 } else if ($data['integration_status'] == 2) {//减少
-                    $edit['integral'] = bcsub($user['integral'], $data['integration'], 2);
+                    $edit['integral'] = bcsub((string)$user['integral'], $data['integration'], 2);
                     $integral_data['title'] = '系统减少gaga币';
                     $integral_data['mark'] = '系统扣除了' . floatval($data['integration']) . 'gaga币';
 					$type = 'system_sub';
