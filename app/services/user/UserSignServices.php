@@ -207,6 +207,15 @@ class UserSignServices extends BaseServices
         if (!$user) {
             throw new ValidateException('数据不存在');
         }
+
+        /** @var UserBrokerageServices $userBrokerageServices */
+        $userBrokerageServices = app()->make(UserBrokerageServices::class);
+        $user['broken_commission'] = $userBrokerageServices->getUserFrozenPrice($uid);
+        if ($user['broken_commission'] < 0)
+            $user['broken_commission'] = 0;
+        // $user['commissionCount'] = bcsub($user['brokerage_price'], $user['broken_commission'], 2);
+        $user['commissionCount'] = bcsub($user['integral'], (string) $user['broken_commission'], 2);
+
         //是否统计签到
         if ($sign || $all) {
             $user['sum_sgin_day'] = $this->getSignSumDay($user['uid']);
@@ -221,6 +230,7 @@ class UserSignServices extends BaseServices
         [$clear_integral, $clear_time] = $userIntegralServices->getUserClearIntegral($uid, $user);
         $user['clear_integral'] = $clear_integral;
         $user['clear_time'] = $clear_time;
+
         //是否统计gaga币使用情况
         if ($integral || $all) {
             /** @var UserBillServices $userBill */
@@ -229,6 +239,7 @@ class UserSignServices extends BaseServices
             $user['deduction_integral'] = intval($userBill->getRecordCount($user['uid'], 'integral') ?? 0);
             $user['today_integral'] = intval($userBill->getRecordCount($user['uid'], 'integral', '', 'today', true));
         }
+
         unset($user['pwd']);
         if (!$user['is_promoter']) {
             $user['is_promoter'] = (int)sys_config('store_brokerage_statu') == 2;
