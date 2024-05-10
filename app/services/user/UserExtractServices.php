@@ -519,7 +519,7 @@ class UserExtractServices extends BaseServices
             }
 
             //保存佣金记录/gaga币提现记录
-            $userBrokerageServices->income('extract', $uid, ['mark' => $mark, 'number' => $data['money'], 'amount_received' => $insertData['amount_received']], $integral, $res1['id']);
+            $userBrokerageServices->income('extract', $uid, ['mark' => $mark, 'number' => $data['money'], 'amount_received' => $insertData['extract_price']], $integral, $res1['id']);
             return $res1;
         });
 
