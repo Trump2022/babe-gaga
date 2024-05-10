@@ -305,6 +305,7 @@ class StoreOrderTakeServices extends BaseServices
         $res2 = $userServices->bcInc($one_spread_uid, 'brokerage_price', $brokeragePrice, 'uid');
         $res3 = $userServices->bcInc($one_spread_uid, 'integral', $brokeragePrice, 'uid');//积分/gaga币
 
+        $userInfo = $userServices->getUserInfo($one_spread_uid);
         /** @var UserBillServices $userBillServices */
         $userBillServices = app()->make(UserBillServices::class);
         $userBillServices->income('one_spread_give_brokerage', $one_spread_uid, $brokeragePrice, $userInfo['integral'], (int) $orderInfo['id']);
@@ -382,6 +383,12 @@ class StoreOrderTakeServices extends BaseServices
         // 添加用户佣金
         $res2 = $userServices->bcInc($spread_two_uid, 'brokerage_price', $brokeragePrice, 'uid');
         $res3 = $userServices->bcInc($spread_two_uid, 'integral', $brokeragePrice, 'uid');
+
+        $userInfo = $userServices->getUserInfo($spread_two_uid);
+        /** @var UserBillServices $userBillServices */
+        $userBillServices = app()->make(UserBillServices::class);
+        $userBillServices->income('two_spread_give_brokerage', $spread_two_uid, $brokeragePrice, $userInfo['integral'], (int) $orderInfo['id']);
+
         //给上级发送获得佣金的模板消息
         $this->sendBackOrderBrokerage($orderInfo, $spread_two_uid, $brokeragePrice);
         return $res1 && $res2 && $res3;

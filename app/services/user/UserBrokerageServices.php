@@ -267,6 +267,7 @@ class UserBrokerageServices extends BaseServices
         if ($order_string) {
             $order_string = trim($order_string, ',');
         }
+
         /** @var UserUserBrokerageServices $userUserBrokerage */
         $userUserBrokerage = app()->make(UserUserBrokerageServices::class);
         [$count, $list] = $userUserBrokerage->getBrokerageList($where_data, 'b.type,b.pm,sum(IF(b.pm = 1, b.number, 0)) as income,sum(IF(b.pm = 0, b.number, 0)) as pay,u.nickname,u.phone,u.uid,u.now_money,u.brokerage_price,u.delete_time,b.add_time as time', $order_string, $limit);
@@ -350,6 +351,9 @@ class UserBrokerageServices extends BaseServices
             $brokerages = $userServices->getColumn([['uid', 'in', array_column($brokerageList, 'uid')]], 'brokerage_price', 'uid');
             $brokerageData = [];
 
+            /** @var UserBillServices $userBillServices */
+            $userBillServices = app()->make(UserBillServices::class);
+
             foreach ($brokerageList as $item) {
                 if (!$item['uid'] || $item['uid'] <= 0) continue;
                 $usermoney = $brokerages[$item['uid']] ?? 0;
@@ -359,7 +363,19 @@ class UserBrokerageServices extends BaseServices
                 if ($item['number'] <= 0) continue;
                 $res = $res && $userServices->bcDec($item['uid'], 'brokerage_price', (string)$item['number'], 'uid');
                 $res = $res && $userServices->bcDec($item['uid'], 'integral', (string)$item['number'], 'uid');
-                $brokerageData[] = [
+                // $brokerageData[] = [
+                //     'title' => '退款退佣金',
+                //     'uid' => $item['uid'],
+                //     'pm' => 0,
+                //     'add_time' => time(),
+                //     'type' => 'refund',
+                //     'number' => $item['number'],
+                //     'link_id' => $id,
+                //     'balance' => bcsub((string)$usermoney, (string)$item['number'], 2),
+                //     'mark' => '订单退款扣除佣金' . floatval($item['number']) . 'gaga币'
+                // ];
+
+                $brokerageRow = [
                     'title' => '退款退佣金',
                     'uid' => $item['uid'],
                     'pm' => 0,
@@ -370,10 +386,16 @@ class UserBrokerageServices extends BaseServices
                     'balance' => bcsub((string)$usermoney, (string)$item['number'], 2),
                     'mark' => '订单退款扣除佣金' . floatval($item['number']) . 'gaga币'
                 ];
+                $this->dao->save($brokerageRow);
+
+                $userInfo = $userServices->getUserInfo($item['uid']);
+                $userBillServices->income('spread_brokerage_refund', $item['uid'], $item['number'], $userInfo['integral'], $id);
             }
-            if ($brokerageData) {
-                $res = $res && $this->dao->saveAll($brokerageData);
-            }
+
+            // if ($brokerageData) {
+            //     $res = $res && $this->dao->saveAll($brokerageData);
+            // }
+
             //修改佣金冻结时间
             $this->dao->update($where, ['frozen_time' => 0]);
         }

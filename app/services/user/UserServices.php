@@ -2213,6 +2213,7 @@ class UserServices extends BaseServices
 
     /**
      * 增加推广用户佣金
+     *
      * @param int $uid
      * @param int $spread_uid
      * @param array $userInfo
@@ -2288,6 +2289,14 @@ class UserServices extends BaseServices
             // 添加用户余额
             $res2 = $this->dao->bcInc($spread_uid, 'brokerage_price', $brokerage_price, 'uid');
             $res3 = $this->dao->bcInc($spread_uid, 'integral', $brokerage_price, 'uid');
+
+            /** @var UserServices $userServices */
+            $userServices = app()->make(UserServices::class);
+
+            $userInfo = $userServices->getUserInfo($spread_uid);
+            /** @var UserBillServices $userBillServices */
+            $userBillServices = app()->make(UserBillServices::class);
+            $userBillServices->income('spread_give_brokerage', $spread_uid, floatval($brokerage_price), $userInfo['integral'], $uid);
 
             //给上级发送获得佣金的模板消息
             /** @var StoreOrderTakeServices $storeOrderTakeServices */
