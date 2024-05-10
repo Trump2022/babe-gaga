@@ -255,6 +255,22 @@ class UserDao extends BaseDao
     }
 
     /**
+     * 用户某个字段总和
+     *
+     * @param string $field
+     * @return float
+     */
+    public function getSumField(string $field = ''): float
+    {
+        return $this->getModel()->where('status=1 and delete_time is null')->sum($field);
+    }
+
+    public function getSumIntegral(string $filed = '')
+    {
+        $this->getModel()->where('status=1 and delete_time is null')->sum($filed);
+    }
+
+    /**
      * 根据条件查询对应的用户信息以数组形式返回
      * @param array $where
      * @param string $field

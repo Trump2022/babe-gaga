@@ -121,6 +121,18 @@ class UserBrokerageDao extends BaseDao
     }
 
     /**
+     * 获取所有用户冻结的佣金总额
+     *
+     * @return float
+     */
+    public function getAllUserFrozenPriceSum(): float
+    {
+        return $this->search(['status' => 1, 'pm' => 1])->where('frozen_time', '>', time())->where('uid', 'in', function ($query) {
+            $query->name('user')->field('uid')->where('status=1 and delete_time is null')->select();
+        })->sum('number');
+    }
+
+    /**
      * 获取某个条件总数
      * @param array $where
      */

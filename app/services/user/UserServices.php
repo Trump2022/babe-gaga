@@ -224,6 +224,17 @@ class UserServices extends BaseServices
     }
 
     /**
+     * 用户某个字段总和
+     *
+     * @param string $field
+     * @return float
+     */
+    public function getSumField(string $field = 'integral'): float
+    {
+        return $this->dao->getSumField($field);
+    }
+
+    /**
      * 根据条件获取用户指定字段列表
      * @param array $where
      * @param string $field

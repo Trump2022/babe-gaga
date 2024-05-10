@@ -241,4 +241,16 @@ class UserIntegralServices extends BaseServices
 		$userServices->update($uid, ['integral' => $balance]);
 		return true;
 	}
+
+    /**
+     * 所有用户剩余积分/gaga币
+     *
+     * @return float
+     */
+    public function getAllUserIntegralSum(): float
+    {
+        /** @var UserServices $userServices */
+        $userServices = app()->make(UserServices::class);
+        return $userServices->getSumField('integral');
+    }
 }

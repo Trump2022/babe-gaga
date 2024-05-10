@@ -16,6 +16,7 @@ use app\jobs\system\CapitalFlowJob;
 use app\services\BaseServices;
 use app\dao\user\UserExtractDao;
 use app\services\order\StoreOrderCreateServices;
+use app\services\user\UserIntegralServices;
 use app\services\wechat\WechatUserServices;
 use crmeb\exceptions\AdminException;
 use crmeb\services\wechat\Payment;
@@ -247,15 +248,33 @@ class UserExtractServices extends BaseServices
         //待提现金额
         $where['status'] = 0;
         $extract_statistics['price'] = $this->getExtractSum($where);
+
         //已提现金额
         $where['status'] = 1;
         $extract_statistics['priced'] = $this->getExtractSum($where);
+
         //佣金总金额
         /** @var UserBrokerageServices $userBrokerageServices */
         $userBrokerageServices = app()->make(UserBrokerageServices::class);
-        $extract_statistics['brokerage_count'] = $userBrokerageServices->getUsersBokerageSum(array_merge($where, ['pm' => 1, 'not_type' => ['extract_fail', 'refund']]));
+
+        //所有用户获得的佣金总和
+        // $extract_statistics['brokerage_count'] = $userBrokerageServices->getUsersBokerageSum(array_merge($where, ['pm' => 1, 'not_type' => ['extract_fail', 'refund']]));
+        $extract_statistics['brokerage_count'] = $userBrokerageServices->getUsersBokerageSum(array_merge($where, ['not_type' => ['extract', 'extract_money', 'extract_fail']]));
+
+        //所有用户冻结的佣金总和
+        $extract_statistics['broken_commission'] = $userBrokerageServices->getAllUserFrozenPriceSum();
+
+        //所有用户剩余gaga币
+        /** @var UserIntegralServices $userIntegralServices */
+        $userIntegralServices = app()->make(UserIntegralServices::class);
+        $extract_statistics['integral_sum'] = $userIntegralServices->getAllUserIntegralSum();
+
+        //可体现gaga币
+        $extract_statistics['commissionCount'] = $extract_statistics['integral_sum'] - $extract_statistics['broken_commission'];
+        $extract_statistics['commissionCount'] = max($extract_statistics['commissionCount'], 0);
+
         //未提现金额
-        $extract_statistics['brokerage_not'] = $extract_statistics['brokerage_count'] > $extract_statistics['priced'] ? bcsub((string)$extract_statistics['brokerage_count'], (string)$extract_statistics['priced'], 2) : 0.00;
+        //$extract_statistics['brokerage_not'] = $extract_statistics['brokerage_count'] > $extract_statistics['priced'] ? bcsub((string)$extract_statistics['brokerage_count'], (string)$extract_statistics['priced'], 2) : 0.00;
         return compact('extract_statistics', 'list');
     }
 

@@ -83,7 +83,7 @@ class UserBrokerageServices extends BaseServices
             'status' => 1,
             'pm' => 0
         ],
-        'brokerage_refund' => [
+        'refund' => [
             'title' => '退款退佣金',
             'type' => 'refund',
             'mark' => '订单退款扣除佣金{%num%}gaga币',
@@ -119,6 +119,16 @@ class UserBrokerageServices extends BaseServices
         ];
         if ($time) $where_data['time'] = $time;
         return $this->dao->getBrokerageSumColumn($where_data);
+    }
+
+    /**
+     * 获取所有用户冻结的佣金总额
+     *
+     * @return float
+     */
+    public function getAllUserFrozenPriceSum(): float
+    {
+        return $this->dao->getAllUserFrozenPriceSum();
     }
 
     /**
