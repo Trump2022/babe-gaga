@@ -47,6 +47,22 @@ class UserBillServices extends BaseServices
      * @var array[]
      */
     protected $incomeData = [
+        'one_spread_give_brokerage' => [
+            'title' => '一级返佣获得gaga币',
+            'category' => 'integral',
+            'type' => 'one_spread_add',
+            'mark' => '一级返佣获得{%num%}gaga币',
+            'status' => 1,
+            'pm' => 1
+        ],
+        'one_spread_brokerage_refund' => [
+            'title' => '扣除一级返佣gaga币',
+            'category' => 'integral',
+            'type' => 'one_spread_add',
+            'mark' => '扣除一级返佣{%num%}gaga币',
+            'status' => 1,
+            'pm' => 0
+        ],
         'create_community_give_integral' => [
             'title' => '种草图文获得积分(gaga币)',
             'category' => 'integral',

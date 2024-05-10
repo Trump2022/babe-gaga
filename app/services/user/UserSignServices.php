@@ -214,7 +214,7 @@ class UserSignServices extends BaseServices
         if ($user['broken_commission'] < 0)
             $user['broken_commission'] = 0;
         // $user['commissionCount'] = bcsub($user['brokerage_price'], $user['broken_commission'], 2);
-        $user['commissionCount'] = bcsub($user['integral'], (string) $user['broken_commission'], 2);
+        $user['commissionCount'] = bcsub((string) $user['integral'], (string) $user['broken_commission'], 2);
 
         //是否统计签到
         if ($sign || $all) {

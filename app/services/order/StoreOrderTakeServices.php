@@ -299,11 +299,16 @@ class StoreOrderTakeServices extends BaseServices
             'pay_price' => floatval($orderInfo['pay_price']),
             'number' => floatval($brokeragePrice),
             'frozen_time' => $frozen_time
-        ], $balance, $orderInfo['id']);
+        ], $balance, (int) $orderInfo['id']);
 
         // 添加用户佣金
         $res2 = $userServices->bcInc($one_spread_uid, 'brokerage_price', $brokeragePrice, 'uid');
         $res3 = $userServices->bcInc($one_spread_uid, 'integral', $brokeragePrice, 'uid');//积分/gaga币
+
+        /** @var UserBillServices $userBillServices */
+        $userBillServices = app()->make(UserBillServices::class);
+        $userBillServices->income('one_spread_give_brokerage', $one_spread_uid, $brokeragePrice, $userInfo['integral'], (int) $orderInfo['id']);
+
         //给上级发送获得佣金的模板消息
         $this->sendBackOrderBrokerage($orderInfo, $one_spread_uid, $brokeragePrice);
         // 一级返佣成功 跳转二级返佣
@@ -372,7 +377,7 @@ class StoreOrderTakeServices extends BaseServices
             'pay_price' => floatval($orderInfo['pay_price']),
             'number' => floatval($brokeragePrice),
             'frozen_time' => $frozenTime
-        ], $balance, $orderInfo['id']);
+        ], $balance, (int) $orderInfo['id']);
 
         // 添加用户佣金
         $res2 = $userServices->bcInc($spread_two_uid, 'brokerage_price', $brokeragePrice, 'uid');

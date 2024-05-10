@@ -435,8 +435,8 @@ class UserRechargeServices extends BaseServices
             //佣金提现记录
             /** @var UserBrokerageServices $userBrokerageServices */
             $userBrokerageServices = app()->make(UserBrokerageServices::class);
-            // $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['brokerage_price'], $re['id']);
-            $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['integral'], $re['id']);
+            // $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['brokerage_price'], (int) $re['id']);
+            $userBrokerageServices->income('brokerage_to_nowMoney', $uid, $price, $edit_data['integral'], (int) $re['id']);
         });
     }
 
