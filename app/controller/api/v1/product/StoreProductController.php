@@ -162,12 +162,12 @@ class StoreProductController
                     if ($url === false)
                         return app('json')->fail('二维码生成失败');
                     else {
-//                        $codeTmp = $code = $url ? image_to_base64($url) : false;
-//                        if (!$codeTmp) {
-//                            $putCodeUrl = put_image($url);
-//                            $code = $putCodeUrl ? image_to_base64(app()->request->domain(true) . '/' . $putCodeUrl) : false;
-//                            $code ?? unlink(public_path() . $putCodeUrl);
-//                        }
+                        // $codeTmp = $code = $url ? image_to_base64($url) : false;
+                        // if (!$codeTmp) {
+                        //     $putCodeUrl = put_image($url);
+                        //     $code = $putCodeUrl ? image_to_base64(app()->request->domain(true) . '/' . $putCodeUrl) : false;
+                        //         $code ?? unlink(public_path() . $putCodeUrl);
+                        // }
                         return app('json')->successful(['code' => $url]);
                     }
                     break;

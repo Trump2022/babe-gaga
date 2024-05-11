@@ -169,7 +169,7 @@ class MiniProgram extends BaseApplication
         if (!$optional['width']) {
             unset($optional['width']);
         }
-        //$optional['env_version'] = 'trial';
+        $optional['env_version'] = 'trial';//For Test,临时测试
         $response = self::qrcodeService()->getUnlimit($scene, $optional);
 
         self::logger('获取小程序码', compact('scene', 'optional'), $response);
