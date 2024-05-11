@@ -570,7 +570,7 @@ class UserBrokerageServices extends BaseServices
             $where['time'] = [$data['start'], $data['stop']];
         }
         $where['real_name'] = $data['keyword'];
-        $list = $storeOrderServices->getList($where, ['id,order_id,uid,add_time,spread_uid,status,spread_two_uid,one_brokerage,two_brokerage,pay_price,cart_id'], $page, $limit, ['brokerage' => function ($query) use ($uid) {
+        $list = $storeOrderServices->getList($where, ['id,order_id,uid,add_time,spread_uid,status,spread_two_uid,one_brokerage,one_brokerage_gaga,two_brokerage,two_brokerage_gaga,pay_price,cart_id'], $page, $limit, ['brokerage' => function ($query) use ($uid) {
             $query->where('uid', $uid);
         }]);
         $result['count'] = $storeOrderServices->count($where);
@@ -609,9 +609,13 @@ class UserBrokerageServices extends BaseServices
         if ($data['start'] || $data['stop']) {
             $priceWhere['time'] = [$data['start'], $data['stop']];
         }
+
         //条件获取一级佣金总和
-        $sum_price_one = $storeOrderServices->sum($priceWhere + ['spread_uid' => $uid], 'one_brokerage', true);
-        $sum_price_two = $storeOrderServices->sum($priceWhere + ['spread_two_uid' => $uid], 'two_brokerage', true);
+        // $sum_price_one = $storeOrderServices->sum($priceWhere + ['spread_uid' => $uid], 'one_brokerage', true);
+        // $sum_price_two = $storeOrderServices->sum($priceWhere + ['spread_two_uid' => $uid], 'two_brokerage', true);
+
+        $sum_price_one = $storeOrderServices->sum($priceWhere + ['spread_uid' => $uid], 'one_brokerage_gaga', true);
+        $sum_price_two = $storeOrderServices->sum($priceWhere + ['spread_two_uid' => $uid], 'two_brokerage_gaga', true);
         $result['sum_brokerage'] = bcadd((string)$sum_price_one, (string)$sum_price_two, 2);
 
 
