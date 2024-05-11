@@ -356,6 +356,8 @@ class StoreOrderCreateServices extends BaseServices
         //扣除优惠活动赠品限量
         StorePromotionsJob::dispatchDo('changeGiveLimit', [$promotions_give]);
 
+        \think\facade\Log::write('AAATest|||create');
+
         //订单创建事件
         event('order.create', [$order, $userInfo, compact('cartInfo', 'priceData', 'addressId', 'cartIds', 'news'), compact('type', 'activity_id'), $invoice_id]);
         return $order;
