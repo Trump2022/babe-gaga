@@ -479,8 +479,8 @@ class UserBillServices extends BaseServices
         if ($where_time) $where['add_time'] = $where_time;
         $list = $this->dao->getList($where, $field, $page, $limit);
         foreach ($list as &$item) {
-            $item['number'] = intval($item['number']);
-			$item['balance'] = intval($item['balance']);
+            // $item['number'] = intval($item['number']);
+			// $item['balance'] = intval($item['balance']);
         }
         $count = $this->dao->count($where);
         return compact('list', 'count');
