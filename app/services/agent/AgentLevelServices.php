@@ -259,10 +259,11 @@ class AgentLevelServices extends BaseServices
         }
         /** @var UserServices $userServices */
         $userServices = app()->make(UserServices::class);
-        if (!$userInfo) {
-            // $userInfo = $userServices->getUserCacheInfo($uid);
-            $userInfo = $userServices->getUserInfo($uid);
-        }
+        // if (!$userInfo) {
+        //     $userInfo = $userServices->getUserCacheInfo($uid);
+        //     $userInfo = $userServices->getUserInfo($uid);
+        // }
+        $userInfo = $userServices->getUserInfo($uid);
         if (!$userInfo) {
             return $data;
         }

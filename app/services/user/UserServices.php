@@ -2245,9 +2245,10 @@ class UserServices extends BaseServices
         if (!floatval($brokerage_price) || !floatval($day_brokerage_price_upper)) {
             return true;
         }
-        if (!$userInfo) {
-            $userInfo = $this->getUserInfo($uid);
-        }
+        // if (!$userInfo) {
+        //     $userInfo = $this->getUserInfo($uid);
+        // }
+        $userInfo = $this->getUserInfo($uid);
         if (!$userInfo) {
             return false;
         }
