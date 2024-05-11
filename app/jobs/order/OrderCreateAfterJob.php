@@ -95,13 +95,12 @@ class OrderCreateAfterJob extends BaseJobs
             //     }
             //     \think\facade\Log::write('AAATest|||bbb|||'.$spread_uid);
             // }
-            if ($spread_ids ) {
+            if ($spread_ids && ($spread_ids[0] ?? 0)) {
                 [$spread_uid, $spread_two_uid] = $spread_ids;
-                if ( ! $spread_uid) {
-                    $spread_uid = $userServices->getSpreadUid($uid);
-                    if ($spread_uid > 0 && sys_config('brokerage_level', 2) == 2) {
-                        $spread_two_uid = $userServices->getSpreadUid($spread_uid, [], false);
-                    }
+            } else {
+                $spread_uid = $userServices->getSpreadUid($uid);
+                if ($spread_uid > 0 && sys_config('brokerage_level', 2) == 2) {
+                    $spread_two_uid = $userServices->getSpreadUid($spread_uid, [], false);
                 }
             }
             \think\facade\Log::write('AAATest|||aaa|||'.$spread_uid.'|||'.$uid);
