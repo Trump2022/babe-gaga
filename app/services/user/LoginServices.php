@@ -140,13 +140,14 @@ class LoginServices extends BaseServices
                 }
             }
         }
+
         if (!$this->dao->update($userInfo['uid'], $data, 'uid')) {
             throw new ValidateException('修改信息失败');
         }
         if (isset($data['spread_uid']) && $data['spread_uid']) {
             event('user.register', [$this->dao->get((int)$userInfo['uid']), false, $spread_uid]);
             //推送消息
-//            event('notice.notice', [['spreadUid' => $spreadUid, 'user_type' => $userInfo['user_type'], 'nickname' => $userInfo['nickname']], 'bind_spread_uid']);
+            // event('notice.notice', [['spreadUid' => $spreadUid, 'user_type' => $userInfo['user_type'], 'nickname' => $userInfo['nickname']], 'bind_spread_uid']);
         }
 
         return true;
