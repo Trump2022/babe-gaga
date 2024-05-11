@@ -73,10 +73,13 @@ class Create implements ListenerInterface
         if ($uid && $orderInfo['store_id']) {
             StoreUserJob::dispatch([$uid, $orderInfo['store_id']]);
         }
+
         //下单记录
         ProductLogJob::dispatch(['order', ['uid' => $uid, 'order_id' => $orderId]]);
+
 		//修改用户首单优惠状态
 		UserJob::dispatchDo('updateUserNewcomer', [$uid, $orderInfo]);
+
 		//收集系统表单数据
 		if (isset($orderInfo['custom_form']) && $orderInfo['custom_form']) {
 			$orderInfo['system_form_id'] = $cartInfo[0]['productInfo']['system_form_id'] ?? 0;
