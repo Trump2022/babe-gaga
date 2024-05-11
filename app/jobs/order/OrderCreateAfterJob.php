@@ -85,16 +85,27 @@ class OrderCreateAfterJob extends BaseJobs
             $orderData = [];
             /** @var UserServices $userServices */
             $userServices = app()->make(UserServices::class);
-            if ($spread_ids) {
+            // if ($spread_ids ) {
+            //     [$spread_uid, $spread_two_uid] = $spread_ids;
+            //     \think\facade\Log::write('AAATest|||aaa|||'.$spread_uid);
+            // } else {
+            //     $spread_uid = $userServices->getSpreadUid($uid);
+            //     if ($spread_uid > 0 && sys_config('brokerage_level', 2) == 2) {
+            //         $spread_two_uid = $userServices->getSpreadUid($spread_uid, [], false);
+            //     }
+            //     \think\facade\Log::write('AAATest|||bbb|||'.$spread_uid);
+            // }
+            if ($spread_ids ) {
                 [$spread_uid, $spread_two_uid] = $spread_ids;
-                \think\facade\Log::write('AAATest|||aaa|||'.$spread_uid);
-            } else {
-                $spread_uid = $userServices->getSpreadUid($uid);
-                if ($spread_uid > 0 && sys_config('brokerage_level', 2) == 2) {
-                    $spread_two_uid = $userServices->getSpreadUid($spread_uid, [], false);
+                if ( ! $spread_uid) {
+                    $spread_uid = $userServices->getSpreadUid($uid);
+                    if ($spread_uid > 0 && sys_config('brokerage_level', 2) == 2) {
+                        $spread_two_uid = $userServices->getSpreadUid($spread_uid, [], false);
+                    }
                 }
-                \think\facade\Log::write('AAATest|||bbb|||'.$spread_uid);
             }
+            \think\facade\Log::write('AAATest|||aaa|||'.$spread_uid.'|||'.$uid);
+
 			if ($spread_uid > 0) {
 				$orderData['spread_uid'] = $spread_uid;
 			}

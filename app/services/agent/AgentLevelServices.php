@@ -257,6 +257,7 @@ class AgentLevelServices extends BaseServices
         if (!sys_config('brokerage_func_status')) {
             return $data;
         }
+
         /** @var UserServices $userServices */
         $userServices = app()->make(UserServices::class);
         // if (!$userInfo) {

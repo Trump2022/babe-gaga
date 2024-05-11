@@ -2319,12 +2319,14 @@ class UserServices extends BaseServices
         if (!$uid) {
             return 0;
         }
+
         //商城分销功能是否开启 0关闭1开启
         if (!sys_config('brokerage_func_status')) return -1;
-        if (!$userInfo) {
-            // $userInfo = $this->getUserCacheInfo($uid);
-            $userInfo = $this->getUserInfo($uid);
-        }
+        // if (!$userInfo) {
+        //     $userInfo = $this->getUserCacheInfo($uid);
+        //     $userInfo = $this->getUserInfo($uid);
+        // }
+        $userInfo = $this->getUserInfo($uid);
         if (!$userInfo) {
             return 0;
         }

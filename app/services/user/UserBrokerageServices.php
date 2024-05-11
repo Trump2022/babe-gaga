@@ -583,7 +583,7 @@ class UserBrokerageServices extends BaseServices
                 $item['store_name'] = $cartInfoServices->getCarIdByProductTitle((int)$item['id']);
                 $item['avatar'] = $userInfos[$item['uid']]['avatar'] ?? '';
                 $item['nickname'] = $userInfos[$item['uid']]['nickname'] ?? '';
-                $item['number'] = $item['spread_uid'] == $uid ? $item['one_brokerage'] : $item['two_brokerage'];
+                $item['number'] = $item['spread_uid'] == $uid ? $item['one_brokerage_gaga'] : $item['two_brokerage_gaga'];
                 $item['time_key'] = $item['add_time'] ? date('Y-m', $item['add_time']) : '';
                 $item['type'] = in_array($item['status'], [2, 3]) ? 'brokerage' : 'number';
                 $brokerage = $item['brokerage'];
