@@ -47,8 +47,10 @@ class Create implements ListenerInterface
 
         //计算订单实际金额
         OrderCreateAfterJob::dispatchDo('compute', [$userInfo, $orderInfo, $group, $activity]);
+
 		//设置默认地址，清理购物车
 		OrderCreateAfterJob::dispatchDo('delCartAndUpdateAddres', [$orderInfo, $group]);
+
 		//清理订单确认生成缓存
 		OrderCreateAfterJob::dispatchDo('delOrderCache', [$uid, $orderInfo['unique']], 120);
 

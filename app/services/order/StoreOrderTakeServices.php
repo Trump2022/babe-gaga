@@ -332,6 +332,7 @@ class StoreOrderTakeServices extends BaseServices
         if (isset($orderInfo['spread_two_uid']) && $orderInfo['spread_two_uid'] == -1) {
             return true;
         }
+
         /** @var UserServices $userServices */
         $userServices = app()->make(UserServices::class);
         if (isset($orderInfo['spread_two_uid']) && $orderInfo['spread_two_uid']) {

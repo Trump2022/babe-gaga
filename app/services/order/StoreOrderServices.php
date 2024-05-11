@@ -285,7 +285,7 @@ class StoreOrderServices extends BaseServices
         $data['order_count'] = (string)$this->dao->count($where);
         $where = $where + ['paid' => 1];
         $data['sum_price'] = (string)$this->dao->sum($where, 'pay_price', true);
-//        $countWhere = $store_id != -1 ? ['pid' => 0, 'store_id' => $store_id] : ['pid' => 0];
+        // $countWhere = $store_id != -1 ? ['pid' => 0, 'store_id' => $store_id] : ['pid' => 0];
         if ($uid) {
             $countWhere['uid'] = $uid;
         }

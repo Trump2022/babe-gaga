@@ -351,9 +351,11 @@ class StoreOrderCreateServices extends BaseServices
         }
 
         //保存购物车商品信息
-//        StoreCartJob::dispatch([$order['id'], $cartInfo, $uid, $promotions_give['promotions'] ?? []]);
+        // StoreCartJob::dispatch([$order['id'], $cartInfo, $uid, $promotions_give['promotions'] ?? []]);
+
         //扣除优惠活动赠品限量
         StorePromotionsJob::dispatchDo('changeGiveLimit', [$promotions_give]);
+
         //订单创建事件
         event('order.create', [$order, $userInfo, compact('cartInfo', 'priceData', 'addressId', 'cartIds', 'news'), compact('type', 'activity_id'), $invoice_id]);
         return $order;
@@ -518,9 +520,11 @@ class StoreOrderCreateServices extends BaseServices
             if (isset($promotionsGice['promotions']) && $promotionsGice['promotions']) {
                 $promotions = $promotionsGice['promotions'];
             }
+
             //$cartInfo = $this->computeOrderProductCoupon($cartInfo, $priceData, $promotions);
             $cartInfo = $this->computeOrderProductIntegral($cartInfo, $priceData);
-//            $cartInfo = $this->computeOrderProductPostage($cartInfo, $priceData);
+
+            // $cartInfo = $this->computeOrderProductPostage($cartInfo, $priceData);
             $cartInfo = $this->computeOrderProductFirstDiscount($cartInfo, $priceData);
         } catch (\Throwable $e) {
             Log::error('订单商品结算失败,File：' . $e->getFile() . ',Line：' . $e->getLine() . ',Message：' . $e->getMessage());

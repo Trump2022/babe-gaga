@@ -370,6 +370,7 @@ Route::group('api', function () {
         Route::get('combination/pink/:id', 'v1.activity.StoreCombinationController/pink')->name('combinationPink');//拼团开团
         Route::post('combination/remove', 'v1.activity.StoreCombinationController/remove')->name('combinationRemove');//拼团 取消开团
         Route::get('combination/poster_info/:id', 'v1.activity.StoreCombinationController/posterInfo')->name('pinkPosterInfo');//拼团海报详细获取
+
         //账单类
         Route::get('commission', 'v1.user.UserBrokerageController/commission')->name('commission');//推广数据 昨天的佣金 累计提现金额 当前佣金
         Route::post('spread/people', 'v1.user.UserController/spread_people')->name('spreadPeople');//推荐用户
@@ -379,14 +380,17 @@ Route::group('api', function () {
         Route::get('integral/list', 'v1.user.UserBillController/integral_list')->name('integralList');//gaga币记录
         Route::get('user/routine_code', 'v1.user.UserBillController/getRoutineCode')->name('getRoutineCode');//小程序二维码
         Route::get('user/spread_info', 'v1.user.UserBillController/getSpreadInfo')->name('getSpreadInfo');//获取分销背景等信息
+
         //提现类
         Route::get('extract/bank', 'v1.user.UserExtractController/bank')->name('extractBank');//提现银行/提现最低金额
         Route::post('extract/cash', 'v1.user.UserExtractController/cash')->name('extractCash');//提现申请
+
         //充值类
         Route::post('recharge/recharge', 'v1.user.UserRechargeController/recharge')->name('rechargeRecharge');//统一充值
         Route::post('recharge/routine', 'v1.user.UserRechargeController/routine')->name('rechargeRoutine');//小程序充值
         Route::post('recharge/wechat', 'v1.user.UserRechargeController/wechat')->name('rechargeWechat');//公众号充值
         Route::get('recharge/index', 'v1.user.UserRechargeController/index')->name('rechargeQuota');//充值余额选择
+
         //会员等级类
         Route::get('user/level/detection', 'v1.user.UserLevelController/detection')->name('userLevelDetection');//检测用户是否可以成为会员
         Route::get('user/level/grade', 'v1.user.UserLevelController/grade')->name('userLevelGrade');//会员等级列表
@@ -412,6 +416,7 @@ Route::group('api', function () {
         Route::post('order/offline/check/price', 'v1.order.OtherOrderController/computed_offline_pay_price')->name('orderOfflineCheckPrice'); //检测线下付款金额
         Route::post('order/offline/create', 'v1.order.OtherOrderController/create')->name('orderOfflineCreate'); //检测线下付款金额
         Route::get('order/offline/pay/type', 'v1.order.OtherOrderController/pay_type')->name('orderOfflineCreate'); //线下付款支付方式
+
         //gaga币商城订单
         Route::post('store_integral/order/confirm', 'v1.activity.StoreIntegralOrderController/confirm')->name('storeIntegralOrderConfirm'); //订单确认
         Route::post('store_integral/order/create', 'v1.activity.StoreIntegralOrderController/create')->name('storeIntegralOrderCreate'); //订单创建
@@ -420,6 +425,7 @@ Route::group('api', function () {
         Route::post('store_integral/order/take', 'v1.activity.StoreIntegralOrderController/take')->name('storeIntegralOrderTake'); //订单收货
         Route::get('store_integral/order/express/:uni', 'v1.activity.StoreIntegralOrderController/express')->name('storeIntegralOrderExpress'); //订单查看物流
         Route::post('store_integral/order/del', 'v1.activity.StoreIntegralOrderController/del')->name('storeIntegralOrderDel'); //订单删除
+
         //消息站内信
         Route::get('user/message_system/list', 'v1.user.MessageSystemController/message_list')->name('MessageSystemList'); //站内信列表
         Route::get('user/message_system/detail/:id', 'v1.user.MessageSystemController/detail')->name('MessageSystemDetail'); //详情
