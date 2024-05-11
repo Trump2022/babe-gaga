@@ -252,6 +252,7 @@ class AgentLevelServices extends BaseServices
         if (!$uid) {
             return $data;
         }
+
         //商城分销是否开启
         if (!sys_config('brokerage_func_status')) {
             return $data;
@@ -259,7 +260,8 @@ class AgentLevelServices extends BaseServices
         /** @var UserServices $userServices */
         $userServices = app()->make(UserServices::class);
         if (!$userInfo) {
-            $userInfo = $userServices->getUserCacheInfo($uid);
+            // $userInfo = $userServices->getUserCacheInfo($uid);
+            $userInfo = $userServices->getUserInfo($uid);
         }
         if (!$userInfo) {
             return $data;

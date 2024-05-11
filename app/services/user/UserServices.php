@@ -2321,19 +2321,22 @@ class UserServices extends BaseServices
         //商城分销功能是否开启 0关闭1开启
         if (!sys_config('brokerage_func_status')) return -1;
         if (!$userInfo) {
-            $userInfo = $this->getUserCacheInfo($uid);
+            // $userInfo = $this->getUserCacheInfo($uid);
+            $userInfo = $this->getUserInfo($uid);
         }
         if (!$userInfo) {
             return 0;
         }
+
         //上级的上级不需要检测自购
         if ($is_spread) {
             //开启自购
             $is_self_brokerage = sys_config('is_self_brokerage', 0);
-            if ($is_self_brokerage && $is_spread) {
+            if ($is_self_brokerage) {
                 return $uid;
             }
         }
+
         //绑定类型
         $store_brokergae_binding_status = sys_config('store_brokerage_binding_status', 1);
         if ($store_brokergae_binding_status == 1 || $store_brokergae_binding_status == 3) {
