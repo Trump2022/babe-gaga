@@ -1932,7 +1932,7 @@ class UserServices extends BaseServices
 			$data['count'] = count($uids);
             /** @var StoreOrderServices $storeOrder */
             $storeOrder = app()->make(StoreOrderServices::class);
-			$data['price'] = $storeOrder->sum($where, $grade == 0 ? 'one_brokerage' : 'two_brokerage');
+			$data['price'] = $storeOrder->sum($where, $grade == 0 ? 'one_brokerage_gaga' : 'two_brokerage_gaga');
         }
         return $data;
     }
