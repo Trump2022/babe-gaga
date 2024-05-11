@@ -100,10 +100,20 @@ class OrderCreateAfterJob extends BaseJobs
 				$orderData['spread_two_uid'] = $spread_two_uid;
 			}
             if ($cartInfo && (isset($activity['type']) && !in_array($activity['type'], [1, 2, 3, 5, 8]))) {
+                //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
+                $integral_ratio = sys_config('integral_ratio');
+                $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+
                 /** @var StoreOrderComputedServices $orderComputed */
                 $orderComputed = app()->make(StoreOrderComputedServices::class);
-                if ($userServices->checkUserPromoter($spread_uid)) $orderData['one_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'one_brokerage', false);
-                if ($userServices->checkUserPromoter($spread_two_uid)) $orderData['two_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'two_brokerage', false);
+                if ($userServices->checkUserPromoter($spread_uid)) {
+                    $orderData['one_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'one_brokerage', false);
+                    $orderData['one_brokerage_gaga'] = round( $orderData['one_brokerage'] / $ratio, 1);//佣金RMB对应的gaga币数量
+                }
+                if ($userServices->checkUserPromoter($spread_two_uid)) {
+                    $orderData['two_brokerage'] = $orderComputed->getOrderSumPrice($cartInfo, 'two_brokerage', false);
+                    $orderData['two_brokerage_gaga'] = round( $orderData['two_brokerage'] / $ratio, 1);//佣金RMB对应的gaga币数量
+                }
             }
             if ($orderData) $createService->update(['id' => $orderId], $orderData);
         } catch (\Throwable $e) {

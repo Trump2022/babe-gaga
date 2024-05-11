@@ -268,7 +268,8 @@ class StoreOrderTakeServices extends BaseServices
         $frozen_time = time() + $broken_time * 86400;
 
         //订单中取出
-        $brokeragePrice = $orderInfo['one_brokerage'] ?? 0;
+        // $brokeragePrice = $orderInfo['one_brokerage'] ?? 0;
+        $brokeragePrice = $orderInfo['one_brokerage_gaga'] ?? 0;
         // 一级返佣金额小于等于0
         if ($brokeragePrice <= 0) {//直接二级返佣
 			return $this->backOrderBrokerageTwo($orderInfo, $userInfo, $isSelfBrokerage, $frozen_time);
@@ -281,9 +282,9 @@ class StoreOrderTakeServices extends BaseServices
         $spreadPrice = $userServices->value(['uid' => $one_spread_uid], 'integral');
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
-        $integral_ratio = sys_config('integral_ratio');
-        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
-        $brokeragePrice = round( $brokeragePrice / $ratio, 1);//佣金RMB对应的gaga币数量
+        // $integral_ratio = sys_config('integral_ratio');
+        // $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+        // $brokeragePrice = round( $brokeragePrice / $ratio, 1);//佣金RMB对应的gaga币数量
 
         // 上级推广员返佣之后的金额
         $balance = bcadd($spreadPrice, $brokeragePrice, 2);
@@ -353,7 +354,8 @@ class StoreOrderTakeServices extends BaseServices
         $spread_two_uid = (int)$spread_two_uid;
 
         //订单中取出
-        $brokeragePrice = $orderInfo['two_brokerage'] ?? 0;
+        // $brokeragePrice = $orderInfo['two_brokerage'] ?? 0;
+        $brokeragePrice = $orderInfo['two_brokerage_gaga'] ?? 0;
         // 返佣金额小于等于0 直接返回不返佣金
         if ($brokeragePrice <= 0) {
             return true;
@@ -364,9 +366,9 @@ class StoreOrderTakeServices extends BaseServices
         $spreadPrice = $userServices->value(['uid' => $spread_two_uid], 'integral');
 
         //gaga币与人民币折算比率, 积分抵用比例(1积分抵多少金额)单位：元
-        $integral_ratio = sys_config('integral_ratio');
-        $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
-        $brokeragePrice = round( $brokeragePrice / $ratio, 1);//佣金RMB对应的gaga币数量
+        // $integral_ratio = sys_config('integral_ratio');
+        // $ratio = $integral_ratio > 0 ? $integral_ratio : 0.1;//必须大于0
+        // $brokeragePrice = round( $brokeragePrice / $ratio, 1);//佣金RMB对应的gaga币数量
 
         // 获取上上级推广员返佣之后余额
         $balance = bcadd($spreadPrice, $brokeragePrice, 2);
