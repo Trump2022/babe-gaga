@@ -326,8 +326,6 @@ class StoreOrderTakeServices extends BaseServices
         //给上级发送获得佣金的模板消息
         $this->sendBackOrderBrokerage($orderInfo, $one_spread_uid, $brokeragePrice);
 
-        return $res = $res1 && $res2 && $res3;
-
         // 一级返佣成功 跳转二级返佣
         $res = $res1 && $res2 && $res3 && $this->backOrderBrokerageTwo($orderInfo, $userInfo, $isSelfBrokerage, $frozen_time);
         return $res;
@@ -421,6 +419,9 @@ class StoreOrderTakeServices extends BaseServices
      */
     public function sendBackOrderBrokerage($orderInfo, $spread_uid, $brokeragePrice, string $type = 'order')
     {
+        $goodsName = '';
+        $goodsPrice = 0;
+
         /** @var UserServices $userServices */
         $userServices = app()->make(UserServices::class);
         $user = $userServices->getUserInfo($spread_uid, 'phone,user_type');
