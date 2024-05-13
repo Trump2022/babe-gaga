@@ -28,6 +28,7 @@ use app\jobs\product\ProductCouponJob;
 use app\jobs\product\ProductLogJob;
 use app\jobs\activity\StorePromotionsJob;
 use app\jobs\system\CapitalFlowJob;
+use app\services\order\StoreOrderCartInfoServices;
 use app\services\order\StoreOrderInvoiceServices;
 use app\services\order\StoreOrderServices;
 use crmeb\interfaces\ListenerInterface;
@@ -42,6 +43,16 @@ class Pay implements ListenerInterface
     public function handle($event): void
     {
         [$orderInfo, $userInfo] = $event;
+
+        //通知
+        $orderInfoServices = app()->make(StoreOrderCartInfoServices::class);
+        $storeName = $orderInfoServices->getCarIdByProductTitle((int)$orderInfo['id']);
+        $orderInfo['storeName'] = substrUTf8($storeName, 20, 'UTF-8', '');
+        $orderInfo['storeName'] = $orderInfo['storeName'] ?? '';
+        $orderInfo['send_name'] = $orderInfo['real_name'];
+
+        //付款成功通知
+        event('notice.notice', [$orderInfo, 'order_pay_success']);
 
         if ($orderInfo['activity_id'] && !$orderInfo['refund_status']) {
             switch ($orderInfo['type']) {
