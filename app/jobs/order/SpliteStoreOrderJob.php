@@ -45,8 +45,8 @@ class SpliteStoreOrderJob extends BaseJobs
 
             //分配完成用户推送消息事件（门店小票打印）
             event('notice.notice', [$orderInfo, 'order_pay_success']);
-
         }
+
         if (isset($orderInfo['store_id']) && $orderInfo['store_id']) {
             //记录门店用户
             /** @var StoreUserServices $storeUserServices */
