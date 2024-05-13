@@ -530,6 +530,7 @@ class WriteOffOrderServices extends BaseServices
                     /** @var UserServices $userServices */
                     $userServices = app()->make(UserServices::class);
                     $userInfo = $userServices->get((int)$orderInfo['uid']);
+
                     //返佣
                     /** @var StoreOrderTakeServices $storeOrderTakeServices */
                     $storeOrderTakeServices = app()->make(StoreOrderTakeServices::class);
