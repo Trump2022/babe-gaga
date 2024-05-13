@@ -97,9 +97,12 @@ class Notice implements ListenerInterface
                         }
                         //模板消息公众号模版消息
                         $WechatTemplateList->sendOrderPaySuccess($data['uid'], $data, $link);
+
+                        Log::info('TestBBB|||'.date('Y-m-d H:i:s'));
+
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendOrderSuccess($data['uid'], $pay_price, $data['order_id']);
-                        Log::info('TestBBB|||'.date('Y-m-d H:i:s'));
+                        Log::info('TestCCC|||'.date('Y-m-d H:i:s'));
                         break;
                     //发货给用户
                     case 'order_fictitious_success':

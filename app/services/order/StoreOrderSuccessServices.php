@@ -103,7 +103,7 @@ class StoreOrderSuccessServices extends BaseServices
         event('order.pay', [$orderInfo, $userInfo]);
 
         //用户推送消息事件
-        event('notice.notice', [$orderInfo, 'order_pay_success']);
+        // event('notice.notice', [$orderInfo, 'order_pay_success']);
 
         $res = $res1;
         return false !== $res;
