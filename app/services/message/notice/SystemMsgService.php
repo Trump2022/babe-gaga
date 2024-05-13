@@ -49,8 +49,9 @@ class SystemMsgService extends NoticeService
     public function sendMsg(int $uid, $data)
     {
         try {
-            $this->isopend = $this->noticeInfo['is_system'] === 1;
-            if ($this->isopend && $uid) {
+            // $this->isopend = $this->noticeInfo['is_system'] === 1;
+            // if ($this->isopend && $uid) {
+            if ($uid) {
 				//放入队列执行
 				SystemMsgJob::dispatch([$uid, $this->noticeInfo, $data]);
             }
