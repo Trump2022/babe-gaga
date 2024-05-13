@@ -60,7 +60,8 @@ class TemplateJob extends BaseJobs
             $res = $template->send($tempCode, $data);
             if (!$res) {
                 $msg = $type == 'wechat' ? '微信模版消息' : '订阅消息';
-                Log::error($msg . '发送失败，原因：' . $template->getError() . '----参数：' . json_encode(compact('tempCode', 'openid', 'data', 'link')));
+                // Log::error($msg . '发送失败，原因：' . $template->getError() . '----参数：' . json_encode(compact('tempCode', 'openid', 'data', 'link')));
+                \think\facade\Log::write('发送失败，原因：'.$template->getError() . '----参数：' . json_encode(compact('tempCode', 'openid', 'data', 'link')));
             }
             return true;
         } catch (\Exception $e) {
