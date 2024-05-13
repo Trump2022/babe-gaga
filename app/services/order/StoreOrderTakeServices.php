@@ -232,7 +232,7 @@ class StoreOrderTakeServices extends BaseServices
             $res1 = false != $userInfo->save();
             $res = $res1 && $res2 && $res3;
             //发送消息
-            event('notice.notice', [['order' => $order, 'storeTitle' => $storeTitle, 'give_integral' => $give_integral, 'integral' => $integral], 'integral_accout']);
+            event('notice.notice', [['order' => $order, 'storeTitle' => $storeTitle, 'give_integral' => $give_integral, 'integral' => $integral], 'integral_account']);
             return $res;
         }
         return true;

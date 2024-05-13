@@ -315,7 +315,7 @@ class RoutineTemplateListService extends NoticeService
         if (!$order || !$uid) return true;
         if (is_string($order['cart_id']))
             $order['cart_id'] = json_decode($order['cart_id'], true);
-        return $this->sendTemplate('INTEGRAL_ACCOUT', $uid, [
+        return $this->sendTemplate('INTEGRAL_ACCOUNT', $uid, [
             'character_string2' => $order['order_id'],
 			'thing3' => mb_substr_str($storeTitle, 20),
             'amount4' => $order['pay_price'],

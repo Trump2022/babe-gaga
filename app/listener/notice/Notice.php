@@ -244,21 +244,24 @@ class Notice implements ListenerInterface
                         $RoutineTemplateList->sendRechargeSuccess($UserRecharge['uid'], $UserRecharge, $UserRecharge['now_money']);
                         break;
                     //gaga币
-                    case 'integral_accout':
+                    case 'integral_account':
                         $order = $data['order'];
                         $order['gain_integral'] = $data['give_integral'];
                         $storeTitle = substrUTf8($data['storeTitle'], 20, 'UTF-8', '');
                         $storeTitle = $storeTitle ?? '';
+
+
+                        //模板消息小程序订阅消息
+                        $RoutineTemplateList->sendUserIntegral($order['uid'], $data['order'], $storeTitle, $data['give_integral'], $data['integral']);
+                        
                         //站内信
                         $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
                         //短信
-                        $NoticeSms->sendSms($order['user_phone'], ['gain_integral' => $data['give_integral'], 'integral' => $data['integral']], 'INTEGRAL_ACCOUT');
+                        $NoticeSms->sendSms($order['user_phone'], ['gain_integral' => $data['give_integral'], 'integral' => $data['integral']], 'INTEGRAL_ACCOUNT');
 
                         //模板消息公众号模版消息
                         // $WechatTemplateList->sendUserIntegral($order['uid'], $order, $data);
 
-                        //模板消息小程序订阅消息
-                        $RoutineTemplateList->sendUserIntegral($order['uid'], $data['order'], $storeTitle, $data['give_integral'], $data['integral']);
                         break;
                     //佣金
                     case 'order_brokerage':

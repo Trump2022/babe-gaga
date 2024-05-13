@@ -318,7 +318,7 @@ class RoutineTemplateJob extends BaseJobs
         if (!$order || !$openid) return true;
         if (is_string($order['cart_id']))
             $order['cart_id'] = json_decode($order['cart_id'], true);
-        return $this->sendTemplate('INTEGRAL_ACCOUT', $openid, [
+        return $this->sendTemplate('INTEGRAL_ACCOUNT', $openid, [
             'character_string2' => $order['order_id'],
             'thing3' => $storeTitle,
             'amount4' => $order['pay_price'],

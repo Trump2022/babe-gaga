@@ -1112,7 +1112,7 @@ SQL
 				'code' => 260,
 				'type' => -1,
 				'table' => "system_notification",
-				'sql' => "UPDATE  `@table` set `is_wechat` = 0, `is_sms` = 1 where `mark` = 'integral_accout'"
+				'sql' => "UPDATE  `@table` set `is_wechat` = 0, `is_sms` = 1 where `mark` = 'integral_account'"
 			],
 			[
 				'code' => 260,
