@@ -23,6 +23,9 @@ use app\services\user\UserBillServices;
 use app\services\user\UserBrokerageServices;
 use app\services\user\level\UserLevelServices;
 use app\services\user\UserServices;
+use think\db\exception\DataNotFoundException;
+use think\db\exception\DbException;
+use think\db\exception\ModelNotFoundException;
 use think\exception\ValidateException;
 use think\facade\Log;
 
@@ -48,9 +51,9 @@ class StoreOrderTakeServices extends BaseServices
 	 * 小程序订单服务收货
 	 * @param $order_id
 	 * @return bool
-	 * @throws \think\db\exception\DataNotFoundException
-	 * @throws \think\db\exception\DbException
-	 * @throws \think\db\exception\ModelNotFoundException
+	 * @throws DataNotFoundException
+	 * @throws DbException
+	 * @throws ModelNotFoundException
 	 */
 	public function miniOrderTakeOrder($order_id)
 	{
@@ -129,10 +132,16 @@ class StoreOrderTakeServices extends BaseServices
 
     /**
      * 订单确认收货
+     *
      * @param $order
+     * @param bool $isTran
+     * @param $isConfirmReceipt
      * @return bool
+     * @throws DataNotFoundException
+     * @throws DbException
+     * @throws ModelNotFoundException
      */
-    public function storeProductOrderUserTakeDelivery($order, bool $isTran = true)
+    public function storeProductOrderUserTakeDelivery($order, bool $isTran = true,  $isConfirmReceipt = true): bool
     {
         $res = true;
         //获取购物车内的商品标题
@@ -144,14 +153,16 @@ class StoreOrderTakeServices extends BaseServices
             /** @var UserServices $userServices */
             $userServices = app()->make(UserServices::class);
             $userInfo = $userServices->get((int)$order['uid']);
-            $res = $this->transaction(function () use ($order, $userInfo, $storeTitle) {
+            $res = $this->transaction(function () use ($order, $userInfo, $storeTitle, $isConfirmReceipt) {
                 //赠送gaga币
                 $res1 = $this->gainUserIntegral($order, $userInfo, $storeTitle);
 
                 //返佣
                 //次卡商品不直接返佣（修改为全部核销或者核销后使用时间到期才返佣）
-                if($order['product_type'] != 4){
-                    $this->backOrderBrokerage($order, $userInfo);
+                if ($isConfirmReceipt) {
+                    if($order['product_type'] != 4){
+                        $this->backOrderBrokerage($order, $userInfo);
+                    }
                 }
 
                 //经验

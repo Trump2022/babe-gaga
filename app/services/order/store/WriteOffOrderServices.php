@@ -521,7 +521,7 @@ class WriteOffOrderServices extends BaseServices
                     }
                     /** @var StoreOrderTakeServices $storeOrdeTask */
                     $storeOrdeTask = app()->make(StoreOrderTakeServices::class);
-                    $re = $storeOrdeTask->storeProductOrderUserTakeDelivery($orderInfo);
+                    $re = $storeOrdeTask->storeProductOrderUserTakeDelivery($orderInfo, true, false);
                     if (!$re) {
                         throw new ValidateException('Write off failure');
                     }
