@@ -253,7 +253,7 @@ class Notice implements ListenerInterface
 
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendUserIntegral($order['uid'], $data['order'], $storeTitle, $data['give_integral'], $data['integral']);
-                        
+
                         //站内信
                         $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
                         //短信
