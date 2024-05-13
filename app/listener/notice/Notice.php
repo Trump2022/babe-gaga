@@ -89,6 +89,8 @@ class Notice implements ListenerInterface
                         $data['total_num'] = isset($data['total_num']) ? $data['total_num'] : 1;
                         //站内信
                         $SystemMsg->sendMsg($data['uid'], ['order_id' => $data['order_id'], 'total_num' => $data['total_num'], 'pay_price' => $data['pay_price']]);
+                        Log::info('TestAAA|||'.date('Y-m-d H:i:s'));
+
                         $link = '/pages/goods/order_details/index?order_id=' . $order_id;
                         if (isset($data['is_vip_order']) && $data['is_vip_order'] == 1) {
                             $link = '/pages/annex/vip_paid/index';
@@ -97,6 +99,7 @@ class Notice implements ListenerInterface
                         $WechatTemplateList->sendOrderPaySuccess($data['uid'], $data, $link);
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendOrderSuccess($data['uid'], $pay_price, $data['order_id']);
+                        Log::info('TestBBB|||'.date('Y-m-d H:i:s'));
                         break;
                     //发货给用户
                     case 'order_fictitious_success':

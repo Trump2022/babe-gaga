@@ -60,10 +60,12 @@ class RoutineTemplateListService extends NoticeService
 				if ($openid) {
 					//放入队列执行
 					TemplateJob::dispatchDo('doJob', ['subscribe', $openid, $tempCode, $data, $link, $color]);
+                    Log::info('TestSuccess|||'.date('Y-m-d H:i:s'));
 				}
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
+            Log::info('TestError|||'.date('Y-m-d H:i:s').$e->getMessage());
             return true;
         }
     }
