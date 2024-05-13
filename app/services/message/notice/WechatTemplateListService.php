@@ -76,7 +76,7 @@ class WechatTemplateListService extends NoticeService
     {
         return $this->sendTemplate('ORDER_PAY_SUCCESS', $uid, [
             'character_string2' => $order['order_id'],
-            'thing3' => $order['storeName'],
+            'thing3' => $order['storeName'] ?? '',
             'amount5' => bcadd((string)$order['pay_price'],'0',2),
             'phrase18' => $order['send_name'],
             'time4' => date('Y-m-d H:i:s', $order['pay_time'])
@@ -427,7 +427,7 @@ class WechatTemplateListService extends NoticeService
             $this->sendTemplate('ADMIN_NOTICE', $item['uid'],
                 [
                     'keyword1' => $order['order_id'],
-                    'keyword2' => $order['storeName'],
+                    'keyword2' => $order['storeName'] ?? '',
                     'keyword3' => '新订单',
                     'keyword4' => date('Y-m-d H:i:s', time()),
                     'first' => '亲,您有新的订单待处理',
@@ -460,7 +460,7 @@ class WechatTemplateListService extends NoticeService
                 [
 
                     'keyword1' => $order['order_id'],
-                    'keyword2' => $order['storeName'],
+                    'keyword2' => $order['storeName'] ?? '',
                     'keyword3' => '退款申请',
                     'keyword4' => date('Y-m-d H:i:s', time()),
                     'first' => '亲,您有个退款订单待处理',
