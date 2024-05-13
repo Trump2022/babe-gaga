@@ -493,7 +493,7 @@ class WechatTemplateListService extends NoticeService
      */
     public function sendUserIntegral($uid, $order,$data)
     {
-        return $this->sendTemplate('INTEGRAL_ACCOUNT', $uid, [
+        return $this->sendTemplate('INTEGRAL_ACCOUT', $uid, [
             'first' => '亲，您的gaga币已到账',
             'keyword1' => $data['storeTitle'],
             'keyword2' => $order['pay_price'],

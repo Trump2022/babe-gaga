@@ -244,7 +244,7 @@ class Notice implements ListenerInterface
                         $RoutineTemplateList->sendRechargeSuccess($UserRecharge['uid'], $UserRecharge, $UserRecharge['now_money']);
                         break;
                     //gaga币
-                    case 'integral_account':
+                    case 'integral_accout':
                         $order = $data['order'];
                         $order['gain_integral'] = $data['give_integral'];
                         $storeTitle = substrUTf8($data['storeTitle'], 20, 'UTF-8', '');
@@ -257,7 +257,7 @@ class Notice implements ListenerInterface
                         //站内信
                         $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
                         //短信
-                        $NoticeSms->sendSms($order['user_phone'], ['gain_integral' => $data['give_integral'], 'integral' => $data['integral']], 'INTEGRAL_ACCOUNT');
+                        $NoticeSms->sendSms($order['user_phone'], ['gain_integral' => $data['give_integral'], 'integral' => $data['integral']], 'INTEGRAL_ACCOUT');
 
                         //模板消息公众号模版消息
                         // $WechatTemplateList->sendUserIntegral($order['uid'], $order, $data);
