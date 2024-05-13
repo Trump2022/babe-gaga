@@ -42,6 +42,16 @@ class ShareOrderJob extends BaseJobs
             return true;
         }
         $orderInfo = $order->toArray();
+
+        $orderInfoServices = app()->make(StoreOrderCartInfoServices::class);
+        $storeName = $orderInfoServices->getCarIdByProductTitle((int)$orderInfo['id']);
+        $orderInfo['storeName'] = substrUTf8($storeName, 20, 'UTF-8', '');
+        $orderInfo['storeName'] = $orderInfo['storeName'] ?? '';
+        $orderInfo['send_name'] = $orderInfo['real_name'];
+
+        //分配完成用户推送消息事件（门店小票打印）
+        event('notice.notice', [$orderInfo, 'order_pay_success']);
+
         //已经分配或者门店自提
         if (!isset($orderInfo['shipping_type']) || $orderInfo['shipping_type'] != 1 || $orderInfo['store_id'] > 0) {
             //分配给门店
