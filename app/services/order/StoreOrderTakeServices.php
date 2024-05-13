@@ -135,13 +135,13 @@ class StoreOrderTakeServices extends BaseServices
      *
      * @param $order
      * @param bool $isTran
-     * @param $isConfirmReceipt
+     * @param bool $isConfirmReceipt
      * @return bool
      * @throws DataNotFoundException
      * @throws DbException
      * @throws ModelNotFoundException
      */
-    public function storeProductOrderUserTakeDelivery($order, bool $isTran = true,  $isConfirmReceipt = true): bool
+    public function storeProductOrderUserTakeDelivery($order, bool $isTran = true, bool $isRebate = true): bool
     {
         $res = true;
         //获取购物车内的商品标题
@@ -153,13 +153,13 @@ class StoreOrderTakeServices extends BaseServices
             /** @var UserServices $userServices */
             $userServices = app()->make(UserServices::class);
             $userInfo = $userServices->get((int)$order['uid']);
-            $res = $this->transaction(function () use ($order, $userInfo, $storeTitle, $isConfirmReceipt) {
+            $res = $this->transaction(function () use ($order, $userInfo, $storeTitle, $isRebate) {
                 //赠送gaga币
                 $res1 = $this->gainUserIntegral($order, $userInfo, $storeTitle);
 
                 //返佣
                 //次卡商品不直接返佣（修改为全部核销或者核销后使用时间到期才返佣）
-                if ($isConfirmReceipt) {
+                if ($isRebate) {
                     if($order['product_type'] != 4){
                         $this->backOrderBrokerage($order, $userInfo);
                     }
