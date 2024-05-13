@@ -248,6 +248,7 @@ class Notice implements ListenerInterface
                         $order = $data['order'];
                         $order['gain_integral'] = $data['give_integral'];
                         $storeTitle = substrUTf8($data['storeTitle'], 20, 'UTF-8', '');
+                        $storeTitle = $storeTitle ?? '';
                         //站内信
                         $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
                         //短信
