@@ -263,6 +263,7 @@ class Notice implements ListenerInterface
                     case 'order_brokerage':
                         $brokeragePrice = $data['brokeragePrice'];
                         $goodsName = substrUTf8($data['goodsName'], 20, 'UTF-8', '');
+                        $goodsName = $goodsName ?? '';
                         $goodsPrice = $data['goodsPrice'];
                         $add_time = $data['add_time'];
                         $spread_uid = $data['spread_uid'];
