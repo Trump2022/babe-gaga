@@ -44,16 +44,6 @@ class Pay implements ListenerInterface
     {
         [$orderInfo, $userInfo] = $event;
 
-        //通知
-        $orderInfoServices = app()->make(StoreOrderCartInfoServices::class);
-        $storeName = $orderInfoServices->getCarIdByProductTitle((int)$orderInfo['id']);
-        $orderInfo['storeName'] = substrUTf8($storeName, 20, 'UTF-8', '');
-        $orderInfo['storeName'] = $orderInfo['storeName'] ?? '';
-        $orderInfo['send_name'] = $orderInfo['real_name'];
-
-        //付款成功通知
-        event('notice.notice', [$orderInfo, 'order_pay_success']);
-
         if ($orderInfo['activity_id'] && !$orderInfo['refund_status']) {
             switch ($orderInfo['type']) {
                 case 3://拼团
@@ -70,10 +60,13 @@ class Pay implements ListenerInterface
                     break;
             }
         }
+
         //卡密、虚拟、次卡商品订单处理
         OrderPayHandelJob::dispatch([$orderInfo]);
+
         //自动分配订单
         ShareOrderJob::dispatch([$orderInfo]);
+
         //门店虚拟用户
         if ($orderInfo['uid']) {
             //赠送商品关联优惠卷
@@ -92,6 +85,7 @@ class Pay implements ListenerInterface
             //优惠活动关联用户标签设置
             StorePromotionsJob::dispatchDo('setUserLabel', [$orderInfo]);
         }
+
 		//收银台订单 && 不是次卡商品
         if ($orderInfo['shipping_type'] == 4 && $orderInfo['product_type'] != 4) {
             //订单发货
@@ -105,6 +99,7 @@ class Pay implements ListenerInterface
             }
             OrderCreateAfterJob::dispatchDo('delCartAndUpdateAddres', [$orderInfo, ['cartIds' => $cartIds, 'delCart' => true]]);
         }
+
         //支付成功后其他事件处理
         OrderJob::dispatchDo('otherTake', [$orderInfo]);
         //支付成功后向管理员发送模板消息
@@ -115,6 +110,7 @@ class Pay implements ListenerInterface
         ProductLogJob::dispatch(['pay', ['uid' => $orderInfo['uid'], 'order_id' => $orderInfo['id']]]);
         //记录资金流水队列
 		CapitalFlowJob::dispatch([$orderInfo, 'order']);
+
         // 同步订单
         if (sys_config('erp_open')) {
             OrderSyncJob::dispatchDo('syncOrder', [(int)$orderInfo['id']]);

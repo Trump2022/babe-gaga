@@ -33,6 +33,7 @@ class ShareOrderJob extends BaseJobs
         if (!$orderInfo) {
             return true;
         }
+
         //整单分给门店
         /** @var StoreOrderServices $storeOrderServices */
         $storeOrderServices = app()->make(StoreOrderServices::class);
@@ -46,6 +47,15 @@ class ShareOrderJob extends BaseJobs
             //分配给门店
             SpliteStoreOrderJob::dispatchDo('splitAfter', [$orderInfo]);
             return true;
+        }else {
+            // $orderInfoServices = app()->make(StoreOrderCartInfoServices::class);
+            // $storeName = $orderInfoServices->getCarIdByProductTitle((int)$orderInfo['id']);
+            // $orderInfo['storeName'] = substrUTf8($storeName, 20, 'UTF-8', '');
+            // $orderInfo['storeName'] = $orderInfo['storeName'] ?? '';
+            // $orderInfo['send_name'] = $orderInfo['real_name'];
+            //
+            // //分配完成用户推送消息事件（门店小票打印）
+            // event('notice.notice', [$orderInfo, 'order_pay_success']);
         }
 
         try {
