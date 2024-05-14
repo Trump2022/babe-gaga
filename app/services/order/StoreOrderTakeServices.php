@@ -149,6 +149,7 @@ class StoreOrderTakeServices extends BaseServices
         $orderInfoServices = app()->make(StoreOrderCartInfoServices::class);
         $storeName = $orderInfoServices->getCarIdByProductTitle((int)$order['id']);
         $storeTitle = substrUTf8($storeName, 20, 'UTF-8', '');
+        $storeTitle = $storeTitle ?? '';
         if ($order['uid']) {
             /** @var UserServices $userServices */
             $userServices = app()->make(UserServices::class);
