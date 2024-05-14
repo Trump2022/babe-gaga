@@ -444,7 +444,7 @@ class StoreOrderTakeServices extends BaseServices
             $goodsPrice = $brokeragePrice;
         }
         //提醒推送
-        event('notice.notice', [['spread_uid' => $spread_uid, 'phone' => $user['phone'], 'userType' => $user['user_type'], 'brokeragePrice' => $brokeragePrice, 'goodsName' => $goodsName, 'goodsPrice' => $goodsPrice, 'add_time' => $orderInfo['add_time'] ?? time()], 'order_brokerage']);
+        event('notice.notice', [['spread_uid' => $spread_uid, 'phone' => $user['phone'], 'userType' => $user['user_type'], 'brokeragePrice' => (float) $brokeragePrice, 'goodsName' => $goodsName, 'goodsPrice' => $goodsPrice, 'add_time' => $orderInfo['add_time'] ?? time()], 'order_brokerage']);
         return true;
     }
 
