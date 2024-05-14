@@ -336,7 +336,7 @@ class RoutineTemplateListService extends NoticeService
     {
         return $this->sendTemplate('ORDER_BROKERAGE', $uid, [
 			'thing2' => mb_substr_str($goods_name, 20),
-             'amount4' => $brokeragePrice . '元',
+             'amount4' => $brokeragePrice . '币',
             // 'amount4' => $brokeragePrice,
             'time1' => date('Y-m-d H:i:s', time())
         ], '/pages/users/user_spread_user/index');
