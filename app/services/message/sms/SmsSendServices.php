@@ -33,6 +33,8 @@ class SmsSendServices extends BaseServices
     public function send(bool $switch, $phone, array $data, string $template)
     {
         if ($switch && $phone) {
+            return false;//先屏蔽短信
+
             /** @var ServeServices $services */
             $services = app()->make(ServeServices::class);
             $res = $services->sms()->send($phone, $template, $data);
