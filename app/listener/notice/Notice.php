@@ -250,12 +250,11 @@ class Notice implements ListenerInterface
                         $storeTitle = substrUTf8($data['storeTitle'], 20, 'UTF-8', '');
                         $storeTitle = $storeTitle ?? '';
 
+                        //站内信
+                        $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
 
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendUserIntegral($order['uid'], $data['order'], $storeTitle, $data['give_integral'], $data['integral']);
-
-                        //站内信
-                        $SystemMsg->sendMsg($order['uid'], ['order_id' => $order['order_id'], 'store_name' => $storeTitle, 'pay_price' => $order['pay_price'], 'gain_integral' => $data['give_integral'], 'integral' => $data['integral']]);
 
                         //短信
                         $NoticeSms->sendSms($order['user_phone'], ['gain_integral' => $data['give_integral'], 'integral' => $data['integral']], 'INTEGRAL_ACCOUT');
@@ -274,12 +273,12 @@ class Notice implements ListenerInterface
                         $spread_uid = $data['spread_uid'];
                         $phone = $data['phone'];
 
+                        //站内信
+                        $SystemMsg->sendMsg($spread_uid, ['goods_name' => $goodsName, 'goods_price' => $goodsPrice, 'brokerage_price' => $brokeragePrice]);
 
                         //模板消息小程序订阅消息
                         $RoutineTemplateList->sendOrderBrokerageSuccess($spread_uid, $brokeragePrice, $goodsName);
 
-                        //站内信
-                        $SystemMsg->sendMsg($spread_uid, ['goods_name' => $goodsName, 'goods_price' => $goodsPrice, 'brokerage_price' => $brokeragePrice]);
 
                         if ($phone) {
                             //短信
