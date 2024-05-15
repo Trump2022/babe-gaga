@@ -48,6 +48,24 @@ class UserBillServices extends BaseServices
      */
     protected $incomeData = [
 
+        'extract_fail' => [
+            'title' => '提现失败返还gaga币',
+            'category' => 'integral',
+            'type' => 'extract_fail_add',
+            'mark' => '提现失败返还{%num%}gaga币',
+            'status' => 1,
+            'pm' => 1
+        ],
+
+        'extract_cash' => [
+            'title' => '提现扣除gaga币',
+            'category' => 'integral',
+            'type' => 'extract_cash_sub',
+            'mark' => '提现申请扣除{%num%}gaga币',
+            'status' => 1,
+            'pm' => 0
+        ],
+
         'spread_give_brokerage' => [
             'title' => '推广用户获得佣金',
             'category' => 'integral',

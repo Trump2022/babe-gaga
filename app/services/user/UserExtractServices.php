@@ -143,9 +143,6 @@ class UserExtractServices extends BaseServices
             // $now_brokerage = bcadd((string)$user['brokerage_price'], (string)$brokeragePrice, 2);
             $now_integral = bcadd((string)$user['integral'], (string)$brokeragePrice, 2);
 
-            //增加佣金记录
-            $userBrokerageServices->income('extract_fail', $uid, $brokeragePrice, $now_integral, $id);
-
             //修改用户佣金
             // if (!$userServices->update($uid, ['brokerage_price' => $now_brokerage], 'uid'))
             // if (!$userServices->update($uid, ['integral' => $now_integral], 'uid'))
@@ -154,6 +151,14 @@ class UserExtractServices extends BaseServices
             if (!$this->dao->update($id, ['fail_time' => $fail_time, 'fail_msg' => $message, 'status' => $status])) {
                 throw new AdminException('修改失败');
             }
+
+            //积分/gaga币记录
+            /** @var UserBillServices $userBillServices */
+            $userBillServices = app()->make(UserBillServices::class);
+            $userBillServices->income('extract_fail', $uid, $brokeragePrice, $now_integral, $id);
+
+            //增加佣金记录
+            $userBrokerageServices->income('extract_fail', $uid, $brokeragePrice, $now_integral, $id);
         });
 
         //消息推送
@@ -517,6 +522,11 @@ class UserExtractServices extends BaseServices
             if (!$userService->update($uid, ['integral' => $integral], 'uid')) {
                 throw new ValidateException('修改用户信息失败');
             }
+
+            //积分/gaga币记录
+            /** @var UserBillServices $userBillServices */
+            $userBillServices = app()->make(UserBillServices::class);
+            $userBillServices->income('extract_cash', $uid, $data['money'], (int)$integral, $res1['id']);
 
             //保存佣金记录/gaga币提现记录
             $userBrokerageServices->income('extract', $uid, ['mark' => $mark, 'number' => $data['money'], 'amount_received' => $insertData['extract_price']], $integral, (int) $res1['id']);
