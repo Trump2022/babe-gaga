@@ -54,9 +54,9 @@ class RoutineTemplateListService extends NoticeService
     public function sendTemplate(string $tempCode, int $uid, array $data, string $link = null, string $color = null)
     {
         try {
-            // $this->isopend = $this->noticeInfo['is_routine'] === 1;
-            // if ($this->isopend && $uid) {
-            if ($uid) {
+            $this->isopend = $this->noticeInfo['is_routine'] === 1;
+            if ($this->isopend && $uid) {
+            // if ($uid) {
                 $openid = $this->getOpenidByUid($uid, 'routine');
 				if ($openid) {
 					//放入队列执行
