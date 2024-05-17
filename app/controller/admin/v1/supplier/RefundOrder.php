@@ -180,7 +180,7 @@ class RefundOrder extends AuthController
     {
         if (!$id) return app('json')->fail('缺少参数');
         $orderInfo = $this->services->refundDetail($id, ['*'], ['invoice', 'virtual', 'supplierInfo']);
-        $orderInfo['writeoff_list'] = $order['writeoff_list'] ?? [];
+
         $userInfo = ['spread_uid' => '', 'spread_name' => '无'];
         if ($orderInfo['uid']) {
             /** @var UserServices $services */
@@ -203,6 +203,7 @@ class RefundOrder extends AuthController
             }
         }
 		$orderInfo['total_price'] = floatval(bcadd((string)$orderInfo['total_price'], (string)$orderInfo['vip_true_price'], 2));
+        $orderInfo['writeoff_list'] = $order['writeoff_list'] ?? [];
         return $this->success(compact('orderInfo', 'userInfo'));
     }
 }
