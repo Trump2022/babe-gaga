@@ -17,6 +17,7 @@ use app\jobs\order\SpliteStoreOrderJob;
 use app\services\activity\combination\StorePinkServices;
 use app\services\activity\coupon\StoreCouponIssueServices;
 use app\services\BaseServices;
+use app\services\order\store\WriteOffOrderServices;
 use app\services\product\branch\StoreBranchProductServices;
 use app\services\other\queue\QueueAuxiliaryServices;
 use app\services\other\queue\QueueServices;
@@ -700,7 +701,7 @@ class StoreOrderServices extends BaseServices
         $services = app()->make(StoreOrderCartInfoServices::class);
         foreach ($data as &$item) {
             if ($is_cart_info) $item['_info'] = $services->getOrderCartInfo((int)$item['id']);
-            $item['add_time'] = date('Y-m-d H:i:s', $item['add_time']);
+            $item['add_time'] = is_numeric($item['add_time']) ? date('Y-m-d H:i:s', $item['add_time']) : $item['add_time'];
             $item['_refund_time'] = isset($item['refund_reason_time']) && $item['refund_reason_time'] ? date('Y-m-d H:i:s', $item['refund_reason_time']) : '';
             $item['_pay_time'] = isset($item['pay_time']) && $item['pay_time'] ? date('Y-m-d H:i:s', $item['pay_time']) : '';
             [$pink_name, $color] = $this->tidyOrderType($item, $abridge);
@@ -2754,5 +2755,116 @@ HTML;
 			return true;
 		}
 	}
+
+
+    public function _order_info($id, $orderInfo)
+    {
+        $userInfo = ['spread_uid' => '', 'spread_name' => '无'];
+        if ($orderInfo['uid']) {
+            /** @var UserServices $services */
+            $services = app()->make(UserServices::class);
+            $userInfo = $services->getUserWithTrashedInfo($orderInfo['uid']);
+            if (!$userInfo) return app('json')->fail('用户信息不存在');
+            $userInfo = $userInfo->hidden(['pwd', 'add_ip', 'last_ip', 'login_type']);
+            $userInfo = $userInfo->toArray();
+            $userInfo['spread_name'] = '无';
+            if ($orderInfo['spread_uid']) {
+                $spreadName = $services->value(['uid' => $orderInfo['spread_uid']], 'nickname');
+                if ($spreadName) {
+                    $userInfo['spread_name'] = $orderInfo['uid'] == $orderInfo['spread_uid'] ? $spreadName . '(自购)' : $spreadName;
+                    $userInfo['spread_uid'] = $orderInfo['spread_uid'];
+                } else {
+                    $userInfo['spread_uid'] = '';
+                }
+            } else {
+                $userInfo['spread_uid'] = '';
+            }
+        }
+        $orderInfo = is_object($orderInfo) ? $orderInfo->toArray() : $orderInfo;
+        $orderInfo = $this->tidyOrder($orderInfo, true, true);
+        $_status = $orderInfo['_status'];
+        [$pink_name, $color] = $this->tidyOrderType($orderInfo);
+        $orderInfo['pink_name'] = $pink_name;
+        $orderInfo['store_order_sn'] = $orderInfo['pid'] ? $this->value(['id' => $orderInfo['pid']], 'order_id') : '';
+        //核算优惠金额
+        $vipTruePrice = 0;
+        foreach ($orderInfo['cartInfo'] ?? [] as $cart) {
+            $vipTruePrice = bcadd((string)$vipTruePrice, (string)$cart['vip_sum_truePrice'], 2);
+        }
+        $orderInfo['vip_true_price'] = $vipTruePrice;
+        // $orderInfo['total_price'] = floatval(bcsub((string)$orderInfo['total_price'], (string)$vipTruePrice, 2));
+
+        //优惠活动优惠详情
+        /** @var StoreOrderPromotionsServices $storeOrderPromotiosServices */
+        $storeOrderPromotiosServices = app()->make(StoreOrderPromotionsServices::class);
+        $orderInfo['promotions_detail'] = $storeOrderPromotiosServices->getOrderPromotionsDetail((int)$orderInfo['id']);
+        if ($orderInfo['give_coupon']) {
+            $couponIds = is_string($orderInfo['give_coupon']) ? explode(',', $orderInfo['give_coupon']) : $orderInfo['give_coupon'];
+            /** @var StoreCouponIssueServices $couponIssueService */
+            $couponIssueService = app()->make(StoreCouponIssueServices::class);
+            $orderInfo['give_coupon'] = $couponIssueService->getColumn([['id', 'IN', $couponIds]], 'id,coupon_title');
+        }
+        $orderInfo['_store_name'] = '';
+        if ($orderInfo['store_id'] && in_array($orderInfo['shipping_type'], [2, 4])) {
+            /** @var  $storeServices */
+            $storeServices = app()->make(SystemStoreServices::class);
+            $orderInfo['_store_name'] = $storeServices->value(['id' => $orderInfo['store_id']], 'name');
+        }
+        $orderInfo = $this->tidyOrderList([$orderInfo])[0];
+        $orderInfo['write_off'] = $orderInfo['write_times'] = 0;
+        $orderInfo['write_day'] = '';
+        $cart = $orderInfo['cartInfo'][0] ?? [];
+        if ($orderInfo['product_type'] == 4 && $cart) {//次卡商品
+            $orderInfo['write_off'] = $cart['write_off'] ?? max(bcsub((string)$cart['write_times'], (string)$cart['write_surplus_times'], 0), 0);
+            $orderInfo['write_times'] = $cart['write_times'] ?? 0;
+            $start = $cart['write_start'] ?? 0;
+            $end = $cart['write_end'] ?? 0;
+            if (!$start && !$end) {
+                $orderInfo['write_day'] = '不限时';
+            } else {
+                $orderInfo['write_day'] = ($start ? date('Y-m-d', $start) : '') . '/' . ($end ? date('Y-m-d', $end) : '');
+            }
+
+            if ($orderInfo['is_class']) {
+                $orderInfo['used_times'] = $orderInfo['write_times'] - $cart['write_surplus_times'];
+                $orderInfo['used_times_str'] = $orderInfo['used_times'].'/'.$orderInfo['write_times'].'次';
+                //激活时间
+                $orderInfo['active_time'] = [];
+                //使用期限
+                $orderInfo['use_expire_time'] = '';
+                if ($orderInfo['used_times'] > 0) {
+                    $orderInfo['active_time'][] = date('Y-m-d H:i:s', $cart['write_start']);
+                    $orderInfo['use_expire_time'] = date('Y-m-d H:i:s', $cart['write_end']).' 到期';
+                } else {
+                    if ($cart['active_start']) {
+                        $orderInfo['active_time'][] = $cart['active_start'];
+                    }
+
+                    if ($cart['active_end']) {
+                        $orderInfo['active_time'][] = $cart['active_end'];
+                    }
+                }
+
+                //下单信息
+                $orderInfo['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($orderInfo['id']);
+                //课程适用门店
+                $orderInfo['applicable_stores'] = app()->make(SystemStoreServices::class)->getApplicableStore($cart['productInfo']['applicable_type'], $cart['productInfo']['applicable_store_id']);
+            }
+        }
+
+        $orderInfo['_status_new'] = $orderInfo['_status'];
+        $orderInfo['_status'] = $_status;
+        $refund_num = array_sum(array_column($orderInfo['refund'], 'refund_num'));
+        $cart_num = 0;
+        foreach ($orderInfo['_info'] as $items) {
+            if (isset($items['cart_info']['is_gift']) && $items['cart_info']['is_gift']) continue;
+            $cart_num += $items['cart_info']['cart_num'];
+        }
+        $orderInfo['is_all_refund'] = $refund_num == $cart_num;
+        $writeOffOrderServices = app()->make(WriteOffOrderServices::class);
+        $orderInfo['writeoff_list'] = $writeOffOrderServices->writeoffOrderList($id);
+
+        return [$orderInfo, $userInfo];
+    }
 
 }

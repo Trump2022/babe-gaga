@@ -717,6 +717,17 @@ trait Order
         if (!$id || !($orderInfo = $this->services->get($id, ['*'], ['invoice', 'virtual', 'pink', 'refund', 'supplierInfo', 'storeOrderInfo']))) {
             return app('json')->fail('订单不存在');
         }
+
+        /** @var StoreOrderServices $orderServices */
+        $orderServices = app()->make(StoreOrderServices::class);
+        [$orderInfo, $userInfo] =  $orderServices->_order_info($id, $orderInfo);
+
+        // [$orderInfo, $userInfo] =  $this->_order_info($id, $orderInfo);
+        return app('json')->success(compact('orderInfo', 'userInfo'));
+    }
+
+    public function _order_info($id, $orderInfo)
+    {
         $userInfo = ['spread_uid' => '', 'spread_name' => '无'];
         if ($orderInfo['uid']) {
             /** @var UserServices $services */
@@ -797,7 +808,7 @@ trait Order
                     if ($cart['active_start']) {
                         $orderInfo['active_time'][] = $cart['active_start'];
                     }
-                    
+
                     if ($cart['active_end']) {
                         $orderInfo['active_time'][] = $cart['active_end'];
                     }
@@ -821,7 +832,8 @@ trait Order
         $orderInfo['is_all_refund'] = $refund_num == $cart_num;
         $writeOffOrderServices = app()->make(WriteOffOrderServices::class);
         $orderInfo['writeoff_list'] = $writeOffOrderServices->writeoffOrderList($id);
-        return app('json')->success(compact('orderInfo', 'userInfo'));
+
+        return [$orderInfo, $userInfo];
     }
 
     /**
