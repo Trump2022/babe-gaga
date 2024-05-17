@@ -750,7 +750,8 @@ trait Order
             $vipTruePrice = bcadd((string)$vipTruePrice, (string)$cart['vip_sum_truePrice'], 2);
         }
         $orderInfo['vip_true_price'] = $vipTruePrice;
-//        $orderInfo['total_price'] = floatval(bcsub((string)$orderInfo['total_price'], (string)$vipTruePrice, 2));
+        // $orderInfo['total_price'] = floatval(bcsub((string)$orderInfo['total_price'], (string)$vipTruePrice, 2));
+
         //优惠活动优惠详情
         /** @var StoreOrderPromotionsServices $storeOrderPromotiosServices */
         $storeOrderPromotiosServices = app()->make(StoreOrderPromotionsServices::class);
@@ -767,7 +768,6 @@ trait Order
             $storeServices = app()->make(SystemStoreServices::class);
             $orderInfo['_store_name'] = $storeServices->value(['id' => $orderInfo['store_id']], 'name');
         }
-
         $orderInfo = $this->services->tidyOrderList([$orderInfo])[0];
         $orderInfo['write_off'] = $orderInfo['write_times'] = 0;
         $orderInfo['write_day'] = '';

@@ -4,8 +4,11 @@ namespace app\controller\admin\v1\order;
 
 use app\controller\admin\AuthController;
 use app\Request;
+use app\services\order\store\WriteOffOrderServices;
+use app\services\order\StoreOrderInfoServices;
 use app\services\order\StoreOrderRefundServices;
 use app\services\order\StoreOrderServices;
+use app\services\store\SystemStoreServices;
 use app\services\user\UserServices;
 use think\facade\App;
 
@@ -201,7 +204,61 @@ class RefundOrder extends AuthController
             }
         }
 		$orderInfo['total_price'] = floatval(bcadd((string)$orderInfo['total_price'], (string)$orderInfo['vip_true_price'], 2));
-        $orderInfo['writeoff_list'] = $order['writeoff_list'] ?? [];
+
+        /** @var StoreOrderServices $orderServices */
+        $orderServices = app()->make(StoreOrderServices::class);
+        // var_dump($id, $orderInfo['id']);exit;
+
+        $tmpOrderInfo  =  $orderInfo;
+        $tmpOrderInfo['id'] = $orderInfo['store_order_id'];
+
+        $orderInfo = $orderServices->tidyOrderList([$tmpOrderInfo])[0];
+        $orderInfo['write_off'] = $orderInfo['write_times'] = 0;
+        $orderInfo['write_day'] = '';
+        $cart = $orderInfo['cartInfo'][0] ?? [];
+        // var_dump($cart);exit;
+        if ($orderInfo['product_type'] == 4 && $cart) {//次卡商品
+            $orderInfo['write_off'] = $cart['write_off'] ?? max(bcsub((string)$cart['write_times'], (string)$cart['write_surplus_times'], 0), 0);
+            $orderInfo['write_times'] = $cart['write_times'] ?? 0;
+            $start = $cart['write_start'] ?? 0;
+            $end = $cart['write_end'] ?? 0;
+            if (!$start && !$end) {
+                $orderInfo['write_day'] = '不限时';
+            } else {
+                $orderInfo['write_day'] = ($start ? date('Y-m-d', $start) : '') . '/' . ($end ? date('Y-m-d', $end) : '');
+            }
+
+            if ($orderInfo['is_class']) {
+                $orderInfo['used_times'] = $orderInfo['write_times'] - $cart['write_surplus_times'];
+                $orderInfo['used_times_str'] = $orderInfo['used_times'].'/'.$orderInfo['write_times'].'次';
+                //激活时间
+                $orderInfo['active_time'] = [];
+                //使用期限
+                $orderInfo['use_expire_time'] = '';
+                if ($orderInfo['used_times'] > 0) {
+                    $orderInfo['active_time'][] = date('Y-m-d H:i:s', $cart['write_start']);
+                    $orderInfo['use_expire_time'] = date('Y-m-d H:i:s', $cart['write_end']).' 到期';
+                } else {
+                    if ($cart['active_start']) {
+                        $orderInfo['active_time'][] = $cart['active_start'];
+                    }
+
+                    if ($cart['active_end']) {
+                        $orderInfo['active_time'][] = $cart['active_end'];
+                    }
+                }
+
+                //下单信息
+                $orderInfo['order_info'] = app()->make(StoreOrderInfoServices::class)->getOrderInfo($orderInfo['id']);
+                //课程适用门店
+                $orderInfo['applicable_stores'] = app()->make(SystemStoreServices::class)->getApplicableStore($cart['productInfo']['applicable_type'], $cart['productInfo']['applicable_store_id']);
+            }
+        }
+
+        $orderInfo['_status_new'] = $orderInfo['_status'];
+        $writeOffOrderServices = app()->make(WriteOffOrderServices::class);
+        $orderInfo['writeoff_list'] = $writeOffOrderServices->writeoffOrderList($id);
+
         return $this->success(compact('orderInfo', 'userInfo'));
     }
 }
