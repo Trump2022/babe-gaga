@@ -201,6 +201,7 @@ class RefundOrder extends AuthController
             }
         }
 		$orderInfo['total_price'] = floatval(bcadd((string)$orderInfo['total_price'], (string)$orderInfo['vip_true_price'], 2));
+        $orderInfo['writeoff_list'] = $order['writeoff_list'] ?? [];
         return $this->success(compact('orderInfo', 'userInfo'));
     }
 }
