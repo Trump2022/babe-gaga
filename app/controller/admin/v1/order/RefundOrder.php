@@ -265,7 +265,7 @@ class RefundOrder extends AuthController
         $writeOffOrderServices = app()->make(WriteOffOrderServices::class);
         $orderInfo['writeoff_list'] = $writeOffOrderServices->writeoffOrderList($orderInfo['store_order_id']);
 
-
+        $orderInfo['storeOrderInfo'] = $orderInfo2['storeOrderInfo'];
         return $this->success(compact('orderInfo', 'userInfo'));
     }
 }
