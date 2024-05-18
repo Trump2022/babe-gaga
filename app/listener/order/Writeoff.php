@@ -10,6 +10,7 @@
 // +----------------------------------------------------------------------
 namespace app\listener\order;
 
+use app\services\order\StoreOrderCartInfoServices;
 use app\jobs\order\OrderWriteoffJob;
 use app\jobs\product\ProductLogJob;
 use app\jobs\store\StoreFinanceJob;
@@ -67,16 +68,25 @@ class Writeoff implements ListenerInterface
 		}
 		$message = [];
 		/** @var StoreProductServices $productServices */
-		$productServices = app()->make(StoreProductServices::class);
-		foreach ($cartInfo as $item) {
-			foreach ($cartIds as $value) {
-				if ($value['cart_id'] === $item['cart_id']) {
-					$store_name = $productServices->value(['id'=>$item['product_id']],'store_name');
-					$message[] = substrUTf8($store_name, 10, 'UTF-8', '');
-				}
-			}
-		}
-		$data['store_name'] = implode(' ', $message);
+		// $productServices = app()->make(StoreProductServices::class);
+		// foreach ($cartInfo as $item) {
+		// 	foreach ($cartIds as $value) {
+		// 		if ($value['cart_id'] === $item['cart_id']) {
+		// 			$store_name = $productServices->value(['id'=>$item['product_id']],'store_name');
+		// 			$message[] = substrUTf8($store_name, 10, 'UTF-8', '');
+		// 		}
+		// 	}
+		// }
+		// $data['store_name'] = implode(' ', $message);
+
+        //获取购物车内的商品标题
+        /** @var StoreOrderCartInfoServices $orderInfoServices */
+        $orderInfoServices = app()->make(StoreOrderCartInfoServices::class);
+        $storeName = $orderInfoServices->getCarIdByProductTitle((int)$orderInfo['id']);
+        $storeTitle = substrUTf8($storeName, 20, 'UTF-8', '');
+        $storeTitle = $storeTitle ?? '';
+        $data['store_name'] = $storeTitle;
+
 		$data['phone'] = $orderInfo['user_phone'];
 		$data['uid'] = $orderInfo['uid'];
 		event('notice.notice', [$data, 'reminder_verification_status']);
