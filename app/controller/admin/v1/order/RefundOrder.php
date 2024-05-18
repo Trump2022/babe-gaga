@@ -252,11 +252,11 @@ class RefundOrder extends AuthController
                 $orderInfo2['applicable_stores'] = app()->make(SystemStoreServices::class)->getApplicableStore($cart['productInfo']['applicable_type'], $cart['productInfo']['applicable_store_id']);
             }
         }
-        $orderInfo['write_off'] = $orderInfo2['write_off'];
-        $orderInfo['write_times'] = $orderInfo2['write_times'];
-        $orderInfo['write_day'] = $orderInfo2['write_day'];
-        $orderInfo['used_times'] = $orderInfo2['used_times'];
-        $orderInfo['used_times_str'] = $orderInfo2['used_times_str'];
+        $orderInfo['write_off'] = $orderInfo2['write_off'] ?? 0;
+        $orderInfo['write_times'] = $orderInfo2['write_times'] ?? 0;
+        $orderInfo['write_day'] = $orderInfo2['write_day'] ??  '';
+        $orderInfo['used_times'] = $orderInfo2['used_times'] ?? 0;
+        $orderInfo['used_times_str'] = $orderInfo2['used_times_str'] ?? '';
         $orderInfo['active_time'] = $orderInfo2['active_time'] ?? [];
         $orderInfo['use_expire_time'] = $orderInfo2['use_expire_time'] ?? '';
         $orderInfo['order_info'] = $orderInfo2['order_info'] ?? [];
