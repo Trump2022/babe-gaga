@@ -833,7 +833,9 @@
 				this.placeholder = "回复：" + this.pinlunList[index].nickname;
 				this.huifuindex = index;
 				this.openPinglun();
-				setTimeout(() => {				   this.autoFocus = true;				},100)
+				setTimeout(() => {
+				   this.autoFocus = true;
+				},100)
 			},
 			clicknowImage(index) {
 				// 点击 GIF 图片信息

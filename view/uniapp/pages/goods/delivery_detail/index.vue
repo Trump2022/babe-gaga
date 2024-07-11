@@ -87,7 +87,9 @@
 				})
 			},
 			call(phone){
-				uni.makePhoneCall({					phoneNumber: phone				});
+				uni.makePhoneCall({
+					phoneNumber: phone
+				});
 			}
 		}
 	}

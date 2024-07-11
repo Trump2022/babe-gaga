@@ -855,8 +855,11 @@
 			},
 			onLoadFun: function(e) {
 				let that = this;
-				if (that.bargainUid == 'undefined' || !that.bargainUid) {					that.bargainUid = that.$store.state.app.uid;				}
-				that.getBargainDetails();				that.addShareBargain();
+				if (that.bargainUid == 'undefined' || !that.bargainUid) {
+					that.bargainUid = that.$store.state.app.uid;
+				}
+				that.getBargainDetails();
+				that.addShareBargain();
 				that.isShowAuth = false;
 			},
 			addShareBargain: function() {
