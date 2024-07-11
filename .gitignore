@@ -2,6 +2,7 @@
 /.idea
 /runtime
 /backup
+public/.well-known
 /public/uploads
 *.log
 /public/install/install.lock
@@ -9,7 +10,9 @@ public/admin/
 /.env
 /swoole.pid
 public/pages/
+public/dist
 public/static/
+public/images
 help/docker-compose/mysql/data/
 help/docker-compose/redis/data/
 /update/sh
