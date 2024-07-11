@@ -587,11 +587,7 @@
 							this.dataList.push(msg[i])
 						}
 					}).catch(err=>{
-						return uni.showToast({
-								title: err,
-								icon: 'none',
-								duration: 2000
-							});
+						return uni.showToast({								title: err,								icon: 'none',								duration: 2000							});
 					})
 			},
 			touchstart(event){

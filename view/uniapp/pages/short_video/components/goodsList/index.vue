@@ -145,11 +145,7 @@
 					});
 				if (that.attr.productSelect.cart_num <= 0) {
 					that.attr.productSelect.cart_num = 1
-					return uni.showToast({
-								title: '请先选择属性',
-								icon: 'none',
-								duration: 2000
-							});
+					return uni.showToast({								title: '请先选择属性',								icon: 'none',								duration: 2000							});
 				}
 				let q = {
 					productId: that.id,
@@ -176,11 +172,7 @@
 						}
 					})
 					.catch(err => {
-						return uni.showToast({
-										title: err,
-										icon: 'none',
-										duration: 2000
-									});
+						return uni.showToast({										title: err,										icon: 'none',										duration: 2000									});
 					});
 			},
 			goIncart(){
