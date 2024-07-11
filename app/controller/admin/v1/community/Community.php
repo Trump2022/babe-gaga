@@ -25,8 +25,7 @@ use think\Response;
  * Class Community
  * @packge app\controller\admin\v1\community
  * @date : 2024/1/8 14:56
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class Community extends AuthController
 {
@@ -47,8 +46,7 @@ class Community extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 15:12
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function lst(): Response
     {
@@ -91,8 +89,7 @@ class Community extends AuthController
      * @throws FormBuilderException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 12:00
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function updateForm($id): Response
     {
@@ -109,8 +106,7 @@ class Community extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 12:02
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function showForm($id): Response
     {
@@ -122,8 +118,7 @@ class Community extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 12:02
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function update($id): Response
     {
@@ -153,8 +148,7 @@ class Community extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:31
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function switchStatus($id): Response
     {
@@ -177,8 +171,7 @@ class Community extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 12:02
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function switchShow($id): Response
     {
@@ -194,8 +187,7 @@ class Community extends AuthController
      * @throws DbException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:34
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function title(): Response
     {

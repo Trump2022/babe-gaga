@@ -337,8 +337,7 @@ class UserBillDao extends BaseDao
      * @return array|BaseModel|mixed|Model
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/17 19:45
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getLastGiveIntegral($where)
     {

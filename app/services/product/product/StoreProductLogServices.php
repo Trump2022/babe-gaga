@@ -186,8 +186,7 @@ class StoreProductLogServices extends BaseServices
      * @return array
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/18 14:50
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getListForCommunity(array $where): array
     {
@@ -209,8 +208,7 @@ class StoreProductLogServices extends BaseServices
      * @return mixed
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/18 14:49
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getQueryForHistoryList($where)
     {

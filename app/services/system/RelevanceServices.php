@@ -231,8 +231,7 @@ class RelevanceServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/19 15:39
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getUserStartCommunity(array $where): array
     {

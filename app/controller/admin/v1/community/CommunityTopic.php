@@ -27,8 +27,7 @@ use think\Response;
  * Class CommunityTopic
  * @packge app\controller\admin\v1\community
  * @date : 2024/1/9 16:38
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityTopic extends AuthController
 {
@@ -66,8 +65,7 @@ class CommunityTopic extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:09
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function detail($id): Response
     {
@@ -94,8 +92,7 @@ class CommunityTopic extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 18:16
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function create(): Response
     {
@@ -117,8 +114,7 @@ class CommunityTopic extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:01
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function updateForm($id): Response
     {
@@ -134,8 +130,7 @@ class CommunityTopic extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:03
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function update($id): Response
     {
@@ -153,8 +148,7 @@ class CommunityTopic extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:18
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function delete($id): Response
     {
@@ -167,8 +161,7 @@ class CommunityTopic extends AuthController
      * @return array
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 18:15
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function checkParams(): array
     {
@@ -189,8 +182,7 @@ class CommunityTopic extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:14
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function switchStatus($id): Response
     {
@@ -204,8 +196,7 @@ class CommunityTopic extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:22
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getOptions(): Response
     {
@@ -217,8 +208,7 @@ class CommunityTopic extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 19:22
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function switchHot($id): Response
     {

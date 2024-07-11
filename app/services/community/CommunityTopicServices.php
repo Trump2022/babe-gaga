@@ -27,8 +27,7 @@ use think\facade\Route;
  * Class CommunityTopicServices
  * @packge app\services\community
  * @date : 2024/1/8 19:21
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin CommunityTopicDao
  */
 class CommunityTopicServices extends BaseServices
@@ -67,8 +66,7 @@ class CommunityTopicServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 18:08
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function form(?int $id): Form
     {

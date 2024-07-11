@@ -91,8 +91,7 @@ class UserRelationDao extends BaseDao
      * @return BaseQuery
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/17 21:21
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getUserProductToCommunity(int $uid, ?string  $keyword = ''): BaseQuery
     {
@@ -110,8 +109,7 @@ class UserRelationDao extends BaseDao
      * @return BaseModel
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/17 21:49
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getModel(): BaseModel
     {

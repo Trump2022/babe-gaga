@@ -73,8 +73,7 @@ class CommunityReply extends BaseModel
      * @return HasOne
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 11:15
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function author(): HasOne
     {

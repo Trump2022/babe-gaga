@@ -27,8 +27,7 @@ use think\facade\Route;
  * Class CommunityCategoryServices
  * @packge app\services\community
  * @date : 2024/1/8 16:58
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin CommunityCategoryDao
  */
 class CommunityCategoryServices extends BaseServices
@@ -72,8 +71,7 @@ class CommunityCategoryServices extends BaseServices
      * @return void
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:46
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function delete(int $id)
     {
@@ -90,8 +88,7 @@ class CommunityCategoryServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:46
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getList(array $where): array
     {
@@ -110,8 +107,7 @@ class CommunityCategoryServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:46
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function options(): array
     {
@@ -127,8 +123,7 @@ class CommunityCategoryServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 17:42
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getApiList(): array
     {

@@ -19,8 +19,7 @@ use app\model\community\CommunityCategory;
  * Class CommunityCategoryDao
  * @packge app\dao\community
  * @date : 2024/1/8 10:16
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityCategoryDao extends BaseDao
 {

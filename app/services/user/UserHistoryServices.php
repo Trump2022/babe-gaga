@@ -12,8 +12,7 @@ use think\db\exception\ModelNotFoundException;
  * Class UserHistoryServices
  * @packge app\services\user
  * @date : 2024/1/12 16:10
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin UserHistoryDao
  */
 class UserHistoryServices extends BaseServices
@@ -37,8 +36,7 @@ class UserHistoryServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:12
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function historyLst($where): array
     {

@@ -297,8 +297,7 @@ class PublicController extends BaseController
      * @throws InvalidArgumentException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/15 17:04
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function upload_video(Request $request, SystemAttachmentServices $services): Response
     {

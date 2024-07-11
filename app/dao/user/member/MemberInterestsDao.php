@@ -18,8 +18,7 @@ use app\model\user\member\MemberInterests;
  * Class MemberInterestsDao
  * @packge app\dao\user\member
  * @date : 2024/1/9 15:06
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class MemberInterestsDao extends BaseDao
 {
@@ -27,8 +26,7 @@ class MemberInterestsDao extends BaseDao
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:06
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     protected function setModel(): string
     {

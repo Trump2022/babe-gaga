@@ -73,8 +73,7 @@ class CommunityReply extends AuthController
      * @throws ModelNotFoundException|FormBuilderException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 11:20
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function statusForm($id): Response
     {
@@ -87,8 +86,7 @@ class CommunityReply extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 11:22
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function switchStatus($id): Response
     {

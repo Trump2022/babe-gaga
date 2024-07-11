@@ -25,8 +25,7 @@ use think\Response;
  * Class CommunityCategoryController
  * @packge app\controller\api\v1\community
  * @date : 2024/1/11 18:17
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityCategoryController
 {
@@ -48,8 +47,7 @@ class CommunityCategoryController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 17:42
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function lst(): Response
     {

@@ -10,8 +10,7 @@ use app\services\BaseServices;
  * Class MemberInterestsServices
  * @packge app\services\user\member
  * @date : 2024/1/9 15:11
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin UserBrokeragesDao
  */
 class MemberInterestsServices extends BaseServices
@@ -56,8 +55,7 @@ class MemberInterestsServices extends BaseServices
      * @return mixed
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:13
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getSvipInterestVal($has_type)
     {

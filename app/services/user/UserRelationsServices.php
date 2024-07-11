@@ -9,8 +9,7 @@ use app\services\BaseServices;
  * Class UserRelationsServices
  * @packge app\services\user
  * @date : 2024/1/12 15:54
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin UserRelationsDao
  */
 class UserRelationsServices extends BaseServices

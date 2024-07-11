@@ -23,8 +23,7 @@ use think\exception\ValidateException;
  * Class SpuServices
  * @packge ${NAMESPACE}
  * @date : 2024/1/9 15:41
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin SpuDao
  */
 class SpuServices extends BaseServices

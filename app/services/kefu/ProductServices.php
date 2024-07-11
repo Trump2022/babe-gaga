@@ -71,8 +71,7 @@ class ProductServices extends BaseServices
      * @throws \think\db\exception\ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/26 9:35
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getProductCartCount(int $uid, string $storeName = '')
     {

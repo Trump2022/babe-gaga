@@ -26,8 +26,7 @@ class CommunityDao extends BaseDao
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 10:16
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     protected function setModel(): string
     {
@@ -38,8 +37,7 @@ class CommunityDao extends BaseDao
      * @return BaseModel
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/17 20:10
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getModel(): BaseModel
     {

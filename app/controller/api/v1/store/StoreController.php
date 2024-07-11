@@ -109,8 +109,7 @@ class StoreController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/20 15:28
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getStoreCities(Request $request): Response
     {

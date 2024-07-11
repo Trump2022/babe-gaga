@@ -31,8 +31,7 @@ use think\Model;
  * Class CommunityReplyServices
  * @packge app\services\community
  * @date : 2024/1/10 11:03
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin CommunityReplyDao
  */
 class CommunityReplyServices extends BaseServices
@@ -58,8 +57,7 @@ class CommunityReplyServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 11:19
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getList(array $where): array
     {
@@ -96,8 +94,7 @@ class CommunityReplyServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 18:12
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getApiList(array $where, $userInfo): array
     {
@@ -197,8 +194,7 @@ class CommunityReplyServices extends BaseServices
      * @return void
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 19:26
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function delete($id)
     {
@@ -218,8 +214,7 @@ class CommunityReplyServices extends BaseServices
      * @return void
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 19:44
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function setStart(int $id, int  $uid, int $status)
     {
@@ -245,8 +240,7 @@ class CommunityReplyServices extends BaseServices
      * @throws FormBuilderException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 11:25
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function statusForm(int $id): Form
     {

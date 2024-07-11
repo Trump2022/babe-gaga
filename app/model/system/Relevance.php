@@ -49,8 +49,7 @@ class Relevance extends BaseModel
      * @return HasOne
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:28
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function spu(): HasOne
     {
@@ -61,8 +60,7 @@ class Relevance extends BaseModel
      * @return HasOne
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:43
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function community(): HasOne
     {
@@ -78,8 +76,7 @@ class Relevance extends BaseModel
      * @return HasOne
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 17:10
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function fans(): HasOne
     {
@@ -90,8 +87,7 @@ class Relevance extends BaseModel
      * @return HasOne
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 17:10
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function focus(): HasOne
     {

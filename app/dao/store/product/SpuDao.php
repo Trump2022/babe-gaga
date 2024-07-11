@@ -20,8 +20,7 @@ class SpuDao extends BaseDao
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:38
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     protected function setModel(): string
     {

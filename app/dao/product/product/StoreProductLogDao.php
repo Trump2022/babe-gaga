@@ -86,8 +86,7 @@ class StoreProductLogDao extends BaseDao
      * @return BaseQuery
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/18 11:23
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function joinStoreProduct($where): BaseQuery
     {
@@ -106,8 +105,7 @@ class StoreProductLogDao extends BaseDao
      * @return BaseModel
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/18 12:02
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getModel(): BaseModel
     {

@@ -42,8 +42,7 @@ use think\response\Json;
  * Class CommunityController
  * @packge app\controller\api\v1\community
  * @date : 2024/1/11 18:16
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityController
 {
@@ -98,8 +97,7 @@ class CommunityController
      * @return array
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 15:32
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function checkParams($request): array
     {
@@ -239,8 +237,7 @@ class CommunityController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 17:31
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function show($id): Response
     {
@@ -349,8 +346,7 @@ class CommunityController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:13
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function historyList(Request $request, StoreProductLogServices $services): Response
     {
@@ -386,8 +382,7 @@ class CommunityController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:46
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function startCommunity(Request $request, $id): Response
     {
@@ -504,8 +499,7 @@ class CommunityController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 18:02
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function qrcode(Request $request, $id): Response
     {
@@ -526,8 +520,7 @@ class CommunityController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 17:52
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getSpuByOrder($id): Response
     {

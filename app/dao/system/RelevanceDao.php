@@ -21,8 +21,7 @@ use think\db\exception\DbException;
  * Class RelevanceDao
  * @packge app\dao\system
  * @date : 2024/1/12 16:38
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class RelevanceDao extends BaseDao
 {
@@ -30,8 +29,7 @@ class RelevanceDao extends BaseDao
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:46
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     protected function setModel(): string
     {
@@ -46,8 +44,7 @@ class RelevanceDao extends BaseDao
      * @throws DbException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:38
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function clear(int $id, $type, string $field = 'left_id'): int
     {
@@ -60,8 +57,7 @@ class RelevanceDao extends BaseDao
      * @return BaseQuery
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:38
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function joinUser($where): BaseQuery
     {

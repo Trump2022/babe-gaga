@@ -26,8 +26,7 @@ use think\Response;
  * Class CommunityReplyController
  * @packge app\controller\api\v1\community
  * @date : 2024/1/11 18:16
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityReplyController
 {
@@ -106,8 +105,7 @@ class CommunityReplyController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 19:26
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function delete(Request $request, $id): Response
     {

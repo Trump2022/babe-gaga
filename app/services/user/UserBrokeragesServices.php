@@ -20,8 +20,7 @@ use think\facade\Route;
  * Class UserBrokeragesServices
  * @packge app\services\user
  * @date : 2024/1/13 16:35
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin UserBrokeragesDao
  */
 class UserBrokeragesServices extends BaseServices

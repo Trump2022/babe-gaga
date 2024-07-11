@@ -44,8 +44,7 @@ class StoreOrderProductServices extends BaseServices
      * @return array
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 17:50
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getUserPayProduct(?string $keyword, int $uid): array
     {

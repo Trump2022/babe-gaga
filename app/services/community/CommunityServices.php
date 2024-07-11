@@ -41,8 +41,7 @@ use think\Model;
  * Class CommunityServices
  * @packge app\services\community
  * @date : 2024/1/8 15:03
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  * @mixin CommunityDao
  */
 class CommunityServices extends BaseServices
@@ -74,8 +73,7 @@ class CommunityServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:25
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function setStatus($id, $data)
     {
@@ -108,8 +106,7 @@ class CommunityServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 12:05
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getList(array $where = []): array
     {
@@ -177,8 +174,7 @@ class CommunityServices extends BaseServices
      * @throws FormBuilderException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 12:01
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function showForm($id): Form
     {
@@ -201,8 +197,7 @@ class CommunityServices extends BaseServices
      * @throws FormBuilderException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 12:00
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function form($id)
     {
@@ -223,8 +218,7 @@ class CommunityServices extends BaseServices
      * @throws DbException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 15:34
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function title(array $where): array
     {
@@ -338,8 +332,7 @@ class CommunityServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 16:14
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getApiVideoList(array $where, $userInfo, int $type = 0): array
     {
@@ -441,8 +434,7 @@ class CommunityServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 17:52
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getSpuByOrder($id): array
     {
@@ -515,8 +507,7 @@ class CommunityServices extends BaseServices
      * @return void
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/17 15:51
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function incIntegral($uid, $community_id)
     {
@@ -655,8 +646,7 @@ class CommunityServices extends BaseServices
      * @return void
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:54
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function setFocus(int $id, int  $uid,int $status)
     {
@@ -683,8 +673,7 @@ class CommunityServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 16:54
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function setCommunityStart(int $id, $userInfo, int $status)
     {
@@ -732,8 +721,7 @@ class CommunityServices extends BaseServices
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 18:02
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function qrcode($id, $type,$user)
     {

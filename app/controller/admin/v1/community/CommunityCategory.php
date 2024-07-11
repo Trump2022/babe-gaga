@@ -27,8 +27,7 @@ use think\response\Json;
  * Class CommunityCategory
  * @packge app\controller\admin\v1\community
  * @date : 2024/1/8 16:12
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityCategory extends AuthController
 {
@@ -65,8 +64,7 @@ class CommunityCategory extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:29
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function detail($id): Response
     {
@@ -83,8 +81,7 @@ class CommunityCategory extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:24
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function createForm(): Json
     {
@@ -95,8 +92,7 @@ class CommunityCategory extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 17:04
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function create(): Response
     {
@@ -113,8 +109,7 @@ class CommunityCategory extends AuthController
      * @return array
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 16:56
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function checkParams(): array
     {
@@ -137,8 +132,7 @@ class CommunityCategory extends AuthController
      * @throws FormBuilderException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 17:51
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function updateForm($id): Response
     {
@@ -151,8 +145,7 @@ class CommunityCategory extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 17:52
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function update($id): Response
     {
@@ -170,8 +163,7 @@ class CommunityCategory extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:15
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function delete($id): Response
     {
@@ -185,8 +177,7 @@ class CommunityCategory extends AuthController
      * @return Response
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 19:26
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function switchStatus($id): Response
     {
@@ -204,8 +195,7 @@ class CommunityCategory extends AuthController
      * @throws ModelNotFoundException
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/11 17:27
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getOptions(): Response
     {

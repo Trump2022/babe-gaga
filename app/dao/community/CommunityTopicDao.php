@@ -20,8 +20,7 @@ use app\model\community\CommunityTopic;
  * Class CommunityTopicDao
  * @packge app\dao\community
  * @date : 2024/1/9 19:13
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class CommunityTopicDao extends BaseDao
 {
@@ -29,8 +28,7 @@ class CommunityTopicDao extends BaseDao
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/8 10:16
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     protected function setModel(): string
     {

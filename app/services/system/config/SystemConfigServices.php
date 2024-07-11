@@ -1866,8 +1866,7 @@ WSS;
      * @return array
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/10 16:47
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function communityFormBuild(): array
     {

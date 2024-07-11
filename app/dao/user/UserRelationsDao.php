@@ -20,8 +20,7 @@ class UserRelationsDao extends BaseDao
      * @return BaseQuery
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/12 15:24
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getUserProductToCommunity(?string  $keyword, int $uid): BaseQuery
     {

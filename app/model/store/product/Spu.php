@@ -18,8 +18,7 @@ use crmeb\traits\ModelTrait;
  * Class Spu
  * @packge app\model\store\product
  * @date : 2024/1/9 16:08
- * @author: QSW
- * @email: qsw2012@outlook.com
+ * @author: Trump
  */
 class Spu extends BaseModel
 {
@@ -62,8 +61,7 @@ class Spu extends BaseModel
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:36
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function setMerLabelsAttr($value): string
     {
@@ -80,8 +78,7 @@ class Spu extends BaseModel
      * @return array|false|string[]
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:36
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getMerLabelsAttr($value)
     {
@@ -94,8 +91,7 @@ class Spu extends BaseModel
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:36
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function setSysLabelsAttr($value): string
     {
@@ -112,8 +108,7 @@ class Spu extends BaseModel
      * @return array|false|string[]
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:35
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getSysLabelsAttr($value)
     {
@@ -126,8 +121,7 @@ class Spu extends BaseModel
      * @return string
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:35
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getImageAttr($value): string
     {
@@ -143,8 +137,7 @@ class Spu extends BaseModel
      * @return int
      * @descr: I am on my way to future,where you are there.
      * @date : 2024/1/9 11:33
-     * @author: QSW
-     * @email: qsw2012@outlook.com
+     * @author: Trump
      */
     public function getOtPriceAttr($value): int
     {
