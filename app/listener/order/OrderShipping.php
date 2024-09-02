@@ -106,7 +106,8 @@ class OrderShipping implements ListenerInterface
                 }
                 $logistics_type = $delivery_type;
             } else {
-                $logistics_type = 4;
+                // $logistics_type = 4;
+                $logistics_type =  ! empty($order['product_type']) ? 3 : 4;
             }
             //查找支付者openid
             /** @var WechatUserServices $wechatUserService */

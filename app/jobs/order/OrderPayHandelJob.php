@@ -71,14 +71,14 @@ class OrderPayHandelJob extends BaseJobs
                         $content = '您购买的密钥商品已支付成功，支付金额' . $orderInfo['pay_price'] . '元，订单号：' . $orderInfo['order_id'] . '，密钥：' . $disk_info . '，感谢您的光临！';
                         $virtual_info = '密钥自动发放：' . $disk_info;
                         $value = '密钥:' . $disk_info;
-//                        $remark = '密钥自动发放：' . $disk_info;
+                       // $remark = '密钥自动发放：' . $disk_info;
                     } else {
                         /** @var StoreProductVirtualServices $virtualService */
                         $virtualService = app()->make(StoreProductVirtualServices::class);
                         $cardList = $virtualService->getOrderCardList(['store_id' => $orderInfo['store_id'], 'attr_unique' => $unique, 'uid' => 0], (int)$orderInfo['total_num']);
                         $title = '虚拟卡密发放';
                         $virtual_info = '卡密已自动发放，';
-//                        $remark = '卡密已自动发放';
+                       // $remark = '卡密已自动发放';
                         $value = '';
                         if ($cardList) {
                             $content = '您购买的卡密商品已支付成功，支付金额' . $orderInfo['pay_price'] . '元，订单号：' . $orderInfo['order_id'] . ',';
@@ -90,7 +90,7 @@ class OrderPayHandelJob extends BaseJobs
                                 $content .= '卡号：' . $virtual['card_no'] . '；密码：' . $virtual['card_pwd'] . "\n";
                                 $virtual_info .= '卡号：' . $virtual['card_no'] . '；密码：' . $virtual['card_pwd'] . ';';
                                 $value .= '卡号:' . $virtual['card_no'] . '；密码:' . $virtual['card_pwd'];
-//                                $remark .= '，卡号：' . $virtual['card_no'] . '；密码：' . $virtual['card_pwd'] . ';';
+                               // $remark .= '，卡号：' . $virtual['card_no'] . '；密码：' . $virtual['card_pwd'] . ';';
                             }
                             $content .= '，感谢您的光临！';
                         }

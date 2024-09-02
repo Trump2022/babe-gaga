@@ -116,8 +116,8 @@ class Pay implements ListenerInterface
             OrderSyncJob::dispatchDo('syncOrder', [(int)$orderInfo['id']]);
         }
 		// 小程序订单管理 (自提商品)
-		if ($orderInfo['shipping_type'] == 2) {
-			event('order.routine.shipping', ['product', $orderInfo, 4, '', '']);
+		if ($orderInfo['shipping_type'] == 2 || $orderInfo['product_type'] > 0) {
+			event('order.routine.shipping', ['product', $orderInfo, $orderInfo['product_type'] > 0 ? 3 : 4, '', '']);
 		}
     }
 }
