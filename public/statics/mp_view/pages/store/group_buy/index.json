@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "拼单进行中",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "home": "/components/home/index"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "component": true,
+  "usingComponents": {
+    "privacy-agreement-popup": "/components/privacyAgreementPopup/index"
+  }
+}

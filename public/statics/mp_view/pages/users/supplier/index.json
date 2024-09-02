@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "供应商入驻",
+  "usingComponents": {
+    "verify": "/pages/users/components/verify/verify",
+    "agreement": "/pages/users/components/agreement/index",
+    "home": "/components/home/index"
+  }
+}

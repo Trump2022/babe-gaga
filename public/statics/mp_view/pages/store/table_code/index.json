@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "商品列表",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "store-cate1": "/pages/store/table_code/cart",
+    "page-footer": "/components/pageFooter/index"
+  }
+}

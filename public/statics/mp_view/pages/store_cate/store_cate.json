@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "门店",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "usingComponents": {
+    "store-cate1": "/pages/store_cate/store_cate1",
+    "store-cate2": "/pages/store_cate/store_cate2",
+    "page-footer": "/components/pageFooter/index"
+  }
+}

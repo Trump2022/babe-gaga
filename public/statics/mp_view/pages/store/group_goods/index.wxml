@@ -1,0 +1,1 @@
+<view class="data-v-7e6813c0"><goods-list vue-id="2335f878-1" goods-list="{{goodsList}}" class="data-v-7e6813c0" bind:__l="__l"></goods-list><home vue-id="2335f878-2" class="data-v-7e6813c0" bind:__l="__l"></home></view>

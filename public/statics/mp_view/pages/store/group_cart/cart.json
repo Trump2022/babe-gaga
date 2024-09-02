@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-badge": "/uni_modules/uni-badge/components/uni-badge/uni-badge",
+    "product-window": "/components/productWindow/index",
+    "good-class": "/components/goodClass/index",
+    "cart-list": "/components/cartList/index"
+  }
+}
