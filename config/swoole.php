@@ -8,7 +8,7 @@ return strtoupper(substr(php_uname('s'), 0, 3)) === 'WIN' ? [] : [
     'http' => [
         'enable' => true,
         'host' => '0.0.0.0',
-        'port' => 20699,
+        'port' => 20697,
         'worker_num' => swoole_cpu_num() * 2,
         'options' => [
             'package_max_length' => 50 * 1024 * 1024,
