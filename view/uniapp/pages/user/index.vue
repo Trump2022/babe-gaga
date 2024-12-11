@@ -131,7 +131,7 @@
 									<view class="txt">优惠券</view>
 								</view>
 								<view class="num-item" @click="goMenuPage('/pages/users/user_integral/index')">
-									<text class="num">{{userInfo.integral || 0}}</text>
+									<text class="num">{{userInfo.commissionCount || 0}}</text>
 									<view class="txt">gaga币</view>
 								</view>
 								<view class="num-item" @click="goMenuPage('/pages/users/user_goods_collection/index')">

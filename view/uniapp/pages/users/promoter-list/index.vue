@@ -13,7 +13,7 @@
 			<timeSlot @changeTime="changeTime"></timeSlot>
 			<view class='list' v-if="recordList.length">
 				<view class="top_num">
-					共 <text class="main_color">{{count}}</text> 位推广人，获得佣金<text class="main_color">¥{{price}}</text>
+					共 <text class="main_color">{{count}}</text> 位推广人，获得gaga币<text class="main_color">{{price}}</text>个
 				</view>
 				<block v-for="(item,index) in recordList" :key="index">
 					<view class='item acea-row row-between-wrapper' :class="index == 0 ? 'radius15' : ''">
@@ -29,7 +29,7 @@
 						<view class="right">
 							<view><text class='num font-num'>{{item.childCount ? item.childCount : 0}}</text>人</view>
 							<view><text class="num">{{item.orderCount ? item.orderCount : 0}}</text>单</view>
-							<view><text class="num">{{item.numberCount ? item.numberCount : 0}}</text>元</view>
+							<view><text class="num">￥{{item.numberCount ? item.numberCount : 0}}</text></view>
 						</view>
 					</view>
 				</block>

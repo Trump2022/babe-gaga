@@ -11,7 +11,7 @@
 			<timeSlot @changeTime="changeTime"></timeSlot>
 			<view class='sign-record'>
 				<view class="top_num" v-if="recordType != 4 && recordList.length">
-					支出：¥{{expend || 0}} &nbsp;&nbsp;&nbsp; 收入：¥{{income || 0}}
+					支出：{{expend || 0}} &nbsp;&nbsp;&nbsp; 收入：{{income || 0}}
 				</view>
 				<view class="box">
 					<block v-for="(item,index) in recordList" :key="index" v-if="recordList.length>0">
@@ -32,8 +32,8 @@
 											 <view class="mark" v-if="recordType == 4 && item.mark && item.status !== 1">{{item.mark}}</view>
 											<view>{{item.add_time}}</view>
 										</view>
-										<view class='num font-color' v-if="item.pm == 1">+{{item.number}}</view>
-										<view class='num' v-else>-{{item.number}}</view>
+										<view class='num font-color' v-if="item.pm == 1">+{{item.number}}个</view>
+										<view class='num' v-else>-{{item.number}}个(￥{{item.amount_received}})</view>
 									</view>
 									<!-- </block> -->
 								</view>

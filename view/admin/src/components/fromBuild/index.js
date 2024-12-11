@@ -1,7 +1,7 @@
 /*
  * @Author: 默°
  * @Date: 2023-12-29 18:02:42
- * @LastEditTime: 2024-01-13 14:40:23
+ * @LastEditTime: 2024-05-07 18:36:48
  * @LastEditors: 默°
  * @Description: 搬什么砖，摸鱼吧
  * 舒适圈那么舒服为什么要离开
@@ -12,6 +12,7 @@ export default {
     cardBuild: () => import('./cardBuild'),
     inputBuild: () => import('./inputBuild'),
     inputNumberBuild: () => import('./inputNumberBuild'),
+    arrBuild: () => import('./arrBuild'),
     radioBuild: () => import('./radioBuild'),
     checkboxBuild: () => import('./checkboxBuild'),
     selectBuild: () => import('./selectBuild'),

@@ -244,6 +244,11 @@ export default {
           minWidth: 180,
         },
         {
+          title: "提现gaga币",
+          key: "number",
+          minWidth: 90,
+        },
+        {
           title: "提现到账金额",
           slot: "extract_price",
           minWidth: 90,
@@ -473,26 +478,26 @@ export default {
           this.cardLists = [
             {
               col: 6,
-              count: this.extractStatistics.price,
-              name: "待提现金额",
+              count: '￥' + this.extractStatistics.price,
+              name: "待审核金额",
               className: "md-basket",
             },
             {
               col: 6,
-              count: this.extractStatistics.brokerage_count,
-              name: "佣金总金额",
-              className: "md-pricetags",
-            },
-            {
-              col: 6,
-              count: this.extractStatistics.priced,
+              count: '￥' + this.extractStatistics.priced,
               name: "已提现金额",
               className: "md-cash",
             },
             {
               col: 6,
-              count: this.extractStatistics.brokerage_not,
-              name: "未提现金额",
+              count: this.extractStatistics.brokerage_count + '个',
+              name: "佣金总gaga币",
+              className: "md-pricetags",
+            },
+            {
+              col: 6,
+              count: this.extractStatistics.commissionCount + '个',
+              name: "可提现gaga币",
               className: "ios-cash",
             },
           ];

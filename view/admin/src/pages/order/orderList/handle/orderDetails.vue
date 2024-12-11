@@ -665,6 +665,7 @@
                             {{`${orderData.active_time[0]}`}}
                         </div>
                     </li>
+                    
                     <li class="item" v-if="orderData.use_expire_time">
                         <div>使用期限：</div>
                         <div class="value">
@@ -680,7 +681,7 @@
                 </template>
               </ul>
             </div>
-            <div class="section" v-if="orderData.is_class == 1">
+            <div class="section" v-if="orderData.is_class == 1 && orderData.storeOrderInfo">
               <div class="title">下单信息</div>
               <ul class="list">
                 <li class="item">

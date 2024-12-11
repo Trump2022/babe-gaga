@@ -11,7 +11,7 @@
 			<timeSlot @changeTime="changeTime"></timeSlot>
 			<view class='list' v-if="recordList.length>0">
 				<view class="top_num">
-					共 <text class="main_color">{{total}}</text> 笔订单，获得佣金<text class="main_color">¥{{sum_brokerage}}</text>
+					共 <text class="main_color">{{total}}</text> 笔订单，获得gaga币<text class="main_color">{{sum_brokerage}}个</text>
 				</view>
 				<block v-for="(item,index) in recordList" :key="index">
 					<view class='item'>
@@ -26,9 +26,9 @@
 											<view class='text line1'>{{child.nickname}}</view>
 										</view>
 										<view class='money' v-if="child.type == 'brokerage'">返佣：<text
-												class='font-color'>￥{{child.number}}</text></view>
+												class='font-color'>{{child.number}}个</text></view>
 										<view class='money' v-else>暂未返佣：<text
-												class='font-color'>￥{{child.number}}</text></view>
+												class='font-color'>{{child.number}}个</text></view>
 									</view>
 									<view class='bottom'>
 										<view class="msg">

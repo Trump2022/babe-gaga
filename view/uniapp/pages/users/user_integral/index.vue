@@ -4,7 +4,7 @@
 		<view class='integral-details' :style="colorStyle">
 			<view class='header'>
 				<view class='currentScore'>当前gaga币</view>
-				<view class="scoreNum">{{userInfo.integral}}</view>
+				<view class="scoreNum">{{userInfo.commissionCount}}</view>
 				<view class='line'></view>
 				<view class='nav acea-row'>
 					<view class='item'>

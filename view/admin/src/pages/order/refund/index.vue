@@ -360,6 +360,7 @@ export default {
             this.$refs.detailss.modals = true;
           }
           this.$refs.detailss.activeName = "detail";
+          res.data.is_refund = 1
           this.orderDatalist = res.data;
           // if (this.orderDatalist.orderInfo.refund_img) {
           //   try {

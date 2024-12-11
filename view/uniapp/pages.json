@@ -88,6 +88,15 @@
 					// #endif
 				}
 			}
+		},
+		{
+			"path": "pages/shop/index",
+			"style": {
+				"app-plus": {
+					"titleNView": false //禁用原生导航栏
+				},
+				"navigationBarTitleText": "babe gaga快游鸭"
+			}
 		}
 		//#ifdef H5
 		,
@@ -98,6 +107,7 @@
 			}
 		}
 		//#endif
+		
 	],
 	// "plugins": {
 	// 	"live-player-plugin": {
@@ -473,10 +483,10 @@
 					"path": "user_cash/index",
 					"style": {
 						"navigationBarTitleText": "提现",
-						"navigationBarBackgroundColor": "#FFFFFF"
+						"navigationBarBackgroundColor": "#1DB0FC"
 							// #ifdef MP || APP-PLUS
 							,
-						"navigationBarTextStyle": "black"
+						"navigationBarTextStyle": "white"
 							// #endif
 							,
 						"app-plus": {

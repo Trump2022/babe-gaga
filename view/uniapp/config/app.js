@@ -13,11 +13,11 @@ module.exports = {
 	// 小程序配置
 	// #ifdef MP || APP-PLUS
 	// 请求域名 格式： https://您的域名
-	HTTP_REQUEST_URL: `https://gaga.fanchenai.com`,
-	// HTTP_REQUEST_URL: `https://gaga.fanxinghy.com`,
-	// 长连接 格式：wss://您的域名 
 	VUE_APP_WS_URL: `wss://gaga.fanchenai.com/ws`,
-	// VUE_APP_WS_URL: `wss://gaga.fanxinghy.com/ws`,
+	HTTP_REQUEST_URL: `https://gaga.fanchenai.com`,
+	// VUE_APP_WS_URL: `wss://gaga-test.fanchenai.com/ws`,
+	// HTTP_REQUEST_URL: `https://gaga-test.fanchenai.com`,
+	// 长连接 格式：wss://您的域名 
 	// #endif
 	// H5配置
 	// #ifdef H5

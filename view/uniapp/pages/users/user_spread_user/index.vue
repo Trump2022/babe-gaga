@@ -50,7 +50,7 @@
 			<view class="price-box" :class="!headerStatus ? 'header-height':''">
 				<view class="box-top">
 					<view class="" @click="jumbPath(0)">
-						可提现金额
+						可提现gaga币
 						<text class="iconfont icon-xiangyou"></text>
 					</view>
 					<view class="" @click="jumbPath(7)">
@@ -59,24 +59,24 @@
 					</view>
 				</view>
 				<view class="com-count" @click="jumbPath(6)">
-					{{userInfo.commissionCount || 0.00}}
+					{{parseInt(userInfo.commissionCount || 0.00)}}
 				</view>
 				<view class="box-btn">
 					<view class="item">
 						<view class="text">
-							待提现佣金
+							待提现gaga币
 						</view>
 						<view class="num">
-							{{userInfo.brokerage_price || 0.00}}
+							{{parseInt(userInfo.brokerage_price || 0.00)}}
 						</view>
 					</view>
 					<view class="item in">
 						<view class="item-cn">
 							<view class="text">
-								已提现佣金
+								已提现gaga币
 							</view>
 							<view class="num">
-								{{userInfo.extract_price || 0.00}}
+								{{parseInt(userInfo.extract_price || 0.00)}}
 							</view>
 						</view>
 
@@ -84,10 +84,10 @@
 					<view class="item in">
 						<view class="item-cn">
 							<view class="text">
-								冻结佣金
+								冻结gaga币
 							</view>
 							<view class="num">
-								{{userInfo.broken_commission || 0.00}}
+								{{parseInt(userInfo.broken_commission || 0.00)}}
 							</view>
 						</view>
 					</view>

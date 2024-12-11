@@ -8,7 +8,7 @@
 						<block v-for="(item,index) in agentInfoData.list" :key='index'>
 							<swiper-item @touchmove.stop="stopTouchMove">
 								<view class='line1'>恭喜{{item.nickname}} <text class="color_ye">
-										成功赚取{{item.price}}</text> </view>
+										成功赚取{{item.price}}个gaga币</text> </view>
 							</swiper-item>
 						</block>
 					</swiper>
@@ -23,7 +23,7 @@
 						<text class="iconfont icon-zhu"></text>
 						<text>获得收益</text>
 						<text class="num">{{agentInfoData.price || 0}}</text>
-						<text>元</text>
+						<text>个</text>
 					</view>
 				</view>
 				<view class="tab">

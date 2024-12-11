@@ -69,7 +69,7 @@
             </div>
           </div>
         </div>
-        <div class="right_box" v-if="currenType=='special' || currenType=='store_home' || currenType=='product_category' || currenType=='product' || currenType=='seckill' || currenType == 'bargain' || currenType == 'combination' || currenType == 'news' || currenType == 'integral'">
+        <div class="right_box" v-if="currenType=='special' || currenType=='store_home' || currenType=='product_category' || currenType=='product' || currenType=='seckill' || currenType == 'bargain' || currenType == 'combination' || currenType == 'news' || currenType == 'integral' || currenType == 'class_category'">
           <Form
               ref="formValidate"
               :model="formValidate"
@@ -125,10 +125,10 @@
               ref="table"
               no-data-text="暂无数据"
               no-filtered-data-text="暂无筛选结果"
-              :columns="currenType=='special'?columns:currenType=='product_category'?columns7:(currenType=='bargain'||currenType=='combination'||currenType=='integral')?bargain:currenType=='news'?news:currenType=='store_home'?storeHome:columns8"
+              :columns="currenType=='special'?columns:(currenType=='product_category'||currenType=='class_category')?columns7:(currenType=='bargain'||currenType=='combination'||currenType=='integral')?bargain:currenType=='news'?news:currenType=='store_home'?storeHome:columns8"
               :data="tableList"
               :loading="loading"
-              :max-height="currenType=='product_category'?'410':( currenType=='seckill' || currenType == 'bargain' || currenType == 'combination' || currenType == 'news' || currenType == 'integral')?'400':currenType=='product'?'356':''"
+              :max-height="(currenType=='product_category'||currenType=='class_category')?'410':( currenType=='seckill' || currenType == 'bargain' || currenType == 'combination' || currenType == 'news' || currenType == 'integral')?'400':currenType=='product'?'356':''"
           >
             <template slot-scope="{ row, index }" slot="pic" v-if="row.hasOwnProperty('pic')">
               <viewer>
@@ -443,7 +443,11 @@ export default {
       pageLink(this.categoryId, { pid: item.id }).then(res => {
         item._loading = false;
         res.data.list.forEach((e) => {
-          e.url = `/pages/goods/goods_list/index?sid=${e.id}&title=${e.cate_name}`;
+            if(this.currenType == 'product_category') {
+                e.url = `/pages/goods/goods_list/index?sid=${e.id}&title=${e.cate_name}`;
+            } else {
+                e.url = `/pages/classes/list/list?sid=${e.id}&title=${e.cate_name}`;
+            }
         });
         callback(res.data.list);
       });
@@ -645,6 +649,7 @@ export default {
       }
     },
     handleCheckChange(data, event) {
+    console.log('currenType================>', event.type)
       if(data && data.length){
         this.formValidate.page = 1;
       }
@@ -725,6 +730,16 @@ export default {
                 });
               }
               e.url = `/pages/goods/goods_list/index?cid=${e.id}&title=${e.cate_name}`;
+            });
+            this.tableList = data;
+          } else if (this.currenType == 'class_category') {
+            data.forEach((e) => {
+              if (e.hasOwnProperty('children')) {
+                e.children.forEach((j) => {
+                  j.url = `/pages/classes/list/list?sid=${j.id}&title=${j.cate_name}`;
+                });
+              }
+              e.url = `/pages/classes/list/list?cid=${e.id}&title=${e.cate_name}`;
             });
             this.tableList = data;
           } else if (this.currenType == 'store_home') {

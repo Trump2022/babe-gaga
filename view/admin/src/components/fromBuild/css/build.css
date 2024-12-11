@@ -53,6 +53,10 @@
     vertical-align: middle;
 }
 
+.input-build .input-wrapper-wrap {
+    flex-wrap: wrap;
+}
+
 .input-build .ivu-input-wrapper, .input-build .ivu-select {
     -webkit-flex-shrink: 0;
         -ms-flex-negative: 0;

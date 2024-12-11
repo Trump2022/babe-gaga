@@ -26,7 +26,7 @@
 							</view>
 							<view class="text line1">{{item.nickname}}</view>
 						</view>
-						<view class="people font-color">￥{{item.brokerage_price}}</view>
+						<view class="people font-color">{{item.brokerage_price}}个</view>
 					</view>
 				</view>
 			</view>

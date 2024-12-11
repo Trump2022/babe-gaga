@@ -307,7 +307,8 @@ export default {
                     is_hot: news.is_hot,
                     is_banner: news.is_banner,
                     cid: news.cid,
-                    visit: news.visit
+                    visit: news.visit,
+                    sort: news.sort
                 }
                 this.content = content;
             }).catch(res => {

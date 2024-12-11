@@ -21,7 +21,7 @@
 					</view>
 					<view class="pic-box pic-box-color acea-row row-center-wrapper" :class="activePic == picList.length ? 'pic-box-color-active' : ''"
 					 @click="picCharge(picList.length)">
-						<input type="digit" placeholder="其他" v-model="money" class="pic-box-money pic-number-pic" :class="activePic == picList.length ? 'pic-box-color-active' : ''" />
+						<input type="digit" :placeholder="activePic == picList.length ? '请输入' : '其他'" v-model="money" class="pic-box-money pic-number-pic" :class="activePic == picList.length ? 'pic-box-color-active' : ''" />
 					</view>
 					<view class="tips-box">
 						<view class="tips mt-30">注意事项：</view>
@@ -91,7 +91,8 @@
 			let that = this;
 			return {
 				now_money: 0,
-				navRecharge: ['账户充值', '佣金转入'],
+				// navRecharge: ['账户充值', '佣金转入'],
+				navRecharge: ['账户充值'],
 				active: 0,
 				number: '',
 				userinfo: {},
@@ -606,6 +607,7 @@
 			font-size: 38rpx;
 			margin-right: 10rpx;
 			text-align: center;
+			caret-color: #fff;
 		}
 
 		.pic-box-color-active {

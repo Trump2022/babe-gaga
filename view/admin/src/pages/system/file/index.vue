@@ -138,7 +138,7 @@
                 <div class="picimage">
                   <img
                     :class="item.isSelect ? 'on' : ''"
-                    v-lazy="item.poster || item.satt_dir"
+                    v-lazy="item.poster || (item.satt_dir.split('?')[0] + '?vframe/jpg/offset/0')"
                     @click.stop="changImage(item, index, pictrueList)"
                   />
                 </div>

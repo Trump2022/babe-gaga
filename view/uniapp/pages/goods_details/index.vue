@@ -608,6 +608,7 @@
 	import {
 		Debounce
 	} from '@/utils/validate.js'
+	import shareScence from "@/libs/spread";
 	let app = getApp();
 	import colors from "@/mixins/color";
 	export default {
@@ -865,6 +866,9 @@
 			//记录推广人uid
 			if (options.spid) app.globalData.spid = options.spid;
 			that.getGoodsDetails();
+			if (that.isLogin && app.globalData.spid) {
+				shareScence({ puid: app.globalData.spid }, that.isLogin)
+			}
 			// that.getCouponList(0);
 			// #ifdef H5
 			that.isLogin && silenceBindingSpread();
@@ -1489,7 +1493,7 @@
 				obj(that.id, {
 						promotions_type: this.promotions_type
 					})
-					.then(res => {
+					.then(res => {   
 						let storeInfo = res.data.storeInfo;
 						if(storeInfo.type == 1){
 						  if(storeInfo.delivery_type.indexOf('1') !=-1){//在门店首页确保选择门店配送或是自提
