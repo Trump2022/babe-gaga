@@ -270,9 +270,10 @@ class DiyServices extends BaseServices
             $where = ['status' => 1, 'is_diy' => 1];
             $where['type'] = $type;
             $diyInfo = $this->dao->get($id ?: $where, $field);
-            if (!$diyInfo) {
+            if ( ! $diyInfo || ! $diyInfo['value']) {
                 $diyInfo = $this->dao->get(['template_name' => 'default'], $field);
             }
+            
             if ($diyInfo) {
                 $diyInfo = $diyInfo->toArray();
                 $diyInfo['value'] = json_decode($diyInfo['value'], true);
