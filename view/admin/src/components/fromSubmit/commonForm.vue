@@ -1,3 +1,11 @@
+<!--
+ * @Author: 默°
+ * @Date: 2023-12-29 18:02:42
+ * @LastEditTime: 2024-05-07 18:35:46
+ * @LastEditors: 默°
+ * @Description: 搬什么砖，摸鱼吧
+ * 舒适圈那么舒服为什么要离开
+-->
 <template>
 <!-- 发票设置 -->
     <from-submit :validate="ruleValidate" :url="url" :title="title" :rules="rules"/>

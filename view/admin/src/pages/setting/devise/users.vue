@@ -166,7 +166,7 @@
                 </div>
                 <div class="right">
                     <div class="title">个人中心页面</div>
-                    <!-- <div class="c_row-item">
+                    <div class="c_row-item">
                         <Col class="label" span="4">
                             页面风格：
                         </Col>
@@ -186,7 +186,7 @@
                                 </Radio>
                             </RadioGroup>
                         </Col>
-                    </div> -->
+                    </div>
                     <!-- <div class="c_row-item">
                         <Col class="label" span="4">
                             会员类型：

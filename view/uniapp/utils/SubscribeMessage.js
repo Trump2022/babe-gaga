@@ -110,6 +110,10 @@ export function subscribe(subscrip443tionmessagee502call) {
 				return reslove(res);
 			},
 			fail(res) {
+				// uni.showModal({
+				// 	title: '订阅消息失败',
+				// 	content: `原因：${JSON.stringify(res)}`
+				// })
 				return reslove(res);
 			}
 		})

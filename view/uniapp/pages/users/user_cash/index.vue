@@ -1,51 +1,77 @@
 <template>
 	<view :style="colorStyle">
 		<view class='cash-withdrawal'>
+			<view class="integral-box">
+				<text>当前可提现gaga币</text>
+				<view class="integral">{{parseInt(userInfo.commissionCount)}}<text>个</text> </view>
+			</view>
 			<view class='nav acea-row' v-if="navList.length>1">
-				<view v-for="(item,index) in navList" :key="index" class='item fontcolor' @click="swichNav(item.id)">
-					<view class='line bg-color' :class='currentTab==item.id ? "on":""'></view>
-					<view class='iconfont' :class='item.icon+" "+(currentTab==item.id ? "on":"")'></view>
-					<view>{{item.name}}</view>
+				<view v-for="(item,index) in navList" :key="index" class='item' @click="swichNav(item.id)">
+					<!-- <view class='line bg-color' :class='currentTab==item.id ? "on":""'></view>
+					<view class='iconfont' :class='item.icon+" "+(currentTab==item.id ? "on":"")'></view> -->
+					<view :class='currentTab==item.id ? "on":""'>{{item.name}}</view>
 				</view>
+			</view>
+			<view class="extract">
+				<view class="extract-price" :class="extractActive == index ? 'extract-active' : ''" v-for="(item, index) in user_extract_price_values" :key="index" @click="extractActive = index">
+					<view class="">{{item}} <text>个</text></view>
+				</view>
+				<view class="placeholder-box" style="width: 210rpx;"></view>
 			</view>
 			<view class='wrapper'>
 				<view :hidden='currentTab != 0' class='list'>
 					<form @submit="subCash">
-						<view class='item acea-row row-between-wrapper'>
-							<view class='name'>持卡人</view>
-							<view class='input'><input placeholder='请输入持卡人姓名' placeholder-class='placeholder'
-									name="name" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;"></input></view>
-						</view>
-						<view class='item acea-row row-between-wrapper'>
-							<view class='name'>卡号</view>
-							<view class='input'><input type='number' placeholder='请填写卡号' placeholder-class='placeholder'
-									name="cardnum"></input></view>
-						</view>
-						<view class='item acea-row row-between-wrapper'>
-							<view class='name'>银行</view>
-							<view class='input'>
-								<picker @change="bindPickerChange" :value="index" :range="array">
-									<text class='Bank'>{{array[index]}}</text>
-									<text class='iconfont icon-qiepian38'></text>
-								</picker>
-							</view>
-						</view>
-						<view class='item acea-row row-between-wrapper'>
+						
+						<!-- <view class='item acea-row row-between-wrapper'>
 							<view class='name'>提现</view>
 							<view class='input'><input @input='inputNum' :maxlength="moneyMaxLeng" :placeholder='"最低提现金额：¥"+minPrice' placeholder-class='placeholder'
 									name="money" type='digit'></input></view>
+						</view> -->
+						<view class='tip'>
+							当前冻结gaga币: <text
+								class="price">{{userInfo.broken_commission}}</text>个
 						</view>
 						<view class='tip'>
-							当前可提现金额: <text
-								class="price">￥{{userInfo.commissionCount}}</text>,冻结佣金：￥{{userInfo.broken_commission}}
+							gaga币价值：1个gaga币等{{integral_ratio}}元
 						</view>
 						<view class='tip'>
 							提现手续费: <text class="price">{{withdraw_fee}}%</text>,实际到账:<text class="price">￥{{true_money}}</text>
 						</view>
 						<view class='tip'>
-							说明: 每笔佣金的冻结期为{{userInfo.broken_day}}天，到期后可提现
+							说明: 每笔佣金的冻结期为{{userInfo.broken_day}}天，到期后可提现，提现申请通过后预计5个工作日内到账
 						</view>
-						<button formType="submit" class='bnt bg-color'>提现</button>
+						
+						<view class="h-line"></view>
+						<view class="modules">
+							<view class="modules-title">
+								填写银行卡信息
+							</view>
+							<view class="modules-line"></view>
+							<view class='item acea-row row-between-wrapper'>
+								<view class='name'>持卡人</view>
+								<view class='input'><input placeholder='请输入持卡人姓名' placeholder-class='placeholder'
+										name="name" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;"></input></view>
+							</view>
+							<view class='item acea-row row-between-wrapper'>
+								<view class='name'>卡号</view>
+								<view class='input'><input type='number' placeholder='请填写卡号' placeholder-class='placeholder'
+										name="cardnum"></input></view>
+							</view>
+							<view class='item acea-row row-between-wrapper'>
+								<view class='name'>银行</view>
+								<view class='input'>
+									<picker @change="bindPickerChange" :value="index" :range="array">
+										<text class='Bank'>{{array[index]}}</text>
+										<text class='iconfont icon-qiepian38'></text>
+									</picker>
+								</view>
+							</view>
+						</view>
+						<view class="bnt-fixed">
+							<view class="bnt-box">
+								<button formType="submit" class='bnt bg-color'>提现</button>
+							</view>
+						</view>
 					</form>
 				</view>
 				<view :hidden='currentTab != 1' class='list'>
@@ -55,11 +81,11 @@
 							<view class='input'><input placeholder='请填写您的微信账号' placeholder-class='placeholder'
 									name="name" onKeypress="javascript:if(event.keyCode == 32)event.returnValue = false;"></input></view>
 						</view>
-						<view class='item acea-row row-between-wrapper'>
+						<!-- <view class='item acea-row row-between-wrapper'>
 							<view class='name'>提现</view>
 							<view class='input'><input @input='inputNum' :maxlength="moneyMaxLeng" :placeholder='"最低提现金额：¥"+minPrice' placeholder-class='placeholder'
 									name="money" type='digit'></input></view>
-						</view>
+						</view> -->
 						<view class='item acea-row row-top row-between' v-if="extract_wechat_type == 0">
 							<view class='name'>收款码</view>
 							<view class="input acea-row">
@@ -75,16 +101,23 @@
 							</view>
 						</view>
 						<view class='tip'>
-							当前可提现金额: <text
-								class="price">￥{{userInfo.commissionCount}}</text>,冻结佣金：￥{{userInfo.broken_commission}}
+							当前冻结gaga币: <text
+								class="price">{{userInfo.broken_commission}}</text>个
+						</view>
+						<view class='tip'>
+							gaga币价值：1个gaga币等{{integral_ratio}}元
 						</view>
 						<view class='tip'>
 							提现手续费: <text class="price">{{withdraw_fee}}%</text>,实际到账:<text class="price">￥{{true_money}}</text>
 						</view>
 						<view class='tip'>
-							说明: 每笔佣金的冻结期为{{userInfo.broken_day}}天，到期后可提现
+							说明: 每笔佣金的冻结期为{{userInfo.broken_day}}天，到期后可提现，提现申请通过后预计5个工作日内到账
 						</view>
-						<button formType="submit" class='bnt bg-color'>提现</button>
+						<view class="bnt-fixed">
+							<view class="bnt-box">
+								<button formType="submit" class='bnt bg-color'>提现</button>
+							</view>
+						</view>
 					</form>
 				</view>
 				<view :hidden='currentTab != 2' class='list'>
@@ -114,16 +147,24 @@
 							</view>
 						</view>
 						<view class='tip'>
-							当前可提现金额: <text
-								class="price">￥{{userInfo.commissionCount}}</text>,冻结佣金：￥{{userInfo.broken_commission}}
+							当前冻结gaga币: <text
+								class="price">{{userInfo.broken_commission}}</text>个
+						</view>
+						<view class='tip'>
+							gaga币价值：1个gaga币等{{integral_ratio}}元
 						</view>
 						<view class='tip'>
 							提现手续费: <text class="price">{{withdraw_fee}}%</text>,实际到账:<text class="price">￥{{true_money}}</text>
 						</view>
 						<view class='tip'>
-							说明: 每笔佣金的冻结期为{{userInfo.broken_day}}天，到期后可提现
+							说明: 每笔佣金的冻结期为{{userInfo.broken_day}}天，到期后可提现，提现申请通过后预计5个工作日内到账
 						</view>
-						<button formType="submit" class='bnt bg-color'>提现</button>
+						<view class="bnt-fixed">
+							<view class="bnt-box">
+								<button formType="submit" class='bnt bg-color'>提现</button>
+							</view>
+						</view>
+						
 					</form>
 				</view>
 			</view>
@@ -147,6 +188,9 @@
 		mapGetters
 	} from "vuex";
 	import colors from '@/mixins/color.js';
+	import {
+		openExtrctSubscribe
+	} from '@/utils/SubscribeMessage.js';
 	export default {
 		components: {},
 		mixins:[colors],
@@ -167,7 +211,10 @@
 				moneyMaxLeng: 8,
 				withdraw_fee: '0',
 				true_money: 0,
-				extract_wechat_type:0
+				extract_wechat_type:0,
+				user_extract_price_values: [],
+				extractActive: 0,
+				integral_ratio: 1
 			};
 		},
 		computed: mapGetters(['isLogin']),
@@ -180,6 +227,9 @@
 					}
 				},
 				deep: true
+			},
+			extractActive(newVal) {
+				this.inputNum(this.user_extract_price_values[newVal].toString())
 			}
 		},
 		onLoad() {
@@ -194,15 +244,15 @@
 			uni.removeStorageSync('form_type_cart');
 		},
 		methods: {
-			inputNum: function(e) {
-				let val = e.detail.value;
+			inputNum: function(val) {
+				// let val = e.detail.value;
 				let dot = val.indexOf('.');
 				if(dot>-1){
 					this.moneyMaxLeng = dot+3;
 				}else{
 					this.moneyMaxLeng = 8
 				}
-				this.true_money = Math.floor((this.$util.$h.Mul(val,this.$util.$h.Div(this.$util.$h.Sub(100,this.withdraw_fee),100)))*100)/100 || 0;
+				this.true_money = (Math.floor((this.$util.$h.Mul(val,this.$util.$h.Div(this.$util.$h.Sub(100,this.withdraw_fee),100)))*100)/100 * this.integral_ratio || 0).toFixed(2);
 			},
 			// uploadpicW(){
 			// 	this.uploadpic(this.qrcodeUrlW);
@@ -252,6 +302,9 @@
 					that.minPrice = res.data.minPrice;
 					that.withdraw_fee = res.data.withdraw_fee;
 					that.extract_wechat_type = res.data.extract_wechat_type;
+					that.user_extract_price_values = res.data.user_extract_price_values;
+					that.integral_ratio = res.data.integral_ratio;
+					this.inputNum(that.user_extract_price_values[that.extractActive].toString())
 				});
 			},
 			/**
@@ -298,6 +351,7 @@
 				this.index = e.detail.value;
 			},
 			subCash: function(e) {
+				console.log('e======>', e)
 				let that = this,
 					value = e.detail.value;
 				if (that.currentTab == 0) { //银行卡
@@ -335,34 +389,38 @@
 					value.alipay_code = value.name;
 					value.qrcode_url = that.qrcodeUrlZ;
 				}
-				if (value.money.length == 0) return this.$util.Tips({
-					title: '请填写提现金额'
-				});
-				if (Number(value.money) < Number(that.minPrice)) return this.$util.Tips({
-					title: '提现金额不能低于：¥' + that.minPrice
-				});
+				value.money = this.user_extract_price_values[this.extractActive].toString()
+				// if (value.money.length == 0) return this.$util.Tips({
+				// 	title: '请填写提现金额'
+				// });
+				// if (Number(value.money) < Number(that.minPrice)) return this.$util.Tips({
+				// 	title: '提现金额不能低于：¥' + that.minPrice
+				// });
 				if (this.prevent) {
 					this.prevent = false
 				} else {
 					return
 				}
-				extractCash(value).then(res => {
-					//that.getUserInfo();
-					return this.$util.Tips({
-						title: res.msg,
-						icon: 'success'
-					}, {
-						url: '/pages/users/user_spread_user/index',
-						tab: 2
+				openExtrctSubscribe().then(_ => {
+					extractCash(value).then(res => {
+						//that.getUserInfo();
+						return this.$util.Tips({
+							title: res.msg,
+							icon: 'success'
+						}, {
+							url: '/pages/users/user_spread_user/index',
+							tab: 2
+						});
+					}).catch(err => {
+						setTimeout(e => {
+							this.prevent = true
+						}, 1500)
+						return this.$util.Tips({
+							title: err
+						});
 					});
-				}).catch(err => {
-					setTimeout(e => {
-						this.prevent = true
-					}, 1500)
-					return this.$util.Tips({
-						title: err
-					});
-				});
+				})
+				
 			}
 		}
 	}
@@ -375,20 +433,82 @@
 	.fontcolor{
 		color: var(--view-theme) !important;
 	}
+	
+	.h-line {
+		width: calc(100% + 60rpx);
+		margin-left: -30rpx;
+		height: 18rpx;
+		background-color: #F7F7F7;
+		margin-top: 30rpx;
+	}
+	
+	.modules .modules-title {
+		height: 90rpx;
+		display: flex;
+		align-items: center;
+		font-size: 30rpx;
+		color: #222;
+		font-weight: bold;
+	}
+	
+	.modules .modules-line {
+		width: 100%;
+		height: 1rpx;
+		background-color: #EBEBEB;
+	}
+	
+	.integral-box {
+		height: 300rpx;
+		background-color: var(--view-theme);
+		color: #fff;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.integral-box text {
+		font-size: 24rpx;
+	}
+	
+	.integral-box .integral {
+		font-size: 72rpx;
+		font-weight: bold;
+		margin-top: 6rpx;
+	}
+	
+	.integral-box .integral text {
+		font-size: 26rpx;
+		margin-left: 12rpx;
+	}
+	
+	.cash-withdrawal {
+		padding-bottom: calc(122rpx + env(safe-area-inset-bottom));
+	}
+	
 	.cash-withdrawal .nav {
 		height: 130rpx;
-		box-shadow: 0 10rpx 10rpx #f8f8f8;
+		// box-shadow: 0 10rpx 10rpx #f8f8f8;
+		border-radius: 24rpx 24rpx 0 0;
+		margin-top: -24rpx;
+		background-color: #ffffff;
 	}
 
 	.cash-withdrawal .nav .item {
 		font-size: 26rpx;
 		flex: 1;
 		text-align: center;
+		color: #231815;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 30rpx;
+		font-weight: bold;
 	}
 
-	.cash-withdrawal .nav .item~.item {
-		border-left: 1px solid #f0f0f0;
-	}
+	// .cash-withdrawal .nav .item~.item {
+	// 	border-left: 1px solid #f0f0f0;
+	// }
 
 	.cash-withdrawal .nav .item .iconfont {
 		width: 40rpx;
@@ -402,10 +522,59 @@
 		box-sizing: border-box;
 	}
 
-	.cash-withdrawal .nav .item .iconfont.on {
+	.cash-withdrawal .nav .item .on {
+		// background-color: var(--view-theme);
+		// color: #fff;
+		// border-color: var(--view-theme);
+		color: var(--view-theme);
+		position: relative;
+	}
+	
+	.cash-withdrawal .nav .item .on::after {
+		content: '';
+		display: block;
+		position: absolute;
+		bottom: -10rpx;
+		left: 50%;
+		width: 72rpx;
+		height: 6rpx;
 		background-color: var(--view-theme);
-		color: #fff;
-		border-color: var(--view-theme);
+		border-radius: 6rpx;
+		margin-left: -36rpx;
+	}
+	
+	.extract {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		margin: 30rpx;
+	}
+	
+	.extract .extract-price {
+		width: 210rpx;
+		height: 120rpx;
+		margin-bottom: 24rpx;
+		border: 2rpx solid #BDCCD1;
+		border-radius: 6rpx;
+		font-size: 32rpx;
+		color: #231815;
+		font-weight: bold;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		box-sizing: border-box;
+	}
+	
+	.extract .extract-active {
+		color: #07A7EE;
+		border-width: 2rpx;
+		border-color: #53ADF6;
+		background-color: #F5FDFF;
+	}
+	
+	.extract .extract-price text {
+		font-size: 22rpx;
+		margin-left: 6rpx;
 	}
 
 	.cash-withdrawal .nav .item .line {
@@ -437,6 +606,7 @@
 
 	.cash-withdrawal .wrapper .list .item .input {
 		width: 505rpx;
+		text-align: right;
 	}
 
 	.cash-withdrawal .wrapper .list .item .input .placeholder {
@@ -481,6 +651,20 @@
 		font-size: 26rpx;
 		color: #999;
 		margin-top: 25rpx;
+	}
+	
+	.bnt-fixed {
+		position: fixed;
+		bottom: 0;
+		height: calc(102rpx + env(safe-area-inset-bottom));
+		background-color: #fff;
+	}
+	
+	.bnt-fixed .bnt-box {
+		height: 102rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.cash-withdrawal .wrapper .list .bnt {
