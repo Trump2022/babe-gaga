@@ -712,7 +712,7 @@ class StoreCombinationServices extends BaseServices
         /** @var StoreProductServices $storeProductServices */
         $storeProductServices = app()->make(StoreProductServices::class);
         $product_info = $storeProductServices->getOne(['id' => $StoreCombinationInfo['product_id']]);
-        $productInfo['is_class'] = ? $product_info['is_class'] : 0;
+        $productInfo['is_class'] = $product_info['is_class'] ? $product_info['is_class'] : 0;
         return [$attrInfo, $unique, $productInfo];
     }
 
